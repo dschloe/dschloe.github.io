@@ -384,7 +384,13 @@ summary {
 <li><a href="#공지">공지</a></li>
 <li><a href="#i.-이전-글-소개">I. 이전 글 소개</a></li>
 <li><a href="#ii.-html-content-개요">II. HTML Content 개요</a></li>
-<li><a href="#iii.-html-태그-적용된-shiny-예제">III. HTML 태그 적용된 Shiny 예제</a></li>
+<li><a href="#iii.-shiny-안에-tag-생성">III. Shiny 안에 Tag 생성</a></li>
+<li><a href="#예시-1.-h1-tag">예시 1. <code>h1 tag</code></a></li>
+<li><a href="#예시-2.-div-tag-속성값-입력">예시 2. <code>div tag 속성값 입력</code></a></li>
+<li><a href="#예시-3.-div-태그-안에-p-태그-넣기">예시 3. <code>div</code> 태그 안에 <code>p</code> 태그 넣기</a></li>
+<li><a href="#예시-4.-div-태그-안에-p-a-태그-같이-넣기">예시 4. <code>div</code> 태그 안에 <code>p</code> &amp; <code>a</code> 태그 같이 넣기</a></li>
+<li><a href="#예시-5.-withtags-활용법">예시 5. withTags 활용법</a></li>
+<li><a href="#iv.-reference">IV. Reference</a></li>
 </ul>
 </div>
 
@@ -438,10 +444,72 @@ names(tags)</code></pre>
 ## [111] &quot;ul&quot;          &quot;var&quot;         &quot;video&quot;       &quot;wbr&quot;</code></pre>
 <p><code>names(tags)</code>는 총 114개의 함수로 구성되어 있고, 이 숫자 역시 shiny 패키지가 업데이트 될수록 함수가 늘어나는 양상을 띄고 있다. (예: Shiny 홈페이지에는 110개의 함수만 소개됨)</p>
 </div>
-<div id="iii.-html-태그-적용된-shiny-예제" class="section level2">
-<h2>III. HTML 태그 적용된 Shiny 예제</h2>
-<p>… Will continue … (March 28 업데이트 예정)</p>
-<p>Congratulation! You Mastered Shiny Structure.</p>
+<div id="iii.-shiny-안에-tag-생성" class="section level2">
+<h2>III. Shiny 안에 Tag 생성</h2>
+<p><code>ui</code> 내부에 별도로 <code>HTML tag</code>를 생성하고 싶다면 아래와 같이 <code>tags</code>를 활용하여 HTML 태그를 생성하면 된다.</p>
+</div>
+<div id="예시-1.-h1-tag" class="section level2">
+<h2>예시 1. <code>h1 tag</code></h2>
+<pre class="r"><code>tags$h1(&quot;h1 tag&quot;)</code></pre>
+<h1>h1 tag</h1>
+<pre class="r"><code># &lt;h1&gt;h1 tag&lt;/h1&gt;</code></pre>
+</div>
+<div id="예시-2.-div-tag-속성값-입력" class="section level2">
+<h2>예시 2. <code>div tag 속성값 입력</code></h2>
+<pre class="r"><code>tags$div(class = &quot;header&quot;)</code></pre>
+<div class="header"></div>
+<pre class="r"><code># &lt;div class=&quot;header&quot;&gt;&lt;/div&gt;</code></pre>
+</div>
+<div id="예시-3.-div-태그-안에-p-태그-넣기" class="section level2">
+<h2>예시 3. <code>div</code> 태그 안에 <code>p</code> 태그 넣기</h2>
+<pre class="r"><code>tags$div(class = &quot;p&quot;, checked = NA,
+  tags$p(&quot;Is Shiny Tutorial easy to learn? If so&quot;),
+)</code></pre>
+<div class="p" checked>
+<p>Is Shiny Tutorial easy to learn? If so</p>
+</div>
+<pre class="r"><code># &lt;div class=&quot;p&quot; checked&gt;
+#   &lt;p&gt;Is Shiny Tutorial easy to learn? If so&lt;/p&gt;
+# &lt;/div&gt;</code></pre>
+</div>
+<div id="예시-4.-div-태그-안에-p-a-태그-같이-넣기" class="section level2">
+<h2>예시 4. <code>div</code> 태그 안에 <code>p</code> &amp; <code>a</code> 태그 같이 넣기</h2>
+<pre class="r"><code>tags$div(class = &quot;header&quot;, checked = NA,
+  tags$p(&quot;Is Shiny Tutorial easy to learn? If so&quot;),
+  tags$a(href = &quot;shiny.rstudio.com/tutorial&quot;, &quot;Let&#39;s Do it. Click Here!&quot;)
+)</code></pre>
+<div class="header" checked>
+<p>Is Shiny Tutorial easy to learn? If so</p>
+<a href="shiny.rstudio.com/tutorial">Let's Do it. Click Here!</a>
+</div>
+<pre class="r"><code># &lt;div class=&quot;header&quot; checked&gt;
+#  &lt;p&gt;Is Shiny Tutorial easy to learn? If so&lt;/p&gt;
+#  &lt;a href=&quot;shiny.rstudio.com/tutorial&quot;&gt;Let&#39;s Do it. # Click Here!&lt;/a&gt;
+# &lt;/div&gt;</code></pre>
+</div>
+<div id="예시-5.-withtags-활용법" class="section level2">
+<h2>예시 5. withTags 활용법</h2>
+<p>HTML tags를 활용하려면 지속적으로 <code>tags</code>를 입력해야 하는 불편함이 있다. 그런데, <code>withTags</code>를 활용하면 <code>tags</code>를 중복적으로 사용하지 않아도 되는 장점이 있다.</p>
+<pre class="r"><code>withTags({
+  div(class=&quot;header&quot;, checked=NA,
+    p(&quot;Is Shiny Tutorial easy to learn? If so&quot;),
+    a(href=&quot;shiny.rstudio.com/tutorial&quot;, &quot;Let&#39;s Do it. Click Here!&quot;)
+  )
+})</code></pre>
+<div class="header" checked>
+<p>Is Shiny Tutorial easy to learn? If so</p>
+<a href="shiny.rstudio.com/tutorial">Let's Do it. Click Here!</a>
+</div>
+<pre class="r"><code># &lt;div class=&quot;header&quot; checked&gt;
+#   &lt;p&gt;Is Shiny Tutorial easy to learn? If so&lt;/p&gt;
+#  &lt;a href=&quot;shiny.rstudio.com/tutorial&quot;&gt;Let&#39;s Do it.  Click Here!&lt;/a&gt;
+# &lt;/div&gt;</code></pre>
+<p>웹프로그래머에게는 사실 매우 간단한 작업일 수도 있지만, Web 환경에 익숙하지 않은 데이터 분석가에게는 조금은 어려울 수 있다. 그러나, 오픈소스로 대시보드를 작업해야 한다면, HTML은 매우 중요한 작업이 될 가능성이 크다. 시각적으로 좋은 디자인일 수록, 가독성이 높은 대시보드일수록 클라이언트 또는 상급자가 쉽게 의사결정을 할 수 있도록 도와줄 수 있기 때문이다.</p>
+</div>
+<div id="iv.-reference" class="section level2">
+<h2>IV. Reference</h2>
+<p>Grolemund, G., Cheng, J., &amp; Cetinkaya-Rundel, M. (2017, August 9). Customize your UI with HTML. Retrieved from <a href="https://shiny.rstudio.com/articles/html-tags.html" class="uri">https://shiny.rstudio.com/articles/html-tags.html</a></p>
+<p>Congratulation! You Mastered HTML content in Shiny</p>
 </div>
 
 
