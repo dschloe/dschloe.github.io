@@ -121,7 +121,10 @@ if (!doNotTrack) {
     <li><a href="#2-rows">(2) Rows</a></li>
     <li><a href="#v-components">V. Components</a></li>
     <li><a href="#1-html-widgets">(1) HTML Widgets</a></li>
-    <li><a href="#vi-reference">VI. Reference</a></li>
+    <li><a href="#2-navigation-bar">(2) Navigation Bar</a></li>
+    <li><a href="#vii-shinydashboard-vs-flexdashboard의-활용에-관한-개인적인-단상">VII. shinydashboard Vs. flexdashboard의 활용에 관한 개인적인 단상</a></li>
+    <li><a href="#viii-다루지-못한-것들">VIII. 다루지 못한 것들</a></li>
+    <li><a href="#ix-reference">IX. Reference</a></li>
   </ul>
 </nav>
 	</div>
@@ -220,7 +223,7 @@ callModule(worldPhones, &#34;phones&#34;)
 
 
 
-![](/img/shiny/tutorial_07/shiny02.png)&lt;!--  --&gt;
+![](/img/shiny/tutorial_07/shiny02.png)&lt;!-- --&gt;
 
 
 기본적으로 `flexdashabord`의 구조는`R Markdown`의 목차 및 내용을 구성하는 방식과 비슷하다. 차이점이 있다면, R chunk ```{r, include=FALSE} ```안에 `shiny code`를 진행할 수 있다는 장점이 있다. 
@@ -386,10 +389,75 @@ h1(&#39;Chart 3&#39;)
 
 </code></pre></div><p><img src="/img/shiny/tutorial_07/shiny05.png" alt=""><!-- raw HTML omitted --></p>
 <p><code>Chart 2</code> 섹션에 지도화면이 정상적으로 출력된다면 완성이다. <code>Chart 1</code>에는 어떤 내용을 추가할지, <code>Chart 3</code>에는 어떤 내용을 추가할지 보여줘야 할지 고민해야 하며, Dynamic하게 모든 차트가 동시에 적용되게 하려면, 결국엔 <code>데이터셋</code>이 모듈화처럼 움직여야 한다 (일단, Pass!!, 본 프로젝트에 들어가면 자세히 소개하기로 한다!)</p>
-<p><img src="/img/shiny/tutorial_07/tobecontinued.jpg" alt=""><!-- raw HTML omitted --></p>
-<h2 id="vi-reference">VI. Reference</h2>
+<h2 id="2-navigation-bar">(2) Navigation Bar</h2>
+<p><code>Navigation Bar</code>는 다중페이지가 만들어질 때 보통 사용된다. 대시 보드에 다중 페이지가 있으면 <code>Navigation Bar</code>의 왼쪽에 다중 페이지와 링크로 연결되게 되며, 이 때에는 소셜 링크와 대시 보드의 소스 코드를 볼 수 있다는 장점이 있다.</p>
+<p><code>leaflet</code>을 활용하여 만들었던 기존 소스코드에 <code>Navigation Bar</code>, <code>social</code>, <code>source code</code> 기능을 추가 하도록 하겠다. 어디에 어떻게 구현이 되는지 확인해보자.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
+title: &#34;name_of_your_project&#34;
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    navbar:
+      <span style="color:#66d9ef">-</span> { title: &#34;About&#34;, href: &#34;https://chloevan.github.io/about/&#34; }
+    social: [ &#34;twitter&#34;, &#34;facebook&#34;, &#34;menu&#34;, &#34;linkedin&#34; ]
+    source_code: embed
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+<span style="color:#e6db74">```
+</span><span style="color:#e6db74"></span>
+---
+title: &#34;Tabset Rows&#34;
+output: flexdashboard::flex_dashboard:
+    orientation: rows
+---
+    
+Row 
+-------------------------------------
+    
+### Chart 1
+    
+```{r}
+h1(&#39;Chart 1&#39;)
+<span style="color:#e6db74">```</span>
+   
+Row {.tabset .tabset-fade}
+-------------------------------------
+   
+<span style="color:#75715e">### Chart 2
+</span><span style="color:#75715e"></span>
+```{r}
+h1(&#39;Chart 2&#39;)
+
+library(leaflet)
+leaflet() %&gt;%
+  addTiles() %&gt;%
+  addMarkers(lng=174.768, lat=-36.852, popup=&#34;The birthplace of R&#34;)
+```   
+
+<span style="color:#75715e">### Chart 3
+</span><span style="color:#75715e"></span>    
+```{r}
+h1(&#39;Chart 3&#39;)
+```
+</code></pre></div><p><img src="/img/shiny/tutorial_07/shiny06.png" alt=""><!-- raw HTML omitted --></p>
+<p>우측 상단에 보면, <code>About</code> 버튼, 각각의 <code>Social Network</code> 기능, 특히 <code>Facebook</code>, <code>Twitter</code>, <code>Linkedin</code>과 같이 대시보드를 공유할 수 있는 기능들이 있는 것을 볼 수 있다. 이러한 기능들은 현재  <code>Corona-19</code> 대시보드와 같이 빅데이터를 활용하여 시각화로 <code>Insight</code>를 줄 때, 매우 유용한 기능이다.</p>
+<p>마지막으로 <code>source code</code>는 현재 보고 있는 화면에 대한 전체 <code>source code</code>를 보여주는 기능인데, 이 부분 역시 소스코드 공유를 통해 커뮤니티에 기여하고 싶을 때 넣어주면 좋다.</p>
+<p><img src="/img/shiny/tutorial_07/shiny07.png" alt=""><!-- raw HTML omitted --></p>
+<h2 id="vii-shinydashboard-vs-flexdashboard의-활용에-관한-개인적인-단상">VII. shinydashboard Vs. flexdashboard의 활용에 관한 개인적인 단상</h2>
+<p>각 패키지마다 장단점이 있지만, 굳이 두가지 중에서 한 패키지를 먼저 배워야 한다면 강사는 <code>flexdashboard</code>로 우선 작업하는 것을 권유한다.</p>
+<p>먼저, <code>shinydashboard Vs. flexdashboard</code>에 대한 <a href="https://shiny.rstudio.com/articles/dashboards.html">비교 글</a>에 대한 원문을 읽어보는 것을 권한다. (사실 그렇게 큰 내용은 없다.)</p>
+<p>일단 간단하게 요약하면, <code>shinydashboard</code>는 입문자들이 접근하기에는 조금 어려운 점이 있다. 물론, 추후에 <code>HTML &amp; CSS</code>와 같은 기능에 대한 필요성이 느껴진다면, <code>shinydashboard</code>에 자바스크립트 등 복잡성 있게 구현이 가능하겠지만.. 추천하지는 않는다 (왜 꼭 R로 그렇게 해야하는가? 복잡성 있게 구현한다면 나는 차라리 유료 BI Tool을 쓰자고 할 것 같다!) 하는 의문점이 늘 있어왔다. 다년간 R 커뮤니티를 관찰한 결과 <code>R</code>을 활용하는 사람들의 대부분(특히 국내 R 유저의 특성상)의 사실상 프로그래밍에 익숙하지 않은 사람들이 대부분인 것을 추정하기 때문에 <code>R Shiny</code>를 하는 사람들에게 <code>R Markdown</code> 보고서를 빠르게 웹으로 구현하는 일련의 과정이 훨씬 빠르고 간결하기 때문에 추천한다. (지극히 개인적인 생각)</p>
+<h2 id="viii-다루지-못한-것들">VIII. 다루지 못한 것들</h2>
+<p><code>shinydashboard</code>와 <code>flexdashboard</code>에 다양한 기능들을 접해봤지만, 아직 다루지 못한 그러나 중요한 기능이 하나 있다. <code>Mobile</code>의 접근성이다. 이 부분은 향후 프로젝트를 진행하면서 한번 짚고 넘어가도록 하겠다.</p>
+<p>이제 기본적인 이론 중 마지막 한가지가 남아있다. <code>shiny</code>에서 <code>HTML</code>, <code>CSS</code>, 그리고 <code>Javascript</code> 연동이다.</p>
+<p>이제 미니 프로젝트의 시작점이 얼마 남지 않았다. 고지를 향해 조금만 더 달려가보자!</p>
+<h2 id="ix-reference">IX. Reference</h2>
 <p>flexdashboard, (2020). flexdashboard Retrieved April 2, 2020, from <a href="https://rmarkdown.rstudio.com/flexdashboard/index.html">https://rmarkdown.rstudio.com/flexdashboard/index.html</a></p>
-<p>Congratulation! You Mastered shinydashboard in Shiny</p>
+<p>Congratulation! You Mastered flexdashboard in Shiny</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
