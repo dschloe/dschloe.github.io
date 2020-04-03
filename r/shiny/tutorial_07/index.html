@@ -117,6 +117,10 @@ if (!doNotTrack) {
     <li><a href="#iii-get-started">III. Get Started</a></li>
     <li><a href="#1-sample">(1) Sample</a></li>
     <li><a href="#iv-layouts">IV. Layouts</a></li>
+    <li><a href="#1-column">(1) Column</a></li>
+    <li><a href="#2-rows">(2) Rows</a></li>
+    <li><a href="#v-components">V. Components</a></li>
+    <li><a href="#1-html-widgets">(1) HTML Widgets</a></li>
     <li><a href="#vi-reference">VI. Reference</a></li>
   </ul>
 </nav>
@@ -140,14 +144,14 @@ if (!doNotTrack) {
 <p>기존의 <code>shinydashboard</code>와의 가장 큰 차이점은 <code>flexdashboard</code>의 패키지는 <code>R Markdown</code><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> 형식을 지원한다는 것이다.</p>
 <ul>
 <li>공식문서에 따르면, flexdashabord는 R에서 제공하는 다양한 형태의 <code>htmlwidgets</code>, <code>base</code>, <code>lattice</code>, <code>grid graphics</code>, <code>tabular data</code>, <code>gauges and value boxes</code>, and <code>text annotations</code> 등을 지원한다 (거의 대부분 기능을 제공한다는 뜻으로 읽힘).</li>
-<li>기존의 <code>shiny tutorial</code>를 잘 따라해왔다면, 대부분 느끼겠지만, 대시보드의 <code>열</code>과 <code>행</code>을 맞추는 건 쉽지가 않다. PC환경의 대시보드 형태로 구현이 되기 때문에, 모바일로 화면 전환이 쉽지가 않은데, flexdashboard는 이러한 기능도 제공한다.</li>
-<li>기본적으로 <code>flexdashboard</code> 패키지는 static한 대시보드인데, dynamic하게 앱을 작성할 수 있다.</li>
+<li>기존의 <code>shiny tutorial</code>를 잘 따라해왔다면, 대부분 느끼겠지만, 대시보드의 <code>열</code>과 <code>행</code>을 맞추는 건 쉽지가 않다. PC환경의 대시보드 형태로 구현이 되기 때문에, 모바일로 화면 전환이 쉽지가 않은데, <code>flexdashboard</code>는 이러한 기능도 제공한다.</li>
+<li>기본적으로 <code>flexdashboard</code> 패키지는 <code>static</code>한 대시보드인데, <code>dynamic</code>하게 앱을 작성할 수 있다.</li>
 </ul>
 <h2 id="iii-get-started">III. Get Started</h2>
 <p>다른 R의 패키지처럼, <code>flexdashboard</code> 패키지를 설치한다.</p>
 <pre><code>install.packages(&quot;flexdashboard&quot;)
 </code></pre><p>패키지를 설치하고 나면, [<code>File</code>] - [<code>New File</code>] - [<code>R Markdown</code>] - [<code>From Template</code>] 순서대로 클릭하면 아래와 같이 <code>Flex Dashboard</code> 파일이 활성화 되는데, 이 파일을 클릭한다.</p>
-<!-- raw HTML omitted -->
+<p><img src="/img/shiny/tutorial_07/shiny01.png" alt=""><!-- raw HTML omitted --></p>
 <p>클릭과 함께 아래와 같은 형태의 코드가 준비된 것을 확인할 수 있다.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown"><span style="color:#e6db74">```yaml
 </span><span style="color:#e6db74"></span><span style="color:#66d9ef">title</span>: <span style="color:#e6db74">&#34;Single Column (Scrolling)&#34;</span>
@@ -164,7 +168,7 @@ if (!doNotTrack) {
 <span style="color:#66d9ef">runtime</span>: shiny
 <span style="color:#e6db74">```</span>
 </code></pre></div><h2 id="1-sample">(1) Sample</h2>
-<p>아래 샘플 소스코드를 작성하여 실행한다.</p>
+<p>아래 샘플 소스코드를 작성하여 실행한다. 아래 소스 코드 실행의 주요 목적은 <code>R Markdown</code>과 <code>R Shiny</code>가 어떻게 조금씩 다른지 확인하는 차원의 소스 코드이다. Sample 코드는 <a href="https://beta.rstudioconnect.com/jjallaire/shiny-embedding/">flexdashboard: Shiny Embedding</a> 에서 가져와서 응용 했다.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
 title: &#34;flexdashboard: Shiny Embedding&#34;
 output: 
@@ -211,13 +215,180 @@ worldPhones &lt;- function(input, output, session) {
 # Include the module
 worldPhonesUI(&#34;phones&#34;)
 callModule(worldPhones, &#34;phones&#34;)
+</code></pre></div><pre><code>
+위 파일을 실행하면 아래와 같이 화면이 구성되면 완성이다. 
+
+
+
+![](/img/shiny/tutorial_07/shiny02.png)&lt;!--  --&gt;
+
+
+기본적으로 `flexdashabord`의 구조는`R Markdown`의 목차 및 내용을 구성하는 방식과 비슷하다. 차이점이 있다면, R chunk ```{r, include=FALSE} ```안에 `shiny code`를 진행할 수 있다는 장점이 있다. 
+
+본 소스코드에서는 `Modularizing`이 적용되었는데, 튜토리얼[^2]의 마지막 즈음에 복잡한 `shiny app`을 만들기 위한 가이드라인의 차원에서 다루도록 한다.  
+[^2]: 웹개발 개발경력이 되신 분들은 shiny 홈페이지에 게재된 [Modularizing Shiny app code](https://shiny.rstudio.com/articles/modules.html)을 자세히 읽어보기를 권한다. 
+
+이제 각각의 Layouts 대해 간단하게 설명하도록 해보자. 
+
+</code></pre><h2 id="iv-layouts">IV. Layouts</h2>
+<p><code>Layouts</code>의 구성요소는 크게 3가지로 구분된다.</p>
+<ul>
+<li><code>Orientation</code>: 행과 열로 구분한다.</li>
+<li><code>Scrolling Layout</code>: 만약에 차트가 많다면 한 화면에 다 넣을 수 없기 때문에 이때에는 스크롤 기능을 추가해주는 것이 좋다.</li>
+<li><code>Tabsets</code>: 강사가 제일 좋아하는 기능이다. 이유는 간단한다. 다양한 그래프와 정보를 한 화면에서 볼 수 있도록 넣을 수 있고, <code>Tab</code> 클릭만으로 정보 제공이 가능하기 때문이다.</li>
+</ul>
+<p>본 포스트에서는 <code>Tabsets</code> 기준으로 작성하였는데, 이 글을 보는 사람들도 가급적 아래와 같은 형식으로 기본 <code>Format</code>을 설정하는 것을 권유한다. 여기에서 주의해야 할 점은 어떤 시점에 <code>{.tabset}</code>을 코드 작성 하느냐에 따라 디자인이 달라지기 때문에 수시로 확인해서 점검한다.</p>
+<blockquote>
+<p>There is no free lunch, Open Source is free but hardworking is required. - ChloEvan -</p>
+</blockquote>
+<h2 id="1-column">(1) Column</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
+title: &#34;name_of_your_project&#34;
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+<span style="color:#e6db74">```
+</span><span style="color:#e6db74"></span>
+---
+title: &#34;Tabset Column&#34;
+output: flexdashboard::flex_dashboard
+---
+    
+Column 
+-------------------------------------
+    
+### Chart 1
+    
+```{r}
+h1(&#39;Chart 1&#39;)
+<span style="color:#e6db74">```</span>
+   
+Column {.tabset}
+-------------------------------------
+   
+<span style="color:#75715e">### Chart 2
+</span><span style="color:#75715e"></span>
+```{r}
+h1(&#39;Chart 2&#39;)
+```   
+ 
+<span style="color:#75715e">### Chart 3
+</span><span style="color:#75715e"></span>    
+```{r}
+h1(&#39;Chart 3&#39;)
 ```
-</code></pre></div><p>위 파일을 실행하면 아래와 같이 화면이 구성되면 완성이다.</p>
-<p><img src="/img/shiny/tutorial_07/shiny02.png" alt=""><!-- raw HTML omitted --></p>
-<h2 id="iv-layouts">IV. Layouts</h2>
+
+</code></pre></div><p><img src="/img/shiny/tutorial_07/shiny03.png" alt=""><!-- raw HTML omitted --></p>
+<p>실행된 화면에서 <code>Chart 2</code>와 <code>Chart 3</code>를 교대로 클릭하며 내용을 확인해본다. 이번에는 Rows를 기준으로 작업하는데, 사실상 달라지는 건 기존의 소스코드와 없다.</p>
+<h2 id="2-rows">(2) Rows</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
+title: &#34;name_of_your_project&#34;
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+<span style="color:#e6db74">```
+</span><span style="color:#e6db74"></span>
+---
+title: &#34;Tabset Rows&#34;
+output: flexdashboard::flex_dashboard:
+    orientation: rows
+---
+    
+Row 
+-------------------------------------
+    
+### Chart 1
+    
+```{r}
+h1(&#39;Chart 1&#39;)
+<span style="color:#e6db74">```</span>
+   
+Row {.tabset .tabset-fade}
+-------------------------------------
+   
+<span style="color:#75715e">### Chart 2
+</span><span style="color:#75715e"></span>
+```{r}
+h1(&#39;Chart 2&#39;)
+```   
+ 
+<span style="color:#75715e">### Chart 3
+</span><span style="color:#75715e"></span>    
+```{r}
+h1(&#39;Chart 3&#39;)
+```
+
+</code></pre></div><p><code>{.tabset-fade}</code> 속성값은 탭이 변환될 때마다 Fade in/out 효과를 적용하여 준다. 실제로 아래와 같이 나오는지 코드 작성을 통해 확인해본다.</p>
+<p><img src="/img/shiny/tutorial_07/shiny04.png" alt=""><!-- raw HTML omitted --></p>
+<h2 id="v-components">V. Components</h2>
+<p>개요 페이지에서 언급했던 것처럼 <code>flexdashboard</code>는 다양한 <code>Componets</code>를 제공한다. <code>shiny</code>와 <code>R Markdown</code> 내용과 중복되는 예를 들면, <code>R graphics</code>, <code>Tabular Data</code> 등은 생략한다. 즉, 기존에 알고 있는 코드 문법과 차이가 없다는 뜻이기도 하다. 본 포스트에서는 <code>HTML Widgets</code>(사실, 이것도 shiny &amp; shinydashboard에서도 사용은 가능하다!) <code>Navigation Bar</code>만 언급하도록 한다.</p>
+<h2 id="1-html-widgets">(1) HTML Widgets</h2>
+<p><code>CRAN</code>에 등록되어 있는 <code>30</code>개 이상의 패키지는 <code>HTML Widgets</code>을 제공한다. 즉, 이러한 <code>Widgets</code>들은 모두 본 패키지에서 작성이 가능하다. 향후 코로나 프로젝트를 위해 지도 패키지인 <code>leaflets</code>의 간단 예제로 간단하게 소스 코드를 구현해본다. 소스코드보다는 어떻게 대시보드화가 되는지 결과 위주로 보기를 바란다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
+title: &#34;name_of_your_project&#34;
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+<span style="color:#e6db74">```
+</span><span style="color:#e6db74"></span>
+---
+title: &#34;Tabset Rows&#34;
+output: flexdashboard::flex_dashboard:
+    orientation: rows
+---
+    
+Row 
+-------------------------------------
+    
+### Chart 1
+    
+```{r}
+h1(&#39;Chart 1&#39;)
+<span style="color:#e6db74">```</span>
+   
+Row {.tabset .tabset-fade}
+-------------------------------------
+   
+<span style="color:#75715e">### Chart 2
+</span><span style="color:#75715e"></span>
+```{r}
+h1(&#39;Chart 2&#39;)
+
+library(leaflet)
+leaflet() %&gt;%
+  addTiles() %&gt;%
+  addMarkers(lng=174.768, lat=-36.852, popup=&#34;The birthplace of R&#34;)
+```   
+
+<span style="color:#75715e">### Chart 3
+</span><span style="color:#75715e"></span>    
+```{r}
+h1(&#39;Chart 3&#39;)
+```
+
+</code></pre></div><p><img src="/img/shiny/tutorial_07/shiny05.png" alt=""><!-- raw HTML omitted --></p>
+<p><code>Chart 2</code> 섹션에 지도화면이 정상적으로 출력된다면 완성이다. <code>Chart 1</code>에는 어떤 내용을 추가할지, <code>Chart 3</code>에는 어떤 내용을 추가할지 보여줘야 할지 고민해야 하며, Dynamic하게 모든 차트가 동시에 적용되게 하려면, 결국엔 <code>데이터셋</code>이 모듈화처럼 움직여야 한다 (일단, Pass!!, 본 프로젝트에 들어가면 자세히 소개하기로 한다!)</p>
 <p><img src="/img/shiny/tutorial_07/tobecontinued.jpg" alt=""><!-- raw HTML omitted --></p>
 <h2 id="vi-reference">VI. Reference</h2>
-<p>shinydashboard., (2020). shinydashboard. Retrieved April 1, 2020, from <a href="https://rstudio.github.io/shinydashboard/index.html/">https://rstudio.github.io/shinydashboard/index.html/</a></p>
+<p>flexdashboard, (2020). flexdashboard Retrieved April 2, 2020, from <a href="https://rmarkdown.rstudio.com/flexdashboard/index.html">https://rmarkdown.rstudio.com/flexdashboard/index.html</a></p>
 <p>Congratulation! You Mastered shinydashboard in Shiny</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
