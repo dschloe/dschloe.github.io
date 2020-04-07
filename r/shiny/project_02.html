@@ -11,7 +11,7 @@
 
 
 
-<title>Corona Shiny Project 2 - Visusalization</title>
+<title>Corona Shiny Project 2 - Visusalization (Time Series)</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -374,7 +374,7 @@ summary {
 
 
 
-<h1 class="title toc-ignore">Corona Shiny Project 2 - Visusalization</h1>
+<h1 class="title toc-ignore">Corona Shiny Project 2 - Visusalization (Time Series)</h1>
 <h4 class="date">2020-04-07T10:10:39+09:00</h4>
 
 </div>
@@ -387,7 +387,11 @@ summary {
 <li><a href="#iii.-shiny-project-with-flexdashboard-package.">III. Shiny Project with flexdashboard package.</a></li>
 <li><a href="#model-dashboard">(1) Model Dashboard</a></li>
 <li><a href="#필수-패키지-불러오기">(2) 필수 패키지 불러오기</a></li>
+<li><a href="#layout-기본-구성">(3) Layout 기본 구성</a></li>
 <li><a href="#iii.-get-data-from-mongodb">III. Get Data From MongoDB</a></li>
+<li><a href="#iv.-sidebar-구성">IV. Sidebar 구성</a></li>
+<li><a href="#전역변수-지정">(1) 전역변수 지정</a></li>
+<li><a href="#v.-time-series-데이터-작성">V. Time Series 데이터 작성</a></li>
 </ul>
 </div>
 
@@ -432,18 +436,25 @@ summary {
 <div id="필수-패키지-불러오기" class="section level2">
 <h2>(2) 필수 패키지 불러오기</h2>
 <p>강사가 사용하려는 패키지는 아래와 같다. (작업하다보면 추가가 될 수 있어서, 계속 업데이트 하려고 한다.)</p>
-<pre class="markdown"><code>```{r global, include=FALSE}
+<pre class="markdown"><code>```r
 # 데이터를 &#39;global&#39; chunk에 넣고, 대시보드의 모든 사용자가 데이터를 공유할 수 있도록 지원하는 소스 코드
 
 library(shiny)
 library(mongolite)
 library(tidyverse)
 library(leaflet)
+library(dygraphs)
+library(xts)
 ```</code></pre>
+</div>
+<div id="layout-기본-구성" class="section level2">
+<h2>(3) Layout 기본 구성</h2>
+<p>강사는 아래와 같이 기본 구성도를 작성하였다.</p>
+<!--![](/img/shiny/coronaProject/project_02/project02.png) -->
 </div>
 <div id="iii.-get-data-from-mongodb" class="section level2">
 <h2>III. Get Data From MongoDB</h2>
-<p>아래 소스코드를 통해서 데이터를 가져온다. MongoDB에 관련된 자료는 <a href="https://rpubs.com/Evan_Jung/r_mongodb">R MongoDB 접속 및 소개 자료</a>에서 확인하기를 바란다.</p>
+<p>아래 소스코드를 통해서 데이터를 가져온다. MongoDB에 관련된 자료는 <a href="https://rpubs.com/Evan_Jung/r_mongodb">R MongoDB 접속 및 소개 자료</a>에서 확인하기를 바란다. 사실 본 프로젝트에서는 꼭 이렇게 하지 않아도 된다. 그러나, 조금 더 깊은 내용을 원하면, 이렇게 해줘야 함을 명시한다.</p>
 <pre class="r"><code>library(mongolite)
 collection &lt;- &quot;covid_19&quot; 
 db &lt;- &#39;learningspoons&#39;
@@ -456,7 +467,120 @@ conn &lt;- mongo(collection = collection,
               db = db, 
               url = mongo_url)
 
-print(conn)</code></pre>
+# get data
+corona &lt;- conn$find(&quot;{}&quot;)</code></pre>
+<p>위 소스코드는 <code>global</code> chunk에 작성한다. 이유는 위 데이터를 우선 공동으로 사용되어야 하기 때문이다.</p>
+<ul>
+<li>Tip-1: 여기에서 <code>Sys.getenv(&quot;MONGO_ID&quot;)</code>와 함께 <code>App Publishing</code>을 진행하면, shinyapp.io에서 에러가 날 가능성이 크다. 이유는 <code>Sys.getenv(&quot;&quot;)</code>은 환경설정 파일(<code>.Renviron</code>)인데, 당연히 <code>github</code> 등에는 공적으로 같이 올리지 않는다. 강사는 publishing 할 때, 명시적으로 ID와 PW를 같이 기재하여 배포하였지만, 보안상으로는 당연히 그렇게 하면 안된다. 이에 대한 적절한 해결책을 공유하니, 참고하기를 바란다.
+<ul>
+<li><a href="https://stackoverflow.com/questions/39084284/how-to-pass-environment-variables-to-shinyapps">How to pass environment variables to shinyapps</a></li>
+</ul></li>
+</ul>
+</div>
+<div id="iv.-sidebar-구성" class="section level2">
+<h2>IV. Sidebar 구성</h2>
+<p>이제 본격적으로 시각화를 구현하기에 앞서서 슬라이드형 날짜를 구성해보자.</p>
+</div>
+<div id="전역변수-지정" class="section level2">
+<h2>(1) 전역변수 지정</h2>
+<p><code>global chunk</code>에 아래와 같이 추가적으로 코드를 입력한다.</p>
+<pre class="r"><code># 날짜 지정
+corona_date &lt;- as.Date(corona$dateRep)
+
+# 특정 Input값이 없을 경우 대비
+variable &lt;- F</code></pre>
+<p>위 코드를 지정했다면, 아래와 같이 소스코드를 작업한 뒤 결과물을 빠르게 확인한다.</p>
+<pre class="markdown"><code>Inputs {.sidebar data-width=300}
+-----------------------------------------------------------------------
+원하는 날짜에 놓고 `Button`을 누르세요. 
+
+```r
+uiOutput(&quot;Slider&quot;)
+sliderInput(&quot;day1&quot;, &quot;Day&quot;, min(corona_date), max(corona_date),
+                    value =  c(max(corona_date)), animate = T, step = 1)
+
+renderUI({
+    if(is.null(input$variable)){
+    }else{
+      if(input$variable %in% c(&quot;cases&quot;, &quot;deaths&quot;)){
+        sliderInput(&quot;day1&quot;, &quot;Day&quot;, min(corona_date), max(corona_date),
+                    value =  c(max(corona_date)), animate = T, step = 1)
+        }else{
+        sliderInput(&quot;day2&quot;, &quot;Day&quot;, min(corona_date), max(corona_date),
+                    value =  c(max(corona_date)-7,max(corona_date)), animate = T, step = 1)
+        } # else
+    } # is.null
+  })
+```</code></pre>
+<!--![](/img/shiny/coronaProject/project_02/project_03.png) -->
+<p>추가적으로 더 넣을 내용이 생기면 업데이트 하겠다.</p>
+</div>
+<div id="v.-time-series-데이터-작성" class="section level2">
+<h2>V. Time Series 데이터 작성</h2>
+<p><code>Shiny App</code>을 작성할 때, 특히 시각화와 데이터 처리와 관련해서 작업할 때는 <code>R Markdown</code>에서 하는 것보다, 일반 <code>.R</code>파일을 하나 생성해서 빠르게 구현하는 것을 추천한다.</p>
+<p>강사가 작업할 Time Series 시각화는 <code>dygraphs</code> 패키지를 할용하려고 한다. 참고로 강사 역시, dygraphs 패키지를 이전에 사용해본적은 없다! 즉, 현재 듣는 수강생과 동일한 입장에서 작업하는 것임을 알고, 자신감 있게 작업하기를 바란다.</p>
+<ul>
+<li><a href="https://www.r-graph-gallery.com/317-time-series-with-the-dygraphs-library.html">Time series visualization with the dygraphs package</a></li>
+</ul>
+<p>강사가 R 에디터에서 빠르게 작업한 전체 소스코드는 아래와 같다.</p>
+<pre class="r"><code># load data in &#39;global&#39; chunk so it can be shared by all users of the dashboard
+library(mongolite)
+library(tidyverse)
+library(dygraphs)
+library(xts)
+
+collection &lt;- &quot;covid_19&quot; 
+db &lt;- &#39;learningspoons&#39;
+mongo_id &lt;- Sys.getenv(&quot;MONGO_ID&quot;) # 보안 유지를 위해 가렸다.(실무에서는 이렇게 작업하라고 권유하는 것임!) 
+mongo_pw &lt;- Sys.getenv(&quot;MONGO_PW&quot;) # (실무에서는 이렇게 작업하라고 권유하는 것임!)  
+
+mongo_url &lt;- paste0(&#39;mongodb+srv://&#39;, mongo_id, &#39;:&#39;,mongo_pw,&#39;@learningspoons-rhpei.gcp.mongodb.net/&#39;)
+
+conn &lt;- mongo(collection = collection, 
+              db = db, 
+              url = mongo_url)
+
+# get data
+corona &lt;- conn$find(&quot;{}&quot;)
+
+# 날짜 변환
+corona$dateRep &lt;- as.Date(corona$dateRep)
+
+# summarise
+corona2 &lt;- corona %&gt;% 
+  group_by(dateRep) %&gt;% 
+  summarise(total_cases = sum(cases), 
+            total_deaths = sum(deaths))
+
+cases_data &lt;- xts(x = corona2[, -1], order.by = corona2$dateRep)
+p &lt;- dygraph(cases_data) %&gt;% 
+  dyOptions(drawPoints = TRUE, pointSize = 4, fillGraph=TRUE)
+p</code></pre>
+<!--![](/img/shiny/coronaProject/project_02/project_04.png) -->
+<p>이제 <code>R Markdown</code>에 응용만 하면 된다. 그런데, 여기서 주의점! <code>shiny tutorial</code>에서 패키지 설명서를 잘 읽었다면, interactive graph package와 연동이 잘 된다는 걸 기억했으면 좋겠다. 즉, 생각보다 쉽게 작업할 수 있다는 뜻이다. <code>dygraphs</code> 패키지 설명서를 다시 한번 읽어보자. - <a href="https://rstudio.github.io/dygraphs/shiny.html">Using in Shiny Applications</a> - <code>ui.R</code>코드에서 <code>dygraphOutput(&quot;dygraph&quot;)</code>을 봤으면 좋겠다.</p>
+<p>이런 형태로 소스코드를 응용할 것이다. 잘 따라와주기를 바란다.</p>
+<pre><code>corona_xts &lt;- reactive({
+  temp &lt;- corona %&gt;% 
+  mutate(dateRep = as.Date(dateRep)) %&gt;% 
+  group_by(dateRep) %&gt;% 
+  summarise(total_cases = sum(cases), 
+            total_deaths = sum(deaths))
+  xts::xts(x = temp[, -1], order.by = temp$dateRep)
+})
+
+renderDygraph({
+  dygraph(corona_xts(), height = 400) %&gt;% 
+  dyHighlight(highlightCircleSize = 5, 
+              highlightSeriesBackgroundAlpha = 0.2,
+              hideOnMouseOut = FALSE) %&gt;% 
+  dyOptions(drawPoints = TRUE, 
+            pointSize = 4, 
+            fillGraph=TRUE, 
+            axisLineWidth = 1.5)
+})</code></pre>
+<!--![](/img/shiny/coronaProject/project_02/project_05.png) -->
+<p>위와 같은 형태로 나오면 완성이다. 아쉽지만, 아직은 <code>date</code>와 연동된 것은 아니다. <code>date</code>와 연동하려면, 보다 더 많은 작업을 해야 한다!</p>
+<p>다음 시간에는 <code>date</code>에 따라 애니메이션 처럼 움직이는 그래프를 만들어본다!</p>
 <p><code>Pray for those who are victimized by Covid_19. Contribution to them with this tutorial.</code></p>
 </div>
 

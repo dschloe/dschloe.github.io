@@ -4,10 +4,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Corona Shiny Project 2 - Visusalization - Data Science | ChloEvan</title>
+	<title>Corona Shiny Project 2 - Visusalization (Time Series) - Data Science | ChloEvan</title>
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
-	<meta property="og:title" content="Corona Shiny Project 2 - Visusalization" />
+	<meta property="og:title" content="Corona Shiny Project 2 - Visusalization (Time Series)" />
 <meta property="og:description" content="공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
 이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
 I. Shiny Tutorial 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
@@ -18,7 +18,7 @@ I. Shiny Tutorial 소개 처음 shiny를 접하거나 shiny의 전체 튜토리�
 <meta property="article:modified_time" content="2020-04-07T10:10:39+09:00" />
 
 	<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Corona Shiny Project 2 - Visusalization"/>
+<meta name="twitter:title" content="Corona Shiny Project 2 - Visusalization (Time Series)"/>
 <meta name="twitter:description" content="공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
 이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
 I. Shiny Tutorial 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
@@ -93,7 +93,7 @@ if (!doNotTrack) {
 <main class="main" role="main">
 	<article class="post">
 		<header class="post__header">
-			<h1 class="post__title">Corona Shiny Project 2 - Visusalization</h1>
+			<h1 class="post__title">Corona Shiny Project 2 - Visusalization (Time Series)</h1>
 			<div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
 	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
@@ -117,7 +117,11 @@ if (!doNotTrack) {
     <li><a href="#iii-shiny-project-with-flexdashboard-package">III. Shiny Project with flexdashboard package.</a></li>
     <li><a href="#1-model-dashboard">(1) Model Dashboard</a></li>
     <li><a href="#2-필수-패키지-불러오기">(2) 필수 패키지 불러오기</a></li>
-    <li><a href="#iv-get-data-from-mongodb">IV. Get Data From MongoDB</a></li>
+    <li><a href="#3-layout-기본-구성">(3) Layout 기본 구성</a></li>
+    <li><a href="#iii-get-data-from-mongodb">III. Get Data From MongoDB</a></li>
+    <li><a href="#iv-sidebar-구성">IV. Sidebar 구성</a></li>
+    <li><a href="#1-전역변수-지정">(1) 전역변수 지정</a></li>
+    <li><a href="#v-time-series-데이터-작성">V. Time Series 데이터 작성</a></li>
   </ul>
 </nav>
 	</div>
@@ -153,16 +157,21 @@ if (!doNotTrack) {
 <p><img src="/img/shiny/coronaProject/project_02/project01.png" alt=""><!-- raw HTML omitted --></p>
 <h2 id="2-필수-패키지-불러오기">(2) 필수 패키지 불러오기</h2>
 <p>강사가 사용하려는 패키지는 아래와 같다. (작업하다보면 추가가 될 수 있어서, 계속 업데이트 하려고 한다.)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">```{r global, include=FALSE}
-# 데이터를 &#39;global&#39; chunk에 넣고, 대시보드의 모든 사용자가 데이터를 공유할 수 있도록 지원하는 소스 코드
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown"><span style="color:#e6db74">```r
+</span><span style="color:#e6db74"></span><span style="color:#75715e"># 데이터를 &#39;global&#39; chunk에 넣고, 대시보드의 모든 사용자가 데이터를 공유할 수 있도록 지원하는 소스 코드</span>
 
-library(shiny)
-library(mongolite)
-library(tidyverse)
-library(leaflet)
-```
-</code></pre></div><h2 id="iv-get-data-from-mongodb">IV. Get Data From MongoDB</h2>
-<p>아래 소스코드를 통해서 데이터를 가져온다. MongoDB에 관련된 자료는 <a href="https://rpubs.com/Evan_Jung/r_mongodb">R MongoDB 접속 및 소개 자료</a>에서 확인하기를 바란다.</p>
+<span style="color:#a6e22e">library</span>(shiny)
+<span style="color:#a6e22e">library</span>(mongolite)
+<span style="color:#a6e22e">library</span>(tidyverse)
+<span style="color:#a6e22e">library</span>(leaflet)
+<span style="color:#a6e22e">library</span>(dygraphs)
+<span style="color:#a6e22e">library</span>(xts)
+<span style="color:#e6db74">```</span>
+</code></pre></div><h2 id="3-layout-기본-구성">(3) Layout 기본 구성</h2>
+<p>강사는 아래와 같이 기본 구성도를 작성하였다.
+<img src="/img/shiny/coronaProject/project_02/project02.png" alt=""><!-- raw HTML omitted --></p>
+<h2 id="iii-get-data-from-mongodb">III. Get Data From MongoDB</h2>
+<p>아래 소스코드를 통해서 데이터를 가져온다. MongoDB에 관련된 자료는 <a href="https://rpubs.com/Evan_Jung/r_mongodb">R MongoDB 접속 및 소개 자료</a>에서 확인하기를 바란다. 사실 본 프로젝트에서는 꼭 이렇게 하지 않아도 된다. 그러나, 조금 더 깊은 내용을 원하면, 이렇게 해줘야 함을 명시한다.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(mongolite)
 collection <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;covid_19&#34;</span> 
 db <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#39;learningspoons&#39;</span>
@@ -175,8 +184,120 @@ conn <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">mongo<
               db <span style="color:#f92672">=</span> db, 
               url <span style="color:#f92672">=</span> mongo_url)
 
-<span style="color:#a6e22e">print</span>(conn)
-</code></pre></div><p><code>Pray for those who are victimized by Covid_19. Contribution to them with this tutorial.</code></p>
+<span style="color:#75715e"># get data</span>
+corona <span style="color:#f92672">&lt;-</span> conn<span style="color:#f92672">$</span><span style="color:#a6e22e">find</span>(<span style="color:#e6db74">&#34;{}&#34;</span>)
+</code></pre></div><p>위 소스코드는 <code>global</code> chunk에 작성한다. 이유는 위 데이터를 우선 공동으로 사용되어야 하기 때문이다.</p>
+<ul>
+<li>Tip-1: 여기에서 <code>Sys.getenv(&quot;MONGO_ID&quot;)</code>와 함께 <code>App Publishing</code>을 진행하면, shinyapp.io에서 에러가 날 가능성이 크다. 이유는 <code>Sys.getenv(&quot;&quot;)</code>은 환경설정 파일(<code>.Renviron</code>)인데, 당연히 <code>github</code> 등에는 공적으로 같이 올리지 않는다. 강사는 publishing 할 때, 명시적으로 ID와 PW를 같이 기재하여 배포하였지만, 보안상으로는 당연히 그렇게 하면 안된다. 이에 대한 적절한 해결책을 공유하니, 참고하기를 바란다.
+<ul>
+<li><a href="https://stackoverflow.com/questions/39084284/how-to-pass-environment-variables-to-shinyapps">How to pass environment variables to shinyapps</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="iv-sidebar-구성">IV. Sidebar 구성</h2>
+<p>이제 본격적으로 시각화를 구현하기에 앞서서 슬라이드형 날짜를 구성해보자.</p>
+<h2 id="1-전역변수-지정">(1) 전역변수 지정</h2>
+<p><code>global chunk</code>에 아래와 같이 추가적으로 코드를 입력한다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># 날짜 지정</span>
+corona_date <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">as.Date</span>(corona<span style="color:#f92672">$</span>dateRep)
+
+<span style="color:#75715e"># 특정 Input값이 없을 경우 대비</span>
+variable <span style="color:#f92672">&lt;-</span> F
+</code></pre></div><p>위 코드를 지정했다면, 아래와 같이 소스코드를 작업한 뒤 결과물을 빠르게 확인한다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">Inputs {.sidebar data-width=300}
+-----------------------------------------------------------------------
+원하는 날짜에 놓고 <span style="color:#e6db74">`Button`</span>을 누르세요. 
+
+<span style="color:#e6db74">```r
+</span><span style="color:#e6db74"></span><span style="color:#a6e22e">uiOutput</span>(<span style="color:#e6db74">&#34;Slider&#34;</span>)
+<span style="color:#a6e22e">sliderInput</span>(<span style="color:#e6db74">&#34;day1&#34;</span>, <span style="color:#e6db74">&#34;Day&#34;</span>, <span style="color:#a6e22e">min</span>(corona_date), <span style="color:#a6e22e">max</span>(corona_date),
+                    value <span style="color:#f92672">=</span>  <span style="color:#a6e22e">c</span>(<span style="color:#a6e22e">max</span>(corona_date)), animate <span style="color:#f92672">=</span> T, step <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+
+<span style="color:#a6e22e">renderUI</span>({
+    <span style="color:#a6e22e">if</span>(<span style="color:#a6e22e">is.null</span>(input<span style="color:#f92672">$</span>variable)){
+    }else{
+      <span style="color:#a6e22e">if</span>(input<span style="color:#f92672">$</span>variable <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;cases&#34;</span>, <span style="color:#e6db74">&#34;deaths&#34;</span>)){
+        <span style="color:#a6e22e">sliderInput</span>(<span style="color:#e6db74">&#34;day1&#34;</span>, <span style="color:#e6db74">&#34;Day&#34;</span>, <span style="color:#a6e22e">min</span>(corona_date), <span style="color:#a6e22e">max</span>(corona_date),
+                    value <span style="color:#f92672">=</span>  <span style="color:#a6e22e">c</span>(<span style="color:#a6e22e">max</span>(corona_date)), animate <span style="color:#f92672">=</span> T, step <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+        }else{
+        <span style="color:#a6e22e">sliderInput</span>(<span style="color:#e6db74">&#34;day2&#34;</span>, <span style="color:#e6db74">&#34;Day&#34;</span>, <span style="color:#a6e22e">min</span>(corona_date), <span style="color:#a6e22e">max</span>(corona_date),
+                    value <span style="color:#f92672">=</span>  <span style="color:#a6e22e">c</span>(<span style="color:#a6e22e">max</span>(corona_date)<span style="color:#ae81ff">-7</span>,<span style="color:#a6e22e">max</span>(corona_date)), animate <span style="color:#f92672">=</span> T, step <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+        } <span style="color:#75715e"># else</span>
+    } <span style="color:#75715e"># is.null</span>
+  })
+<span style="color:#e6db74">```</span>
+</code></pre></div><p><img src="/img/shiny/coronaProject/project_02/project_03.png" alt=""><!-- raw HTML omitted --></p>
+<p>추가적으로 더 넣을 내용이 생기면 업데이트 하겠다.</p>
+<h2 id="v-time-series-데이터-작성">V. Time Series 데이터 작성</h2>
+<p><code>Shiny App</code>을 작성할 때, 특히 시각화와 데이터 처리와 관련해서 작업할 때는 <code>R Markdown</code>에서 하는 것보다, 일반 <code>.R</code>파일을 하나 생성해서 빠르게 구현하는 것을 추천한다.</p>
+<p>강사가 작업할 Time Series 시각화는 <code>dygraphs</code> 패키지를 할용하려고 한다. 참고로 강사 역시, dygraphs 패키지를 이전에 사용해본적은 없다! 즉, 현재 듣는 수강생과 동일한 입장에서 작업하는 것임을 알고, 자신감 있게 작업하기를 바란다.</p>
+<ul>
+<li><a href="https://www.r-graph-gallery.com/317-time-series-with-the-dygraphs-library.html">Time series visualization with the dygraphs package</a></li>
+</ul>
+<p>강사가 R 에디터에서 빠르게 작업한 전체 소스코드는 아래와 같다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># load data in &#39;global&#39; chunk so it can be shared by all users of the dashboard</span>
+<span style="color:#a6e22e">library</span>(mongolite)
+<span style="color:#a6e22e">library</span>(tidyverse)
+<span style="color:#a6e22e">library</span>(dygraphs)
+<span style="color:#a6e22e">library</span>(xts)
+
+collection <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;covid_19&#34;</span> 
+db <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#39;learningspoons&#39;</span>
+mongo_id <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">Sys.getenv</span>(<span style="color:#e6db74">&#34;MONGO_ID&#34;</span>) <span style="color:#75715e"># 보안 유지를 위해 가렸다.(실무에서는 이렇게 작업하라고 권유하는 것임!) </span>
+mongo_pw <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">Sys.getenv</span>(<span style="color:#e6db74">&#34;MONGO_PW&#34;</span>) <span style="color:#75715e"># (실무에서는 이렇게 작업하라고 권유하는 것임!)  </span>
+
+mongo_url <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">paste0</span>(<span style="color:#e6db74">&#39;mongodb+srv://&#39;</span>, mongo_id, <span style="color:#e6db74">&#39;:&#39;</span>,mongo_pw,<span style="color:#e6db74">&#39;@learningspoons-rhpei.gcp.mongodb.net/&#39;</span>)
+
+conn <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">mongo</span>(collection <span style="color:#f92672">=</span> collection, 
+              db <span style="color:#f92672">=</span> db, 
+              url <span style="color:#f92672">=</span> mongo_url)
+
+<span style="color:#75715e"># get data</span>
+corona <span style="color:#f92672">&lt;-</span> conn<span style="color:#f92672">$</span><span style="color:#a6e22e">find</span>(<span style="color:#e6db74">&#34;{}&#34;</span>)
+
+<span style="color:#75715e"># 날짜 변환</span>
+corona<span style="color:#f92672">$</span>dateRep <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">as.Date</span>(corona<span style="color:#f92672">$</span>dateRep)
+
+<span style="color:#75715e"># summarise</span>
+corona2 <span style="color:#f92672">&lt;-</span> corona <span style="color:#f92672">%&gt;%</span> 
+  <span style="color:#a6e22e">group_by</span>(dateRep) <span style="color:#f92672">%&gt;%</span> 
+  <span style="color:#a6e22e">summarise</span>(total_cases <span style="color:#f92672">=</span> <span style="color:#a6e22e">sum</span>(cases), 
+            total_deaths <span style="color:#f92672">=</span> <span style="color:#a6e22e">sum</span>(deaths))
+
+cases_data <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">xts</span>(x <span style="color:#f92672">=</span> corona2[, <span style="color:#ae81ff">-1</span>], order.by <span style="color:#f92672">=</span> corona2<span style="color:#f92672">$</span>dateRep)
+p <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">dygraph</span>(cases_data) <span style="color:#f92672">%&gt;%</span> 
+  <span style="color:#a6e22e">dyOptions</span>(drawPoints <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>, pointSize <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>, fillGraph<span style="color:#f92672">=</span><span style="color:#66d9ef">TRUE</span>)
+p
+</code></pre></div><p><img src="/img/shiny/coronaProject/project_02/project_04.png" alt=""><!-- raw HTML omitted --></p>
+<p>이제 <code>R Markdown</code>에 응용만 하면 된다. 그런데, 여기서 주의점! <code>shiny tutorial</code>에서 패키지 설명서를 잘 읽었다면, interactive graph package와 연동이 잘 된다는 걸 기억했으면 좋겠다. 즉, 생각보다 쉽게 작업할 수 있다는 뜻이다. <code>dygraphs</code> 패키지 설명서를 다시 한번 읽어보자.</p>
+<ul>
+<li><a href="https://rstudio.github.io/dygraphs/shiny.html">Using in Shiny Applications</a></li>
+<li><code>ui.R</code>코드에서 <code>dygraphOutput(&quot;dygraph&quot;)</code>을 봤으면 좋겠다.</li>
+</ul>
+<p>이런 형태로 소스코드를 응용할 것이다. 잘 따라와주기를 바란다.</p>
+<pre><code>corona_xts &lt;- reactive({
+  temp &lt;- corona %&gt;% 
+  mutate(dateRep = as.Date(dateRep)) %&gt;% 
+  group_by(dateRep) %&gt;% 
+  summarise(total_cases = sum(cases), 
+            total_deaths = sum(deaths))
+  xts::xts(x = temp[, -1], order.by = temp$dateRep)
+})
+
+renderDygraph({
+  dygraph(corona_xts(), height = 400) %&gt;% 
+  dyHighlight(highlightCircleSize = 5, 
+              highlightSeriesBackgroundAlpha = 0.2,
+              hideOnMouseOut = FALSE) %&gt;% 
+  dyOptions(drawPoints = TRUE, 
+            pointSize = 4, 
+            fillGraph=TRUE, 
+            axisLineWidth = 1.5)
+})
+</code></pre><p><img src="/img/shiny/coronaProject/project_02/project_05.png" alt=""><!-- raw HTML omitted --></p>
+<p>위와 같은 형태로 나오면 완성이다. 아쉽지만, 아직은 <code>date</code>와 연동된 것은 아니다. <code>date</code>와 연동하려면, 보다 더 많은 작업을 해야 한다!</p>
+<p>다음 시간에는 <code>date</code>에 따라 애니메이션 처럼 움직이는 그래프를 만들어본다!</p>
+<p><code>Pray for those who are victimized by Covid_19. Contribution to them with this tutorial.</code></p>
 
 		</div>
 		<footer class="post__footer">
@@ -190,6 +311,8 @@ conn <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">mongo<
 		<li class="tags__item"><a class="tags__link btn" href="/tags/shiny-dashboard/" rel="tag">Shiny Dashboard</a></li>
 		<li class="tags__item"><a class="tags__link btn" href="/tags/shiny-project/" rel="tag">Shiny Project</a></li>
 		<li class="tags__item"><a class="tags__link btn" href="/tags/corona/" rel="tag">Corona</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/leaflet/" rel="tag">Leaflet</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/reactivity/" rel="tag">reactivity</a></li>
 		<li class="tags__item"><a class="tags__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" rel="tag">코로나 대시보드</a></li>
 		<li class="tags__item"><a class="tags__link btn" href="/tags/corona-dashboard/" rel="tag">Corona Dashboard</a></li>
 	</ul>
@@ -231,7 +354,7 @@ conn <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">mongo<
 	<h4 class="widget__title">Recent Posts</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
-			<li class="widget__item"><a class="widget__link" href="/r/shiny/project_02/">Corona Shiny Project 2 - Visusalization</a></li>
+			<li class="widget__item"><a class="widget__link" href="/r/shiny/project_02/">Corona Shiny Project 2 - Visusalization (Time Series)</a></li>
 			<li class="widget__item"><a class="widget__link" href="/r/shiny/project_01/">Corona Shiny Project I - Get Data</a></li>
 			<li class="widget__item"><a class="widget__link" href="/r/shiny/tutorial_08/">shiny tutorial 08 - HTML, CSS 적용</a></li>
 			<li class="widget__item"><a class="widget__link" href="/python/settings02_vscode2jupyter/">Connecting Jupyter Notebook to VS Code</a></li>
@@ -341,6 +464,7 @@ conn <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">mongo<
 		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
