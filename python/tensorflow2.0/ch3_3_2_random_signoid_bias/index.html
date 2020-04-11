@@ -4,25 +4,25 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Tensorflow For R - Quick Start - Data Science | ChloEvan</title>
+	<title>Tensorflow 2.0 Tutorial ch3.3.2 - 난수 생성 및 시그모이드 함수 편향성 - Data Science | ChloEvan</title>
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
-	<meta property="og:title" content="Tensorflow For R - Quick Start" />
-<meta property="og:description" content="1. 개요 (Overview) tensorflow(텐서플로) R 패키지를 사용하기 전에 시스템에 TensorFlow 버전을 설치해야 한다. 아래에서는 TensorFlow 설치 방법과 설치 사용자 정의에 사용할 수 있는 다양한 옵션에 대해 설명 한다.
-이번 포스트에서는 주로 R install_tensorflow() 함수의 사용을 다루며, 이는 TensorFlow를 설치하는 데 필요한 다양한 단계에서 wrapper 쉽게 사용할 수 있도록 도와 준다.
-Tensorflow(텐서플로)는 아래와 같은 OS 환경에서 구동이 된다.
- Ubuntu 16.04 or later Windows 7 or later macOS 10.12.6 (Sierra) or later (no GPU support)  2." />
+	<meta property="og:title" content="Tensorflow 2.0 Tutorial ch3.3.2 - 난수 생성 및 시그모이드 함수 편향성" />
+<meta property="og:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.
+  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+ Google Colab Tensorflow 2.0 Installation Tensorflow 2." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://chloevan.github.io/r/settings01_installation/" />
-<meta property="article:published_time" content="2020-03-16T20:33:39+09:00" />
-<meta property="article:modified_time" content="2020-03-16T20:33:39+09:00" />
+<meta property="og:url" content="https://chloevan.github.io/python/tensorflow2.0/ch3_3_2_random_signoid_bias/" />
+<meta property="article:published_time" content="2020-04-10T10:20:30+09:00" />
+<meta property="article:modified_time" content="2020-04-10T10:20:30+09:00" />
 
 	<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Tensorflow For R - Quick Start"/>
-<meta name="twitter:description" content="1. 개요 (Overview) tensorflow(텐서플로) R 패키지를 사용하기 전에 시스템에 TensorFlow 버전을 설치해야 한다. 아래에서는 TensorFlow 설치 방법과 설치 사용자 정의에 사용할 수 있는 다양한 옵션에 대해 설명 한다.
-이번 포스트에서는 주로 R install_tensorflow() 함수의 사용을 다루며, 이는 TensorFlow를 설치하는 데 필요한 다양한 단계에서 wrapper 쉽게 사용할 수 있도록 도와 준다.
-Tensorflow(텐서플로)는 아래와 같은 OS 환경에서 구동이 된다.
- Ubuntu 16.04 or later Windows 7 or later macOS 10.12.6 (Sierra) or later (no GPU support)  2."/>
+<meta name="twitter:title" content="Tensorflow 2.0 Tutorial ch3.3.2 - 난수 생성 및 시그모이드 함수 편향성"/>
+<meta name="twitter:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.
+  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+ Google Colab Tensorflow 2.0 Installation Tensorflow 2."/>
 
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -93,16 +93,16 @@ if (!doNotTrack) {
 <main class="main" role="main">
 	<article class="post">
 		<header class="post__header">
-			<h1 class="post__title">Tensorflow For R - Quick Start</h1>
+			<h1 class="post__title">Tensorflow 2.0 Tutorial ch3.3.2 - 난수 생성 및 시그모이드 함수 편향성</h1>
 			<div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
 	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
-	<time class="meta__text" datetime="2020-03-16T20:33:39&#43;09:00">2020-03-16</time>
+	<time class="meta__text" datetime="2020-04-10T10:20:30&#43;09:00">2020-04-10</time>
 </div>
 
 <div class="meta__item-categories meta__item">
 	<svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg>
-	<span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>
+	<span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
 	</span>
 </div></div>
 		</header>
@@ -111,72 +111,107 @@ if (!doNotTrack) {
 	<div class="toc__menu">
 		<nav id="TableOfContents">
   <ul>
-    <li><a href="#1-개요-overview">1. 개요 (Overview)</a></li>
-    <li><a href="#2-설치-installation">2. 설치 (Installation)</a></li>
-    <li><a href="#3-다양한-설치-방법들-installation-methods">3. 다양한 설치 방법들 (Installation Methods)</a></li>
-    <li><a href="#참고-reference">참고 (Reference)</a></li>
+    <li><a href="#공지">공지</a></li>
+    <li><a href="#tutorial">Tutorial</a></li>
+    <li><a href="#i-편향성-bias">I. 편향성 (Bias)</a></li>
+    <li><a href="#ii-연습-파일">II. 연습 파일</a></li>
+    <li><a href="#iii-reference">III. Reference</a></li>
   </ul>
 </nav>
 	</div>
 </div>
 <div class="content post__content clearfix">
-			<h2 id="1-개요-overview">1. 개요 (Overview)</h2>
-<p>tensorflow(텐서플로) R 패키지를 사용하기 전에 시스템에 TensorFlow 버전을 설치해야 한다. 아래에서는 TensorFlow 설치 방법과 설치 사용자 정의에 사용할 수 있는 다양한 옵션에 대해 설명 한다.</p>
-<p>이번 포스트에서는 주로 R <code>install_tensorflow()</code> 함수의 사용을 다루며, 이는 TensorFlow를 설치하는 데 필요한 다양한 단계에서 <code>wrapper</code> 쉽게 사용할 수 있도록 도와 준다.</p>
-<p>Tensorflow(텐서플로)는 아래와 같은 OS 환경에서 구동이 된다.</p>
+			<h2 id="공지">공지</h2>
 <ul>
-<li>Ubuntu 16.04 or later</li>
-<li>Windows 7 or later</li>
-<li>macOS 10.12.6 (Sierra) or later (no GPU support)</li>
+<li>
+<p>본 Tutorial은 교재 <code>시작하세요 텐서플로 2.0 프로그래밍</code>의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.</p>
+</li>
+<li>
+<p>강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
+<img src="/img/tensorflow2.0/book.jpg" alt=""><!-- raw HTML omitted --></p>
+</li>
+<li>
+<p>본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.</p>
+</li>
 </ul>
-<h2 id="2-설치-installation">2. 설치 (Installation)</h2>
-<p>R 패키지 설치하는 방법과 동일하다</p>
-<pre><code class="language-{r}" data-lang="{r}">&gt; install.packages(&quot;tensorflow&quot;)
-&gt; library(tensorflow)
-&gt; install_tensorflow()
-</code></pre><p>설치를 진행한 이후에는 <code>install_tensorflow()</code> 함수를 사용해서 설치를 최종적으로 완료한다. 이 때 <code>Python</code> 관련 모듈도 같이 설치 될 수 있다.
-<strong>중요</strong> 윈도우 사용자는 꼭 <a href="https://www.anaconda.com/distribution/">Anaconda</a>를 설치한다.</p>
-<p>실제로 설치가 잘 되었는지는 다음 코드를 통해서 확인할 수 있다.</p>
-<pre><code class="language-{r}" data-lang="{r}">&gt; tf$constant(&quot;Hellow Tensorflow&quot;)
-## tf.Tensor(b'Hellow Tensorflow', shape=(), dtype=string)
-</code></pre><p>위와 같은 코드가 나온다면 설치는 잘 된 것이다.</p>
-<h2 id="3-다양한-설치-방법들-installation-methods">3. 다양한 설치 방법들 (Installation Methods)</h2>
-<p>TensorFlow는 Python 패키지로 배포되는 시스템이기 때문에 Python 환경 내에 설치해야 합니다. 기본적으로 <code>install_tensorflow()</code> 함수는 격리 된 Python 환경 ( &ldquo;r-reticulate&rdquo;) 내에 TensorFlow 설치를 시도하는 것이다.</p>
-<p>이쯤에서 느꼈겠지만 &lsquo;내가 꼭 딥러닝을 하고 싶어 한다.&rsquo; 그런데, Python을 잘 모른다. 그래도 Python을 배우는 것을 추천한다. Python과 관련된 예제도 에러해결법도 많을 뿐더러 특히 환경상의 문제가 생겼을 때에는 결국엔 Python 환경에서 해결해야 하기 때문에 그렇다. 나는 전통적인 R 유저이지만, 나 역시 딥러닝은 Python을 사용하려고 노력한다.</p>
-<p>어찌 되었든 사용 가능한 방법과 동작은 다음과 같다.</p>
-<table>
-<thead>
-<tr>
-<th align="left"><strong>Method</strong></th>
-<th align="left"><strong>Description</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left">auto</td>
-<td align="left">현재 플랫폼에 적합한 환경을 자동으로 선택한다</td>
-</tr>
-<tr>
-<td align="left">virtualenv</td>
-<td align="left">Python 가상환경을 <code>~/.virtualenvs/r-reticulate</code>에 설치한다.</td>
-</tr>
-<tr>
-<td align="left">conda</td>
-<td align="left">가상환경을 Anaconda Python <code>r-reticulate</code>에 설치한다.</td>
-</tr>
-<tr>
-<td align="left">system</td>
-<td align="left">가상환경을 Python 환경에 설치한다.</td>
-</tr>
-</tbody>
-</table>
-<p>막상 정리하고 보니, 다시 딥러닝을 하는데 꼭 R을 써야 하나 하는 생각이 든다. 여기서 주의해야 할 것은 <code>Windows</code>에서는 <code>conda</code> 환경만 가능하다.</p>
-<p>R에서 tensorflow는 어려운 편은 아니지만, 결국엔 Python이 사용하는 환경을 쓴다는 점은 여러모로 아쉬운 점이 있기는 하다.</p>
-<h2 id="참고-reference">참고 (Reference)</h2>
+<h2 id="tutorial">Tutorial</h2>
+<p>이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.</p>
 <ul>
-<li>Allaire, J. J. (n.d.). TensorFlow for R. Retrieved March 16, 2020, from <a href="https://tensorflow.rstudio.com/installation/">https://tensorflow.rstudio.com/installation/</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/googlecolab/">Google Colab Tensorflow 2.0 Installation</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch3_3_1_random_signoid/">Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수</a></li>
 </ul>
-<p>End of Document</p>
+<h2 id="i-편향성-bias">I. 편향성 (Bias)</h2>
+<p>지난 시간에 경사하강법 원리를 통해 오차가 적어지는 것을 확인할 수 있었다.</p>
+<p>$w = w + x \times a \times error$</p>
+<p>여기에서 입력으로 0을 넣게 되면 출력으로 1을 얻는 뉴런은 어떻게 만들 수 있을까? 지난시간에 배운 내용으로 확인해보자.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
+<span style="color:#66d9ef">print</span>(tf<span style="color:#f92672">.</span>__version__)
+</code></pre></div><pre><code>2.2.0-rc2
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> math
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sigmoid</span>(x): 
+  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">/</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> math<span style="color:#f92672">.</span>exp(<span style="color:#f92672">-</span>x))
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">x <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+y <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+w <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>normal([<span style="color:#ae81ff">1</span>], <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)
+
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1000</span>): 
+  output <span style="color:#f92672">=</span> sigmoid(x <span style="color:#f92672">*</span> w)
+  error <span style="color:#f92672">=</span> y <span style="color:#f92672">-</span> output
+  w <span style="color:#f92672">=</span> w <span style="color:#f92672">+</span> x <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.1</span> <span style="color:#f92672">*</span> error
+
+  <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">99</span>:
+    <span style="color:#66d9ef">print</span>(i, error, output)
+</code></pre></div><pre><code>99 0.5 0.5
+199 0.5 0.5
+299 0.5 0.5
+399 0.5 0.5
+499 0.5 0.5
+599 0.5 0.5
+699 0.5 0.5
+799 0.5 0.5
+899 0.5 0.5
+999 0.5 0.5
+</code></pre>
+<p>경사 하강법의 원리를 적용했지만, <code>error</code>가 변하지 않았고, 출력도 변하지 않았다. 수식을 기업하면, <code>x = 0</code> 이므로, <code>w</code>에 더해지는 값은 없다. <code>1,000</code>번의 실행 동안 <code>w</code>값은 변하지 않았다.</p>
+<blockquote>
+<p>여기에서, 책은 간단히 짚고 넘어갔지만, 왜 딥러닝에서 수학적인 원리가 중요한지 알 수 있다. 일반적으로 개발자 분들은 이러한 부분들을 크게 생각 안하는 경우가 많지만, 기능을 구현하는 것 보다 더 중요한 건 코드를 짤 때, 수학적인 원리도 같이 고민해야 하는 경우가 많다. 머신러닝도 그렇지만, 딥러닝도 다양한 인자들이 존재하고, 이를 이해하려면 공식문서를 잘 참고해야 하며, 더 좋은 성과 및 퍼포먼스를 내려면 결국엔 관련 Thesis, 즉 논문을 읽어낼줄 알아야 한다. 그래야 성과가 나온다. 딥러닝은 1년 단위로 논문이 나오는 걸 잊지 말자!</p>
+</blockquote>
+<p>그럼 어떻게 해결해야 할까? 이러한 경우를 방지하기 위해 <code>bias</code> 라는 개념이 존재한다. 간단히 설명하면 x가 0이 들어오면 대안으로 1이 들어온 것처럼 코드를 작성하는 것이다.</p>
+<p>수식에서는 관용적으로 <code>bias</code>의 앞 글자인 <code>b</code>를 쓴다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">x <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+y <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+w <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>normal([<span style="color:#ae81ff">1</span>], <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)
+b <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>normal([<span style="color:#ae81ff">1</span>], <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)
+
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1000</span>): 
+  output <span style="color:#f92672">=</span> sigmoid(x <span style="color:#f92672">*</span> w <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> b)
+  error <span style="color:#f92672">=</span> y <span style="color:#f92672">-</span> output
+  w <span style="color:#f92672">=</span> w <span style="color:#f92672">+</span> x <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.1</span> <span style="color:#f92672">*</span> error
+  b <span style="color:#f92672">=</span> b <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.1</span> <span style="color:#f92672">*</span> error
+
+  <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">99</span>:
+    <span style="color:#66d9ef">print</span>(i, error, output)
+</code></pre></div><pre><code>99 0.09964988125873331 0.9003501187412667
+199 0.051655392657922405 0.9483446073420776
+299 0.03453200474689977 0.9654679952531002
+399 0.025856559869467777 0.9741434401305322
+499 0.020637549126996557 0.9793624508730034
+599 0.017159579370033873 0.9828404206299661
+699 0.014678743824020679 0.9853212561759793
+799 0.01282129876032978 0.9871787012396702
+899 0.011379070366788868 0.9886209296332111
+999 0.010227240359459322 0.9897727596405407
+</code></pre>
+<p>편향을 나타내는 <code>b</code>가 추가되었고, <code>w</code>처럼 초기화를 진행한다. 그리고, <code>sigmoid()</code> 안에 각 입력에 가중치와 편향을 곱해서 더해준 뒤 시그모이드 함수를 취한다. 기대출력과 실제출력의 차이인 <code>error</code>로 <code>w</code>와 <code>b</code>를 각각 업데이트해서 뉴런을 학습시킨다.</p>
+<p>프로그램을 실행한 결과, <code>error</code>는 0에 가까워지고, <code>output</code>은 기대출력인 1에 가까워진다.</p>
+<p>이번 시간까지는 간단하게 워밍업을 진행하였고, 다음 시간부터는 순차적으로 신경망 네트워크의 기본 원리에 대해 학습하도록 한다.</p>
+<h2 id="ii-연습-파일">II. 연습 파일</h2>
+<ul>
+<li><a href="https://colab.research.google.com/github/chloevan/deeplearningAI/blob/master/tensorflow2.0/ch3_2_2_random_signoid_bias.ipynb">구글 Colab에서 직접 연습해보자</a></li>
+</ul>
+<h2 id="iii-reference">III. Reference</h2>
+<p>김환희. (2020). 시작하세요! 텐서플로 2.0 프로그래밍: 기초 이론부터 실전 예제까지 한번에 끝내는 머신러닝, 딥러닝 핵심 가이드. 서울: 위키북스.</p>
 
 		</div>
 		<footer class="post__footer">
@@ -184,11 +219,16 @@ if (!doNotTrack) {
 <div class="post__tags tags clearfix">
 	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
 	<ul class="tags__list">
-		<li class="tags__item"><a class="tags__link btn" href="/tags/development/" rel="tag">Development</a></li>
-		<li class="tags__item"><a class="tags__link btn" href="/tags/r/" rel="tag">R</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/deep-learning/" rel="tag">Deep Learning</a></li>
 		<li class="tags__item"><a class="tags__link btn" href="/tags/python/" rel="tag">Python</a></li>
-		<li class="tags__item"><a class="tags__link btn" href="/tags/tensorflow-for-r/" rel="tag">Tensorflow for R</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/google-colab/" rel="tag">Google Colab</a></li>
 		<li class="tags__item"><a class="tags__link btn" href="/tags/tensorflow-2.0/" rel="tag">Tensorflow 2.0</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" rel="tag">시그노이드</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/random-signoid/" rel="tag">Random Signoid</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/random-signoid-bias/" rel="tag">Random Signoid Bias</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="tag">텐서플로 2.0</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="tag">텐서플로 2.0 튜토리얼</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/tensorflow-2.0-tutorial/" rel="tag">Tensorflow 2.0 Tutorial</a></li>
 	</ul>
 </div>
 		</footer>
@@ -209,10 +249,7 @@ if (!doNotTrack) {
 
 <nav class="post-nav flex">
 	<div class="post-nav__item post-nav__item--prev">
-		<a class="post-nav__link" href="/r/stat01_hypothesis/" rel="prev"><span class="post-nav__caption">«&thinsp;Previous</span><p class="post-nav__post-title">Stat01_hypothesis</p></a>
-	</div>
-	<div class="post-nav__item post-nav__item--next">
-		<a class="post-nav__link" href="/r/graph01_leaflet/" rel="next"><span class="post-nav__caption">Next&thinsp;»</span><p class="post-nav__post-title">Leaflet for R</p></a>
+		<a class="post-nav__link" href="/python/tensorflow2.0/ch3_3_1_random_signoid/" rel="prev"><span class="post-nav__caption">«&thinsp;Previous</span><p class="post-nav__post-title">Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수</p></a>
 	</div>
 </nav>
 
