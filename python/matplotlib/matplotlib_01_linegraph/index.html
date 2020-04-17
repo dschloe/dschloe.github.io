@@ -134,6 +134,7 @@ if (!doNotTrack) {
         <li><a href="#2-코드-설명">(2) 코드 설명</a></li>
       </ul>
     </li>
+    <li><a href="#reference">Reference</a></li>
   </ul>
 </nav>
 	</div>
@@ -159,7 +160,6 @@ if (!doNotTrack) {
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 모듈 불러오기</span>
 <span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
 <span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-<span style="color:#f92672">import</span> os
 
 <span style="color:#75715e"># Excel 데이터 데이터프레임으로 변환</span>
 covid_19 <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_excel(<span style="color:#e6db74">&#34;data/20200406-COVID-19-geographic-disbtribution-worldwide.xlsx&#34;</span>)
@@ -176,9 +176,69 @@ plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;D
 plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Cases&#39;</span>)
 plt<span style="color:#f92672">.</span>legend(labels<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;Cases&#39;</span>], loc<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;best&#39;</span>)
 plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="/img/matplotlib/output_2_0.png" alt="png"></p>
+</code></pre></div><p><img src="/img/output_2_0.png" alt="png"></p>
 <h3 id="2-코드-설명">(2) 코드 설명</h3>
-<p>To be continued&hellip;</p>
+<p>데이터 분석의 <code>Workflow</code>는 대개 다음과 같이 진행한다. 분석관련 모듈 설치, 데이터 수집, 데이터 가공, 그리고 데이터 시각화 순서로 진행이 된다.</p>
+<ul>
+<li>(1) 분석관련 모듈 설치</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 모듈 불러오기</span>
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+</code></pre></div><p><code>pandas</code>는 데이터 수집 및 가공에 특화된 모듈이다. <code>matplotlib.pyplot</code> 모듈을 <code>as plt</code>와 같이 약칭 <code>plt</code>로 <code>import</code>한다.</p>
+<ul>
+<li>(2) 엑셀파일을 판다스를 활용하여 데이터프레임 변환</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">covid_19 <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_excel(<span style="color:#e6db74">&#34;data/20200406-COVID-19-geographic-disbtribution-worldwide.xlsx&#34;</span>)
+</code></pre></div><p>엑셀파일을 불러오는 과정에 대한 전반적인 설명은 강사가 작성한 자료를 참고한다. <a href="https://chloevan.github.io/python/pandas/pandas_with_excel/">Pandas With Excel</a></p>
+<ul>
+<li>데이터 가공</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># KOR 데이터만 추출, val. countryterritoryCode</span>
+covid_kor <span style="color:#f92672">=</span> covid_19[covid_19[<span style="color:#e6db74">&#39;countryterritoryCode&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;KOR&#39;</span>]
+covid_kor<span style="color:#f92672">.</span>set_index(<span style="color:#e6db74">&#39;dateRep&#39;</span>, inplace<span style="color:#f92672">=</span>True)
+</code></pre></div><p>위 소스코드에 대한 설명은 조금 필요하다. 선 그래프를 그리기 위해 필요한 변수는 <code>country</code> &amp; <code>cases</code> 두개의 변수만 필요하다. 그런데, 여기에서 <code>filter</code>를 진행한다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(covid_19<span style="color:#f92672">.</span>head())
+</code></pre></div><pre><code>     dateRep  day  month  year  cases  deaths countriesAndTerritories geoId  \
+0 2020-04-05    5      4  2020     35       1             Afghanistan    AF   
+1 2020-04-04    4      4  2020      0       0             Afghanistan    AF   
+2 2020-04-03    3      4  2020     43       0             Afghanistan    AF   
+3 2020-04-02    2      4  2020     26       0             Afghanistan    AF   
+4 2020-04-01    1      4  2020     25       0             Afghanistan    AF   
+
+  countryterritoryCode  popData2018  
+0                  AFG   37172386.0  
+1                  AFG   37172386.0  
+2                  AFG   37172386.0  
+3                  AFG   37172386.0  
+4                  AFG   37172386.0  
+</code></pre>
+<p>위 데이터를 보면, <code>countryterritoryCode</code>별로 날짜별로 데이터가 집계중인 것을 알 수 있다. 이 데이터에서 필요한 정보를 담은 데이터만 가져오는 것이 주요 핵심이다. 아래 코드가 <code>countryterritoryCode</code>에서 <code>KOR</code>에 관련된 행만 가져오는 데이터를 추출한 것이다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">covid_kor <span style="color:#f92672">=</span> covid_19[covid_19[<span style="color:#e6db74">&#39;countryterritoryCode&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;KOR&#39;</span>]
+</code></pre></div><p>두번째로 봐야 하는 것은 <code>set_index('dateRep', inplace=True)</code>라는 코드는 간단하게 표현하면, 데이터를 업데이트 하는데, <code>dateRep</code>열을 기준으로 0부터 재정렬한다는 뜻이다.</p>
+<ul>
+<li>데이터 시각화
+시각화는 다양한 스타일이 존재하기 마련이다. matplotlib에서도 다양한 스타일이 존재한다. 스타일 리스트를 출력해보자.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(plt<span style="color:#f92672">.</span>style<span style="color:#f92672">.</span>available)
+</code></pre></div><pre><code>['Solarize_Light2', '_classic_test_patch', 'bmh', 'classic', 'dark_background', 'fast', 'fivethirtyeight', 'ggplot', 'grayscale', 'seaborn', 'seaborn-bright', 'seaborn-colorblind', 'seaborn-dark', 'seaborn-dark-palette', 'seaborn-darkgrid', 'seaborn-deep', 'seaborn-muted', 'seaborn-notebook', 'seaborn-paper', 'seaborn-pastel', 'seaborn-poster', 'seaborn-talk', 'seaborn-ticks', 'seaborn-white', 'seaborn-whitegrid', 'tableau-colorblind10']
+</code></pre>
+<p>위와 같이 다양한 스타일이 존재한다. 여기에서 마음에 드는 것 선택해서 입력하면 된다. 스타일이 어떻게 적용되는지 상세한 정보가 필요하다면 다음의 링크를 참조한다. <a href="https://matplotlib.org/examples/style_sheets/style_sheets_reference.html">Style_Sheet</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">plt<span style="color:#f92672">.</span>style<span style="color:#f92672">.</span>use(<span style="color:#e6db74">&#39;bmh&#39;</span>)
+</code></pre></div><p>선 그래프를 그리는 <code>plot()</code> 함수에 입력할 <code>x, y</code>축 데이터를 선택한다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">plt<span style="color:#f92672">.</span>plot(covid_kor<span style="color:#f92672">.</span>index, covid_kor<span style="color:#f92672">.</span>cases)
+plt<span style="color:#f92672">.</span>legend(labels<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;Cases&#39;</span>], loc<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;best&#39;</span>)
+</code></pre></div><pre><code>&lt;matplotlib.legend.Legend at 0x11cef6c10&gt;
+</code></pre>
+<p><img src="/img/matplotlib/output_16_1.png" alt="png"></p>
+<p>위와 같이 그래프가 출력이 되었다면, 그 다음부터는 그래프를 꾸미는 것이다. 차트의 제목, x축 이름, y축 이름 함수를 활용하여 그래프를 완성한다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Corona Time Series in S.Korea&#39;</span>)
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Date&#39;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Cases&#39;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/img/matplotlib/output_18_0.png" alt="png"></p>
+<h2 id="reference">Reference</h2>
+<p>“Usage Guide¶.” Usage Guide - Matplotlib 3.2.1 Documentation, matplotlib.org/tutorials/introductory/usage.html.</p>
 
 		</div>
 		<footer class="post__footer">
