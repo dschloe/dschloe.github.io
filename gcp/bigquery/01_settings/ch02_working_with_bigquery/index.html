@@ -125,15 +125,21 @@ if (!doNotTrack) {
 	<div class="toc__menu">
 		<nav id="TableOfContents">
   <ul>
-    <li><a href="#1-el">(1) EL</a></li>
-    <li><a href="#2-etl">(2) ETL</a></li>
-    <li><a href="#3-elt">(3) ELT</a></li>
+    <li><a href="#i-get-started">I. Get Started</a></li>
+    <li><a href="#ii-etl-el-and-elt로써-기능하는-bigquery">II. ETL, EL, and ELT로써 기능하는 BigQuery</a>
+      <ul>
+        <li><a href="#1-el">(1) EL</a></li>
+        <li><a href="#2-etl">(2) ETL</a></li>
+        <li><a href="#3-elt">(3) ELT</a></li>
+      </ul>
+    </li>
+    <li><a href="#iii-reference">III. Reference</a></li>
   </ul>
 </nav>
 	</div>
 </div>
 <div class="content post__content clearfix">
-			<h1 id="i-get-started">I. Get Started</h1>
+			<h2 id="i-get-started">I. Get Started</h2>
 <p>일단 시작해보자. <a href="https://console.cloud.google.com/bigquery">https://console.cloud.google.com/bigquery</a></p>
 <p><img src="/img/gcp/bigquery/02_Figure.png" alt=""></p>
 <p>뉴욕주의 자전거 렌탈이 비가 올때와 그렇지 않을 때 수치를 비교하고자 않다. 어떻게 해야할까? 일단, 필요한 데이터는 두가지가 될 것이다. 첫번째는 자전거 렌탈 데이터가 필요하고, 두번째는 뉴욕주의 날씨와 관련된 데이터이다. 두개의 데이터를 조인(join)한 후 수치를 구해야 할 것이다.</p>
@@ -193,7 +199,7 @@ rainy_days <span style="color:#66d9ef">AS</span>
 <p>위 소스코드를 통해서 얻고자 하는 <code>인사이트(Insight)</code>는 두개의 다른 데이터(<code>new_york_citibike.citibike_trips</code> &amp; <code>data.ghcn_d.ghcnd_2016</code>)가 <code>Join</code>해서 결과를 만들어 내고 있다. 일반적인 <code>MAX()</code>, <code>AVG()</code> 함수를 활용해서 쉽게 데이터를 요약할 수 있다는데 그 장점이 있다.</p>
 <p>이것의 장점은 무엇일까? 전사적으로 데이터가 <code>BigQuery</code>에 축적이 되고 있다면, 데이터를 통해서 객관적인 지표를 보다 정확하게 그리고 무엇보다도 빠르게 전달할 수 있다는 점이 있다.</p>
 <p>다양한 Interface를 제공하는데, 특히 <code>BigQuery</code>에 적재된 데이터를 구글의 시각화 도구인 <code>Data Studio</code>뿐만 아니라 <code>Tableau</code>, <code>Looker</code>등과 연동할 수 있다는 장점이 있다. 이를 통해서 빠르게 대시보드를 구현할 수도 있다. 물론, R &amp; Python과도 연동이 가능하다.</p>
-<h1 id="ii-etl-el-and-elt로써-기능하는-bigquery">II. ETL, EL, and ELT로써 기능하는 BigQuery</h1>
+<h2 id="ii-etl-el-and-elt로써-기능하는-bigquery">II. ETL, EL, and ELT로써 기능하는 BigQuery</h2>
 <p>전통적인 방법으로 <code>Hadoop</code> 에코시스템을 통해서 데이터 추출(<code>Extract</code>), 데이터 가공(<code>Transform</code>), 데이터 로드(<code>Load</code>)의 과정을 지나게 된다. BigQuery는 이러한 데이터파이프 라인의 최종적인 종착지로 기능을 하게된다.</p>
 <p>가장 이상적인 방법은 아래 그림과 같다.</p>
 <p><img src="/img/gcp/bigquery/04_ETL.png" alt=""></p>
@@ -205,7 +211,7 @@ rainy_days <span style="color:#66d9ef">AS</span>
 </ul>
 <p>가장 대표적인 예가 Firebase와 빅쿼리의 연동인데, Firebase는 웹/앱 영역을 담당하는데, 여기에서 추출된 모든 데이터가 빅쿼리로 전송되는 형태이다.</p>
 <p>EL, ETL, ELT로써 요약하면 아래와 같이 작성이 가능하다.</p>
-<h2 id="1-el">(1) EL</h2>
+<h3 id="1-el">(1) EL</h3>
 <ul>
 <li>Architecture:
 <ul>
@@ -216,7 +222,7 @@ rainy_days <span style="color:#66d9ef">AS</span>
 </li>
 <li>When you&rsquo;d use it: Batch load of historical data. Scheduled periodic loads of log files(e.g., once a day)</li>
 </ul>
-<h2 id="2-etl">(2) ETL</h2>
+<h3 id="2-etl">(2) ETL</h3>
 <ul>
 <li>Architecture:
 <ul>
@@ -227,7 +233,7 @@ rainy_days <span style="color:#66d9ef">AS</span>
 </li>
 <li>When you’d use it: When the raw data needs to be quality controlled, transformed, or enriched before being loaded into BigQuery. When the data loading needs to happen continuously, i.e., if the use case requires streaming. When you want to integrate with continuous integration/continuous delivery (CI/CD) systems and perform unit testing on all</li>
 </ul>
-<h2 id="3-elt">(3) ELT</h2>
+<h3 id="3-elt">(3) ELT</h3>
 <ul>
 <li>Architecture:
 <ul>
@@ -239,7 +245,7 @@ rainy_days <span style="color:#66d9ef">AS</span>
 <li>When you&rsquo;d use it: Experimental datasets where you are not yet sure what kinds of transformations are needed to make the data usable. Any production dataset where the transformation can be expressed in SQL.</li>
 </ul>
 <p>ETL의 과정도 추후에 예시를 통해서 작성을 할 예정이다. 그 때 다시한번 다루도록 한다.</p>
-<h1 id="iii-reference">III. Reference</h1>
+<h2 id="iii-reference">III. Reference</h2>
 <p>Lakshmanan, Valliappa,Tigani, Jordan. Google BigQuery: The Definitive Guide (Kindle Location 239). O&rsquo;Reilly Media. Kindle Edition.</p>
 
 		</div>
