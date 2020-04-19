@@ -181,6 +181,8 @@ if (!doNotTrack) {
 
 <span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
 <span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
+<span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
+
 
 red <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv&#39;</span>, sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;;&#39;</span>)
 white <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv&#39;</span>, sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;;&#39;</span>)
@@ -224,19 +226,21 @@ plt<span style="color:#f92672">.</span>show()
 ratio <span style="color:#f92672">=</span> wine[<span style="color:#e6db74">&#39;quality&#39;</span>]<span style="color:#f92672">.</span>value_counts(normalize<span style="color:#f92672">=</span>True)
 
 frame <span style="color:#f92672">=</span> { <span style="color:#e6db74">&#39;Count&#39;</span>: count, <span style="color:#e6db74">&#39;Ratio&#39;</span>: ratio } 
-pd<span style="color:#f92672">.</span>DataFrame(frame)
 
-</code></pre></div><!-- raw HTML omitted -->
-<pre><code>.dataframe tbody tr th {
-    vertical-align: top;
-}
+<span style="color:#66d9ef">print</span>(tabulate(frame, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;keys&#39;</span>, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;psql&#39;</span>))
 
-.dataframe thead th {
-    text-align: right;
-}
+</code></pre></div><pre><code>+---------+-------------+
+|   Count |       Ratio |
+|---------+-------------|
+|    2836 | 0.436509    |
+|    2138 | 0.329075    |
+|    1079 | 0.166077    |
+|     216 | 0.0332461   |
+|     193 | 0.029706    |
+|      30 | 0.00461752  |
+|       5 | 0.000769586 |
++---------+-------------+
 </code></pre>
-<p><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
 <p>이 때 어떻게 재범주화 할 것인지가 중요한 요소가 됩니다. 여기서가 분석가와 현업사이에서의 커뮤니케이션이 발생하는 주요 지점이 됩니다. 이 부분에서 도메인 지식이 수반되는 지점이니 꼭 현업과 상의하면서 재범주화를 진행합니다.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">wine<span style="color:#f92672">.</span>loc[wine[<span style="color:#e6db74">&#39;quality&#39;</span>] <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#34;new_quality&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
 wine<span style="color:#f92672">.</span>loc[wine[<span style="color:#e6db74">&#39;quality&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#ae81ff">6</span>, <span style="color:#e6db74">&#34;new_quality&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
@@ -246,18 +250,15 @@ count <span style="color:#f92672">=</span> wine[<span style="color:#e6db74">&#39
 ratio <span style="color:#f92672">=</span> wine[<span style="color:#e6db74">&#39;new_quality&#39;</span>]<span style="color:#f92672">.</span>value_counts(normalize<span style="color:#f92672">=</span>True)
 
 frame <span style="color:#f92672">=</span> { <span style="color:#e6db74">&#39;Count&#39;</span>: count, <span style="color:#e6db74">&#39;Ratio&#39;</span>: ratio } 
-pd<span style="color:#f92672">.</span>DataFrame(frame)
-</code></pre></div><!-- raw HTML omitted -->
-<pre><code>.dataframe tbody tr th {
-    vertical-align: top;
-}
-
-.dataframe thead th {
-    text-align: right;
-}
+<span style="color:#66d9ef">print</span>(tabulate(frame, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;keys&#39;</span>, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;psql&#39;</span>))
+</code></pre></div><pre><code>+---------+----------+
+|   Count |    Ratio |
+|---------+----------|
+|    2836 | 0.436509 |
+|    2384 | 0.366939 |
+|    1277 | 0.196552 |
++---------+----------+
 </code></pre>
-<p><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
 <p>위 소스코드에서 <code>.loc</code>는 특정한 데이터의 인덱스를 골라내는 역할을 합니다. 본 교재(p. 125~126)에서는 간단한 예제로 설명이 되어 있습니다만, 이 부분은 강사가 향후 준비하는 자료로 대체하도록 합니다. <code>.loc외에</code> <code>.iloc</code>등 기본 문법 등이 같이 소개가 되면 더 좋을 듯 합니다.</p>
 <p>정리가 되는대로 자료 링크를 걸어두도록 합니다.</p>
 <h2 id="iv-데이터-정규화-및-데이터-분리">IV. 데이터 정규화 및 데이터 분리</h2>
@@ -357,7 +358,7 @@ plt<span style="color:#f92672">.</span>ylim(<span style="color:#ae81ff">0.7</spa
 plt<span style="color:#f92672">.</span>legend()
 
 plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_05_01/output_18_0.png" alt="png"></p>
+</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_05_02/output_18_0.png" alt="png"></p>
 <p><code>val_loss</code>가 중간에 튀기도 하고, 전반적으로 <code>loss</code>보다 큰 값인 것을 확인할 수 있습니다. 학습을 계속하면 <code>loss</code>는 꾸준히 작아지지만 네트워크가 훈련 데이터에 과적합되기 때문에 <code>val_loss</code>는 증가하기 시작합니다.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model<span style="color:#f92672">.</span>evaluate(test_X, test_Y)
 </code></pre></div><pre><code>41/41 [==============================] - 0s 1ms/step - loss: 0.4058 - accuracy: 0.7985
@@ -397,7 +398,7 @@ plt<span style="color:#f92672">.</span>show()
 		<li class="tags__item"><a class="tags__link btn" href="/tags/google-colab/" rel="tag">Google Colab</a></li>
 		<li class="tags__item"><a class="tags__link btn" href="/tags/tensorflow-2.0/" rel="tag">Tensorflow 2.0</a></li>
 		<li class="tags__item"><a class="tags__link btn" href="/tags/%EB%B6%84%EB%A5%98/" rel="tag">분류</a></li>
-		<li class="tags__item"><a class="tags__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" rel="tag">다항분류</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" rel="tag">이항분류</a></li>
 		<li class="tags__item"><a class="tags__link btn" href="/tags/binary-classification/" rel="tag">Binary Classification</a></li>
 		<li class="tags__item"><a class="tags__link btn" href="/tags/classification/" rel="tag">Classification</a></li>
 		<li class="tags__item"><a class="tags__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="tag">텐서플로 2.0</a></li>
@@ -671,7 +672,6 @@ plt<span style="color:#f92672">.</span>show()
 		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
