@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Tensorflow 2.0 Tutorial ch5.2 - 다항분류 - Data Science | ChloEvan</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+	<meta property="og:title" content="Tensorflow 2.0 Tutorial ch5.2 - 다항분류" />
+<meta property="og:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
+   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+ Google Colab Tensorflow 2.0 Installation Tensorflow 2." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chloevan.github.io/python/tensorflow2.0/ch5_2_multi_classification/" />
+<meta property="article:published_time" content="2020-04-19T14:08:30+09:00" />
+<meta property="article:modified_time" content="2020-04-19T14:08:30+09:00" />
+
+	<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Tensorflow 2.0 Tutorial ch5.2 - 다항분류"/>
+<meta name="twitter:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
+   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+ Google Colab Tensorflow 2.0 Installation Tensorflow 2."/>
+
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+	<meta name="naver-site-verification" content="589373cb2d4668f329792265c1fdbec3a72ec17d" />
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container">
+		<div class="logo">
+			<a class="logo__link" href="/" title="Data Science | ChloEvan" rel="home">
+				<div class="logo__title">Data Science | ChloEvan</div>
+				<div class="logo__tagline">Love your beloved one forever</div>
+			</a>
+		</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/gcp/">
+				
+				<span class="menu__text">GCP</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/python/">
+				
+				<span class="menu__text">Python</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/r/">
+				
+				<span class="menu__text">R</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/settings/">
+				
+				<span class="menu__text">settings</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About ChloEvan</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">Tensorflow 2.0 Tutorial ch5.2 - 다항분류</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+	<time class="meta__text" datetime="2020-04-19T14:08:30&#43;09:00">2020-04-19</time>
+</div>
+
+<div class="meta__item-categories meta__item">
+	<svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg>
+	<span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#공지">공지</a></li>
+    <li><a href="#tutorial">Tutorial</a></li>
+    <li><a href="#i-다항분류">I. 다항분류</a></li>
+    <li><a href="#ii-데이터-준비">II. 데이터 준비</a></li>
+    <li><a href="#iii-종속변수-선정-및-재범주화">III. 종속변수 선정 및 재범주화</a></li>
+    <li><a href="#iv-데이터-정규화-및-데이터-분리">IV. 데이터 정규화 및 데이터 분리</a></li>
+    <li><a href="#v-결론">V. 결론</a></li>
+    <li><a href="#vi-연습-파일">VI. 연습 파일</a></li>
+    <li><a href="#vii-reference">VII. Reference</a></li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="공지">공지</h2>
+<ul>
+<li>
+<p>본 Tutorial은 교재 <code>시작하세요 텐서플로 2.0 프로그래밍</code>의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.</p>
+</li>
+<li>
+<p>강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.</p>
+</li>
+</ul>
+<p><img src="/img/tensorflow2.0/book.jpg" alt=""><!-- raw HTML omitted --></p>
+<ul>
+<li>본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.</li>
+</ul>
+<h2 id="tutorial">Tutorial</h2>
+<p>이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.</p>
+<ul>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/googlecolab/">Google Colab Tensorflow 2.0 Installation</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch3_3_1_random_signoid/">Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch3_3_2_random_signoid_bias/">Tensorflow 2.0 Tutorial ch3.3.2 - 난수 생성 및 시그모이드 함수 편향성</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch3_3_3_network_and/">Tensorflow 2.0 Tutorial ch3.3.3 - 첫번째 신경망 네트워크 - AND</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch3_3_4_network_or/">Tensorflow 2.0 Tutorial ch3.3.4 - 두번째 신경망 네트워크 - OR</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch3_3_5_network_xor/">Tensorflow 2.0 Tutorial ch3.3.5 - 세번째 신경망 네트워크 - XOR</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch4_1_linear_regression/">Tensorflow 2.0 Tutorial ch4.1 - 선형회귀</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch4_2_multiple_linear_regression/">Tensorflow 2.0 Tutorial ch4.2 - 다항회귀</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch4_3_regression_with_deeplearning/">Tensorflow 2.0 Tutorial ch4.3 - 딥러닝 네트워크를 이용한 회귀</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch4_4_boston_housing_deeplearning/">Tensorflow 2.0 Tutorial ch4.4 - 보스턴 주택 가격 데이터세트</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch5_1_binary_classification/">Tensorflow 2.0 Tutorial ch5.1 - 분류</a></li>
+</ul>
+<h2 id="i-다항분류">I. 다항분류</h2>
+<p>지난 시간에 이항 분류에 대해 배웠다면 이번 시간에는 다항 분류에 대해서 배우는 시간을 갖도록 합니다. 다항 분류는 범주의 수가 2개를 초과하는 경우를 말합니다. 와인 데이터의 품질은 0에서 10까지의 숫자로 구분이 되어 있기 때문에, 품질을 종속변수로 생각하고 분류 할 수 있습니다.</p>
+<p>와인의 색깔이 아닌 와인의 품질에 대해 예측해보도록 합니다.</p>
+<h2 id="ii-데이터-준비">II. 데이터 준비</h2>
+<p>지난 시간에 배운 내용을 복습하면서 다시한번 소스코드를 작성합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
+<span style="color:#66d9ef">try</span>:
+    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
+    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
+<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+    <span style="color:#66d9ef">pass</span>
+
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
+
+red <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv&#39;</span>, sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;;&#39;</span>)
+white <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv&#39;</span>, sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;;&#39;</span>)
+
+red[<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+white[<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+wine <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>concat([red, white])
+<span style="color:#66d9ef">print</span>(wine<span style="color:#f92672">.</span>describe())
+</code></pre></div><pre><code>       fixed acidity  volatile acidity  ...      quality         type
+count    6497.000000       6497.000000  ...  6497.000000  6497.000000
+mean        7.215307          0.339666  ...     5.818378     0.753886
+std         1.296434          0.164636  ...     0.873255     0.430779
+min         3.800000          0.080000  ...     3.000000     0.000000
+25%         6.400000          0.230000  ...     5.000000     1.000000
+50%         7.000000          0.290000  ...     6.000000     1.000000
+75%         7.700000          0.400000  ...     6.000000     1.000000
+max        15.900000          1.580000  ...     9.000000     1.000000
+
+[8 rows x 13 columns]
+</code></pre>
+<p>데이터셋이 준비가 되었다면, 품질 데이터가 어떤 비율로 구성이 되어 있는지 알아보도록 합니다.</p>
+<h2 id="iii-종속변수-선정-및-재범주화">III. 종속변수 선정 및 재범주화</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(wine[<span style="color:#e6db74">&#39;quality&#39;</span>]<span style="color:#f92672">.</span>describe())
+</code></pre></div><pre><code>count    6497.000000
+mean        5.818378
+std         0.873255
+min         3.000000
+25%         5.000000
+50%         6.000000
+75%         6.000000
+max         9.000000
+Name: quality, dtype: float64
+</code></pre>
+<p>위 데이터 통계를 통해서 보면, 최소값은 3이고, 최대값은 9인 것으로 확인할 수 있습니다. <code>value_counts()</code>에서는 각 분류의 개수를 확인해보면 각 항목의 수가 균일하지 않고 꽤 차이가 나는 것을 볼 수 있습니다. 좀 더 정확한 정보를 알기 위해 히스토그램 시각화를 진행합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+plt<span style="color:#f92672">.</span>hist(wine[<span style="color:#e6db74">&#39;quality&#39;</span>], bins<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>, rwidth<span style="color:#f92672">=</span><span style="color:#ae81ff">0.8</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_05_02/output_6_0.png" alt="png"></p>
+<p>데이터의 양이 작은 대신 범주의 수가 많은 것을 확인할 수 있습니다. 실제 값의 개수를 확인해도 마찬가지입니다.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">count <span style="color:#f92672">=</span> wine[<span style="color:#e6db74">&#39;quality&#39;</span>]<span style="color:#f92672">.</span>value_counts()
+ratio <span style="color:#f92672">=</span> wine[<span style="color:#e6db74">&#39;quality&#39;</span>]<span style="color:#f92672">.</span>value_counts(normalize<span style="color:#f92672">=</span>True)
+
+frame <span style="color:#f92672">=</span> { <span style="color:#e6db74">&#39;Count&#39;</span>: count, <span style="color:#e6db74">&#39;Ratio&#39;</span>: ratio } 
+pd<span style="color:#f92672">.</span>DataFrame(frame)
+
+</code></pre></div><!-- raw HTML omitted -->
+<pre><code>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</code></pre>
+<p><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<p>이 때 어떻게 재범주화 할 것인지가 중요한 요소가 됩니다. 여기서가 분석가와 현업사이에서의 커뮤니케이션이 발생하는 주요 지점이 됩니다. 이 부분에서 도메인 지식이 수반되는 지점이니 꼭 현업과 상의하면서 재범주화를 진행합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">wine<span style="color:#f92672">.</span>loc[wine[<span style="color:#e6db74">&#39;quality&#39;</span>] <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#34;new_quality&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+wine<span style="color:#f92672">.</span>loc[wine[<span style="color:#e6db74">&#39;quality&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#ae81ff">6</span>, <span style="color:#e6db74">&#34;new_quality&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+wine<span style="color:#f92672">.</span>loc[wine[<span style="color:#e6db74">&#39;quality&#39;</span>] <span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">7</span>, <span style="color:#e6db74">&#34;new_quality&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+
+count <span style="color:#f92672">=</span> wine[<span style="color:#e6db74">&#39;new_quality&#39;</span>]<span style="color:#f92672">.</span>value_counts()
+ratio <span style="color:#f92672">=</span> wine[<span style="color:#e6db74">&#39;new_quality&#39;</span>]<span style="color:#f92672">.</span>value_counts(normalize<span style="color:#f92672">=</span>True)
+
+frame <span style="color:#f92672">=</span> { <span style="color:#e6db74">&#39;Count&#39;</span>: count, <span style="color:#e6db74">&#39;Ratio&#39;</span>: ratio } 
+pd<span style="color:#f92672">.</span>DataFrame(frame)
+</code></pre></div><!-- raw HTML omitted -->
+<pre><code>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</code></pre>
+<p><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<p>위 소스코드에서 <code>.loc</code>는 특정한 데이터의 인덱스를 골라내는 역할을 합니다. 본 교재(p. 125~126)에서는 간단한 예제로 설명이 되어 있습니다만, 이 부분은 강사가 향후 준비하는 자료로 대체하도록 합니다. <code>.loc외에</code> <code>.iloc</code>등 기본 문법 등이 같이 소개가 되면 더 좋을 듯 합니다.</p>
+<p>정리가 되는대로 자료 링크를 걸어두도록 합니다.</p>
+<h2 id="iv-데이터-정규화-및-데이터-분리">IV. 데이터 정규화 및 데이터 분리</h2>
+<p>코드부터 작성한 뒤, 설명을 진행하도록 합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">del</span> wine[<span style="color:#e6db74">&#39;quality&#39;</span>]
+wine_norm <span style="color:#f92672">=</span> (wine <span style="color:#f92672">-</span> wine<span style="color:#f92672">.</span>min()) <span style="color:#f92672">/</span> (wine<span style="color:#f92672">.</span>max() <span style="color:#f92672">-</span> wine<span style="color:#f92672">.</span>min())
+wine_shuffle <span style="color:#f92672">=</span> wine_norm<span style="color:#f92672">.</span>sample(frac<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+wine_np <span style="color:#f92672">=</span> wine_shuffle<span style="color:#f92672">.</span>to_numpy()
+</code></pre></div><p>우선 <code>new_quality</code> 변수가 만들어졌기 때문에 기존의 <code>quality</code> 변수를 삭제하였습니다.</p>
+<p><code>min()</code>, <code>max()</code> 함수를 통해서 데이터 정규화를 진행합니다.</p>
+<p>판다스의 <code>sample()</code> 함수는 전체 데이터프레임에서 <code>frac</code>인수로 지정된 비율만큼의 행을 랜덤하게 뽑아서 새로운 데이터프레임을 만듭니다.
+<code>frac=1</code>로 지정됐기 때문에 <code>100%</code>, 즉 모든 데이터를 뽑아서 섞는 것과 동일한 효과를 가집니다.</p>
+<p>*Tip: 입문자들이 처음 딥러닝 소스코드 작성하는 것을 어려워 하는 부분이 엑셀데이터와 같은 데이터프레임을 딥러닝의 Input 객체로 변환하는가인데, 위 소스코드는 굉장히 유용하며, 만약 반복적인 작업이 이루어지면 사용자 정의 함수를 사용하여 작성하여 사용하는 것도 도움이 된다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_idx <span style="color:#f92672">=</span> int(len(wine_np) <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.8</span>)
+train_X, train_Y <span style="color:#f92672">=</span> wine_np[:train_idx, :<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], wine_np[:train_idx, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+test_X, test_Y <span style="color:#f92672">=</span> wine_np[train_idx:, :<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], wine_np[train_idx:, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+
+train_Y <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>to_categorical(train_Y, num_classes<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+test_Y <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>to_categorical(test_Y, num_classes<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+</code></pre></div><p>그리고, 훈련 데이터와 테스트 데이터를 분리한 뒤 모형 학습을 진행하도록 합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(units<span style="color:#f92672">=</span><span style="color:#ae81ff">48</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;relu&#34;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>, )), 
+    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(units<span style="color:#f92672">=</span><span style="color:#ae81ff">24</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;relu&#34;</span>), 
+    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(units<span style="color:#f92672">=</span><span style="color:#ae81ff">12</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;relu&#34;</span>), 
+    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(units<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;softmax&#34;</span>)
+])
+
+model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(lr<span style="color:#f92672">=</span><span style="color:#ae81ff">0.07</span>), loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;categorical_crossentropy&#39;</span>, metrics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;accuracy&#39;</span>])
+history<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>fit(train_X, train_Y, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">25</span>, batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, validation_split<span style="color:#f92672">=</span><span style="color:#ae81ff">0.25</span>)
+</code></pre></div><pre><code>Epoch 1/25
+122/122 [==============================] - 0s 3ms/step - loss: 0.4519 - accuracy: 0.8070 - val_loss: 0.4394 - val_accuracy: 0.7869
+Epoch 2/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.4171 - accuracy: 0.8101 - val_loss: 0.4491 - val_accuracy: 0.7869
+Epoch 3/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.4201 - accuracy: 0.8134 - val_loss: 0.4175 - val_accuracy: 0.7869
+Epoch 4/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.4015 - accuracy: 0.8150 - val_loss: 0.4437 - val_accuracy: 0.7869
+Epoch 5/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.4045 - accuracy: 0.8047 - val_loss: 0.4189 - val_accuracy: 0.7869
+Epoch 6/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3986 - accuracy: 0.8134 - val_loss: 0.4269 - val_accuracy: 0.8123
+Epoch 7/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.4039 - accuracy: 0.8152 - val_loss: 0.4094 - val_accuracy: 0.7946
+Epoch 8/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.4073 - accuracy: 0.8073 - val_loss: 0.4250 - val_accuracy: 0.7869
+Epoch 9/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.4086 - accuracy: 0.8068 - val_loss: 0.4353 - val_accuracy: 0.7869
+Epoch 10/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.4059 - accuracy: 0.8132 - val_loss: 0.4061 - val_accuracy: 0.7869
+Epoch 11/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3963 - accuracy: 0.8073 - val_loss: 0.4166 - val_accuracy: 0.7869
+Epoch 12/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3954 - accuracy: 0.8181 - val_loss: 0.4064 - val_accuracy: 0.8046
+Epoch 13/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3924 - accuracy: 0.8132 - val_loss: 0.3985 - val_accuracy: 0.8123
+Epoch 14/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3976 - accuracy: 0.8163 - val_loss: 0.3994 - val_accuracy: 0.8108
+Epoch 15/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3958 - accuracy: 0.8163 - val_loss: 0.4174 - val_accuracy: 0.8008
+Epoch 16/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3993 - accuracy: 0.8134 - val_loss: 0.4261 - val_accuracy: 0.7869
+Epoch 17/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3900 - accuracy: 0.8191 - val_loss: 0.4289 - val_accuracy: 0.8023
+Epoch 18/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3870 - accuracy: 0.8222 - val_loss: 0.4129 - val_accuracy: 0.7877
+Epoch 19/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3928 - accuracy: 0.8199 - val_loss: 0.4028 - val_accuracy: 0.8077
+Epoch 20/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3972 - accuracy: 0.8075 - val_loss: 0.4200 - val_accuracy: 0.7869
+Epoch 21/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3940 - accuracy: 0.8155 - val_loss: 0.4135 - val_accuracy: 0.8054
+Epoch 22/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3907 - accuracy: 0.8150 - val_loss: 0.4130 - val_accuracy: 0.8115
+Epoch 23/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3935 - accuracy: 0.8132 - val_loss: 0.4040 - val_accuracy: 0.8085
+Epoch 24/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3895 - accuracy: 0.8124 - val_loss: 0.3962 - val_accuracy: 0.8123
+Epoch 25/25
+122/122 [==============================] - 0s 2ms/step - loss: 0.3995 - accuracy: 0.8029 - val_loss: 0.4029 - val_accuracy: 0.7869
+</code></pre>
+<p>모델 정의에서 마지막 레이어의 뉴런 수가 <code>2</code>가 아닌 <code>3</code>이 된 것 외에는 동일한 구조의 네트워크를 사용하였습니다. 검증 데이터에 대해 약 <code>79%</code> 정도의 분류 성적을 거두고 있습니다.</p>
+<p>늘 강조하듯이, 모형을 학습한 뒤에는 항상 모형 결과를 시각화해야 합니다. 그래야, 학습이 잘 되고 있는지, 아니면 <code>오버피팅(Overfitting)</code> 되고 있는지 확인해야 합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">4</span>))
+
+plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">1</span>)
+plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;loss&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;loss&#39;</span>)
+plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_loss&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_loss&#39;</span>)
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
+plt<span style="color:#f92672">.</span>legend()
+
+plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>)
+plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;accuracy&#39;</span>], <span style="color:#e6db74">&#39;g-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;accuracy&#39;</span>)
+plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_accuracy&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_accuracy&#39;</span>)
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
+plt<span style="color:#f92672">.</span>ylim(<span style="color:#ae81ff">0.7</span>, <span style="color:#ae81ff">1</span>)
+plt<span style="color:#f92672">.</span>legend()
+
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_05_01/output_18_0.png" alt="png"></p>
+<p><code>val_loss</code>가 중간에 튀기도 하고, 전반적으로 <code>loss</code>보다 큰 값인 것을 확인할 수 있습니다. 학습을 계속하면 <code>loss</code>는 꾸준히 작아지지만 네트워크가 훈련 데이터에 과적합되기 때문에 <code>val_loss</code>는 증가하기 시작합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model<span style="color:#f92672">.</span>evaluate(test_X, test_Y)
+</code></pre></div><pre><code>41/41 [==============================] - 0s 1ms/step - loss: 0.4058 - accuracy: 0.7985
+
+
+
+
+
+[0.40582624077796936, 0.7984615564346313]
+</code></pre>
+<p>데스트 데이터의 정확도는 약 79.8% 정도로 검증 데이터의 정확도와 크게 차이가 없는 것으로 나온다. 이런 경우 해결방법은 네트워크의 구성도의 크기를 키우거나 학습률을 조정해보는 등 다양한 방면으로 노력해야 한다.</p>
+<h2 id="v-결론">V. 결론</h2>
+<p>지금까지는 주로 데이터프레임에 기반하여 연습을 진행하였다. 딥러닝을 하는 목적은 사실 이러한 데이터프레임보다는 이미지 분류, 텍스트 분류와 같은 비정형 데이터 분류를 위한 것에 더 많이 사용된다. 이제 앞으로는 이러한 비정형 데이터를 다루는 방법, 학습하는 방법에 대해 공부가 될 예정이다.</p>
+<h2 id="vi-연습-파일">VI. 연습 파일</h2>
+<ul>
+<li><a href="https://colab.research.google.com/github/chloevan/deeplearningAI/blob/master/tensorflow2.0/ch5_2_multi_classification.ipynb">구글 Colab에서 직접 연습해보자</a></li>
+</ul>
+<h2 id="vii-reference">VII. Reference</h2>
+<p>김환희. (2020). 시작하세요! 텐서플로 2.0 프로그래밍: 기초 이론부터 실전 예제까지 한번에 끝내는 머신러닝, 딥러닝 핵심 가이드. 서울: 위키북스.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>강사가 직접 작성한 코드입니다. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item"><a class="tags__link btn" href="/tags/deep-learning/" rel="tag">Deep Learning</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/python/" rel="tag">Python</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/google-colab/" rel="tag">Google Colab</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/tensorflow-2.0/" rel="tag">Tensorflow 2.0</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%EB%B6%84%EB%A5%98/" rel="tag">분류</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" rel="tag">다항분류</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/binary-classification/" rel="tag">Binary Classification</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/classification/" rel="tag">Classification</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="tag">텐서플로 2.0</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="tag">텐서플로 2.0 튜토리얼</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/tensorflow-2.0-tutorial/" rel="tag">Tensorflow 2.0 Tutorial</a></li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="ChloeEvan avatar" src="/img/couple.jpg" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name">About ChloeEvan</span>
+	</div>
+	<div class="authorbox__description">
+		ChloEvan is just one who are loving Chloe &amp; Evan and analyzing Data things. ChloeEvan&#39;s dream is to make the world better through loving Chloe &amp; Evan and working with Data
+	</div>
+</div>
+
+<nav class="post-nav flex">
+	<div class="post-nav__item post-nav__item--prev">
+		<a class="post-nav__link" href="/python/pandas/pandas_dataframe/" rel="prev"><span class="post-nav__caption">«&thinsp;Previous</span><p class="post-nav__post-title">Pandas Dataframe</p></a>
+	</div>
+</nav>
+
+<section class="comments">
+	<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-chloevan-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH..." value="" name="q" aria-label="SEARCH...">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://chloevan.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/python/tensorflow2.0/ch5_2_multi_classification/">Tensorflow 2.0 Tutorial ch5.2 - 다항분류</a></li>
+			<li class="widget__item"><a class="widget__link" href="/r/datavisualisation/ch01_intro/">R 시각화 튜토리얼 Intro</a></li>
+			<li class="widget__item"><a class="widget__link" href="/gcp/bigquery/01_settings/ch02_working_with_bigquery/">Ch02 Working with BigQuery</a></li>
+			<li class="widget__item"><a class="widget__link" href="/r/shiny/project_final/">Shiny 프로젝트 Review &amp; 더 알아볼 것</a></li>
+			<li class="widget__item"><a class="widget__link" href="/r/shiny/project_06_02/">Corona Shiny Project 6_2 - Chart Automation</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basics/">Basics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/corona-shiny-app/">Corona Shiny App</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualization/">Data Visualization</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development/">Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ggplot2/">ggplot2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">line grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/new-packages/">New Packages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/">R 마크다운</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0/">Tensorflow 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0-tutorial/">Tensorflow 2.0 Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tutorial/">Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/">구글 클라우드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/">기초통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">데이터 시각화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/">빅쿼리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/">선 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/">텐서플로 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/">텐서플로 2.0 튜토리얼</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basics/" title="Basics">Basics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualization/" title="Data Visualization">Data Visualization</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="Development">Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="filter">filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ggplot2/" title="ggplot2">ggplot2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="gt">gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="iterrows">iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="leaflet">leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="line grpah">line grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-%EC%84%A4%EC%A0%95/" title="Mathjax 설정">Mathjax 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/new-packages/" title="New Packages">New Packages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="plotly">plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="shinydashboard">shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="sort_values">sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0/" title="Tensorflow 2.0">Tensorflow 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0-tutorial/" title="Tensorflow 2.0 Tutorial">Tensorflow 2.0 Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tutorial/" title="Tutorial">Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="데이터 전처리">데이터 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B3%B4%EC%8A%A4%ED%84%B4-%EC%A3%BC%ED%83%9D-%EA%B0%80%EA%B2%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%B8%ED%8A%B8/" title="보스턴 주택 가격 데이터세트">보스턴 주택 가격 데이터세트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B6%84%EB%A5%98/" title="분류">분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" title="빅쿼리">빅쿼리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" title="선 그래프">선 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/" title="선형회귀">선형회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" title="시각화 문법">시각화 문법</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" title="시그노이드">시그노이드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" title="이항분류">이항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/" title="지도학습">지도학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="코로나 대시보드">코로나 대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%8B%A4%EB%A3%A8%EA%B8%B0/" title="테이블 다루기">테이블 다루기</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" title="텐서플로 2.0">텐서플로 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" title="텐서플로 2.0 튜토리얼">텐서플로 2.0 튜토리얼</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%97%91%EC%85%80/" title="판다스 엑셀">판다스 엑셀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" title="판다스 자료구조">판다스 자료구조</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80-%ED%8F%B0%ED%8A%B8-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0/" title="한글 폰트 오류 해결">한글 폰트 오류 해결</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="환경설정">환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9A%8C%EA%B7%80%EB%AA%A8%ED%98%95/" title="회귀모형">회귀모형</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9C%B4%EA%B3%A0/" title="휴고">휴고</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2020 ChloEvan.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>
