@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Ch04_bigquery_with_R - Data Science | ChloEvan</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+	<meta property="og:title" content="Ch04_bigquery_with_R" />
+<meta property="og:description" content="1. 구글 클라우드 설정 본격적인 빅쿼리 실습에 앞서서, R과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.
+ 만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery  위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chloevan.github.io/gcp/bigquery/01_settings/ch04_bigquery_with_r/" />
+<meta property="article:published_time" content="2020-04-21T11:40:30+09:00" />
+<meta property="article:modified_time" content="2020-04-21T11:40:30+09:00" />
+
+	<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Ch04_bigquery_with_R"/>
+<meta name="twitter:description" content="1. 구글 클라우드 설정 본격적인 빅쿼리 실습에 앞서서, R과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.
+ 만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery  위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다."/>
+
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+	<meta name="naver-site-verification" content="589373cb2d4668f329792265c1fdbec3a72ec17d" />
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container">
+		<div class="logo">
+			<a class="logo__link" href="/" title="Data Science | ChloEvan" rel="home">
+				<div class="logo__title">Data Science | ChloEvan</div>
+				<div class="logo__tagline">Love your beloved one forever</div>
+			</a>
+		</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/gcp/">
+				
+				<span class="menu__text">GCP</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/python/">
+				
+				<span class="menu__text">Python</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/r/">
+				
+				<span class="menu__text">R</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/settings/">
+				
+				<span class="menu__text">settings</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About ChloEvan</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">Ch04_bigquery_with_R</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+	<time class="meta__text" datetime="2020-04-21T11:40:30&#43;09:00">2020-04-21</time>
+</div>
+
+<div class="meta__item-categories meta__item">
+	<svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg>
+	<span class="meta__text"><a class="meta__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" rel="category">구글 클라우드</a>, <a class="meta__link" href="/categories/google-cloud/" rel="category">Google Cloud</a>, <a class="meta__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/" rel="category">빅쿼리</a>, <a class="meta__link" href="/categories/bigquery/" rel="category">BigQuery</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-구글-클라우드-설정">1. 구글 클라우드 설정</a></li>
+    <li><a href="#2-사용자-계정-인증">2. 사용자 계정 인증</a></li>
+    <li><a href="#3-bigrquery-r-패키지-로드">3. Bigrquery R 패키지 로드</a></li>
+    <li><a href="#4-사용자-계정-인증">4. 사용자 계정 인증</a></li>
+    <li><a href="#5-데이터-연동">5. 데이터 연동</a>
+      <ul>
+        <li><a href="#1-low-level-api">(1) Low-Level API</a></li>
+        <li><a href="#2-dbi를-활용한-연동">(2) DBI를 활용한 연동</a></li>
+        <li><a href="#3-dplyr를-활용한-빅쿼리-연동">(3) dplyr를 활용한 빅쿼리 연동</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-파이썬과-빅쿼리-연동">6. 파이썬과 빅쿼리 연동</a></li>
+    <li><a href="#7-reference">7. Reference</a></li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="1-구글-클라우드-설정">1. 구글 클라우드 설정</h2>
+<p>본격적인 빅쿼리 실습에 앞서서, R과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.</p>
+<ol>
+<li>만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to <a href="https://console.cloud.google.com/cloud-resource-manager">Cloud Resource Manager</a></li>
+<li>그리고, 비용결제를 위한 카드를 등록한다. <a href="https://support.google.com/cloud/answer/6293499#enable-billing">Enable billing</a></li>
+<li>마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.<a href="https://console.cloud.google.com/flows/enableapi?apiid=bigquery">Enable BigQuery</a></li>
+</ol>
+<p>위 API를 이용하지 않으면 <code>Python</code> 또는 <code>R</code>과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 <a href="https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko">BigQuery 권장사항: 비용 관리</a>에서 확인하기를 바란다.</p>
+<h2 id="2-사용자-계정-인증">2. 사용자 계정 인증</h2>
+<p>구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. <code>Gmail</code> 인증 절차와 비슷하다.</p>
+<h2 id="3-bigrquery-r-패키지-로드">3. Bigrquery R 패키지 로드</h2>
+<p>패키지 설치가 되어 있지 않다면 아래 소스코드를 통해 패키지를 불러온다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># install.packages(&#34;bigrquery&#34;)</span>
+<span style="color:#a6e22e">library</span>(bigrquery)
+</code></pre></div><h2 id="4-사용자-계정-인증">4. 사용자 계정 인증</h2>
+<p>구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. <code>Gmail</code> 인증 절차와 비슷하다. 이 때, <code>Enter authorization code:</code> 입력하는 부분에서 인증키를 복사한 후 붙여넣기 하면 된다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># Provide authentication</span>
+<span style="color:#a6e22e">bq_auth</span>(use_oob <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>)
+</code></pre></div><h2 id="5-데이터-연동">5. 데이터 연동</h2>
+<p>사용자 계정 인증이 완료 되었다면, 이제 데이터를 불러오자. 이 때 중요한 것은 <code>project_id</code>를 입력해줘야 하는 것이다.</p>
+<h3 id="1-low-level-api">(1) Low-Level API</h3>
+<p>직접 빅쿼리 프로젝트 ID를 이용해 연동해본다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">billing <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;bigquerytutorial-274406&#34;</span>
+sql <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;SELECT COUNT(*) as total_rows FROM `bigquery-public-data.samples.gsod`&#34;</span>
+
+tb <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">bq_project_query</span>(billing, sql)
+<span style="color:#75715e">## Complete</span>
+<span style="color:#75715e">## Billed: 0 B</span>
+<span style="color:#a6e22e">bq_table_download</span>(tb)
+<span style="color:#75715e"># A tibble: 1 x 1                                                         </span>
+<span style="color:#75715e">#  total_rows</span>
+<span style="color:#75715e">#       &lt;int&gt;</span>
+<span style="color:#75715e"># 1  114420316</span>
+</code></pre></div><h3 id="2-dbi를-활용한-연동">(2) DBI를 활용한 연동</h3>
+<p>이번에는 R의 데이터베이스 인터페이스인 <code>DBI</code>를 활용해서 데이터를 불러온다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(DBI)
+con <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">dbConnect</span>(
+  bigrquery<span style="color:#f92672">::</span><span style="color:#a6e22e">bigquery</span>(), 
+  project <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;bigquery-public-data&#34;</span>, 
+  dataset <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;samples&#34;</span>, 
+  billing <span style="color:#f92672">=</span> billing
+)
+
+con
+<span style="color:#75715e"># &lt;BigQueryConnection&gt;</span>
+<span style="color:#75715e">#  Dataset: bigquery-public-data.samples</span>
+<span style="color:#75715e">#  Billing: bigquerytutorial-274406</span>
+
+
+<span style="color:#a6e22e">dbGetQuery</span>(con, sql, n <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>)
+
+<span style="color:#75715e"># Complete</span>
+<span style="color:#75715e"># Billed: 0 B</span>
+<span style="color:#75715e"># Downloading 1 rows in 1 pages.</span>
+<span style="color:#75715e">## A tibble: 1 x 1                                                         </span>
+<span style="color:#75715e">#  total_rows</span>
+<span style="color:#75715e">#       &lt;int&gt;</span>
+<span style="color:#75715e">#1  114420316</span>
+</code></pre></div><h3 id="3-dplyr를-활용한-빅쿼리-연동">(3) dplyr를 활용한 빅쿼리 연동</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(dplyr)
+<span style="color:#a6e22e">dbListTables</span>(con)
+<span style="color:#75715e"># [1] &#34;github_nested&#34;   &#34;github_timeline&#34; &#34;gsod&#34;            &#34;natality&#34;       </span>
+<span style="color:#75715e"># [5] &#34;shakespeare&#34;     &#34;trigrams&#34;        &#34;wikipedia&#34;  </span>
+
+gsod <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">tbl</span>(con, <span style="color:#e6db74">&#34;gsod&#34;</span>)
+gsod <span style="color:#f92672">%&gt;%</span> 
+  <span style="color:#a6e22e">summarise</span>(total_rows <span style="color:#f92672">=</span> <span style="color:#a6e22e">n</span>())
+
+<span style="color:#75715e"># Running job &#39;bigquerytutorial-274406.job_fe5MbF0IChh7fRBBhPKYHZSHN3qz.U...</span>
+<span style="color:#75715e"># Complete</span>
+<span style="color:#75715e"># Billed: 0 B</span>
+<span style="color:#75715e"># Downloading 1 rows in 1 pages.</span>
+<span style="color:#75715e">## Source:   lazy query [?? x 1]                                           </span>
+<span style="color:#75715e">## Database: BigQueryConnection</span>
+<span style="color:#75715e">#  total_rows</span>
+<span style="color:#75715e">#       &lt;int&gt;</span>
+<span style="color:#75715e"># 1  114420316</span>
+</code></pre></div><p>똑같은 결과값을 내기 위해서 서로 다른 패키지를 활용해서 출력하는 것을 확인하였다. 지금까지, R과 빅쿼리 연동에 대해서 짧게 배우는 시간을 가졌다.</p>
+<p>자세한 건 공식문서를 확인하기를 바란다.</p>
+<h2 id="6-파이썬과-빅쿼리-연동">6. 파이썬과 빅쿼리 연동</h2>
+<p>파이썬과 빅쿼리 연동하는 예제는 <a href="https://chloevan.github.io/gcp/bigquery/01_settings/ch03_bigquery_with_python/">Ch03_bigquery_with_python</a>에서 확인하기를 바란다.</p>
+<h2 id="7-reference">7. Reference</h2>
+<p>Schendzielorz, Tim  M. “Google Big Query with R.” R, 20 Mar. 2020, <a href="http://www.r-bloggers.com/google-big-query-with-r/">www.r-bloggers.com/google-big-query-with-r/</a>.</p>
+<p>RStudio. “Databases Using R.” Databases Using R, db.rstudio.com/databases/big-query/.</p>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" rel="tag">구글 클라우드</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/google-cloud/" rel="tag">Google Cloud</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" rel="tag">빅쿼리</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/bigquery/" rel="tag">BigQuery</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-r/" rel="tag">빅쿼리 R</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/bigquery-with-r/" rel="tag">BigQuery with R</a></li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="ChloeEvan avatar" src="/img/couple.jpg" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name">About ChloeEvan</span>
+	</div>
+	<div class="authorbox__description">
+		ChloEvan is just one who are loving Chloe &amp; Evan and analyzing Data things. ChloeEvan&#39;s dream is to make the world better through loving Chloe &amp; Evan and working with Data
+	</div>
+</div>
+
+<nav class="post-nav flex">
+	<div class="post-nav__item post-nav__item--prev">
+		<a class="post-nav__link" href="/gcp/bigquery/01_settings/ch03_bigquery_with_python/" rel="prev"><span class="post-nav__caption">«&thinsp;Previous</span><p class="post-nav__post-title">Ch03_bigquery_with_python</p></a>
+	</div>
+</nav>
+
+<section class="comments">
+	<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-chloevan-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH..." value="" name="q" aria-label="SEARCH...">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://chloevan.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/gcp/bigquery/01_settings/ch04_bigquery_with_r/">Ch04_bigquery_with_R</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/tensorflow2.0/ch6_1_2_cnn_theory/">Tensorflow 2.0 Tutorial ch6.1-2 - CNN 이론</a></li>
+			<li class="widget__item"><a class="widget__link" href="/r/dataanalysis/process_analysis/ch01_process_analysis_intro/">Ch01 Process Analysis Intro</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/tensorflow2.0/ch5_3_fashion_mnist/">Tensorflow 2.0 Tutorial ch5.3 - Fashion MNIST</a></li>
+			<li class="widget__item"><a class="widget__link" href="/gcp/bigquery/01_settings/ch03_bigquery_with_python/">Ch03_bigquery_with_python</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">bar chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basics/">Basics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bupar/">bupaR</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/corona-shiny-app/">Corona Shiny App</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualization/">Data Visualization</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development/">Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ggplot2/">ggplot2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">line grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/new-packages/">New Packages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/">R 마크다운</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0/">Tensorflow 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0-tutorial/">Tensorflow 2.0 Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tutorial/">Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/">구글 클라우드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/">기초통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/">데이터 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">데이터 시각화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/">막대 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/">빅쿼리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/">선 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/">텐서플로 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/">텐서플로 2.0 튜토리얼</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/">프로세스 분석</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="bar chart">bar chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basics/" title="Basics">Basics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery with Python">BigQuery with Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery with R">BigQuery with R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bupar/" title="bupaR">bupaR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualization/" title="Data Visualization">Data Visualization</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="Development">Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="filter">filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ggplot2/" title="ggplot2">ggplot2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="gt">gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="iterrows">iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="leaflet">leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="line grpah">line grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-%EC%84%A4%EC%A0%95/" title="Mathjax 설정">Mathjax 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/new-packages/" title="New Packages">New Packages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="plotly">plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="shinydashboard">shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="sort_values">sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0/" title="Tensorflow 2.0">Tensorflow 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0-tutorial/" title="Tensorflow 2.0 Tutorial">Tensorflow 2.0 Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tutorial/" title="Tutorial">Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="데이터 전처리">데이터 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/" title="막대 그래프">막대 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B3%B4%EC%8A%A4%ED%84%B4-%EC%A3%BC%ED%83%9D-%EA%B0%80%EA%B2%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%B8%ED%8A%B8/" title="보스턴 주택 가격 데이터세트">보스턴 주택 가격 데이터세트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B6%84%EB%A5%98/" title="분류">분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" title="빅쿼리">빅쿼리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-r/" title="빅쿼리 R">빅쿼리 R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%ED%8C%8C%EC%9D%B4%EC%8D%AC/" title="빅쿼리 파이썬">빅쿼리 파이썬</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" title="선 그래프">선 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/" title="선형회귀">선형회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" title="시각화 문법">시각화 문법</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" title="시그노이드">시그노이드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" title="이항분류">이항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/" title="지도학습">지도학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BB%A8%EB%B3%BC%EB%A3%A8%EC%85%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="컨볼루션 신경망">컨볼루션 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="코로나 대시보드">코로나 대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%8B%A4%EB%A3%A8%EA%B8%B0/" title="테이블 다루기">테이블 다루기</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" title="텐서플로 2.0">텐서플로 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" title="텐서플로 2.0 튜토리얼">텐서플로 2.0 튜토리얼</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%97%91%EC%85%80/" title="판다스 엑셀">판다스 엑셀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" title="판다스 자료구조">판다스 자료구조</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="프로세스 마이닝">프로세스 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/" title="프로세스 분석">프로세스 분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80-%ED%8F%B0%ED%8A%B8-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0/" title="한글 폰트 오류 해결">한글 폰트 오류 해결</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="환경설정">환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9A%8C%EA%B7%80%EB%AA%A8%ED%98%95/" title="회귀모형">회귀모형</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9C%B4%EA%B3%A0/" title="휴고">휴고</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2020 ChloEvan.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>
