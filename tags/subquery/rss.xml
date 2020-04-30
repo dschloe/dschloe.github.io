@@ -1,0 +1,153 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SubQuery on Data Science | ChloEvan</title>
+    <link>https://chloevan.github.io/tags/subquery/</link>
+    <description>Recent content in SubQuery on Data Science | ChloEvan</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 25 Apr 2020 16:30:30 +0900</lastBuildDate>
+    
+        <atom:link href="https://chloevan.github.io/tags/subquery/rss.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Ch05 Query Essentials(3)</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials3/</link>
+      <pubDate>Sat, 25 Apr 2020 16:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials3/</guid>
+      <description>&lt;h2 id=&#34;1-구글-클라우드-설정&#34;&gt;1. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;2-사용자-계정-인증&#34;&gt;2. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3-쿼리-기본&#34;&gt;3. 쿼리 기본&lt;/h2&gt;
+&lt;p&gt;빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp;amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.&lt;/p&gt;
+&lt;p&gt;빅쿼리는 데이터 분석을 위한 기본적인 도구이기 때문에, 웹/앱을 활용한 마케팅 분석이 필요한 업종에서는 어쩌면 반드시 가져가야할 일종의 언어이기도 하다.&lt;/p&gt;
+&lt;p&gt;기본적으로 SQL문법을 지원하며, BigQuery 나름의 문법을 또한 구성하고 있다. 이제 본격적으로 코드를 작성해보자.&lt;/p&gt;
+&lt;p&gt;현재 작성하는 모든 코드는 Python-BigQuery로 연동하여 작성하려고 한다. 이제 간단하게 쿼리를 작성해보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials1/&#34;&gt;Ch05-Query_Essentials(1)&lt;/a&gt;에서는 &lt;code&gt;SELECT&lt;/code&gt;와 &lt;code&gt;AS&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials2/&#34;&gt;Ch05-Query_Essentials(2)&lt;/a&gt;에서는 &lt;code&gt;WHERE&lt;/code&gt;와 &lt;code&gt;EXCEPT&lt;/code&gt;, 그리고 &lt;code&gt;REPLACE&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;오늘 포스트에서는 &lt;code&gt;SubQuery&lt;/code&gt;, &lt;code&gt;ORDER BY&lt;/code&gt;에 대해 학습을 진행하도록 한다.&lt;/p&gt;
+&lt;h3 id=&#34;1-subquery&#34;&gt;(1) SUBQUERY&lt;/h3&gt;
+&lt;p&gt;서브쿼리는 무엇일까? 서브쿼리는 메인쿼리가 서브쿼리를 포함하는데, 반복적인 쿼리를 수행해야 할 때 &lt;code&gt;alias&lt;/code&gt;를 통해서 보다 간편하게 결과를 조회할 때 사용합니다.&lt;/p&gt;
+&lt;p&gt;실무에서는 자주 사용되기 때문에 꼭 실습을 통해서 개념을 익히시기를 바랍니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;your_project_id&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    * 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      gender, tripduration / 60 AS minutes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE minutes &amp;lt; 10
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+
+
+|    | gender   |   minutes |
+|---:|:---------|----------:|
+|  0 | female   |   7.28333 |
+|  1 | male     |   7.41667 |
+|  2 | female   |   5.75    |
+|  3 | male     |   4.58333 |
+|  4 | male     |   6.43333 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;FROM&lt;/code&gt; 다음에 생성된 구절이 서브쿼리라고 보면 된다. 그런데, 복잡하다. R 또는 Python처럼 SQL도 다른 데이터셋으로 변경하여 저장시킬 수 있을까? 결론부터 말하면 가능하며, 이 때에는 &lt;code&gt;With new_name AS (syntax)&lt;/code&gt; 형태로 작성해야 한다. 바로 코드를 확인하자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WITH all_trips AS(
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      gender, tripduration / 60 AS minutes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT * from all_trips
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WHERE minutes &amp;lt; 10
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |   minutes |
+|---:|:---------|----------:|
+|  0 | male     |   7.2     |
+|  1 | female   |   3.96667 |
+|  2 | male     |   9.88333 |
+|  3 | male     |   6.9     |
+|  4 | male     |   7.9     |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;2-order-by&#34;&gt;(2) ORDER BY&lt;/h3&gt;
+&lt;p&gt;그런데 한가지 문제가 있다. 보통 실무에서는 상위 또는 하위 이런식으로 결과보고서를 제출해야 의사결정에 도움이 된다. 이럴 때 자주쓰는 기술이 데이터 정렬(&lt;code&gt;ORDER BY&lt;/code&gt;)을 하는 것이다. 내림차순으로 정렬을 하는데, 앞에서 배운 것을 그대로 적용한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WITH all_trips AS(
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      gender, tripduration / 60 AS minutes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT * from all_trips
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WHERE minutes &amp;lt; 10
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    ORDER BY minutes DESC
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |   minutes |
+|---:|:---------|----------:|
+|  0 | male     |   9.98333 |
+|  1 | male     |   9.98333 |
+|  2 | female   |   9.98333 |
+|  3 | male     |   9.98333 |
+|  4 | male     |   9.98333 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이 때, 여성 또는 남성, 즉 특정 값과 연계되어 내림차순을 진행하다면, &lt;code&gt;ORDER BY&lt;/code&gt; 구문 앞에서 &lt;code&gt;WHERE&lt;/code&gt; 구문을 통해서 작성하도록 한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WITH all_trips AS(
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      gender, tripduration / 60 AS minutes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT * from all_trips
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WHERE gender = &amp;#39;female&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    ORDER BY minutes DESC
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |   minutes |
+|---:|:---------|----------:|
+|  0 | female   |    250349 |
+|  1 | female   |    226438 |
+|  2 | female   |    207989 |
+|  3 | female   |    159712 |
+|  4 | female   |    154239 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이번에는 여성 상위 5명을 추출하도록 해보자. 여기에서는 &lt;code&gt;WHERE gender = &#39;female&#39;&lt;/code&gt;구문을 추가해서 데이터를 조회할 수 있다.&lt;/p&gt;
+&lt;p&gt;이번 포스트에서는 &lt;code&gt;With&lt;/code&gt;를 활용한 &lt;code&gt;SubQuery&lt;/code&gt; 그리고 &lt;code&gt;ORDER BY&lt;/code&gt; 대해서 배우도록 한다.&lt;/p&gt;
+&lt;p&gt;다음 포스트에서는 집계함수에 대해 배우도록 한다.&lt;/p&gt;
+&lt;h2 id=&#34;4-reference&#34;&gt;4. Reference&lt;/h2&gt;
+&lt;p&gt;“Getting Started with BigQuery.” Google, Google, colab.research.google.com/notebooks/bigquery.ipynb.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

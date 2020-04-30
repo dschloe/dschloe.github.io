@@ -1,0 +1,1457 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>구글 클라우드 on Data Science | ChloEvan</title>
+    <link>https://chloevan.github.io/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/</link>
+    <description>Recent content in 구글 클라우드 on Data Science | ChloEvan</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 29 Apr 2020 10:30:30 +0900</lastBuildDate>
+    
+        <atom:link href="https://chloevan.github.io/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/rss.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Ch08_Creating_Arrays_with_Array_AGG</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch08_creating_arrays_with_array_agg/</link>
+      <pubDate>Wed, 29 Apr 2020 10:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch08_creating_arrays_with_array_agg/</guid>
+      <description>&lt;h2 id=&#34;1-구글-클라우드-설정&#34;&gt;1. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;2-사용자-계정-인증&#34;&gt;2. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3-쿼리-기본&#34;&gt;3. 쿼리 기본&lt;/h2&gt;
+&lt;p&gt;빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp;amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.&lt;/p&gt;
+&lt;p&gt;빅쿼리는 데이터 분석을 위한 기본적인 도구이기 때문에, 웹/앱을 활용한 마케팅 분석이 필요한 업종에서는 어쩌면 반드시 가져가야할 일종의 언어이기도 하다.&lt;/p&gt;
+&lt;p&gt;기본적으로 SQL문법을 지원하며, BigQuery 나름의 문법을 또한 구성하고 있다. 이제 본격적으로 코드를 작성해보자.&lt;/p&gt;
+&lt;p&gt;현재 작성하는 모든 코드는 Python-BigQuery로 연동하여 작성하려고 한다. 이제 간단하게 쿼리를 작성해보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials1/&#34;&gt;Ch05-Query_Essentials(1)&lt;/a&gt;에서는 &lt;code&gt;SELECT&lt;/code&gt;와 &lt;code&gt;AS&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials2/&#34;&gt;Ch05-Query_Essentials(2)&lt;/a&gt;에서는 &lt;code&gt;WHERE&lt;/code&gt;와 &lt;code&gt;EXCEPT&lt;/code&gt;, 그리고 &lt;code&gt;REPLACE&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials3/&#34;&gt;Ch05-Query_Essentials(3)&lt;/a&gt;에서는 &lt;code&gt;SubQuery&lt;/code&gt;에 대해서 집중적으로 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch06_sql_aggregates/&#34;&gt;Ch06 SQL Aggregates&lt;/a&gt;에서는 집계함수를 사용해서 데이터를 조금 더 디테일하게 요약하는 것을 배웠다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch07_split_unnest/&#34;&gt;Ch07 Arrays &amp;amp; Structs&lt;/a&gt;에서는 빅쿼리에서 가상의 테이블과 그리고 배열을 만드는 법을 익혔다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;오늘 포스트에서는 &lt;code&gt;ARRAY_AGG&lt;/code&gt;을 활용하도록 한다. 한국말로는 다중 집계함수, 배열 집계함수 라고 표현하는 것 같기도 하지만, 가급적 원어의 의미를 그대로 담아내고자 &lt;code&gt;ARRAY_AGG&lt;/code&gt;를 사용하였다.&lt;/p&gt;
+&lt;p&gt;우선, &lt;code&gt;gender&lt;/code&gt;와 &lt;code&gt;year&lt;/code&gt;에 따른 &lt;code&gt;trips이 개수&lt;/code&gt; 구하는 쿼리를 작성해본다.&lt;/p&gt;
+&lt;h3 id=&#34;1-without-array_agg&#34;&gt;(1) Without ARRAY_AGG&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bigquerytutorial-274406&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    , EXTRACT(YEAR from starttime) AS year --
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    , COUNT(*) AS numtrips
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE gender != &amp;#39;unknown&amp;#39; and starttime IS NOT NULL
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  GROUP BY gender, year
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  HAVING year &amp;gt; 2016  
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+
+
+|    | gender   |   year |   numtrips |
+|---:|:---------|-------:|-----------:|
+|  0 | male     |   2018 |    3955871 |
+|  1 | female   |   2017 |    3236735 |
+|  2 | male     |   2017 |    9306602 |
+|  3 | female   |   2018 |    1260893 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;2-쿼리-작성-tip&#34;&gt;(2) 쿼리 작성 Tip&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;SELECT&lt;/code&gt; 구문을 짤 때, &lt;code&gt;,&lt;/code&gt;가 쿼리문 맨 앞쪽에 오면 주석 처리 하기가 용이해지는 장점이 있다.&lt;/p&gt;
+&lt;p&gt;간단한 예를 들면,&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt; 
+  gender
+  , &lt;span style=&#34;color:#66d9ef&#34;&gt;EXTRACT&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;YEAR&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;from&lt;/span&gt; starttime) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;year&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;-- extract year
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  , &lt;span style=&#34;color:#66d9ef&#34;&gt;COUNT&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; numtrips  &lt;span style=&#34;color:#75715e&#34;&gt;-- count the number of trips
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; 
+  etc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;위에서 보는 것처럼, 주석 처리의 가독성이 한결 좋아진 것이 눈에 들어온다.&lt;/p&gt;
+&lt;h3 id=&#34;3-with-array_agg&#34;&gt;(3) WITH ARRAY_AGG&lt;/h3&gt;
+&lt;p&gt;그런데, ARRAY_AGG를 활용하지 않을 때 문제점은 &lt;code&gt;gender&lt;/code&gt;의 구분이 조금 불명확다는 데 있다. 이러한 단점을 &lt;code&gt;ARRAY_AGG&lt;/code&gt;를 활용하면 만회할 수 있다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    , ARRAY_AGG(numtrips order by year) AS numtrips
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      gender
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      , EXTRACT(YEAR from starttime) AS year --
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      , COUNT(*) AS numtrips
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WHERE gender != &amp;#39;unknown&amp;#39; and starttime IS NOT NULL
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    GROUP BY gender, year
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    HAVING year &amp;gt; 2016  
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  GROUP BY gender 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   | numtrips           |
+|---:|:---------|:-------------------|
+|  0 | male     | [9306602, 3955871] |
+|  1 | female   | [3236735, 1260893] |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ARRAY Type의 장점은 쿼리의 결과값에 제한이 없다는 점이다. 또한, 결과값을 JSON 형태로 출력함으로써, 업무의 형태를 다양하게 가져갈 수 있다는 장점이 있다.&lt;/p&gt;
+&lt;p&gt;그런데, 한가지 고려해야 할 사항이 있다. 테이블 형태로 저장하지 않는한 NULL 요소는 일반적으로 Array에서는 허용이 된다. 즉, (예:, [1, NULL, 2]) 형태로 임시저장하는 형태의 코드는 작동하지 않는다.&lt;/p&gt;
+&lt;p&gt;다음 코드를 예드를 들어보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH example AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT true AS is_vowel, &amp;#39;a&amp;#39; as letter, 1 as position
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;b&amp;#39;, 2
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;c&amp;#39;, 3
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT ARRAY_AGG(IF(position=2, NULL, position)) as positions from example
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;ERROR:root:An unexpected error occurred while tokenizing input
+The following traceback may be corrupted or invalid
+The error message is: (&#39;EOF in multi-line string&#39;, (1, 2))
+
+
+
+
+---------------------------------------------------------------------------
+
+BadRequest                                Traceback (most recent call last)
+
+&amp;lt;ipython-input-7-227bc549bdfe&amp;gt; in &amp;lt;module&amp;gt;()
+      6   )
+      7   SELECT ARRAY_AGG(IF(position=2, NULL, position)) as positions from example
+----&amp;gt; 8   &#39;&#39;&#39;).to_dataframe()
+      9 
+     10 print(tabulate(temp, tablefmt=&#39;pipe&#39;, headers=&#39;keys&#39;))
+
+
+BadRequest: 400 GET https://bigquery.googleapis.com/bigquery/v2/projects/bigquerytutorial-274406/queries/6e2204e1-25e3-4bb7-9146-383ba6dd14f8?maxResults=0&amp;amp;location=US: Array cannot have a null element; error in writing field positions
+
+(job ID: 6e2204e1-25e3-4bb7-9146-383ba6dd14f8)
+
+                         -----Query Job SQL Follows-----                         
+
+    |    .    |    .    |    .    |    .    |    .    |    .    |    .    |
+   1:
+   2:  WITH example AS (
+   3:    SELECT true AS is_vowel, &#39;a&#39; as letter, 1 as position
+   4:    UNION ALL SELECT false, &#39;b&#39;, 2
+   5:    UNION ALL SELECT false, &#39;c&#39;, 3
+   6:  )
+   7:  SELECT ARRAY_AGG(IF(position=2, NULL, position)) as positions from example
+   8:  
+    |    .    |    .    |    .    |    .    |    .    |    .    |    .    |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;그런데, NULL 요소가 저장되지 않으면 쿼리는 정상적으로 작동한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH example AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT true AS is_vowel, &amp;#39;a&amp;#39; as letter, 1 as position
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;b&amp;#39;, 2
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;c&amp;#39;, 3
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT ARRAY_LENGTH(ARRAY_AGG(IF(position=2, NULL, position))) as positions from example
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    |   positions |
+|---:|------------:|
+|  0 |           3 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;위 코드는 &lt;code&gt;[1, NULL, 3]&lt;/code&gt;의 반환값의 길이를 구하는 코드다. 다시 말하면, &lt;code&gt;[1, NULL, 3]&lt;/code&gt;의 형태로 저장하는 것이 아니기 때문에 쿼리가 작동했다는 뜻이다.&lt;/p&gt;
+&lt;p&gt;매우 짧은 포스트이지만, ARRAY_AGG의 활용법과 그 주의해야 할 점에 대해 익혔다.&lt;/p&gt;
+&lt;p&gt;다음 시간에는 &lt;code&gt;STRUCT&lt;/code&gt;에 대해 배우는 시간을 가지도록 한다.&lt;/p&gt;
+&lt;h2 id=&#34;4-reference&#34;&gt;4. Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, V., &amp;amp; Tigani, J. (2020). Google BigQuery: the definitive guide: data warehousing, analytics, and machine learning at scale. Beijing: OReilly.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Ch07 Arrays &amp; Structs</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch07_split_unnest/</link>
+      <pubDate>Mon, 27 Apr 2020 20:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch07_split_unnest/</guid>
+      <description>&lt;h2 id=&#34;1-구글-클라우드-설정&#34;&gt;1. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;2-사용자-계정-인증&#34;&gt;2. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3-쿼리-기본&#34;&gt;3. 쿼리 기본&lt;/h2&gt;
+&lt;p&gt;빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp;amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.&lt;/p&gt;
+&lt;p&gt;빅쿼리는 데이터 분석을 위한 기본적인 도구이기 때문에, 웹/앱을 활용한 마케팅 분석이 필요한 업종에서는 어쩌면 반드시 가져가야할 일종의 언어이기도 하다.&lt;/p&gt;
+&lt;p&gt;기본적으로 SQL문법을 지원하며, BigQuery 나름의 문법을 또한 구성하고 있다. 이제 본격적으로 코드를 작성해보자.&lt;/p&gt;
+&lt;p&gt;현재 작성하는 모든 코드는 Python-BigQuery로 연동하여 작성하려고 한다. 이제 간단하게 쿼리를 작성해보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials1/&#34;&gt;Ch05-Query_Essentials(1)&lt;/a&gt;에서는 &lt;code&gt;SELECT&lt;/code&gt;와 &lt;code&gt;AS&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials2/&#34;&gt;Ch05-Query_Essentials(2)&lt;/a&gt;에서는 &lt;code&gt;WHERE&lt;/code&gt;와 &lt;code&gt;EXCEPT&lt;/code&gt;, 그리고 &lt;code&gt;REPLACE&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials3/&#34;&gt;Ch05-Query_Essentials(3)&lt;/a&gt;에서는 &lt;code&gt;SubQuery&lt;/code&gt;에 대해서 집중적으로 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch06_sql_aggregates/&#34;&gt;Ch06 SQL Aggregates&lt;/a&gt;에서는 집계함수를 사용해서 데이터를 조금 더 디테일하게 요약하는 것을 배웠다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;오늘 포스트에서는 &lt;code&gt;Split and Unnest&lt;/code&gt;, &lt;code&gt;UNION&lt;/code&gt;에 대해서 배우도록 한다. 오늘 포스트의 목적은 &lt;code&gt;테이블을 직접 만들어보자&lt;/code&gt;이다. &lt;code&gt;(It&#39;s Free)&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&#34;1-split-and-unnest&#34;&gt;(1) Split and Unnest&lt;/h3&gt;
+&lt;p&gt;데이터를 배열 형태로 조회할 수는 없을까? 빅쿼리에서는 이러한 문법을 보통 &lt;code&gt;Array&lt;/code&gt;로 통칭해서 부른다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ARRAY&lt;/code&gt;와 &lt;code&gt;UNNEST&lt;/code&gt;의 조합을 통해서, 사용자는 다양한 쿼리와 함수, 그리고 데이터 유형에 대해 사전에 먼저 실험 및 탐색할 수 있는 기회를 준다.&lt;/p&gt;
+&lt;p&gt;우선, &lt;code&gt;Split&lt;/code&gt;과 &lt;code&gt;UNNEST&lt;/code&gt;을 활용해서 조회를 해보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;your_project_id&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    city, split(city, &amp;#39; &amp;#39;) AS parts
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT * from UNNEST([
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      &amp;#39;Seattle WA&amp;#39;, &amp;#39;New York&amp;#39;, &amp;#39;Singapore&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    ]) AS city
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+
+
+|    | city       | parts             |
+|---:|:-----------|:------------------|
+|  0 | Seattle WA | [&#39;Seattle&#39;, &#39;WA&#39;] |
+|  1 | New York   | [&#39;New&#39;, &#39;York&#39;]   |
+|  2 | Singapore  | [&#39;Singapore&#39;]     |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;특히, &lt;code&gt;parts&lt;/code&gt; Column을 보면, city &lt;code&gt;Seattle WA&lt;/code&gt;가 [&amp;lsquo;Seattle&amp;rsquo;, &amp;lsquo;WA&amp;rsquo;]로 반환되는 것을 볼 수 있다.&lt;/p&gt;
+&lt;p&gt;위 코드가 좋은 이유는 빅쿼리에서는 이러한 형태로 데이터 셋을 만들어서 다양한 실험을 한 뒤, 실제 데이터에서 적용을 할 수 있는 장점이 있다. 이 때, 빅쿼리는 비용을 산정하지 않는다.&lt;/p&gt;
+&lt;p&gt;즉, 빅쿼리가 JSON 형태의 데이터도 취급을 하기 때문에, 이렇게 &lt;code&gt;Arrays&lt;/code&gt;를 잘 다룰줄 알면, 실제 데이터에 적용 시, 응용할 수 있는 장점을 제공한다.&lt;/p&gt;
+&lt;h3 id=&#34;2-union&#34;&gt;(2) UNION&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;Split&lt;/code&gt;과 &lt;code&gt;Unnest&lt;/code&gt;와 마찬가지로 임시적으로 데이터를 생성할 수 있다.&lt;/p&gt;
+&lt;p&gt;소스 코드를 통해서 확인해보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH example AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT &amp;#39;Sat&amp;#39; As day, 1451 AS numrides,
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    1018 AS oneways
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Sun&amp;#39;, 2376, 936
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Mon&amp;#39;, 1476, 736
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT * from example
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE numrides &amp;lt; 2000
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | day   |   numrides |   oneways |
+|---:|:------|-----------:|----------:|
+|  0 | Sat   |       1451 |      1018 |
+|  1 | Mon   |       1476 |       736 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;마찬가지로 테이블이 생성된 것을 확인할 수 있다.&lt;/p&gt;
+&lt;p&gt;매우 짧은 포스트이지만, 실무에서는 자주 사용될 수 있는 예제이다. 이제 본격적으로 &lt;code&gt;ARRAY&lt;/code&gt;에 대해서 배우도록 하자.&lt;/p&gt;
+&lt;h2 id=&#34;4-reference&#34;&gt;4. Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, V., &amp;amp; Tigani, J. (2020). Google BigQuery: the definitive guide: data warehousing, analytics, and machine learning at scale. Beijing: OReilly.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Ch06 SQL Aggregates</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch06_sql_aggregates/</link>
+      <pubDate>Sun, 26 Apr 2020 11:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch06_sql_aggregates/</guid>
+      <description>&lt;h2 id=&#34;1-구글-클라우드-설정&#34;&gt;1. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;2-사용자-계정-인증&#34;&gt;2. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3-쿼리-기본&#34;&gt;3. 쿼리 기본&lt;/h2&gt;
+&lt;p&gt;빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp;amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.&lt;/p&gt;
+&lt;p&gt;빅쿼리는 데이터 분석을 위한 기본적인 도구이기 때문에, 웹/앱을 활용한 마케팅 분석이 필요한 업종에서는 어쩌면 반드시 가져가야할 일종의 언어이기도 하다.&lt;/p&gt;
+&lt;p&gt;기본적으로 SQL문법을 지원하며, BigQuery 나름의 문법을 또한 구성하고 있다. 이제 본격적으로 코드를 작성해보자.&lt;/p&gt;
+&lt;p&gt;현재 작성하는 모든 코드는 Python-BigQuery로 연동하여 작성하려고 한다. 이제 간단하게 쿼리를 작성해보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials1/&#34;&gt;Ch05-Query_Essentials(1)&lt;/a&gt;에서는 &lt;code&gt;SELECT&lt;/code&gt;와 &lt;code&gt;AS&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials2/&#34;&gt;Ch05-Query_Essentials(2)&lt;/a&gt;에서는 &lt;code&gt;WHERE&lt;/code&gt;와 &lt;code&gt;EXCEPT&lt;/code&gt;, 그리고 &lt;code&gt;REPLACE&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials3/&#34;&gt;Ch05-Query_Essentials(3)&lt;/a&gt;에서는 &lt;code&gt;SubQuery&lt;/code&gt;에 대해서 집중적으로 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;오늘 포스트에서는 &lt;code&gt;Aggregates&lt;/code&gt;, 일반적인 집계함수 처리법에 대해 학습하도록 한다.&lt;/p&gt;
+&lt;h3 id=&#34;1-group-by&#34;&gt;(1) Group By&lt;/h3&gt;
+&lt;p&gt;SQL에서 평균을 구해보자. SQL이 일반적으로 조회기능만 가지고 있다고 생각하면 안된다. 기본적으로 SQL에서 처리할 수 있는 단순한 계산들은 Database에서 해주는 것이 많은 도움이 된다.&lt;/p&gt;
+&lt;p&gt;평균을 구하려는 건, 다름이 아니라 남성 이용자들의 평균 &lt;code&gt;tripduration&lt;/code&gt; 시간을 알아보자는 데 있다. 어떻게 해야할까?&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;your_project_id&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    AVG(tripduration / 60) as avg_trip_duration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE gender = &amp;#39;male&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+
+
+|    |   avg_trip_duration |
+|---:|--------------------:|
+|  0 |             13.4156 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;다른 구문은 지난시간에 계속 배운 것이기 때문에 익숙하지만, &lt;code&gt;AVG()&lt;/code&gt; 함수가 사용되었다.&lt;/p&gt;
+&lt;p&gt;이번에는 조금 더 업그레이드를 해본다. 실무에서 전체 평균은 그렇게 중요하지 않다. 각 속성별로 &lt;code&gt;gender&lt;/code&gt;를 그룹화 해서 비교하는 것을 기본 원칙으로 삼는다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, AVG(tripduration / 60) AS avg_trip_duration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE tripduration is not NULL
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  GROUP BY
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  ORDER BY
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    avg_trip_duration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;| 0       |       1 |
+|:--------|--------:|
+| male    | 13.4156 |
+| female  | 15.9775 |
+| unknown | 31.4395 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;위 구문을 이해하는데 있어서 &lt;code&gt;GROUP BY&lt;/code&gt;를 주의해서 봐야한다. 그룹화 하려는 Column명을 &lt;code&gt;SELECT&lt;/code&gt;다음에 명시를 해줘야 한 뒤, 작성해야줘야 한다. 만약 &lt;code&gt;SELECT&lt;/code&gt;문에 &lt;code&gt;gender&lt;/code&gt;가 없으면 그룹별 값은 구해지지만, &lt;code&gt;gender&lt;/code&gt;가 없기 때문에 불완전한 쿼리 결과물이 나온다. 빠르게 확인해보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    AVG(tripduration / 60) AS avg_trip_duration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE tripduration is not NULL
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  GROUP BY
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  ORDER BY
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    avg_trip_duration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|       0 |
+|--------:|
+| 13.4156 |
+| 15.9775 |
+| 31.4395 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;두 구문을 비교해서, 어떻게 &lt;code&gt;GROUP BY&lt;/code&gt;를 써야 할지 확인해본다.&lt;/p&gt;
+&lt;h3 id=&#34;2-having&#34;&gt;(2) HAVING&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;Having&lt;/code&gt;은 언제 쓸까? 영어 동사를 알고 있다면 이해하는데 큰 어려움이 없을 것이다. 간단하게 설명하면, Having은 &lt;code&gt;WHERE&lt;/code&gt;절과 비슷한 기능을 갖는 일종의 필터링을 한다. &lt;code&gt;male&lt;/code&gt;, &lt;code&gt;female&lt;/code&gt;, &lt;code&gt;unknown&lt;/code&gt; 값이 나온 것에서 평균 15이하인 것을 제거한다고 해보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, AVG(tripduration / 60) AS avg_trip_duration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE tripduration is not NULL
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  GROUP BY
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  HAVING avg_trip_duration &amp;gt; 14
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  ORDER BY
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    avg_trip_duration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;| 0       |       1 |
+|:--------|--------:|
+| female  | 15.9775 |
+| unknown | 31.4395 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;15이하였던 &lt;code&gt;male&lt;/code&gt;이 사라진 것을 확인할 수 있다. 그런데, 이 때, &lt;code&gt;HAVING&lt;/code&gt;절의 위치가 중요하다. &lt;code&gt;HAVING&lt;/code&gt;절이 &lt;code&gt;ORDER BY&lt;/code&gt;앞에 명시가 되고 있는 것을 확인할 수 있다.&lt;/p&gt;
+&lt;p&gt;만약 &lt;code&gt;HAVING&lt;/code&gt;절이 &lt;code&gt;ORDER BY&lt;/code&gt;뒤에 오면 어떻게 될까?&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, AVG(tripduration / 60) AS avg_trip_duration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE tripduration is not NULL
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  GROUP BY
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  ORDER BY
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    avg_trip_duration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  HAVING avg_trip_duration &amp;gt; 14
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;---------------------------------------------------------------------------
+
+BadRequest                                Traceback (most recent call last)
+
+&amp;lt;ipython-input-13-3a9913fbbf59&amp;gt; in &amp;lt;module&amp;gt;()
+     11   &#39;&#39;&#39;)
+     12 
+---&amp;gt; 13 print(tabulate(temp, tablefmt=&#39;pipe&#39;, headers=&#39;keys&#39;))
+
+
+/usr/local/lib/python3.6/dist-packages/tabulate.py in tabulate(tabular_data, headers, tablefmt, floatfmt, numalign, stralign, missingval, showindex, disable_numparse, colalign)
+   1425         tabular_data = []
+   1426     list_of_lists, headers = _normalize_tabular_data(
+-&amp;gt; 1427         tabular_data, headers, showindex=showindex
+   1428     )
+   1429 
+
+
+/usr/local/lib/python3.6/dist-packages/tabulate.py in _normalize_tabular_data(tabular_data, headers, showindex)
+   1023 
+   1024     else:  # it&#39;s a usual an iterable of iterables, or a NumPy array
+-&amp;gt; 1025         rows = list(tabular_data)
+   1026 
+   1027         if headers == &amp;quot;keys&amp;quot; and not rows:
+
+
+/usr/local/lib/python3.6/dist-packages/google/cloud/bigquery/job.py in __iter__(self)
+   3110 
+   3111     def __iter__(self):
+-&amp;gt; 3112         return iter(self.result())
+   3113 
+   3114 
+
+
+/usr/local/lib/python3.6/dist-packages/google/cloud/bigquery/job.py in result(self, timeout, page_size, retry, max_results)
+   2972         &amp;quot;&amp;quot;&amp;quot;
+   2973         try:
+-&amp;gt; 2974             super(QueryJob, self).result(timeout=timeout)
+   2975 
+   2976             # Return an iterator instead of returning the job.
+
+
+/usr/local/lib/python3.6/dist-packages/google/cloud/bigquery/job.py in result(self, timeout, retry)
+    766             self._begin(retry=retry)
+    767         # TODO: modify PollingFuture so it can pass a retry argument to done().
+--&amp;gt; 768         return super(_AsyncJob, self).result(timeout=timeout)
+    769 
+    770     def cancelled(self):
+
+
+/usr/local/lib/python3.6/dist-packages/google/api_core/future/polling.py in result(self, timeout)
+    125             # pylint: disable=raising-bad-type
+    126             # Pylint doesn&#39;t recognize that this is valid in this case.
+--&amp;gt; 127             raise self._exception
+    128 
+    129         return self._result
+
+
+BadRequest: 400 Syntax error: Unexpected keyword HAVING at [10:3]
+
+(job ID: 96ceb51a-9673-479f-be00-22c50a047e24)
+
+                  -----Query Job SQL Follows-----                  
+
+    |    .    |    .    |    .    |    .    |    .    |    .    |
+   1:
+   2:  SELECT
+   3:    gender, AVG(tripduration / 60) AS avg_trip_duration
+   4:  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+   5:  WHERE tripduration is not NULL
+   6:  GROUP BY
+   7:    gender
+   8:  ORDER BY
+   9:    avg_trip_duration
+  10:  HAVING avg_trip_duration &amp;gt; 14
+  11:  
+    |    .    |    .    |    .    |    .    |    .    |    .    |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;보다시피, 에러가 나타나는데, 에러 메시지는 &lt;code&gt;400 Syntax error: Unexpected keyword HAVING at [10:3]&lt;/code&gt; 즉, 문법에 맞지 않다는 뜻이다. 이런 SQL구문을 처음 접하는 사람에게는 어려울 수 있지만, 기본 문법은 문법이기 때문에 명시적으로 암기해서 작성하는 것이 좋다.&lt;/p&gt;
+&lt;h3 id=&#34;3-distinct&#34;&gt;(3) DISTINCT&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;DISTINCT&lt;/code&gt;는 특정 그룹에서 &lt;code&gt;구별되다, 따로 분리되다 등&lt;/code&gt; 해석되고는 합니다. 각 문자열의 각 &lt;code&gt;Column&lt;/code&gt;들은 특정 값들이 반복해서 나타나게 되는데, 이 때, &lt;code&gt;DISTINCT&lt;/code&gt;를 사용하면 반복되는 값들을 빠르게 확인할 수 있습니다. 코드를 통해서 결과를 확인해봅니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT DISTINCT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;     usertype
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | usertype   |
+|---:|:-----------|
+|  0 | Subscriber |
+|  1 | Customer   |
+|  2 |            |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;결과를 조회해보니, 4개가 출력되었다. 왜 4개일까? 결과적으로 말하면 공백이 있다는 뜻이다. 실무에서 이런경우는 매우 많이 벌어진다. 또한, 처음 업무에 투입하면 들어오는 데이터를 모르는 경우가 많기 때문에 SQL에서 여러 조회를 하다보면, 이런 결과값이 나오는 것이 부지기수다. 이럴 때 당황할 필요 없이 다음 SQL문을 실행해보면 된다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    bikeid,
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    tripduration,
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    usertype
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE gender= &amp;#34;&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | bikeid   | tripduration   | usertype   |
+|---:|:---------|:---------------|:-----------|
+|  0 |          |                |            |
+|  1 |          |                |            |
+|  2 |          |                |            |
+|  3 |          |                |            |
+|  4 |          |                |            |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;공백으로 나타내는 것을 확인할 수 있다. python jupyter notebook에서는 나타나고 있지 않지만, 이를 &lt;a href=&#34;https://console.cloud.google.com/bigquery&#34;&gt;BigQuery GUI&lt;/a&gt;에서 위 쿼리문을 다시 실행하면 NULL 값을 확인할 수 있다.&lt;/p&gt;
+&lt;p&gt;문제는 이 다음이다. 어떻게 처리해야 할까? 당연히 조회값으로는 적정하지 않으니, 이를 연산자를 통해 제거한다. (WHERE절에서 작성)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT DISTINCT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, usertype
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE gender != &amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   | usertype   |
+|---:|:---------|:-----------|
+|  0 | male     | Subscriber |
+|  1 | female   | Subscriber |
+|  2 | male     | Customer   |
+|  3 | unknown  | Subscriber |
+|  4 | female   | Customer   |
+|  5 | unknown  | Customer   |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이제 원하는 대로 공백값이 지워지고 각각 매칭되도록 결과값이 나온 것을 확인할 수 있다.&lt;/p&gt;
+&lt;p&gt;이번 포스트에서는 &lt;code&gt;GROUP&lt;/code&gt;를 활용한 &lt;code&gt;HAVING&lt;/code&gt; 그리고 &lt;code&gt;DISTINCT&lt;/code&gt; 대해서 배웠는데, 도움이 되었기를 바란다.&lt;/p&gt;
+&lt;p&gt;다음 포스트에서는 &lt;code&gt;Arrays &amp;amp; Structs&lt;/code&gt;에 대해 학습하도록 하겠다. 이 부분이 사실 기초 파트에서는 매우 중요한 포인트가 될 것 같다!&lt;/p&gt;
+&lt;h2 id=&#34;4-reference&#34;&gt;4. Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, V., &amp;amp; Tigani, J. (2020). Google BigQuery: the definitive guide: data warehousing, analytics, and machine learning at scale. Beijing: OReilly.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Ch05 Query Essentials(3)</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials3/</link>
+      <pubDate>Sat, 25 Apr 2020 16:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials3/</guid>
+      <description>&lt;h2 id=&#34;1-구글-클라우드-설정&#34;&gt;1. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;2-사용자-계정-인증&#34;&gt;2. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3-쿼리-기본&#34;&gt;3. 쿼리 기본&lt;/h2&gt;
+&lt;p&gt;빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp;amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.&lt;/p&gt;
+&lt;p&gt;빅쿼리는 데이터 분석을 위한 기본적인 도구이기 때문에, 웹/앱을 활용한 마케팅 분석이 필요한 업종에서는 어쩌면 반드시 가져가야할 일종의 언어이기도 하다.&lt;/p&gt;
+&lt;p&gt;기본적으로 SQL문법을 지원하며, BigQuery 나름의 문법을 또한 구성하고 있다. 이제 본격적으로 코드를 작성해보자.&lt;/p&gt;
+&lt;p&gt;현재 작성하는 모든 코드는 Python-BigQuery로 연동하여 작성하려고 한다. 이제 간단하게 쿼리를 작성해보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials1/&#34;&gt;Ch05-Query_Essentials(1)&lt;/a&gt;에서는 &lt;code&gt;SELECT&lt;/code&gt;와 &lt;code&gt;AS&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials2/&#34;&gt;Ch05-Query_Essentials(2)&lt;/a&gt;에서는 &lt;code&gt;WHERE&lt;/code&gt;와 &lt;code&gt;EXCEPT&lt;/code&gt;, 그리고 &lt;code&gt;REPLACE&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;오늘 포스트에서는 &lt;code&gt;SubQuery&lt;/code&gt;, &lt;code&gt;ORDER BY&lt;/code&gt;에 대해 학습을 진행하도록 한다.&lt;/p&gt;
+&lt;h3 id=&#34;1-subquery&#34;&gt;(1) SUBQUERY&lt;/h3&gt;
+&lt;p&gt;서브쿼리는 무엇일까? 서브쿼리는 메인쿼리가 서브쿼리를 포함하는데, 반복적인 쿼리를 수행해야 할 때 &lt;code&gt;alias&lt;/code&gt;를 통해서 보다 간편하게 결과를 조회할 때 사용합니다.&lt;/p&gt;
+&lt;p&gt;실무에서는 자주 사용되기 때문에 꼭 실습을 통해서 개념을 익히시기를 바랍니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;your_project_id&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    * 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      gender, tripduration / 60 AS minutes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE minutes &amp;lt; 10
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+
+
+|    | gender   |   minutes |
+|---:|:---------|----------:|
+|  0 | female   |   7.28333 |
+|  1 | male     |   7.41667 |
+|  2 | female   |   5.75    |
+|  3 | male     |   4.58333 |
+|  4 | male     |   6.43333 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;FROM&lt;/code&gt; 다음에 생성된 구절이 서브쿼리라고 보면 된다. 그런데, 복잡하다. R 또는 Python처럼 SQL도 다른 데이터셋으로 변경하여 저장시킬 수 있을까? 결론부터 말하면 가능하며, 이 때에는 &lt;code&gt;With new_name AS (syntax)&lt;/code&gt; 형태로 작성해야 한다. 바로 코드를 확인하자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WITH all_trips AS(
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      gender, tripduration / 60 AS minutes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT * from all_trips
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WHERE minutes &amp;lt; 10
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |   minutes |
+|---:|:---------|----------:|
+|  0 | male     |   7.2     |
+|  1 | female   |   3.96667 |
+|  2 | male     |   9.88333 |
+|  3 | male     |   6.9     |
+|  4 | male     |   7.9     |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;2-order-by&#34;&gt;(2) ORDER BY&lt;/h3&gt;
+&lt;p&gt;그런데 한가지 문제가 있다. 보통 실무에서는 상위 또는 하위 이런식으로 결과보고서를 제출해야 의사결정에 도움이 된다. 이럴 때 자주쓰는 기술이 데이터 정렬(&lt;code&gt;ORDER BY&lt;/code&gt;)을 하는 것이다. 내림차순으로 정렬을 하는데, 앞에서 배운 것을 그대로 적용한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WITH all_trips AS(
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      gender, tripduration / 60 AS minutes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT * from all_trips
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WHERE minutes &amp;lt; 10
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    ORDER BY minutes DESC
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |   minutes |
+|---:|:---------|----------:|
+|  0 | male     |   9.98333 |
+|  1 | male     |   9.98333 |
+|  2 | female   |   9.98333 |
+|  3 | male     |   9.98333 |
+|  4 | male     |   9.98333 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이 때, 여성 또는 남성, 즉 특정 값과 연계되어 내림차순을 진행하다면, &lt;code&gt;ORDER BY&lt;/code&gt; 구문 앞에서 &lt;code&gt;WHERE&lt;/code&gt; 구문을 통해서 작성하도록 한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WITH all_trips AS(
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      gender, tripduration / 60 AS minutes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT * from all_trips
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WHERE gender = &amp;#39;female&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    ORDER BY minutes DESC
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |   minutes |
+|---:|:---------|----------:|
+|  0 | female   |    250349 |
+|  1 | female   |    226438 |
+|  2 | female   |    207989 |
+|  3 | female   |    159712 |
+|  4 | female   |    154239 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이번에는 여성 상위 5명을 추출하도록 해보자. 여기에서는 &lt;code&gt;WHERE gender = &#39;female&#39;&lt;/code&gt;구문을 추가해서 데이터를 조회할 수 있다.&lt;/p&gt;
+&lt;p&gt;이번 포스트에서는 &lt;code&gt;With&lt;/code&gt;를 활용한 &lt;code&gt;SubQuery&lt;/code&gt; 그리고 &lt;code&gt;ORDER BY&lt;/code&gt; 대해서 배우도록 한다.&lt;/p&gt;
+&lt;p&gt;다음 포스트에서는 집계함수에 대해 배우도록 한다.&lt;/p&gt;
+&lt;h2 id=&#34;4-reference&#34;&gt;4. Reference&lt;/h2&gt;
+&lt;p&gt;“Getting Started with BigQuery.” Google, Google, colab.research.google.com/notebooks/bigquery.ipynb.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Ch05 Query Essentials(2)</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials2/</link>
+      <pubDate>Fri, 24 Apr 2020 13:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials2/</guid>
+      <description>&lt;h2 id=&#34;1-구글-클라우드-설정&#34;&gt;1. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;2-사용자-계정-인증&#34;&gt;2. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3-쿼리-기본&#34;&gt;3. 쿼리 기본&lt;/h2&gt;
+&lt;p&gt;빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp;amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.&lt;/p&gt;
+&lt;p&gt;빅쿼리는 데이터 분석을 위한 기본적인 도구이기 때문에, 웹/앱을 활용한 마케팅 분석이 필요한 업종에서는 어쩌면 반드시 가져가야할 일종의 언어이기도 하다.&lt;/p&gt;
+&lt;p&gt;기본적으로 SQL문법을 지원하며, BigQuery 나름의 문법을 또한 구성하고 있다. 이제 본격적으로 코드를 작성해보자.&lt;/p&gt;
+&lt;p&gt;현재 작성하는 모든 코드는 Python-BigQuery로 연동하여 작성하려고 한다. 이제 간단하게 쿼리를 작성해보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials1/&#34;&gt;Ch05-Query_Essentials(1)&lt;/a&gt;에서는 &lt;code&gt;SELECT&lt;/code&gt;와 &lt;code&gt;AS&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;오늘 포스트에서는 &lt;code&gt;WHERE&lt;/code&gt;, &lt;code&gt;REPLACE&lt;/code&gt;, &lt;code&gt;EXCEPT&lt;/code&gt; 구문에 대해 학습하는 시간을 갖도록 한다.&lt;/p&gt;
+&lt;h3 id=&#34;1-where&#34;&gt;(1) WHERE&lt;/h3&gt;
+&lt;p&gt;먼저 &lt;code&gt;tripduration&lt;/code&gt;이 10분 이내인 것에 관한 데이터를 찾도록 한다. &lt;code&gt;FROM&lt;/code&gt; 구문 다음에는 &lt;code&gt;WHERE&lt;/code&gt; 절을 추가하면 된다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;your_project_id&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, tripduration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE tripduration &amp;lt; 600
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |   tripduration |
+|---:|:---------|---------------:|
+|  0 | male     |            432 |
+|  1 | female   |            238 |
+|  2 | male     |            593 |
+|  3 | male     |            414 |
+|  4 | male     |            474 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;기대한대로 600 이상은 보이지가 않는다. 이번에는 &lt;code&gt;AND&lt;/code&gt;조건문을 활용하여 5분과 10분 사이에서 &lt;code&gt;female&lt;/code&gt;이 빌린 &lt;code&gt;rental&lt;/code&gt; 현황을 파악해보자. 이 때 &lt;code&gt;WHERE&lt;/code&gt;절이 어떻게 변하는지 주의깊에 보기를 바란다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, tripduration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE tripduration &amp;gt;= 300 AND tripduration &amp;lt; 600 AND gender =&amp;#39;female&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |   tripduration |
+|---:|:---------|---------------:|
+|  0 | female   |            309 |
+|  1 | female   |            304 |
+|  2 | female   |            476 |
+|  3 | female   |            406 |
+|  4 | female   |            365 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;그런데, 만약에 &lt;code&gt;Gender&lt;/code&gt;의 값이 &lt;code&gt;female&lt;/code&gt;, &lt;code&gt;male&lt;/code&gt;, &lt;code&gt;unknown&lt;/code&gt;, &lt;code&gt;etc&lt;/code&gt; 이렇게 구성이 되어 있을 때, &lt;code&gt;NOT female&lt;/code&gt;의 값은 어떻게 될까? 이 때에는 &lt;code&gt;nonfemale&lt;/code&gt;은 3개의 값이 된다. 이럴 경우에는 빅쿼리에서는 &lt;code&gt;WHERE tripduration &amp;lt; 600 AND NOT gender=&#39;female&#39;&lt;/code&gt; 소스를 작성할 수 있다.&lt;/p&gt;
+&lt;p&gt;또한 &lt;code&gt;()&lt;/code&gt;을 사용해서 값을 통제할 수 있다. 우선 아래코드를 보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, tripduration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE (tripduration &amp;lt; 600 AND gender =&amp;#39;female&amp;#39;) or gender = &amp;#39;male&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |   tripduration |
+|---:|:---------|---------------:|
+|  0 | male     |            432 |
+|  1 | male     |            799 |
+|  2 | female   |            238 |
+|  3 | male     |            668 |
+|  4 | male     |            593 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;위 코드에서 &lt;code&gt;(tripulation &amp;lt; 600 AND gender=&#39;female&#39;)&lt;/code&gt; gender = female 이면서 &lt;code&gt;tripulation &amp;lt; 600&lt;/code&gt; 이하인 것을 1차적으로 조회하고, 덧붙여서 &lt;code&gt;gender = male&lt;/code&gt;인 것을 추가하는 코드가 된다.&lt;/p&gt;
+&lt;p&gt;WHERE 구문에서 &lt;code&gt;()&lt;/code&gt;을 꼭 사용해야 하는 경우가 있다. 우선 아래 에러부터 경험해보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, tripduration/60 AS minutes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE minutes &amp;lt; 10
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;ERROR:root:An unexpected error occurred while tokenizing input
+The following traceback may be corrupted or invalid
+The error message is: (&#39;EOF in multi-line string&#39;, (1, 2))
+
+
+
+
+---------------------------------------------------------------------------
+
+BadRequest                                Traceback (most recent call last)
+
+&amp;lt;ipython-input-13-36c47fd332d3&amp;gt; in &amp;lt;module&amp;gt;()
+      5   WHERE minutes &amp;lt; 10
+      6   LIMIT 5
+----&amp;gt; 7   &#39;&#39;&#39;).to_dataframe()
+      8 
+      9 print(tabulate(temp, tablefmt=&#39;pipe&#39;, headers=&amp;quot;keys&amp;quot;))
+
+
+/usr/local/lib/python3.6/dist-packages/google/cloud/bigquery/job.py in to_dataframe(self, bqstorage_client, dtypes, progress_bar_type)
+   3103             ValueError: If the `pandas` library cannot be imported.
+   3104         &amp;quot;&amp;quot;&amp;quot;
+-&amp;gt; 3105         return self.result().to_dataframe(
+   3106             bqstorage_client=bqstorage_client,
+   3107             dtypes=dtypes,
+
+
+/usr/local/lib/python3.6/dist-packages/google/cloud/bigquery/job.py in result(self, timeout, page_size, retry, max_results)
+   2972         &amp;quot;&amp;quot;&amp;quot;
+   2973         try:
+-&amp;gt; 2974             super(QueryJob, self).result(timeout=timeout)
+   2975 
+   2976             # Return an iterator instead of returning the job.
+
+
+/usr/local/lib/python3.6/dist-packages/google/cloud/bigquery/job.py in result(self, timeout, retry)
+    766             self._begin(retry=retry)
+    767         # TODO: modify PollingFuture so it can pass a retry argument to done().
+--&amp;gt; 768         return super(_AsyncJob, self).result(timeout=timeout)
+    769 
+    770     def cancelled(self):
+
+
+/usr/local/lib/python3.6/dist-packages/google/api_core/future/polling.py in result(self, timeout)
+    125             # pylint: disable=raising-bad-type
+    126             # Pylint doesn&#39;t recognize that this is valid in this case.
+--&amp;gt; 127             raise self._exception
+    128 
+    129         return self._result
+
+
+BadRequest: 400 Unrecognized name: minutes at [5:9]
+
+(job ID: 6e11f75b-208a-4f23-832d-9f1af16d9a1d)
+
+                  -----Query Job SQL Follows-----                  
+
+    |    .    |    .    |    .    |    .    |    .    |    .    |
+   1:
+   2:  SELECT
+   3:    gender, tripduration/60 AS minutes
+   4:  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+   5:  WHERE minutes &amp;lt; 10
+   6:  LIMIT 5
+   7:  
+    |    .    |    .    |    .    |    .    |    .    |    .    |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;BadRequest: 400 Unrecognized name: minutes at [5:9]&lt;/code&gt; 이 에러 문구를 보면 &lt;code&gt;minutes&lt;/code&gt;에서 에러가 나는 것을 확인할 수 있는데, AS(=Alias)를 쓰게 되는 Column명은 &lt;code&gt;WHERE&lt;/code&gt;절에 쓸 수 없다.&lt;/p&gt;
+&lt;p&gt;이럴 경우에는 원 column명을 작성해서 &lt;code&gt;()&lt;/code&gt;에서 처리를 해줘야 한다. 예를 들면 아래와 같다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, tripduration / 60 AS minutes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE (tripduration / 60) &amp;lt; 10
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |   minutes |
+|---:|:---------|----------:|
+|  0 | male     |   7.2     |
+|  1 | female   |   3.96667 |
+|  2 | male     |   9.88333 |
+|  3 | male     |   6.9     |
+|  4 | male     |   7.9     |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;우리가 원하는 값이 나왔고, &lt;code&gt;column&lt;/code&gt;명도 &lt;code&gt;tripduration&lt;/code&gt;에서 &lt;code&gt;minutes&lt;/code&gt;로 바뀌는 것을 확인할 수 있다.&lt;/p&gt;
+&lt;h3 id=&#34;2-except-replace&#34;&gt;(2) EXCEPT, REPLACE&lt;/h3&gt;
+&lt;p&gt;이 문법을 쓰는 이유는 &lt;code&gt;BigQuery&lt;/code&gt;의 가격정책과도 연관이 있다. 클라우드에서 비용은 만만하지 않은데, 조회비용은 가급적 아끼는 것이 중요하다.&lt;/p&gt;
+&lt;p&gt;따라서, 원칙적으로는 &lt;code&gt;SELECT *&lt;/code&gt; 문법은 쓰지 말아야 한다. 그럼에도 불구하고, 데이터 분석일을 하다보면 어쩔 수 없이 써야 하는 경우가 올 수도 있다. 이 때, &lt;code&gt;EXCEPT&lt;/code&gt; 문법을 활용한다. 이 문법은 &lt;code&gt;SELECT&lt;/code&gt; 구문에서 사용이 가능하다.&lt;/p&gt;
+&lt;p&gt;아래 구문을 확인해보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    *
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_stations`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE name LIKE &amp;#39;%Riverside&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;| station_id   | name   | short_name   | latitude   | longitude   | region_id   | rental_methods   | capacity   | eightd_has_key_dispenser   | num_bikes_available   | num_bikes_disabled   | num_docks_available   | num_docks_disabled   | is_installed   | is_renting   | is_returning   | eightd_has_available_keys   | last_reported   |
+|--------------|--------|--------------|------------|-------------|-------------|------------------|------------|----------------------------|-----------------------|----------------------|-----------------------|----------------------|----------------|--------------|----------------|-----------------------------|-----------------|
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;WHERE LIKE &lt;code&gt;%Riverside&lt;/code&gt; 문법은 일종의 와일드카드라고 불리운다. 즉, 0개이상의 문법과 일치해야 하는데, 여기에서는 &lt;code&gt;Riverside&lt;/code&gt;문자와 일치하는 값(row)을 찾아서 관련있는 모든 열(column)을 조회한다.&lt;/p&gt;
+&lt;p&gt;이번에는 &lt;code&gt;EXCEPT&lt;/code&gt;문법을 추가해본다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    * EXCEPT(short_name, last_reported)
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_stations`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE name LIKE &amp;#39;%Riverside&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;| station_id   | name   | latitude   | longitude   | region_id   | rental_methods   | capacity   | eightd_has_key_dispenser   | num_bikes_available   | num_bikes_disabled   | num_docks_available   | num_docks_disabled   | is_installed   | is_renting   | is_returning   | eightd_has_available_keys   |
+|--------------|--------|------------|-------------|-------------|------------------|------------|----------------------------|-----------------------|----------------------|-----------------------|----------------------|----------------|--------------|----------------|-----------------------------|
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;첫번째 조회값과 비교할 때, &lt;code&gt;short_name&lt;/code&gt;과 &lt;code&gt;last_reported&lt;/code&gt;값이 없어진 것을 확인할 수 있다. 특정 Column에 계산값을 바꿔서 업데이트 하는 경우 &lt;code&gt;REPLACE&lt;/code&gt; 구문을 추가하기도 한다. 다음 예를 확인해보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    *
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    `bigquery-public-data.new_york_citibike.citibike_stations` 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    |   station_id | name                          |   short_name |   latitude |   longitude |   region_id | rental_methods   |   capacity | eightd_has_key_dispenser   |   num_bikes_available |   num_bikes_disabled |   num_docks_available |   num_docks_disabled | is_installed   | is_renting   | is_returning   | eightd_has_available_keys   | last_reported       |
+|---:|-------------:|:------------------------------|-------------:|-----------:|------------:|------------:|:-----------------|-----------:|:---------------------------|----------------------:|---------------------:|----------------------:|---------------------:|:---------------|:-------------|:---------------|:----------------------------|:--------------------|
+|  0 |          144 | Nassau St &amp;amp; Navy St           |      4812.02 |    40.6984 |    -73.9807 |          71 | KEY,CREDITCARD   |         58 | False                      |                    50 |                    1 |                     7 |                    0 | True           | True         | True           | False                       | 2020-04-14 00:00:00 |
+|  1 |          482 | W 15 St &amp;amp; 7 Ave               |      6030.06 |    40.7394 |    -73.9993 |          71 | KEY,CREDITCARD   |         77 | False                      |                    69 |                    0 |                     8 |                    0 | True           | True         | True           | False                       | 2020-04-15 00:00:00 |
+|  2 |         2005 | Railroad Ave &amp;amp; Kay Ave        |      4990.01 |    40.7053 |    -73.971  |          71 | KEY,CREDITCARD   |         12 | False                      |                     4 |                    0 |                     8 |                    0 | True           | True         | True           | False                       | 2020-04-15 00:00:00 |
+|  3 |          461 | E 20 St &amp;amp; 2 Ave               |      5971.08 |    40.7359 |    -73.9821 |          71 | KEY,CREDITCARD   |         56 | False                      |                    46 |                    1 |                     9 |                    0 | True           | True         | True           | False                       | 2020-04-15 00:00:00 |
+|  4 |           83 | Atlantic Ave &amp;amp; Fort Greene Pl |      4354.07 |    40.6838 |    -73.9763 |          71 | KEY,CREDITCARD   |         62 | False                      |                    51 |                    0 |                    11 |                    0 | True           | True         | True           | False                       | 2020-04-15 00:00:00 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    * REPLACE(capacity + 5 AS capacity)
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    `bigquery-public-data.new_york_citibike.citibike_stations` 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    |   station_id | name                          |   short_name |   latitude |   longitude |   region_id | rental_methods   |   capacity | eightd_has_key_dispenser   |   num_bikes_available |   num_bikes_disabled |   num_docks_available |   num_docks_disabled | is_installed   | is_renting   | is_returning   | eightd_has_available_keys   | last_reported       |
+|---:|-------------:|:------------------------------|-------------:|-----------:|------------:|------------:|:-----------------|-----------:|:---------------------------|----------------------:|---------------------:|----------------------:|---------------------:|:---------------|:-------------|:---------------|:----------------------------|:--------------------|
+|  0 |          144 | Nassau St &amp;amp; Navy St           |      4812.02 |    40.6984 |    -73.9807 |          71 | KEY,CREDITCARD   |         63 | False                      |                    50 |                    1 |                     7 |                    0 | True           | True         | True           | False                       | 2020-04-14 00:00:00 |
+|  1 |          482 | W 15 St &amp;amp; 7 Ave               |      6030.06 |    40.7394 |    -73.9993 |          71 | KEY,CREDITCARD   |         82 | False                      |                    69 |                    0 |                     8 |                    0 | True           | True         | True           | False                       | 2020-04-15 00:00:00 |
+|  2 |         2005 | Railroad Ave &amp;amp; Kay Ave        |      4990.01 |    40.7053 |    -73.971  |          71 | KEY,CREDITCARD   |         17 | False                      |                     4 |                    0 |                     8 |                    0 | True           | True         | True           | False                       | 2020-04-15 00:00:00 |
+|  3 |          461 | E 20 St &amp;amp; 2 Ave               |      5971.08 |    40.7359 |    -73.9821 |          71 | KEY,CREDITCARD   |         61 | False                      |                    46 |                    1 |                     9 |                    0 | True           | True         | True           | False                       | 2020-04-15 00:00:00 |
+|  4 |           83 | Atlantic Ave &amp;amp; Fort Greene Pl |      4354.07 |    40.6838 |    -73.9763 |          71 | KEY,CREDITCARD   |         67 | False                      |                    51 |                    0 |                    11 |                    0 | True           | True         | True           | False                       | 2020-04-15 00:00:00 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;column명 &lt;code&gt;capacity&lt;/code&gt; 행을 보면 &lt;code&gt;5&lt;/code&gt;씩 늘어나는 것을 볼 수 있다.&lt;/p&gt;
+&lt;p&gt;이번시간에는 WHERE 구문과 함께, EXCEPT, REPLACE구문에 대해 배웠다. 도움이 되기를 바란다.
+다음 포스트에서는 &lt;code&gt;With&lt;/code&gt;를 활용한 &lt;code&gt;SubQuery&lt;/code&gt; 그리고 &lt;code&gt;ORDER BY&lt;/code&gt; 대해서 배우도록 한다.&lt;/p&gt;
+&lt;h2 id=&#34;4-reference&#34;&gt;4. Reference&lt;/h2&gt;
+&lt;p&gt;“Getting Started with BigQuery.” Google, Google, colab.research.google.com/notebooks/bigquery.ipynb.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Ch05 Query Essentials(1)</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials1/</link>
+      <pubDate>Thu, 23 Apr 2020 18:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials1/</guid>
+      <description>&lt;h2 id=&#34;1-구글-클라우드-설정&#34;&gt;1. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;2-사용자-계정-인증&#34;&gt;2. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3-쿼리-기본&#34;&gt;3. 쿼리 기본&lt;/h2&gt;
+&lt;p&gt;빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp;amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.&lt;/p&gt;
+&lt;p&gt;빅쿼리는 데이터 분석을 위한 기본적인 도구이기 때문에, 웹/앱을 활용한 마케팅 분석이 필요한 업종에서는 어쩌면 반드시 가져가야할 일종의 언어이기도 하다.&lt;/p&gt;
+&lt;p&gt;기본적으로 SQL문법을 지원하며, BigQuery 나름의 문법을 또한 구성하고 있다. 이제 본격적으로 코드를 작성해보자.&lt;/p&gt;
+&lt;p&gt;현재 작성하는 모든 코드는 Python-BigQuery로 연동하여 작성하려고 한다. 이제 간단하게 쿼리를 작성해보자.&lt;/p&gt;
+&lt;h3 id=&#34;1-select-column&#34;&gt;(1) Select Column&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;your_project_id&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, tripduration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |   tripduration |
+|---:|:---------|---------------:|
+|  0 | male     |            432 |
+|  1 | female   |           1186 |
+|  2 | male     |            799 |
+|  3 | female   |            238 |
+|  4 | male     |            668 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;작성된 쿼리는 &lt;a href=&#34;https://bigquery.cloud.google.com/table/bigquery-public-data:new_york.citibike_trips&#34;&gt;New York Bicycle Rentals dataset&lt;/a&gt;에서 &lt;code&gt;gender&lt;/code&gt;, &lt;code&gt;tripduration&lt;/code&gt; 에서 확인한다.&lt;/p&gt;
+&lt;p&gt;여기에서 주목해야 하는 것은 &lt;code&gt;From&lt;/code&gt;이다. 일반적으로 &lt;code&gt;SQL&lt;/code&gt;에서 &lt;code&gt;FROM&lt;/code&gt;은 Table/View를 의미한다. 물론, BigQuery에서 의미는 같지만, Table/View이 크게 3가지로 구성되어 있음을 명심해야 한다. 이 부분은 문법이기 때문에 실무에서도 Table/View을 찾는데 시간을 낭비해서는 안되니 꼭 참고하기를 바란다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;right&#34;&gt;빅쿼리 객체&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;이름&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;설명&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;right&#34;&gt;Project&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;code&gt;bigquery-public-data&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;데이터셋 및 해당 테이블과 연결된 영구 스토리지의 소유자로 볼 수 있다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&#34;right&#34;&gt;Dataset&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;code&gt;new_york_citibike&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;데이터셋은 테이블과 뷰에 대한 액세스를 구성하고 제어하는 데 사용되는 최상위 컨테이너다. 사용자는 여러 데이터셋 소유가 가능하다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&#34;right&#34;&gt;Table/View&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;code&gt;citibike_trips&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;무조건 데이터셋에 속해야 하므로 BigQuery에 데이터를 로드하기 전에 하나 이상의 데이터 집합을 생성해야 한다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;2-column-수정하기&#34;&gt;(2) Column 수정하기&lt;/h3&gt;
+&lt;p&gt;이제 원하는 방법으로 Column명을 수정하도록 한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, tripduration AS rental_duration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |   rental_duration |
+|---:|:---------|------------------:|
+|  0 | male     |               432 |
+|  1 | female   |              1186 |
+|  2 | male     |               799 |
+|  3 | female   |               238 |
+|  4 | male     |               668 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Column명을 수정하는 것은 &lt;code&gt;AS new_name_of_column&lt;/code&gt; 형태로 기존 &lt;code&gt;SQL&lt;/code&gt;문과 차이는 없다. 이 컬렴명을 지정하는 것이 중요한 이유는 &lt;code&gt;SELECT&lt;/code&gt;문에서 간단한 수식을 적용하는데, 컬럼명을 지정하지 않으면 기대하지 않는 컬렴명이 나타나기 때문이다. 예를 들면 아래와 같다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, tripduration/60
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |      f0_ |
+|---:|:---------|---------:|
+|  0 | male     |  7.2     |
+|  1 | female   | 19.7667  |
+|  2 | male     | 13.3167  |
+|  3 | female   |  3.96667 |
+|  4 | male     | 11.1333  |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;보시다시피 &lt;code&gt;f0_&lt;/code&gt;이라는 컬럼명이 나타난다. 이러한 것을 방지하기 위해 column명을 지정하는 것이다. 이번에는 &lt;code&gt;AS ~&lt;/code&gt;를 활용한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, tripduration/60 AS duration_minutes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   |   duration_minutes |
+|---:|:---------|-------------------:|
+|  0 | male     |            7.2     |
+|  1 | female   |           19.7667  |
+|  2 | male     |           13.3167  |
+|  3 | female   |            3.96667 |
+|  4 | male     |           11.1333  |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이제 드디어 원하는 형태의 테이블이 나타났다.&lt;/p&gt;
+&lt;p&gt;다음 포스트에서는 &lt;code&gt;WHERE&lt;/code&gt;, &lt;code&gt;EXCEPT&lt;/code&gt;, &lt;code&gt;REPLACE&lt;/code&gt;에 대해 학습하도록 한다.&lt;/p&gt;
+&lt;h2 id=&#34;4-reference&#34;&gt;4. Reference&lt;/h2&gt;
+&lt;p&gt;“Getting Started with BigQuery.” Google, Google, colab.research.google.com/notebooks/bigquery.ipynb.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Ch04_bigquery_with_R</title>
+      <link>https://chloevan.github.io/gcp/bigquery/01_settings/ch04_bigquery_with_r/</link>
+      <pubDate>Tue, 21 Apr 2020 11:40:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/01_settings/ch04_bigquery_with_r/</guid>
+      <description>&lt;h2 id=&#34;1-구글-클라우드-설정&#34;&gt;1. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, R과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;2-사용자-계정-인증&#34;&gt;2. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;h2 id=&#34;3-bigrquery-r-패키지-로드&#34;&gt;3. Bigrquery R 패키지 로드&lt;/h2&gt;
+&lt;p&gt;패키지 설치가 되어 있지 않다면 아래 소스코드를 통해 패키지를 불러온다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# install.packages(&amp;#34;bigrquery&amp;#34;)&lt;/span&gt;
+&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(bigrquery)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;4-사용자-계정-인증&#34;&gt;4. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다. 이 때, &lt;code&gt;Enter authorization code:&lt;/code&gt; 입력하는 부분에서 인증키를 복사한 후 붙여넣기 하면 된다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Provide authentication&lt;/span&gt;
+&lt;span style=&#34;color:#a6e22e&#34;&gt;bq_auth&lt;/span&gt;(use_oob &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TRUE&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;5-데이터-연동&#34;&gt;5. 데이터 연동&lt;/h2&gt;
+&lt;p&gt;사용자 계정 인증이 완료 되었다면, 이제 데이터를 불러오자. 이 때 중요한 것은 &lt;code&gt;project_id&lt;/code&gt;를 입력해줘야 하는 것이다.&lt;/p&gt;
+&lt;h3 id=&#34;1-low-level-api&#34;&gt;(1) Low-Level API&lt;/h3&gt;
+&lt;p&gt;직접 빅쿼리 프로젝트 ID를 이용해 연동해본다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;billing &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;bigquerytutorial-274406&amp;#34;&lt;/span&gt;
+sql &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SELECT COUNT(*) as total_rows FROM `bigquery-public-data.samples.gsod`&amp;#34;&lt;/span&gt;
+
+tb &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;bq_project_query&lt;/span&gt;(billing, sql)
+&lt;span style=&#34;color:#75715e&#34;&gt;## Complete&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;## Billed: 0 B&lt;/span&gt;
+&lt;span style=&#34;color:#a6e22e&#34;&gt;bq_table_download&lt;/span&gt;(tb)
+&lt;span style=&#34;color:#75715e&#34;&gt;# A tibble: 1 x 1                                                         &lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#  total_rows&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#       &amp;lt;int&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# 1  114420316&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;2-dbi를-활용한-연동&#34;&gt;(2) DBI를 활용한 연동&lt;/h3&gt;
+&lt;p&gt;이번에는 R의 데이터베이스 인터페이스인 &lt;code&gt;DBI&lt;/code&gt;를 활용해서 데이터를 불러온다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(DBI)
+con &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;dbConnect&lt;/span&gt;(
+  bigrquery&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;bigquery&lt;/span&gt;(), 
+  project &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;bigquery-public-data&amp;#34;&lt;/span&gt;, 
+  dataset &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;samples&amp;#34;&lt;/span&gt;, 
+  billing &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; billing
+)
+
+con
+&lt;span style=&#34;color:#75715e&#34;&gt;# &amp;lt;BigQueryConnection&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#  Dataset: bigquery-public-data.samples&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#  Billing: bigquerytutorial-274406&lt;/span&gt;
+
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;dbGetQuery&lt;/span&gt;(con, sql, n &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Complete&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Billed: 0 B&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Downloading 1 rows in 1 pages.&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;## A tibble: 1 x 1                                                         &lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#  total_rows&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#       &amp;lt;int&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#1  114420316&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;3-dplyr를-활용한-빅쿼리-연동&#34;&gt;(3) dplyr를 활용한 빅쿼리 연동&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(dplyr)
+&lt;span style=&#34;color:#a6e22e&#34;&gt;dbListTables&lt;/span&gt;(con)
+&lt;span style=&#34;color:#75715e&#34;&gt;# [1] &amp;#34;github_nested&amp;#34;   &amp;#34;github_timeline&amp;#34; &amp;#34;gsod&amp;#34;            &amp;#34;natality&amp;#34;       &lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# [5] &amp;#34;shakespeare&amp;#34;     &amp;#34;trigrams&amp;#34;        &amp;#34;wikipedia&amp;#34;  &lt;/span&gt;
+
+gsod &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;tbl&lt;/span&gt;(con, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;gsod&amp;#34;&lt;/span&gt;)
+gsod &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;summarise&lt;/span&gt;(total_rows &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;n&lt;/span&gt;())
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Running job &amp;#39;bigquerytutorial-274406.job_fe5MbF0IChh7fRBBhPKYHZSHN3qz.U...&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Complete&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Billed: 0 B&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Downloading 1 rows in 1 pages.&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;## Source:   lazy query [?? x 1]                                           &lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;## Database: BigQueryConnection&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#  total_rows&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#       &amp;lt;int&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# 1  114420316&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;똑같은 결과값을 내기 위해서 서로 다른 패키지를 활용해서 출력하는 것을 확인하였다. 지금까지, R과 빅쿼리 연동에 대해서 짧게 배우는 시간을 가졌다.&lt;/p&gt;
+&lt;p&gt;자세한 건 공식문서를 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;6-파이썬과-빅쿼리-연동&#34;&gt;6. 파이썬과 빅쿼리 연동&lt;/h2&gt;
+&lt;p&gt;파이썬과 빅쿼리 연동하는 예제는 &lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/01_settings/ch03_bigquery_with_python/&#34;&gt;Ch03_bigquery_with_python&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;7-reference&#34;&gt;7. Reference&lt;/h2&gt;
+&lt;p&gt;Schendzielorz, Tim  M. “Google Big Query with R.” R, 20 Mar. 2020, &lt;a href=&#34;http://www.r-bloggers.com/google-big-query-with-r/&#34;&gt;www.r-bloggers.com/google-big-query-with-r/&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;RStudio. “Databases Using R.” Databases Using R, db.rstudio.com/databases/big-query/.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Ch03_bigquery_with_python</title>
+      <link>https://chloevan.github.io/gcp/bigquery/01_settings/ch03_bigquery_with_python/</link>
+      <pubDate>Sun, 19 Apr 2020 20:40:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/01_settings/ch03_bigquery_with_python/</guid>
+      <description>&lt;h2 id=&#34;1-구글-클라우드-설정&#34;&gt;1. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;2-사용자-계정-인증&#34;&gt;2. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3-매직magics을-활용한-bigquery-연동&#34;&gt;3. 매직(magics)을 활용한 BigQuery 연동&lt;/h2&gt;
+&lt;p&gt;아래 &lt;code&gt;%%&lt;/code&gt; 코드를 활용하면 빅쿼리를 이제 &lt;code&gt;Jupyter Notebook&lt;/code&gt;에서 사용할 수 있다. 이제 강사가 보여주는 모든 코드는 빅쿼리 GUI에서 확인하는 것이 아닌 &lt;code&gt;Jupyter Notebook&lt;/code&gt;에서 사용할 것이다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%%&lt;/span&gt;bigquery &lt;span style=&#34;color:#f92672&#34;&gt;--&lt;/span&gt;project yourprojectid
+SELECT 
+  COUNT(&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; total_rows
+FROM &lt;span style=&#34;color:#e6db74&#34;&gt;`bigquery-public-data.samples.gsod`&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%%&lt;/span&gt;bigquery &lt;span style=&#34;color:#f92672&#34;&gt;--&lt;/span&gt;project yourprojectid
+SELECT
+  COUNT(&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; total_rows
+FROM &lt;span style=&#34;color:#e6db74&#34;&gt;`bigquery-public-data.samples.gsod`&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | total_rows    |
+|---:|:--------|
+|  0 | 114420316   |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;4-bigquery를-sql처럼-연동하기-googlecloud-모듈-활용&#34;&gt;4. BigQuery를 SQL처럼 연동하기 (google.cloud 모듈 활용)&lt;/h2&gt;
+&lt;p&gt;연동 방법에 관한 자세한 내용은 &lt;code&gt;BigQuery&lt;/code&gt; 공식 문서를 활용해보자. See &lt;a href=&#34;https://cloud.google.com/bigquery/docs&#34;&gt;BigQuery documentation&lt;/a&gt; and &lt;a href=&#34;https://googlecloudplatform.github.io/google-cloud-python/latest/bigquery/usage.html&#34;&gt;library reference documentation&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;yourprojectid&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+sample_count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2000&lt;/span&gt;
+row_count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    COUNT(*) as total
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.samples.gsod`&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;total[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]
+
+df &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    *
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    `bigquery-public-data.samples.gsod`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE RAND() &amp;lt; &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%d&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%d&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (sample_count, row_count))&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Full dataset has &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%d&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; rows&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; row_count)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Full dataset has 114420316 rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;describe(), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|       |   station_number |   wban_number |      year |      month |        day |   mean_temp |   num_mean_temp_samples |   mean_dew_point |   num_mean_dew_point_samples |   mean_sealevel_pressure |   num_mean_sealevel_pressure_samples |   mean_station_pressure |   num_mean_station_pressure_samples |   mean_visibility |   num_mean_visibility_samples |   mean_wind_speed |   num_mean_wind_speed_samples |   max_sustained_wind_speed |   max_gust_wind_speed |   max_temperature |   total_precipitation |   snow_depth |
+|:------|-----------------:|--------------:|----------:|-----------:|-----------:|------------:|------------------------:|-----------------:|-----------------------------:|-------------------------:|-------------------------------------:|------------------------:|------------------------------------:|------------------:|------------------------------:|------------------:|------------------------------:|---------------------------:|----------------------:|------------------:|----------------------:|-------------:|
+| count |             2051 |        2051   | 2051      | 2051       | 2051       |   2051      |              2051       |        1974      |                   1974       |               1567       |                           1567       |                784      |                           784       |        1841       |                     1841      |        2031       |                    2031       |                 1989       |             264       |         2050      |          1871         |    101       |
+| mean  |           508359 |       91316.6 | 1986.89   |    6.44369 |   15.7596  |     52.5195 |                12.8674  |          41.9928 |                     12.773   |               1015.21    |                             10.9445  |                966.766  |                            11.5064  |          12.2796  |                       12.4829 |           6.67001 |                      12.8552  |                   12.1624  |              25.583   |           43.9789 |             0.0765099 |      8.8505  |
+| std   |           294807 |       24990.5 |   16.5317 |    3.47607 |    8.81497 |     23.699  |                 7.90362 |          22.3136 |                      7.92298 |                  9.14934 |                              7.35291 |                 66.8671 |                             7.64138 |           9.55667 |                        7.7892 |           4.79217 |                       7.89036 |                    6.80985 |               8.43217 |           23.6315 |             0.324789  |      9.63454 |
+| min   |            10010 |          73   | 1931      |    1       |    1       |    -72.3    |                 4       |         -60.7    |                      4       |                972.8     |                              4       |                637.1    |                             4       |           0       |                        4      |           0       |                       4       |                    1       |               9.7     |          -78.2    |             0         |      0.4     |
+| 25%   |           249705 |       99999   | 1976      |    3       |    8       |     39.15   |                 7       |          30.3    |                      7       |               1009.9     |                              6       |                949.35   |                             6       |           6.3     |                        6      |           3.3     |                       7       |                    7.8     |              19.4     |           32      |             0         |      1.6     |
+| 50%   |           541720 |       99999   | 1989      |    6       |   16       |     55.2    |                 8       |          44.35   |                      8       |               1014.9     |                              8       |                992.8    |                             8       |           9.8     |                        8      |           5.6     |                       8       |                   11.1     |              23.9     |           46.4    |             0         |      5.9     |
+| 75%   |           724574 |       99999   | 2000      |    9       |   23       |     70.6    |                23       |          57.1    |                     23       |               1020.65    |                             16       |               1009.2    |                            20.25    |          14.9     |                       23      |           8.9     |                      23       |                   15.5     |              29.9     |           61      |             0.02      |     13.8     |
+| max   |           999999 |       99999   | 2010      |   12       |   31       |     99.2    |                24       |          79.8    |                     24       |               1053       |                             24       |               1038.5    |                            24       |          99.4     |                       24      |          50.4     |                      24       |                   69.9     |              56.3     |           90      |             7.87      |     58.7     |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;여기에서 흥미로운 것이 있다면, &lt;code&gt;BigQuery&lt;/code&gt;에서 불러온 데이터와 &lt;code&gt;pandas&lt;/code&gt; 문법 연동이 가능하다는 것이다. 위 소스코드를 천천히 읽어보기를 권한다.&lt;/p&gt;
+&lt;h2 id=&#34;5-pandas-gbq-모듈을-활용한-bigquery-사용&#34;&gt;5. pandas-gbq 모듈을 활용한 BigQuery 사용&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;Pandas&lt;/code&gt; &lt;code&gt;gbq&lt;/code&gt; 라이브러리는 &lt;code&gt;pandas&lt;/code&gt; 공동체가 주도하는 프로젝트다. &lt;code&gt;DataFrame을 BigQuery&lt;/code&gt;에 쓰고 쿼리를 실행하는 것과 같은 기본적인 기능을 다룬다. 자세한 건, 모듈의 공식문서를 확인해본다. &lt;a href=&#34;https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_gbq.html&#34;&gt;Pandas GBQ Documentation&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+
+sample_count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2000&lt;/span&gt;
+df &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;io&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;gbq&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_gbq(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT name, SUM(number) as count
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.usa_names.usa_1910_2013`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE state = &amp;#39;TX&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  GROUP BY name
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  ORDER BY count DESC
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 100
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;, project_id&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id, dialect&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;standard&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | name    |   count |
+|---:|:--------|--------:|
+|  0 | James   |  272793 |
+|  1 | John    |  235139 |
+|  2 | Michael |  225320 |
+|  3 | Robert  |  220399 |
+|  4 | David   |  219028 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이 글을 읽음으로써, 이제 매우 쉽게 빅쿼리와 연동해서 사용할 수 있게 되었다. 다음에는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용하는 방법에 대해 익히도록 한다.&lt;/p&gt;
+&lt;h2 id=&#34;6-reference&#34;&gt;6. Reference&lt;/h2&gt;
+&lt;p&gt;“Getting Started with BigQuery.” Google, Google, colab.research.google.com/notebooks/bigquery.ipynb.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Ch02 Working with BigQuery</title>
+      <link>https://chloevan.github.io/gcp/bigquery/01_settings/ch02_working_with_bigquery/</link>
+      <pubDate>Sun, 19 Apr 2020 00:13:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/01_settings/ch02_working_with_bigquery/</guid>
+      <description>&lt;h2 id=&#34;i-get-started&#34;&gt;I. Get Started&lt;/h2&gt;
+&lt;p&gt;일단 시작해보자. &lt;a href=&#34;https://console.cloud.google.com/bigquery&#34;&gt;https://console.cloud.google.com/bigquery&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/gcp/bigquery/02_Figure.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;뉴욕주의 자전거 렌탈이 비가 올때와 그렇지 않을 때 수치를 비교하고자 않다. 어떻게 해야할까? 일단, 필요한 데이터는 두가지가 될 것이다. 첫번째는 자전거 렌탈 데이터가 필요하고, 두번째는 뉴욕주의 날씨와 관련된 데이터이다. 두개의 데이터를 조인(join)한 후 수치를 구해야 할 것이다.&lt;/p&gt;
+&lt;p&gt;위 화면에서 아래 소스코드를 입력한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;WITH&lt;/span&gt; bicycle_rentals &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; (
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;COUNT&lt;/span&gt;(starttime) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; num_trips,
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;EXTRACT&lt;/span&gt;(DATE &lt;span style=&#34;color:#66d9ef&#34;&gt;from&lt;/span&gt; starttime) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; trip_date
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;`&lt;/span&gt;bigquery&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;data&lt;/span&gt;.new_york_citibike.citibike_trips&lt;span style=&#34;color:#f92672&#34;&gt;`&lt;/span&gt; 
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;GROUP&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;BY&lt;/span&gt; trip_date
+),
+
+rainy_days &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt;
+(
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt;
+  date,
+  (&lt;span style=&#34;color:#66d9ef&#34;&gt;MAX&lt;/span&gt;(prcp) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; rainy
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; (
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt; wx.date &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; date,
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;IF&lt;/span&gt; (wx.element &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PRCP&amp;#39;&lt;/span&gt;, wx.value&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;NULL&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; prcp
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;`&lt;/span&gt;bigquery&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;data&lt;/span&gt;.ghcn_d.ghcnd_2016&lt;span style=&#34;color:#f92672&#34;&gt;`&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; wx 
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;WHERE&lt;/span&gt; wx.id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;USW00094728&amp;#39;&lt;/span&gt;
+)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;GROUP&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;BY&lt;/span&gt;
+  date
+)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt; 
+  ROUND(&lt;span style=&#34;color:#66d9ef&#34;&gt;AVG&lt;/span&gt;(bk.num_trips)) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; num_trips, 
+  wx.rainy
+&lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; bicycle_rentals &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; bk
+&lt;span style=&#34;color:#66d9ef&#34;&gt;JOIN&lt;/span&gt; rainy_days &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; wx
+&lt;span style=&#34;color:#66d9ef&#34;&gt;ON&lt;/span&gt; wx.date &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bk.trip_date
+&lt;span style=&#34;color:#66d9ef&#34;&gt;GROUP&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;BY&lt;/span&gt; wx.rainy
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;center&#34;&gt;ROW&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;num_trips&lt;/th&gt;
+&lt;th&gt;rainy&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;center&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;39107.0&lt;/td&gt;
+&lt;td&gt;false&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&#34;center&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;32052.0&lt;/td&gt;
+&lt;td&gt;true&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/gcp/bigquery/03_Insight.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;일단, 위 SQL문법에 대한 이해는 잠시 미뤄두자. &lt;code&gt;citibike_trips&lt;/code&gt;데이터의 용량은 &lt;code&gt;7.47GB&lt;/code&gt;이고, &lt;code&gt;ghcnd_2016&lt;/code&gt; 데이터의 용량은 &lt;code&gt;1.39GB&lt;/code&gt;이다. 그런데, Query 처리 속도는 &lt;code&gt;1.4&lt;/code&gt;초만 걸렸다. 만약 이 것을 &lt;code&gt;Local&lt;/code&gt;에서 구현한다면 어떻게 될까? 아무리 성능 좋은 MacOS 노트북이라 하더라도 최소 &lt;code&gt;10초&lt;/code&gt;이상은 걸릴 것이다. 이러한 속도를 무시해서는 안된다.&lt;/p&gt;
+&lt;p&gt;위 소스코드를 통해서 얻고자 하는 &lt;code&gt;인사이트(Insight)&lt;/code&gt;는 두개의 다른 데이터(&lt;code&gt;new_york_citibike.citibike_trips&lt;/code&gt; &amp;amp; &lt;code&gt;data.ghcn_d.ghcnd_2016&lt;/code&gt;)가 &lt;code&gt;Join&lt;/code&gt;해서 결과를 만들어 내고 있다. 일반적인 &lt;code&gt;MAX()&lt;/code&gt;, &lt;code&gt;AVG()&lt;/code&gt; 함수를 활용해서 쉽게 데이터를 요약할 수 있다는데 그 장점이 있다.&lt;/p&gt;
+&lt;p&gt;이것의 장점은 무엇일까? 전사적으로 데이터가 &lt;code&gt;BigQuery&lt;/code&gt;에 축적이 되고 있다면, 데이터를 통해서 객관적인 지표를 보다 정확하게 그리고 무엇보다도 빠르게 전달할 수 있다는 점이 있다.&lt;/p&gt;
+&lt;p&gt;다양한 Interface를 제공하는데, 특히 &lt;code&gt;BigQuery&lt;/code&gt;에 적재된 데이터를 구글의 시각화 도구인 &lt;code&gt;Data Studio&lt;/code&gt;뿐만 아니라 &lt;code&gt;Tableau&lt;/code&gt;, &lt;code&gt;Looker&lt;/code&gt;등과 연동할 수 있다는 장점이 있다. 이를 통해서 빠르게 대시보드를 구현할 수도 있다. 물론, R &amp;amp; Python과도 연동이 가능하다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-etl-el-and-elt로써-기능하는-bigquery&#34;&gt;II. ETL, EL, and ELT로써 기능하는 BigQuery&lt;/h2&gt;
+&lt;p&gt;전통적인 방법으로 &lt;code&gt;Hadoop&lt;/code&gt; 에코시스템을 통해서 데이터 추출(&lt;code&gt;Extract&lt;/code&gt;), 데이터 가공(&lt;code&gt;Transform&lt;/code&gt;), 데이터 로드(&lt;code&gt;Load&lt;/code&gt;)의 과정을 지나게 된다. BigQuery는 이러한 데이터파이프 라인의 최종적인 종착지로 기능을 하게된다.&lt;/p&gt;
+&lt;p&gt;가장 이상적인 방법은 아래 그림과 같다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/gcp/bigquery/04_ETL.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;조금 쉽게 설명하면 아래와 같다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Extract: Cloud Pub/Sub &amp;amp; Cloud Stroage에서 Stream &amp;amp; Batch 스타일로 데이터를 내보낸다.&lt;/li&gt;
+&lt;li&gt;Transform: Cloud Dataflow에서 데이터 가공을 한 뒤, Stream &amp;amp; Batch 형태로 데이터를 내보낸다.&lt;/li&gt;
+&lt;li&gt;Load: 이렇게 1차 가공된 데이터를 BigQuery에 모두 쌓이는 형태가 된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;가장 대표적인 예가 Firebase와 빅쿼리의 연동인데, Firebase는 웹/앱 영역을 담당하는데, 여기에서 추출된 모든 데이터가 빅쿼리로 전송되는 형태이다.&lt;/p&gt;
+&lt;p&gt;EL, ETL, ELT로써 요약하면 아래와 같이 작성이 가능하다.&lt;/p&gt;
+&lt;h3 id=&#34;1-el&#34;&gt;(1) EL&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Architecture:
+&lt;ul&gt;
+&lt;li&gt;Extract data from files on Google Cloud Storage.&lt;/li&gt;
+&lt;li&gt;Load it into BigQuery’s native storage.&lt;/li&gt;
+&lt;li&gt;You can trigger this from Cloud Composer, Cloud Functions, or scheduled&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;When you&amp;rsquo;d use it: Batch load of historical data. Scheduled periodic loads of log files(e.g., once a day)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-etl&#34;&gt;(2) ETL&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Architecture:
+&lt;ul&gt;
+&lt;li&gt;Extract data from Pub/Sub, Google Cloud Storage, Cloud Spanner, Cloud SQL, etc.&lt;/li&gt;
+&lt;li&gt;Transform the data using Cloud Dataflow.&lt;/li&gt;
+&lt;li&gt;Have Dataflow pipeline write to BigQuery&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;When you’d use it: When the raw data needs to be quality controlled, transformed, or enriched before being loaded into BigQuery. When the data loading needs to happen continuously, i.e., if the use case requires streaming. When you want to integrate with continuous integration/continuous delivery (CI/CD) systems and perform unit testing on all&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-elt&#34;&gt;(3) ELT&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Architecture:
+&lt;ul&gt;
+&lt;li&gt;Extract data from files in Google Cloud Storage.&lt;/li&gt;
+&lt;li&gt;Store data in close-to-rawformat in BigQuery.&lt;/li&gt;
+&lt;li&gt;Transform the data on the fly using BigQuery views.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;When you&amp;rsquo;d use it: Experimental datasets where you are not yet sure what kinds of transformations are needed to make the data usable. Any production dataset where the transformation can be expressed in SQL.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ETL의 과정도 추후에 예시를 통해서 작성을 할 예정이다. 그 때 다시한번 다루도록 한다.&lt;/p&gt;
+&lt;h2 id=&#34;iii-reference&#34;&gt;III. Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, Valliappa,Tigani, Jordan. Google BigQuery: The Definitive Guide (Kindle Location 239). O&amp;rsquo;Reilly Media. Kindle Edition.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Ch01 BigQuery getstarted</title>
+      <link>https://chloevan.github.io/gcp/bigquery/01_settings/ch01_bigquery_getstarted/</link>
+      <pubDate>Thu, 16 Apr 2020 11:40:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/01_settings/ch01_bigquery_getstarted/</guid>
+      <description>&lt;h2 id=&#34;i-자료-정리를-하며&#34;&gt;I. 자료 정리를 하며..&lt;/h2&gt;
+&lt;p&gt;데이터 분석가에게 또는 싸이언티스트들에게 &lt;code&gt;SQL&lt;/code&gt;문법은 매우 중요하다. 지금도 어딘가에는 데이터는 쌓이고 있고, 문제는 쌓여 있는 데이터를 활용해서 어떤 비즈니스 문제를 해결할지가 가장 큰 이슈이기 때문이다.&lt;/p&gt;
+&lt;p&gt;그동안 &lt;code&gt;SQL&lt;/code&gt;은 &lt;code&gt;MySQL&lt;/code&gt;과 &lt;code&gt;RDB&lt;/code&gt; 문법, &lt;code&gt;MongoDB&lt;/code&gt;와 &lt;code&gt;NoSQL&lt;/code&gt;과 같은 문법으로 나누어서 볼 수 있다. 강사가 과거 프로젝트에서 사용했던 &lt;code&gt;SQL&lt;/code&gt;은 &lt;code&gt;MySQL&lt;/code&gt;, &lt;code&gt;MSSQL&lt;/code&gt;, &lt;code&gt;MongoDB&lt;/code&gt;가 있었는데, 각각의 문법이 다르다는 측면이 있어서 조금 애를 많이 먹었다. 특히 &lt;code&gt;MongoDB&lt;/code&gt;문법은 &lt;code&gt;JSON&lt;/code&gt; 형태로 되어 있기 때문에, 별도의 문법이라 보는게 더 낫다. 큰 데이터가 아니라 1-2GB 용량의 작은 데이터는 &lt;code&gt;R&lt;/code&gt; 또는 &lt;code&gt;파이썬&lt;/code&gt;에서 불러와 직접 처리한 후 다시 &lt;code&gt;Insert&lt;/code&gt;하는 형태로 진행하였었다.&lt;/p&gt;
+&lt;p&gt;경험적으로, 책을 보면서 익히는 것 보다는 부딪히며 배우는게 훨씬 기억이 많이 남았다. 그리고, 대부분은 신규로 나온 &lt;code&gt;Tool&lt;/code&gt;일수록 해당 &lt;code&gt;Docs&lt;/code&gt;가 굉장히 중요하다. 기초 문법이란건 그런 것 같다!&lt;/p&gt;
+&lt;h2 id=&#34;ii-bigquery의-등장&#34;&gt;II. BigQuery의 등장&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;BigQuery&lt;/code&gt;를 처음 접한 건 2018년 쯤이었다. 그 때에는 전반적으로 &lt;code&gt;R&amp;amp;Python&lt;/code&gt;을 활용한 머신러닝이 강세였는데, 그 때 마침, 빅쿼리를 접한 후, 적지 않은 충격을 받았다.&lt;/p&gt;
+&lt;p&gt;가장 큰 이유는 (1) &lt;code&gt;RDB&lt;/code&gt;에서는 불러오기도 힘들었던 &lt;code&gt;TB&lt;/code&gt;급의 데이터를 쉽게 처리할 수 있는 사용환경에 놀랐고, (2) 간단한 설정으로 &lt;code&gt;Google Analytics&lt;/code&gt;, &lt;code&gt;Google Drive Spreadsheet&lt;/code&gt;와 연동이 되는 것을 보고 놀랐다. (3) &lt;code&gt;SQL&lt;/code&gt;문법을 지원하기 때문에 빅쿼리를 익히면 자연스럽게 기존에 사용하는 &lt;code&gt;SQL&lt;/code&gt;문법을 버리지 않아도 되는 장점이 있었다. 마지막으로 &lt;code&gt;SQL&lt;/code&gt;에서 머신러닝을 사용할 수 있는 환경이 있었다. 이러한 4가지 이유로, 데이터 시각화 및 통계분석 이전에 수행되는 데이터 전처리의 마지막 종착지는 &lt;code&gt;BigQuery&lt;/code&gt;로 귀결될 것으로 생각하였다.&lt;/p&gt;
+&lt;h2 id=&#34;iii-빅쿼리-교육자료&#34;&gt;III. 빅쿼리 교육자료&lt;/h2&gt;
+&lt;p&gt;필자가 참고했던 자료는 크게 3가지다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://cloud.google.com/bigquery/docs/tutorials&#34;&gt;BigQuery Docs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Coursera&lt;/code&gt;, 여기에서 다양한 강의를 수강하며 익히고, 수료증을 받았다.
+&lt;img src=&#34;https://chloevan.github.io/img/gcp/bigquery/01_bigquery.png&#34; alt=&#34;&#34;&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/zzsza/bigquery-tutorial&#34;&gt;변성윤님 자료&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.amazon.com/Google-BigQuery-Definitive-Warehousing-Analytics-ebook/dp/B07ZHQ3MGN/ref=pd_sim_351_1/141-4097222-3737936?_encoding=UTF8&amp;amp;pd_rd_i=B07ZHQ3MGN&amp;amp;pd_rd_r=6aebb05f-aee0-4109-b307-6ddcb0861108&amp;amp;pd_rd_w=369PQ&amp;amp;pd_rd_wg=Zh9xu&amp;amp;pf_rd_p=9fec2710-b93d-4b3e-b3ca-e55dc1c5909a&amp;amp;pf_rd_r=SZ76R8NWYEY0C836HBJ0&amp;amp;psc=1&amp;amp;refRID=SZ76R8NWYEY0C836HBJ0&#34;&gt;원서&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/gcp/bigquery/books.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;순서대로 보면 좋다. 변성윤님은 뵌적은 없지만, 자료 정리가 제법 꼼꼼하게 되어 있으니 참고하기를 바란다. 또한 원서 교재는 2019년, 10월에 출판이 되었기 때문에, 참고하면 좋을 것 같다.&lt;/p&gt;
+&lt;h2 id=&#34;iv-intro&#34;&gt;IV. Intro&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;본 블로그를 통해서 조금이라도 도움이 되었다면 &lt;a href=&#34;https://github.com/chloevan/gcp_tutorial&#34;&gt;github&lt;/a&gt; 에서 &lt;code&gt;Star&lt;/code&gt;를 눌러주시기를 바란다.&lt;/li&gt;
+&lt;li&gt;모든 IT가 그러하듯이, 작성 시기와 실제 독자가 보는 시기에 성능 및 기능 심지어 클라우드 &lt;code&gt;Console UI&lt;/code&gt;가 바뀌기 때문에 배우는데 어려움이 있을 수 있다. 자료 수정을 위해서라도 꼭 피드백으로 댓글을 남겨주기를 바란다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;v-contents&#34;&gt;V. Contents&lt;/h2&gt;
+&lt;p&gt;Contents는 계속 업데이트 될 예정이다. 이론적인 내용들은 오래전 책이기는 하나, &lt;a href=&#34;https://www.amazon.com/Google-BigQuery-Definitive-Warehousing-Analytics-ebook/dp/B07ZHQ3MGN/ref=sr_1_2?dchild=1&amp;amp;keywords=BigQuery&amp;amp;qid=1587019254&amp;amp;sr=8-2&#34;&gt;Google BigQuery: The Definitive Guide: Data Warehousing, Analytics, and Machine Learning at Scale&lt;/a&gt;에서 참고하자.&lt;/p&gt;
+&lt;h2 id=&#34;vi-get-started&#34;&gt;VI. Get Started&lt;/h2&gt;
+&lt;p&gt;일단 시작해보자. &lt;a href=&#34;https://console.cloud.google.com/bigquery&#34;&gt;https://console.cloud.google.com/bigquery&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/gcp/bigquery/02_Figure.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;위 화면에서 아래 소스코드를 입력한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;EXTRACT&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;YEAR&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; starttime) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;year&lt;/span&gt;,
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;EXTRACT&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;MONTH&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; starttime) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;month&lt;/span&gt;,
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;COUNT&lt;/span&gt;(starttime) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; number_one_way
+&lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt;
+    &lt;span style=&#34;color:#f92672&#34;&gt;`&lt;/span&gt;bigquery&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;data&lt;/span&gt;.new_york_citibike.citibike_trips&lt;span style=&#34;color:#f92672&#34;&gt;`&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;WHERE&lt;/span&gt;
+    start_station_name &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; end_station_name
+&lt;span style=&#34;color:#66d9ef&#34;&gt;GROUP&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;BY&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;year&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;month&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;ORDER&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;BY&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;year&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;ASC&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;month&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;ASC&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;위 데이터를 통해서 얻은 결과값이 현재 중요한 것은 아니다. 우리가 봐야 하는 것은, &lt;code&gt;Query complete (1.6 sec elapsed, 2.5 GB processed)&lt;/code&gt; 에서 2.5GB 쿼리를 수행하는데 1.6초가 소요되었다는 점이 중요하다.&lt;/p&gt;
+&lt;p&gt;즉, 빅데이터라 불리워도 기본적으로 연산속도가 매우 빠르기 때문에, 어느정도 비용만 지불 할 수 있으면, SQL로 처리하는데 큰 문제는 되지 않는다는 점이다.&lt;/p&gt;
+&lt;h2 id=&#34;vii-원론적인-이야기&#34;&gt;VII. 원론적인 이야기&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;SQL&lt;/code&gt;을 기본적으로 매일 공부하고, 그리고 적용하자. 이제 본격적으로 다양하게 적용해보자.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

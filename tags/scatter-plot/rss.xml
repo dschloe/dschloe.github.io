@@ -1,0 +1,164 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Scatter Plot on Data Science | ChloEvan</title>
+    <link>https://chloevan.github.io/tags/scatter-plot/</link>
+    <description>Recent content in Scatter Plot on Data Science | ChloEvan</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 22 Apr 2020 22:15:47 +0900</lastBuildDate>
+    
+        <atom:link href="https://chloevan.github.io/tags/scatter-plot/rss.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>matplotlib 03 Scatter Plot</title>
+      <link>https://chloevan.github.io/python/matplotlib/matplotlib_03_scatterplot/</link>
+      <pubDate>Wed, 22 Apr 2020 22:15:47 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/python/matplotlib/matplotlib_03_scatterplot/</guid>
+      <description>&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
+&lt;p&gt;제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.&lt;/p&gt;
+&lt;p&gt;도움이 되었다면 &lt;code&gt;Github&lt;/code&gt;에 &lt;code&gt;Star&lt;/code&gt;를 눌러주세요.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/chloevan/python_visualisation&#34;&gt;python_visualisation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;i-matplotlib-기본-그래프&#34;&gt;I. Matplotlib 기본 그래프&lt;/h2&gt;
+&lt;p&gt;Matplotlib는 파이썬 표준 시각화 도구라고 불리워지며 파이썬 그래프의 기본 토대가 된다고 해도 무방하다. 객체지향 프로그래밍을 지원하므로 세세하게 꾸밀 수 있다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-matplotlib-설치&#34;&gt;II. matplotlib 설치&lt;/h2&gt;
+&lt;p&gt;설치방법은 윈도우 명령 프롬프트, MacOS, Linux 터미널에서 &lt;code&gt;pip install matplotlib&lt;/code&gt;입력하면 되지만, 간혹 여러 환경에 따라 달라질 수 있으니 관련 싸이트에서 확인하기를 바란다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;설치 방법: &lt;a href=&#34;https://matplotlib.org/users/installing.html&#34;&gt;https://matplotlib.org/users/installing.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iii-산점도scatter-plot&#34;&gt;III. 산점도(Scatter Plot)&lt;/h2&gt;
+&lt;p&gt;산점도는 서로 다른 두 변수 사이의 관계를 나타날 때 사용한다. 이 때 두 변수는 &lt;code&gt;continous&lt;/code&gt;, 수량형 변수여야 하고, 서로 독립적이어야 한다. 두 연속 변수의 관계를 보여준다는 점에서 선 그래프와 비슷하다. 선 그래프를 그릴 때 &lt;code&gt;plot()&lt;/code&gt; 함수에 &lt;code&gt;o&lt;/code&gt; 옵션을 사용하면 선 없이 점으로만 표현되는데, 산점도라고 할 수 있다.&lt;/p&gt;
+&lt;p&gt;또한 산점도 그래프를 작성하면 상관관계도 그릴 수 있다. 상관관계에 대한 내용은 여기에서는 자세하게 서술하지는 않는다.&lt;/p&gt;
+&lt;h2 id=&#34;iv-그래프-작성&#34;&gt;IV. 그래프 작성&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Goa1 1. 수면시간과 나이에 관한 데이터를 활용하여 실제 나이에 따라 수면시간이 달라지는지 확인해보자.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Goal 2. 고등교육 연수에 따른 성인의 평균 임금과 관련된 그래프를 작성해보자.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-데이터-수집&#34;&gt;(1) 데이터 수집&lt;/h3&gt;
+&lt;p&gt;먼저 데이터를 가져옵니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+url &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://raw.githubusercontent.com/chloevan/python_visualisation/master/data/sleep_vs_age.csv&amp;#39;&lt;/span&gt;
+headers_cols &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;age&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;min_recommended&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;max_recommended&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;may_be_appropriate_min&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;may_be_appropriate_max&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;min_not_recommended&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;max_not_recommended&amp;#39;&lt;/span&gt;]
+
+sleep &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_csv(url)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;iloc[:, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;:] &lt;span style=&#34;color:#75715e&#34;&gt;# 첫번째 열 제거&lt;/span&gt;
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(sleep&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    |   age |   min_recommended |   max_recommended |   may_be_appropriate_min |   may_be_appropriate_max |   min_not_recommended |   max_not_recommended |
+|---:|------:|------------------:|------------------:|-------------------------:|-------------------------:|----------------------:|----------------------:|
+|  0 |     0 |                14 |                17 |                       11 |                       13 |                    11 |                    19 |
+|  1 |     1 |                14 |                17 |                       11 |                       13 |                    11 |                    19 |
+|  2 |     2 |                14 |                17 |                       11 |                       13 |                    11 |                    19 |
+|  3 |     3 |                14 |                17 |                       11 |                       13 |                    11 |                    19 |
+|  4 |     4 |                12 |                15 |                       10 |                       11 |                    10 |                    18 |
+|  5 |     5 |                12 |                15 |                       10 |                       11 |                    10 |                    18 |
+|  6 |     6 |                12 |                15 |                       10 |                       11 |                    10 |                    18 |
+|  7 |     7 |                12 |                15 |                       10 |                       11 |                    10 |                    18 |
+|  8 |     8 |                12 |                15 |                       10 |                       11 |                    10 |                    18 |
+|  9 |     9 |                12 |                15 |                       10 |                       11 |                    10 |                    18 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;2-matplotlib-방식&#34;&gt;(2) matplotlib 방식&lt;/h3&gt;
+&lt;p&gt;수집된 데이터를 토대로 산점도를 작성해본다. 이 때에는 &lt;code&gt;seaborn&lt;/code&gt; 라이브러리를 활용하여 &lt;code&gt;iris&lt;/code&gt; 데이터를 가져온다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; seaborn &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; sns
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
+
+sns&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;set()
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 일반적인 산점도&lt;/span&gt;
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;scatter(x&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sleep[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;age&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;12.&lt;/span&gt;,
+            y&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sleep[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;min_recommended&amp;#39;&lt;/span&gt;])
+
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;scatter(x&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sleep[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;age&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;12.&lt;/span&gt;,
+            y&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sleep[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;max_recommended&amp;#39;&lt;/span&gt;])
+
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;xlabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Age of person in Years&amp;#39;&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ylabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Total hours of sleep required&amp;#39;&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;show()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/matplotlib/matplotlib_03_scatterplot/output_4_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;그래프를 작성하는 것은 어렵지 않다. 다만 해석이 조금 난해할 뿐이다. 문제는 산점도로 그리니, 무언가 딱딱 끊기는 느낌이다. 이번에는 선 그래프로 전환해보자. 사실 전체적인 코드는 비슷하고, &lt;code&gt;g--&lt;/code&gt;, &lt;code&gt;r--&lt;/code&gt; 명령어만 추가했다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; seaborn &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; sns
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
+
+sns&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;set()
+
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(sleep[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;age&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;12.&lt;/span&gt;,
+         sleep[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;min_recommended&amp;#39;&lt;/span&gt;], &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;g--&amp;#39;&lt;/span&gt;)
+
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(sleep[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;age&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;12.&lt;/span&gt;,
+         sleep[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;max_recommended&amp;#39;&lt;/span&gt;], 
+         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;r--&amp;#39;&lt;/span&gt;)
+
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;xlabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Age of person in Years&amp;#39;&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ylabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Total hours of sleep required&amp;#39;&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;show()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/matplotlib/matplotlib_03_scatterplot/output_6_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;위 두 그래프 모두 시간이 지남에 따라 필요한 수면시간이 감소하다가 약 18세 되는 시점부터는 일정한 것을 알 수 있다.&lt;/p&gt;
+&lt;p&gt;이번에는 &lt;code&gt;iris&lt;/code&gt;데이터를 활용하는데, &lt;code&gt;matplotlib&lt;/code&gt; 스타일로 그래프를 작성한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; seaborn &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; sns
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
+
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;rcParams[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;figure.figsize&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;rcParams[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;figure.dpi&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;150&lt;/span&gt;
+sns&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;set()
+
+iris &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sns&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;load_dataset(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;iris&amp;#39;&lt;/span&gt;)
+iris[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;species&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; iris[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;species&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;map({&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;setosa&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;versicolor&amp;#39;&lt;/span&gt;:&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;virginica&amp;#39;&lt;/span&gt;:&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;})
+
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;scatter(x&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;iris[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;sepal_length&amp;#39;&lt;/span&gt;], 
+            y&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;iris[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;sepal_width&amp;#39;&lt;/span&gt;], c&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;iris&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;species)
+
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;xlabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Sepal Length&amp;#39;&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ylabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Petal Length&amp;#39;&lt;/span&gt;)
+
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;show()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;No handles with labels found to put in legend.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/matplotlib/matplotlib_03_scatterplot/output_8_1.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;그런데, 여기에 한가지 문제점이 있다. 범례(&lt;code&gt;legend&lt;/code&gt;)가 없어서 어떤 종인지 색상의 구별이 잘 가지 않는다. 이럴 때 어떻게 해야할까?&lt;/p&gt;
+&lt;p&gt;이 때에는 사실 &lt;code&gt;matplotlib&lt;/code&gt;만 활용하면 조금 코드가 복잡해진다. 아래 코드를 보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Scatter plot with a different color by groups&lt;/span&gt;
+groups &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; iris&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;groupby(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;species&amp;#39;&lt;/span&gt;)
+
+fig, ax &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;subplots()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; name, group &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; groups:
+    ax&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(group&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sepal_length, 
+            group&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sepal_width, 
+            marker&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;o&amp;#39;&lt;/span&gt;, 
+            linestyle&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;,
+            label&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;name)
+
+ax&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;legend(fontsize&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;, loc&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;upper left&amp;#39;&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;# legend position&lt;/span&gt;
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;title(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Scatter Plot of iris by matplotlib&amp;#39;&lt;/span&gt;, fontsize&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;xlabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Petal Length&amp;#39;&lt;/span&gt;, fontsize&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;14&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ylabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Petal Width&amp;#39;&lt;/span&gt;, fontsize&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;14&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;show()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/matplotlib/matplotlib_03_scatterplot/output_10_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;즉 For-loop를 활용해서 각각의 &lt;code&gt;label&lt;/code&gt;을 해줘야 하는 매우 큰 번거로움이 있다. 이 때에는 &lt;code&gt;seaborn&lt;/code&gt; 패키지를 활용하면 매우 쉽게 그래프를 작성할 수 있다.&lt;/p&gt;
+&lt;h3 id=&#34;3-seaborn-방식&#34;&gt;(3) seaborn 방식&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;iris &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sns&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;load_dataset(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;iris&amp;#39;&lt;/span&gt;)
+iris[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;species&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; iris[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;species&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;map({&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;setosa&amp;#39;&lt;/span&gt;:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;versicolor&amp;#39;&lt;/span&gt;:&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;virginica&amp;#39;&lt;/span&gt;:&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;})
+sns&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;scatterplot(x&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;iris[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;sepal_length&amp;#39;&lt;/span&gt;], 
+                y&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;iris[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;sepal_width&amp;#39;&lt;/span&gt;], hue&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;iris&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;species, data&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;iris)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;&amp;lt;matplotlib.axes._subplots.AxesSubplot at 0x7fc3cd092048&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/matplotlib/matplotlib_03_scatterplot/output_12_1.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;위와 같이 코드가 매우 간결해진 것을 볼 수 있다.&lt;/p&gt;
+&lt;h2 id=&#34;v-실습파일&#34;&gt;V. 실습파일&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;구글코랩에서 빠르게 실습도 할 수 있습니다. &lt;a href=&#34;https://colab.research.google.com/github/chloevan/python_visualisation/blob/master/matplotlib/matplotlib_02_barchart.ipynb&#34;&gt;실습&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;vi-reference&#34;&gt;VI. Reference&lt;/h2&gt;
+&lt;p&gt;Mukhiya, Uuresh Kumar. Ahmed Usman. Hands-on Exploratory Data Analysis With Python: Perform EDA Techniques to understand, Summarize, and Investigate Your Data. Packt publishing limited, 2020.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

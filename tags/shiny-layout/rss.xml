@@ -1,0 +1,174 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shiny Layout on Data Science | ChloEvan</title>
+    <link>https://chloevan.github.io/tags/shiny-layout/</link>
+    <description>Recent content in Shiny Layout on Data Science | ChloEvan</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 29 Mar 2020 23:50:39 +0900</lastBuildDate>
+    
+        <atom:link href="https://chloevan.github.io/tags/shiny-layout/rss.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>shiny tutorial 04 - Layouts</title>
+      <link>https://chloevan.github.io/r/shiny/tutorial_04/</link>
+      <pubDate>Sun, 29 Mar 2020 23:50:39 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/r/shiny/tutorial_04/</guid>
+      <description>&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
+&lt;p&gt;이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다&lt;/p&gt;
+&lt;p&gt;이번에 준비한 Tutorial 코로나 세계현황을 &lt;code&gt;Shiny Dashboard&lt;/code&gt;로 만들어 가는 과정을 담았다.&lt;/p&gt;
+&lt;h2 id=&#34;i-이전-글-소개&#34;&gt;I. 이전 글 소개&lt;/h2&gt;
+&lt;p&gt;처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/r/shiny/tutorial_01/&#34;&gt;shiny tutorial 01 - get started&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/r/shiny/tutorial_02/&#34;&gt;shiny tutorial 02 - Shiny Structure&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/r/shiny/tutorial_03/&#34;&gt;shiny tutorial 03 - HTML content&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;ii-layouts의-개요&#34;&gt;II. Layouts의 개요&lt;/h2&gt;
+&lt;p&gt;이번 시간에는 &lt;code&gt;Shiny Layouts&lt;/code&gt; 개요에 대한 간략적인 소개를 하려고 한다. 영어가 편하거나 중고급 개발자 분들은 &lt;a href=&#34;https://shiny.rstudio.com/articles/layout-guide.html&#34;&gt;Application layout guide&lt;/a&gt;를 참고하기를 바란다.&lt;/p&gt;
+&lt;p&gt;사실, 이 부분은 자세하게 다루기에는 부담이 존재한다. &lt;code&gt;Layouts&lt;/code&gt;에 대한 디자인은 굉장히 주관적일 뿐더러, 처음부터 만들어가려면 그만큼 시간도 오래 걸리기 때문이다. 우리가 잊지말아야 하는 것 중의 하나는 &lt;code&gt;Data Scientist&lt;/code&gt;는 &lt;code&gt;Web Developer&lt;/code&gt;는 아니다. 기존의 &lt;code&gt;Web Developer&lt;/code&gt;보다 대시보드를 시각적으로 더 잘 만들수는 없다. 그러나, 어떤 수집딘 데이터에서 어떤 &lt;code&gt;Insight&lt;/code&gt;를 클라이언트에게 전달하지는 &lt;code&gt;Web Developer&lt;/code&gt;보다는 더 나은 포지션에 있다.&lt;/p&gt;
+&lt;p&gt;따라서, &lt;code&gt;Layout&lt;/code&gt;의 큰 개념만 잡는다면 다음부터는 &lt;code&gt;R&lt;/code&gt;에서 제공하는 주요 &lt;code&gt;Dashboard&lt;/code&gt; 패키지를 사용하는 것을 적극 권장한다.&lt;/p&gt;
+&lt;h2 id=&#34;iii-main-functions&#34;&gt;III. Main Functions&lt;/h2&gt;
+&lt;h2 id=&#34;예시-1-sidebar-layout&#34;&gt;예시 1. Sidebar Layout&lt;/h2&gt;
+&lt;p&gt;이러한 &lt;code&gt;Layout&lt;/code&gt;은 보통 화면 왼쪽에는 (단, Mobile 화면 위쪽) &lt;code&gt;input&lt;/code&gt;에 관한 기능이 나온다면, 화면 오른쪽에는 &lt;code&gt;input&lt;/code&gt;에 따라 결과값이 나타나는 &lt;code&gt;output&lt;/code&gt;의 그래프, 표 등이 출력된다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 패키지&lt;/span&gt;
+&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(shiny)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# ui 정의&lt;/span&gt;
+ui &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;fluidPage&lt;/span&gt;(
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;titlePanel&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Sidebar Layout 예시&amp;#34;&lt;/span&gt;), &lt;span style=&#34;color:#75715e&#34;&gt;# 제목 Panel&lt;/span&gt;
+
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;sidebarLayout&lt;/span&gt;(
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;sidebarPanel&lt;/span&gt;(
+      &lt;span style=&#34;color:#a6e22e&#34;&gt;numericInput&lt;/span&gt;(
+        inputId &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;n&amp;#34;&lt;/span&gt;, label &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;샘플사이즈&amp;#34;&lt;/span&gt;,
+        value &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;25&lt;/span&gt;
+      )
+    ),
+
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;mainPanel&lt;/span&gt;(
+      &lt;span style=&#34;color:#a6e22e&#34;&gt;plotOutput&lt;/span&gt;(outputId &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;hist&amp;#34;&lt;/span&gt;)
+    )
+  )
+)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# server 정의&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# output will be displayed&lt;/span&gt;
+server &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;function&lt;/span&gt;(input, output) {
+  output&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;hist &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;renderPlot&lt;/span&gt;({
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;hist&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;rnorm&lt;/span&gt;(input&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;n))
+  })
+}
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# shinyApp 실행&lt;/span&gt;
+&lt;span style=&#34;color:#a6e22e&#34;&gt;shinyApp&lt;/span&gt;(ui &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; ui, server &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; server)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## 
+## Listening on http://127.0.0.1:6286
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/shiny/tutorial_04/shiny01.png&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;h2 id=&#34;예시-2-grid-layout&#34;&gt;예시 2. Grid Layout&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;sidebarLayout()&lt;/code&gt;은 가장 낮은 수준의 grid layout을 제공하고 있는데, 본 예시에서는 조금 더 구체적으로 &lt;code&gt;Grid Layout&lt;/code&gt;을 지정하도록 한다. 여기서 알아두어야 할 핵심 함수는 아래와 같다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;fluidRow()&lt;/code&gt;: 행과 관련이 있다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;column()&lt;/code&gt;: 열과 관련이 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Column의 너비는 은 &lt;a href=&#34;https://getbootstrap.com/docs/4.0/layout/grid/&#34;&gt;Bootstrp 12-wide grid system&lt;/a&gt;에 기초하며, 하나의 &lt;code&gt;fluidRow()&lt;/code&gt;안에는 12개의 &lt;code&gt;column()&lt;/code&gt;이 존재한다. (다시한번 느끼지만, Shiny를 잘할려면 HTML/CSS/JS를 잘해야 한다!)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(shiny)
+&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(ggplot2)
+
+dataset &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; diamonds
+
+ui &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;fluidPage&lt;/span&gt;(
+
+  title &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;다이아몬드 데이터 탐색&amp;#34;&lt;/span&gt;,
+  
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;plotOutput&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;plot&amp;#39;&lt;/span&gt;),
+  
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;hr&lt;/span&gt;(),
+
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;fluidRow&lt;/span&gt;(
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;column&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;,
+      &lt;span style=&#34;color:#a6e22e&#34;&gt;h4&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;다이아몬드 데이터 탐색&amp;#34;&lt;/span&gt;),
+      &lt;span style=&#34;color:#a6e22e&#34;&gt;sliderInput&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;sampleSize&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Sample Size&amp;#39;&lt;/span&gt;, 
+                  min&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, max&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;nrow&lt;/span&gt;(dataset), value&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;min&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1000&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;nrow&lt;/span&gt;(dataset)), 
+                  step&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;500&lt;/span&gt;, round&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;),
+      &lt;span style=&#34;color:#a6e22e&#34;&gt;br&lt;/span&gt;(),
+      &lt;span style=&#34;color:#a6e22e&#34;&gt;checkboxInput&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;jitter&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Jitter&amp;#39;&lt;/span&gt;),
+      &lt;span style=&#34;color:#a6e22e&#34;&gt;checkboxInput&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;smooth&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Smooth&amp;#39;&lt;/span&gt;)
+    ),
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;column&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;, offset &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,
+      &lt;span style=&#34;color:#a6e22e&#34;&gt;selectInput&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;x&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;X&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;names&lt;/span&gt;(dataset)),
+      &lt;span style=&#34;color:#a6e22e&#34;&gt;selectInput&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;y&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Y&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;names&lt;/span&gt;(dataset), &lt;span style=&#34;color:#a6e22e&#34;&gt;names&lt;/span&gt;(dataset)[[2]]),
+      &lt;span style=&#34;color:#a6e22e&#34;&gt;selectInput&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;color&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Color&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;None&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;names&lt;/span&gt;(dataset)))
+    ),
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;column&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;,
+      &lt;span style=&#34;color:#a6e22e&#34;&gt;selectInput&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;facet_row&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Facet Row&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(None&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;names&lt;/span&gt;(dataset))),
+      &lt;span style=&#34;color:#a6e22e&#34;&gt;selectInput&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;facet_col&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Facet Column&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(None&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;names&lt;/span&gt;(dataset)))
+    )
+  )
+)
+
+server &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;function&lt;/span&gt;(input, output){    
+
+  dataset &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;reactive&lt;/span&gt;({
+    diamonds&lt;span style=&#34;color:#a6e22e&#34;&gt;[sample&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;nrow&lt;/span&gt;(diamonds), input&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;sampleSize),]
+  })
+
+  output&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;plot &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;renderPlot&lt;/span&gt;({
+    
+    p &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ggplot&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;dataset&lt;/span&gt;(), &lt;span style=&#34;color:#a6e22e&#34;&gt;aes_string&lt;/span&gt;(x&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;input&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;x, y&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;input&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;y)) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;geom_point&lt;/span&gt;()
+    
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;if &lt;/span&gt;(input&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;color &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;None&amp;#39;&lt;/span&gt;)
+      p &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; p &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;aes_string&lt;/span&gt;(color&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;input&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;color)
+    
+    facets &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;paste&lt;/span&gt;(input&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;facet_row, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;~&amp;#39;&lt;/span&gt;, input&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;facet_col)
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;if &lt;/span&gt;(facets &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;. ~ .&amp;#39;&lt;/span&gt;)
+      p &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; p &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;facet_grid&lt;/span&gt;(facets)
+    
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;if &lt;/span&gt;(input&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;jitter)
+      p &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; p &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;geom_jitter&lt;/span&gt;()
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;if &lt;/span&gt;(input&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;smooth)
+      p &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; p &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;geom_smooth&lt;/span&gt;()
+    
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;print&lt;/span&gt;(p)
+    
+  }, height&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;400&lt;/span&gt;, width &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;700&lt;/span&gt;)
+}
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;shinyApp&lt;/span&gt;(ui &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; ui, server &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; server)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## 
+## Listening on http://127.0.0.1:4447
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/shiny/tutorial_04/shiny02.png&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;h2 id=&#34;예시-3-navbar-pages&#34;&gt;예시 3. Navbar Pages&lt;/h2&gt;
+&lt;p&gt;일반적인 웹사이트 메뉴 구성도와 큰 차이가 없다. 메뉴를 구성하는데, Top 메뉴와 Secondary Navigation까지 지원이 가능하다.&lt;/p&gt;
+&lt;p&gt;이 기능을 구현할 때는 사실상의 &lt;code&gt;Shiny Project&lt;/code&gt; 단계로 진입하기 때문에, 이 때에는 메뉴 구성도와 같은 &lt;code&gt;웹사이트 개발 지식&lt;/code&gt;이 수반되어야 한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(shiny)
+
+ui &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;navbarPage&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;My Application&amp;#34;&lt;/span&gt;,
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tabPanel&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Component 1&amp;#34;&lt;/span&gt;),
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tabPanel&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Component 2&amp;#34;&lt;/span&gt;),
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;navbarMenu&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;More&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;tabPanel&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Sub-Component A&amp;#34;&lt;/span&gt;),
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;tabPanel&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Sub-Component B&amp;#34;&lt;/span&gt;))
+)
+
+server &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;function&lt;/span&gt;(input, output) {
+  
+}
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;shinyApp&lt;/span&gt;(ui &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; ui, server &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; server)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## 
+## Listening on http://127.0.0.1:7782
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/shiny/tutorial_04/shiny03.png&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;p&gt;지금까지 &lt;code&gt;Layouts&lt;/code&gt;의 기본 개요와 함께 주요 &lt;code&gt;Functions&lt;/code&gt;에 대해 간단하게 학습하는 시간을 가졌다. 여기에서는 &lt;code&gt;Layouts&lt;/code&gt;의 기본 개념만 알고 있으면 추후에 &lt;code&gt;Shiny&lt;/code&gt; 대시보드 디자인을 할 때, 보다 쉽게 구현이 가능하다.&lt;/p&gt;
+&lt;p&gt;특히, Grid System에 대한 개념이 매우 중요하므로 &lt;a href=&#34;https://shiny.rstudio.com/articles/layout-guide.html&#34;&gt;Application layout guide&lt;/a&gt;에서 추가 학습을 진행하는 것을 권장한다.&lt;/p&gt;
+&lt;p&gt;다음 시간에는 Shiny App의 배포에 대해 작성하도록 한다.&lt;/p&gt;
+&lt;h2 id=&#34;iv-reference&#34;&gt;IV. Reference&lt;/h2&gt;
+&lt;p&gt;Allaire. (2014, January 24). Application layout guide. Retrieved March 30, 2020, from &lt;a href=&#34;https://shiny.rstudio.com/articles/layout-guide.html&#34;&gt;https://shiny.rstudio.com/articles/layout-guide.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Congratulation! You Mastered Layouts in Shiny&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
