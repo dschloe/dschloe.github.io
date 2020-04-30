@@ -1,22 +1,408 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>
-	R Markdown on Data Science | ChloEvan
-	
-	</title>
+    <title>R Markdown on Data Science | ChloEvan</title>
     <link>https://chloevan.github.io/tags/r-markdown/</link>
-    <description>Recent content 
-	
-	in R Markdown on Data Science | ChloEvan
-	</description>
+    <description>Recent content in R Markdown on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
-	
-	
+    <language>en-us</language>
     <lastBuildDate>Mon, 13 Apr 2020 00:21:01 +0900</lastBuildDate>
-	
     
         <atom:link href="https://chloevan.github.io/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>GT 패키지 소개</title>
+      <link>https://chloevan.github.io/r/newpkgs/gt_intro/</link>
+      <pubDate>Mon, 13 Apr 2020 00:21:01 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/r/newpkgs/gt_intro/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/newpkgs/gt_intro/gt_hex.svg&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
+&lt;p&gt;본 블로그는 2020-04-08에 소개된 &lt;a href=&#34;https://blog.rstudio.com/2020/04/08/great-looking-tables-gt-0-2/&#34;&gt;Great Looking Tables: gt(v0.2) by Richard Iannone&lt;/a&gt; 글을 번역한 것이다. 함수와 관련된 설명은 가급적 원어를 직접 인용 했으니, 영어로 직접 함수의 사용처를 음미하시길 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;i-intro&#34;&gt;I. Intro&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;gt&lt;/code&gt;라는 이름은 &lt;code&gt;grammar of tables&lt;/code&gt;즉 &amp;ldquo;테이블의 문법&amp;quot;의 줄임말이며 &lt;code&gt;gt&lt;/code&gt;의 목표는 &lt;code&gt;ggplot2&lt;/code&gt;와 비슷하게 운영하는 것이다. 특정 테이블을 쉽게 만들 수 있을 뿐만 아니라 다양한 문제를 해결하기 위해 서로 다른 방법으로 재결합할 수 있는 기본 구성요소 집합을 기술하는 역할을 한다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;R&lt;/code&gt; 사용자가 맞춤형(&lt;code&gt;customized&lt;/code&gt;) 테이블을 &lt;code&gt;R Markdown&lt;/code&gt;에서 만들 필요가 있다면, &lt;code&gt;gt&lt;/code&gt; 패키지가 그 과정에 도움을 줄 것이다. 패키지를 설치해보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;install.packages&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;gt&amp;#34;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;표를 구성하고, 서식과 주석을 적용하며, 원하는 대로 스타일을 만드는 방법은 매우 다양하다. 현재 &lt;code&gt;gt&lt;/code&gt;는 테이블을 &lt;code&gt;HTML&lt;/code&gt; 출력 형식으로 렌더링하고 있으며 이미지 파일로 내보낼 수 있는 기능을 가지고 있다. 조만간 &lt;code&gt;LaTeX&lt;/code&gt;와 &lt;code&gt;RTF&lt;/code&gt; 출력 포맷도 지원할 계획이다.&lt;/p&gt;
+&lt;p&gt;gt 패키지의 &lt;a href=&#34;https://gt.rstudio.com/&#34;&gt;Website&lt;/a&gt;에는 시작하기 위한 문서와 테이블 출력이 어떻게 나타나야 하는지를 보여주는 많은 예와 이미지가 있는 &lt;a href=&#34;https://gt.rstudio.com/reference/index.html&#34;&gt;다양한 funciton reference section&lt;/a&gt;이 있다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-gt-table-structure&#34;&gt;II. gt table structure&lt;/h2&gt;
+&lt;p&gt;패키지의 저자가 고려한 것은 테이블의 구조를 파악해서 구조화 작업을 진행해야 하고, 이에 맞는 함수의 언어를 만드는 것이 필요했다. 아래 그림에서 보는 것처럼, 테이블(위에서 아래로 내려가면서)은 크게 &lt;code&gt;Table Header&lt;/code&gt;, &lt;code&gt;Column Lables&lt;/code&gt;, &lt;code&gt;stub and stub head&lt;/code&gt;, &lt;code&gt;table body&lt;/code&gt;, &lt;code&gt;table footer&lt;/code&gt;이 포함된다. 이러한 각 구성 요소에는 하위 구성 요소가 있을 수 있다(예: &lt;code&gt;table header&lt;/code&gt;에는 &lt;code&gt;title&lt;/code&gt; &amp;amp; &lt;code&gt;subtitle&lt;/code&gt;가 들어 있으며 &lt;code&gt;table body&lt;/code&gt;에는 &lt;code&gt;individual cells&lt;/code&gt; 을 포함하고 있다). 아래 그림을 통해서 다시한번 각 구조에 대해 파악하도록 한다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/newpkgs/gt_intro/gt_parts_of_a_table.svg&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;p&gt;새로운 문법을 배우는 것은 분명 고통이 수반된다. 그러나 &lt;code&gt;ggplot2&lt;/code&gt;와 같이, 새로운 단어들은 익숙해지는 데 다소 시간이 걸리지만, 우리는 그것들을 배우는 것이 기존의 표를 분석하고 이해하는 능력을 향상시켜 &lt;code&gt;gt&lt;/code&gt;로 성공적으로 재현할 것이라고 믿는다.&lt;/p&gt;
+&lt;h2 id=&#34;iii-sample&#34;&gt;III. Sample&lt;/h2&gt;
+&lt;h2 id=&#34;1-hello-world&#34;&gt;(1) Hello World&lt;/h2&gt;
+&lt;p&gt;어느 문법이나 &lt;code&gt;Hello World&lt;/code&gt;는 존재한다. &lt;code&gt;exibble&lt;/code&gt; 데이터 집합은 &lt;code&gt;gt&lt;/code&gt;에 포함되며, 다양한 데이터를 실험하기 위한 데이터셋을 준비했다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(gt)
+&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(dplyr)
+&lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;(exibble)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;8개의 row와 9개의 column으로 구성되어 있고, 숫자, 문자, 범주형, 날짜까지, 모든 종류의 데이터가 종류해도 무방하다. 기존의 데이터셋을 &lt;code&gt;gt()&lt;/code&gt;로 바꿔주는 것이 중요하다. &lt;code&gt;ggplot()&lt;/code&gt;에 데이터셋을 입력하는 형태를 기억해보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(ggplot2)
+data &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;ggplot&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;이 문법을 기억하면 좋을 것 같다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;exibble &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;gt&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;사실 별거 아니지만, 조금 깔끔한 형태의 테이블이 출력되었다. &lt;code&gt;ggplot()&lt;/code&gt; 함수가 ggplot2 그래프를 그리는 첫번째 &lt;code&gt;starting point&lt;/code&gt;것처럼 &lt;code&gt;gt()&lt;/code&gt; 함수는 &lt;code&gt;gt&lt;/code&gt; 테이블을 만들기 위한 첫 번째 함수의 역할을 수행한다.&lt;/p&gt;
+&lt;h2 id=&#34;2-formatting-data-in-columns&#34;&gt;(2) Formatting data in columns&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;exibble&lt;/code&gt; 데이터셋에는 다양한 열 유형이 포함되어 있음을 기억하고 있다. 이것은 입력 데이터 값을 포맷하는 &lt;code&gt;gt&lt;/code&gt;의 &lt;code&gt;fmt_*()&lt;/code&gt; 함수를 활용하여 정리를 해보자. 가급적 원어를 그대로 정리하였다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;have num display numbers with exactly 2 decimal places using fmt_number()&lt;/li&gt;
+&lt;li&gt;show nicely formatted dates in date using date_style 6 (the m_day_year style) with fmt_date()&lt;/li&gt;
+&lt;li&gt;format the 24-h time values in time to time_style 4 (the hm_p style) with fmt_time()&lt;/li&gt;
+&lt;li&gt;make the datetimes in datetime formatted as such with the fmt_datetime() function&lt;/li&gt;
+&lt;li&gt;transform the currency column with fmt_currency() to show us values in the euro currency (currency = &amp;ldquo;KRW&amp;rdquo;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;exibble &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;gt&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt_number&lt;/span&gt;(columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vars&lt;/span&gt;(num), decimals &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt_date&lt;/span&gt;(columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vars&lt;/span&gt;(date), date_style &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt_time&lt;/span&gt;(columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vars&lt;/span&gt;(time), time_style &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt_datetime&lt;/span&gt;(columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vars&lt;/span&gt;(datetime), date_style &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;, time_style &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt_currency&lt;/span&gt;(columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vars&lt;/span&gt;(currency), currency &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;KRW&amp;#34;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;번역시, 추가 내용, 위 함수에서 한국 사람들이 궁금해 할, &lt;code&gt;KRW&lt;/code&gt;가 있는지 확인해봤다. 다행히 존재하였다. 확인하는 방법은 &lt;code&gt; info_currencies(begins_with = &amp;quot;k&amp;quot;)&lt;/code&gt;를 입력하면 &lt;code&gt;k&lt;/code&gt;를 가지고 있는 다양한 나라의 화폐단위를 확인할 수 있고, 해당 문자열 코드를 &lt;code&gt;KRW&lt;/code&gt; 대신 입력하면 된다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;info_currencies&lt;/span&gt;(begins_with &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;k&amp;#34;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;사용자들이 기대했던 것처럼, 전체 Column에는 매우 구체적인 방법으로 서식이 적용되었다. 좀 더 디테일한 수정도 가능하다. 특정 열에 있는 행의 하위 선택 유형을 지정할 수 있으며, 대상 행을 지정하는 방법(예: 행 색인, 스텁의 행 이름, 열 데이터에 기초한 조건문 등)이 상당히 많다.&lt;/p&gt;
+&lt;p&gt;조금 더 테이블을 입맛에 맞게 수정하고 싶다면, 더 많은 &lt;code&gt;fmt_*()&lt;/code&gt; 함수가 있다. 물론, 이러한 함수들이 사용자나 또는 클라이언트의 요구에 정확히 부합하지 않는다면 사용자는 일반적인 &lt;code&gt;fmt()&lt;/code&gt; 함수를 사용하고 특정 부분에는 사용자 정의 함수 또는 응용해서 가공할 수도 있다.&lt;/p&gt;
+&lt;h2 id=&#34;3-a-table-with-a-header-and-a-footer&#34;&gt;(3) A table with a header and a footer&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;테이블&lt;/code&gt;에 몇몇 구성품을 추가할 수 있다. &lt;code&gt;제목(title)&lt;/code&gt;과 &lt;code&gt;부제(subtitle)&lt;/code&gt;가 있는 &lt;code&gt;머리글(header)&lt;/code&gt;과 &lt;code&gt;소스 노트(source_note)&lt;/code&gt;가 있는 &lt;code&gt;바닥글(footer)&lt;/code&gt;을 포함 할 수 있다. 이 때에는 &lt;code&gt;tab_header()&lt;/code&gt; 및 &lt;code&gt;tab_source_note()&lt;/code&gt; 함수가 사용될 것이다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;exibble &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;gt&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_header&lt;/span&gt;(
+    title &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;md&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;**gt** 패키지 내부에 있는 `exibble` 데이터셋  &amp;#34;&lt;/span&gt;),
+    subtitle &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;gt 패키지에는 6개의 데이터셋이 더 존재한다.&amp;#34;&lt;/span&gt;
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_source_note&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;md&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;More information is available at `?exibble`.&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;기존 테이블에 parts 부분들이 들어간다면 &lt;code&gt;tab_*()&lt;/code&gt; 함수가 사용되어질 것이다. 또한 &lt;code&gt;Markdown&lt;/code&gt; 형태의 함수(&lt;code&gt;md()&lt;/code&gt;)가 사용되는 이유는 &lt;code&gt;markdown style&lt;/code&gt;을 테이블에 적용하기 때문이다.&lt;/p&gt;
+&lt;h2 id=&#34;4-adding-a-stub-and-organizing-rows-into-row-groups&#34;&gt;(4) Adding a stub and organizing rows into row groups&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;exibble&lt;/code&gt; 데이터셋은 행과 &lt;code&gt;group columns&lt;/code&gt;로 이루어진 것을 알 수 있습니다. 이 때, &lt;code&gt;gt(rowname_col = &amp;quot;row&amp;quot;, groupname_col = &amp;quot;group&amp;quot;)&lt;/code&gt;을 추가한다. 여기에서 &lt;code&gt;stub&lt;/code&gt;이라는 문법은 조금 생소하기 때문에 아래 그림을 통해서 다시한번 확인하도록 한다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/newpkgs/gt_intro/gt_hex.svg&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;p&gt;부가적인 설명보다는 코드를 통해서 어떻게 결과값이 출력되는 확인해보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;exibble &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;gt&lt;/span&gt;(rowname_col &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;row&amp;#34;&lt;/span&gt;, groupname_col &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;group&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_header&lt;/span&gt;(
+    title &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;md&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;**gt** 패키지 내부에 있는 `exibble` 데이터셋  &amp;#34;&lt;/span&gt;),
+    subtitle &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;gt 패키지에는 6개의 데이터셋이 더 존재한다.&amp;#34;&lt;/span&gt;
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_source_note&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;md&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;More information is available at `?exibble`.&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;이러한 변화를 통해서 테이블 왼쪽의 영역(&lt;code&gt;stub&lt;/code&gt;)에 행 레이블과 각 행 그룹위에 있는 행 그룹 레이블을 효과적으로 제공하는 것을 볼 수 있다. 만약에 행 그룹의 순서를 다시 정렬하고 싶다면, &lt;code&gt;row_group_order()&lt;/code&gt; 함수를 사용하여 그룹화를 다시 정렬한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;exibble &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;gt&lt;/span&gt;(rowname_col &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;row&amp;#34;&lt;/span&gt;, groupname_col &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;group&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_header&lt;/span&gt;(
+    title &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;md&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;**gt** 패키지 내부에 있는 `exibble` 데이터셋  &amp;#34;&lt;/span&gt;),
+    subtitle &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;gt 패키지에는 6개의 데이터셋이 더 존재한다.&amp;#34;&lt;/span&gt;
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_source_note&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;md&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;More information is available at `?exibble`.&amp;#34;&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;row_group_order&lt;/span&gt;(
+    groups &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;grp_b&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;grp_a&amp;#34;&lt;/span&gt;)
+  )
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;5-using-spanner-column-labels&#34;&gt;(5) Using spanner column labels&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;stub&lt;/code&gt;과 같이, 하나 이상의 열을 포함하는 &lt;code&gt;spanner column&lt;/code&gt; 레이블을 통해 열 그룹화를 만들 수 있다. &lt;code&gt;tab_spanner()&lt;/code&gt; 함수가 이러한 기능을 제공하는데, 라벨과 열 선택을 통해 새 라벨이 해당 열 위에 배치되고 관련 수평 규칙은 가로로 확장된다. 열이 서로 인접하지 않는다면 &lt;code&gt;tab_spanner()&lt;/code&gt;가 자동으로 함께 모이게 된다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;exibble &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;gt&lt;/span&gt;(rowname_col &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;row&amp;#34;&lt;/span&gt;, groupname_col &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;group&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_spanner&lt;/span&gt;(label &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;날짜와 시간 Tab&amp;#34;&lt;/span&gt;, columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;matches&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;date|time&amp;#34;&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_header&lt;/span&gt;(
+    title &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;md&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;**gt** 패키지 내부에 있는 `exibble` 데이터셋  &amp;#34;&lt;/span&gt;),
+    subtitle &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;gt 패키지에는 6개의 데이터셋이 더 존재한다.&amp;#34;&lt;/span&gt;
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_source_note&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;md&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;More information is available at `?exibble`.&amp;#34;&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;row_group_order&lt;/span&gt;(
+    groups &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;grp_b&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;grp_a&amp;#34;&lt;/span&gt;)
+  )
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;tab_spanner(label = &amp;quot;날짜와 시간 Tab&amp;quot;, columns = matches(&amp;quot;date|time&amp;quot;))&lt;/code&gt; 소스코드를 추가하면 되는데, &lt;code&gt;matches(&amp;quot;date|time&amp;quot;)&lt;/code&gt; 문법은 &lt;code&gt;dplyr 패키지&lt;/code&gt;내의 함수로 &lt;code&gt;date&lt;/code&gt; 또는 &lt;code&gt;time&lt;/code&gt; 열을 가져오라는 뜻이다.&lt;/p&gt;
+&lt;h2 id=&#34;iv-much-more&#34;&gt;IV. Much More&lt;/h2&gt;
+&lt;h2 id=&#34;1-gt-test-drive&#34;&gt;(1) gt Test Drive&lt;/h2&gt;
+&lt;p&gt;짧게 소개하는 글이기 때문에, 이것으로 사용자의 만족을 기대할 수는 없다. &lt;code&gt;RStudio Cloud&lt;/code&gt; 사용자라면 &lt;code&gt;gt Test Drive&lt;/code&gt;에 있는 소스코드를 활용하는 것도 좋다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://rstudio.cloud/project/779965&#34;&gt;gt Test Drive&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/newpkgs/gt_intro/gt_test_drive.png&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;h2 id=&#34;2-gt-dataset&#34;&gt;(2) gt Dataset&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;gt&lt;/code&gt; 패키지 연습에 제공되는, 6개의 &lt;a href=&#34;https://gt.rstudio.com/articles/gt-datasets.html&#34;&gt;데이터셋&lt;/a&gt;을 패키지에 포함시켰다: &lt;code&gt;countrypps&lt;/code&gt;, &lt;code&gt;sza&lt;/code&gt;, &lt;code&gt;gtcars&lt;/code&gt;, &lt;code&gt;sp500&lt;/code&gt;, &lt;code&gt;pizzaplace&lt;/code&gt; , &lt;code&gt;exibble&lt;/code&gt;을 기념으로 로고를 만들었다 (굳이 이런걸..).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/newpkgs/gt_intro/gt_datasets_labeled.svg&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;h2 id=&#34;3-색상-이미지-입히기-소스코드-별도&#34;&gt;(3) 색상, 이미지 입히기 (소스코드 별도)&lt;/h2&gt;
+&lt;p&gt;각주 삽입, 텍스트, 테두리 및 채우기 수정, 요약 행 추가와 같은 훨씬 더 유용한 작업을 수행할 수 있다. 본 블로그에서는 제공되지 않고, 대신 관련 코드를 제공한다. (&lt;a href=&#34;https://gist.github.com/rich-iannone/1da1ae7a7203958a0c5b1bd1d4b24017&#34;&gt;available in this gist&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;그러나, 번역시 가져왔다. 다행히 에러없이 잘 수행된다!&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(tidyverse)
+&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(paletteer)
+&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(gt)
+
+pizzaplace &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;mutate&lt;/span&gt;(type &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;case_when&lt;/span&gt;(
+    type &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;chicken&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;chicken (pizzas with chicken as a major ingredient)&amp;#34;&lt;/span&gt;,
+    type &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;classic&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;classic (classical pizzas)&amp;#34;&lt;/span&gt;,
+    type &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;supreme&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;supreme (pizzas that try a little harder)&amp;#34;&lt;/span&gt;,
+    type &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;veggie&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;veggie (pizzas without any meats whatsoever)&amp;#34;&lt;/span&gt;,
+  )) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;mutate&lt;/span&gt;(size &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;factor&lt;/span&gt;(size, levels &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;S&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;M&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;L&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;XL&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;XXL&amp;#34;&lt;/span&gt;))) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  dplyr&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;group_by&lt;/span&gt;(type, size) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  dplyr&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;summarize&lt;/span&gt;(
+    sold &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;n&lt;/span&gt;(),
+    income &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;sum&lt;/span&gt;(price)
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;gt&lt;/span&gt;(rowname_col &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;size&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_header&lt;/span&gt;(title &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;md&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;amp;#127829; Pizzas Sold in 2015 &amp;amp;#127829;&amp;#34;&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt_number&lt;/span&gt;(
+    columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vars&lt;/span&gt;(sold),
+    decimals &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,
+    use_seps &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TRUE&lt;/span&gt;
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt_currency&lt;/span&gt;(
+    columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vars&lt;/span&gt;(income),
+    currency &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;USD&amp;#34;&lt;/span&gt;
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;cols_align&lt;/span&gt;(align &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;right&amp;#34;&lt;/span&gt;, columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TRUE&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;data_color&lt;/span&gt;(
+    columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vars&lt;/span&gt;(sold, income),
+    colors &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; scales&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;col_numeric&lt;/span&gt;(
+      palette &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; paletteer&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;paletteer_d&lt;/span&gt;(
+        palette &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ggsci::red_material&amp;#34;&lt;/span&gt;
+      ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;as.character&lt;/span&gt;(),
+      domain &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;NULL&lt;/span&gt;
+    ),
+    alpha &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.8&lt;/span&gt;
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;summary_rows&lt;/span&gt;(
+    groups &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TRUE&lt;/span&gt;,
+    columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vars&lt;/span&gt;(sold),
+    fns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;list&lt;/span&gt;(TOTAL &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;sum&amp;#34;&lt;/span&gt;),
+    formatter &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fmt_number,
+    decimals &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,
+    use_seps &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TRUE&lt;/span&gt;
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;summary_rows&lt;/span&gt;(
+    groups &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TRUE&lt;/span&gt;,
+    columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vars&lt;/span&gt;(income),
+    fns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;list&lt;/span&gt;(TOTAL &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;sum&amp;#34;&lt;/span&gt;),
+    formatter &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fmt_currency,
+    currency &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;USD&amp;#34;&lt;/span&gt;
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;grand_summary_rows&lt;/span&gt;(
+    columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vars&lt;/span&gt;(sold),
+    fns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;list&lt;/span&gt;(`GRAND TOTAL` &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;sum&amp;#34;&lt;/span&gt;),
+    formatter &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fmt_number,
+    decimals &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,
+    use_seps &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TRUE&lt;/span&gt;
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;grand_summary_rows&lt;/span&gt;(
+    columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vars&lt;/span&gt;(income),
+    fns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;list&lt;/span&gt;(`GRAND TOTAL` &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;sum&amp;#34;&lt;/span&gt;),
+    formatter &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fmt_currency,
+    currency &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;USD&amp;#34;&lt;/span&gt;
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_footnote&lt;/span&gt;(
+    footnote &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;The pizza category with the highest total sales.&amp;#34;&lt;/span&gt;,
+    locations &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;cells_row_groups&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;classic (classical pizzas)&amp;#34;&lt;/span&gt;)
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_footnote&lt;/span&gt;(
+    footnote &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;md&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Custom sizes for **The Greek** pizza.&amp;#34;&lt;/span&gt;),
+    locations &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;cells_stub&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;XL&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;XXL&amp;#34;&lt;/span&gt;))
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_footnote&lt;/span&gt;(
+    footnote &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;md&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;This is a new record. Truly, 2015 was a **great** year for the `pizzaplace`.&amp;#34;&lt;/span&gt;),
+    locations &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;cells_grand_summary&lt;/span&gt;(columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vars&lt;/span&gt;(sold))
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;tab_options&lt;/span&gt;(
+    summary_row.background.color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#ACEACE80&amp;#34;&lt;/span&gt;,
+    grand_summary_row.background.color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#990000&amp;#34;&lt;/span&gt;,
+    row_group.background.color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#FFEFDB80&amp;#34;&lt;/span&gt;,
+    heading.background.color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#EFFBFC&amp;#34;&lt;/span&gt;,
+    column_labels.background.color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#EFFBFC&amp;#34;&lt;/span&gt;,
+    stub.background.color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#EFFBFC&amp;#34;&lt;/span&gt;,
+    table.font.color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#323232&amp;#34;&lt;/span&gt;,
+    table_body.hlines.color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#989898&amp;#34;&lt;/span&gt;,
+    table_body.border.top.color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#989898&amp;#34;&lt;/span&gt;,
+    heading.border.bottom.color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#989898&amp;#34;&lt;/span&gt;,
+    row_group.border.top.color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#989898&amp;#34;&lt;/span&gt;,
+    row_group.border.bottom.style &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;none&amp;#34;&lt;/span&gt;,
+    stub.border.style &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;dashed&amp;#34;&lt;/span&gt;,
+    stub.border.color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#989898&amp;#34;&lt;/span&gt;,
+    stub.border.width &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;1px&amp;#34;&lt;/span&gt;,
+    summary_row.border.color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#989898&amp;#34;&lt;/span&gt;,
+    table.width &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;60%&amp;#34;&lt;/span&gt;
+  ) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;opt_all_caps&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;결론-번역-시-느낀점&#34;&gt;결론: 번역 시, 느낀점.&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;grammar of tables&lt;/code&gt; 이 한 단어로 향후 R Studio에서 &lt;code&gt;테이블&lt;/code&gt; 다루는 문법이 어떤 형태로 발전하는지 보여주는 좋은 예가 될 것 같다. 기존에는 굉장히 많은 종류의 테이블 관련 패키지가 존재하였지만, 문법적으로 일치가 되지는 않았다. &lt;code&gt;ggplot2&lt;/code&gt;에서 발전한 다양한 &lt;code&gt;extension&lt;/code&gt; 패키지가 있는 것을 고려하면, &lt;code&gt;table&lt;/code&gt; 역시 그러한 형태로 발전할 것은 분명해 보인다.&lt;/p&gt;
+&lt;h2 id=&#34;더-보기&#34;&gt;더 보기&lt;/h2&gt;
+&lt;p&gt;현재 &lt;code&gt;gt&lt;/code&gt; 패키지에 &lt;code&gt;Latex&lt;/code&gt; 지원이 되지 않는다. 따라서, 현재 모든 output은 html 코드로 출력되는 관련 파일 링크를 당분간 이 섹션에서 공유를 할 예정이니, 한번 더 아래 링크에서 확인하기를 바란다.&lt;/p&gt;
+&lt;p&gt;내용은 똑같다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/r/newpkgs/gt_intro_sc.html&#34;&gt;GT 패키지 소개&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>R Markdown Introduction</title>
+      <link>https://chloevan.github.io/r/rmarkdown/rmarkdownintro/</link>
+      <pubDate>Wed, 18 Mar 2020 13:10:39 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/r/rmarkdown/rmarkdownintro/</guid>
+      <description>&lt;h2 id=&#34;r-markdown-소개-및-환경설정&#34;&gt;R Markdown 소개 및 환경설정&lt;/h2&gt;
+&lt;p&gt;데이터 분석가의 주요 업무 중의 하나는 향후에 참고자료로 활용하기 위해 작업결과를 문서화 해야 하는데, 상당량의 보고서를 작성해서 분석과정과 출력결과를 기술해야만 합니다.&lt;/p&gt;
+&lt;p&gt;보통의 과정은 아래과 같을 것입니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;1단계: 본인의 작업을 위해서 R 스크립트 작성&lt;/li&gt;
+&lt;li&gt;2단계: 다양한 그래프가 첨부된 분석결과를 Word, PPT 분석결과를 기술해서 동료 또는 메신저로 분석결과 전송&lt;/li&gt;
+&lt;li&gt;3단계: 분석결과 토의&lt;/li&gt;
+&lt;li&gt;4단계: 각각의 그래프 결과 코드를 매칭하기 위한 작업이 토의 중 발생&lt;/li&gt;
+&lt;li&gt;5단계: 혼란 및 불필요한 시간 소요 발생&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;그런데, 해당 작업물을 그 때 마다 웹페이지(HTML)을 생성하여 자체 서버내 구축할 수 있다면, 그러면 위 5단계의 과정을 3단계(&lt;strong&gt;소스코드 작성&lt;/strong&gt; -&amp;gt; &lt;strong&gt;웹 게시&lt;/strong&gt; -&amp;gt; &lt;strong&gt;분석결과 토의&lt;/strong&gt;)로 축소할 수가 있을 것이며 특히, 연구자가 분석 당시의 고민과 문제점들을 스크롤링과 함께 같이 고민할 수 있는 시간으로 빠져들 수 있도록 유도할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;데이터 분석 보고서는 보고서의 작성이 연구자의 끝이 아니기 때문에 분석의 과정과 결과물을 잘 정리하여 의사결정을 하는데 반드시 도움이 되어야 하는 일종의 제안서와 같습니다.&lt;/p&gt;
+&lt;p&gt;본 게시물은 R을 처음 접하는 데이터 분석가를 위해서 작성하였습니다. 사내의 보고서 문화 혁신에 기여하기를 바라는 마음과 함께!!&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;step-1-r-마크다운-파일-생성&#34;&gt;Step 1. R 마크다운 파일 생성&lt;/h2&gt;
+&lt;p&gt;R 마크다운 파일 생성은 아래와 같이 생성할 수 있습니다.
+RStudio에서 File -&amp;gt; New File -&amp;gt; R Markdown을 클릭하시면 아래와 같이 대화상자가 열립니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/rmarkdown/rmarkdown.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Title과 Author를 설정 한 후 HTML로 클릭합니다.&lt;/p&gt;
+&lt;h2 id=&#34;step-2-r-마크다운-기본-구성요소&#34;&gt;Step 2. R 마크다운 기본 구성요소&lt;/h2&gt;
+&lt;p&gt;기본 구조는 아래와 같이 확인 될 것입니다.
+&lt;img src=&#34;https://chloevan.github.io/img/rmarkdown/rmarkdownbasic.png&#34; alt=&#34;Alt text&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;구성-1-header&#34;&gt;구성 1. Header&lt;/h3&gt;
+&lt;p&gt;초기 설정된 텍스트 덩어리에 R에 대한 지시사항이 담겨있다: 제목, 저자명, 날짜, html 출력물(다른 말로, 웹페이지)을 생성할지가 포함됩니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;---&lt;/span&gt;
+title&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Initial R Markdown document&amp;#34;&lt;/span&gt;
+author&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Evan Jung&amp;#34;&lt;/span&gt;
+date&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;10/4/2019&amp;#34;&lt;/span&gt;
+output&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; html_document
+&lt;span style=&#34;color:#f92672&#34;&gt;---&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;위 필드는 임의 삭제가 가능하나, 경험적으로는 포함 시키는 것이 좋습니다.&lt;/p&gt;
+&lt;h3 id=&#34;구성-2-r-코드-덩어리---set-up&#34;&gt;구성 2. R 코드 덩어리 - Set Up&lt;/h3&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;위 구성은 R 마크다운 문서의 기본 Set Up 코드이기 때문에 유지하는 것을 원칙으로 합니다. 위 코드 상 옵션에 대한 설명은 아래와 같습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;setup: 소스코드 덩어리에 대한 title이며, 다른 소스코드 덩어리와 중복 작성 시, 에러가 발생합니다.&lt;/li&gt;
+&lt;li&gt;include=FALSE: 문서에는 포함시키지 않고, 몰래 실행할 수 있으며, 주로 최초 설정에 이용됩니다.&lt;/li&gt;
+&lt;li&gt;knitr::opts_chunk$set에서 디폴트 옵션을 설정할 수 있으며, echo = TRUE는 코드를 보여줍니다. 그 외 옵션은 아래를 확인하여 주시기를 바랍니다.&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;eval = F&lt;/strong&gt;: 코드 실행하지 않는다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;echo = F&lt;/strong&gt;: 코드를 보여주지 않는다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;include=F&lt;/strong&gt;: 실행 결과를 보여주지 않는다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;message=F&lt;/strong&gt;: 실행 때 나오는 메세지를 보여주지 않는다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;warning=F&lt;/strong&gt;: 실행 때 나오는 경고를 보여주지 않는다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;error=T&lt;/strong&gt;: 에러가 있어도 실행하고 에러코드를 보여준다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;fig.height=(number)&lt;/strong&gt;: R에서 작성한 그래프를 그림의 높이를 조정할 수 있다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;fig.width=(number)&lt;/strong&gt;: R에서 작성한 그림의 넓이를 높이를 조정할 수 있다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;fig.align=&#39;center&amp;rsquo;&lt;/strong&gt; : R에서 작성한 그림의 위치를 변경할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;그 외 옵션을 확인하려면 아래와 같이 코드를 입력 후 실행하면 결과값이 나옵니다.&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h3 id=&#34;구성-3-r-코드-덩어리---작업코드-예제&#34;&gt;구성 3. R 코드 덩어리 - 작업코드 예제&lt;/h3&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;&lt;code&gt;knitr&lt;/code&gt;로 실행되면, R 코드 덩어리를 실행결과와 함께 나타납니다.&lt;/p&gt;
+&lt;h2 id=&#34;step-3-마크다운markdown문법에-대한-이해&#34;&gt;Step 3. 마크다운(Markdown)문법에 대한 이해&lt;/h2&gt;
+&lt;p&gt;마크다운은 2004년 12월에 처음 등장한 것으로 보입니다.&lt;sup id=&#34;fnref:2&#34;&gt;&lt;a href=&#34;#fn:2&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;2&lt;/a&gt;&lt;/sup&gt; 마크다운을 활용하여 작성된 문서는 보다 쉽고 빠르게 HTML 등 다른 문서 형태로 변환이 가능합니다. 특별히, R Markdown은 R사용자를 위한 Markdown으로 이해하시면 좋습니다.&lt;/p&gt;
+&lt;h3 id=&#34;기본문법-1-bold--italic&#34;&gt;기본문법 1. Bold &amp;amp; Italic&lt;/h3&gt;
+&lt;p&gt;별표&lt;code&gt;*&lt;/code&gt;를 활용하여 굵게 또는 이탤릭체로 변환할 수 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;굵게&lt;/strong&gt;: &lt;code&gt;**굵게(bold)**&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;이탤릭&lt;/em&gt;: &lt;code&gt;*이탤릭(italic)*&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;기본문법-2-구분점&#34;&gt;기본문법 2. 구분점&lt;/h3&gt;
+&lt;p&gt;아래와 같이 하이픈&lt;code&gt;-&lt;/code&gt; 혹은 별표&lt;code&gt;*&lt;/code&gt;를 적용해서 구분점이 붙은 항목을 생성할 수 있습니다.&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;혹은 아래와 같이 작성도 가능합니다.&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;코드 실행 시, 다음과 같이 웹페이지로 보여지게 됩니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;위 그래프는 ~&lt;/li&gt;
+&lt;li&gt;위 표는 ~&lt;/li&gt;
+&lt;li&gt;따라서, ~&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;숫자 사용을 활용한 구분점도 아래와 같이 적용하면 가능합니다.&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;코드 실행 시, 다음과 같이 웹페이지로 보여지게 됩니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;위 그래프는 ~&lt;/li&gt;
+&lt;li&gt;위 표는 ~&lt;/li&gt;
+&lt;li&gt;따라서, ~&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;기본문법-3-섹션-제목-만들기&#34;&gt;기본문법 3. 섹션 제목 만들기&lt;/h3&gt;
+&lt;p&gt;섹션 제목을 만들려면 &lt;code&gt;#&lt;/code&gt;  기호를 활용하여 각 라인 첫번째 적용하게 되면 다른 크기를 갖는 섹션 제목을 만들 수 있을 뿐만 아니라, 위 섹션이 목차로 재 활용될 수 있습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 첫번째 제목 (Title)
+## 두번째 제목 (Main Section)
+### 세번째 제목 (Sub-Section)
+#### 네번째 제목 (Sub-sub section)
+&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;첫번째-제목-title&#34;&gt;첫번째 제목 (Title)&lt;/h1&gt;
+&lt;h2 id=&#34;두번째-제목-main-section&#34;&gt;두번째 제목 (Main Section)&lt;/h2&gt;
+&lt;h3 id=&#34;세번째-제목-sub-section&#34;&gt;세번째 제목 (Sub-Section)&lt;/h3&gt;
+&lt;h4 id=&#34;네번째-제목-sub-sub-section&#34;&gt;네번째 제목 (Sub-sub Section)&lt;/h4&gt;
+&lt;h2 id=&#34;step-4-마크다운markdown-다양한-기능-사용&#34;&gt;Step 4. 마크다운(Markdown) 다양한 기능 사용&lt;/h2&gt;
+&lt;h3 id=&#34;기능-1-하이퍼링크&#34;&gt;기능 1. 하이퍼링크&lt;/h3&gt;
+&lt;p&gt;독립적으로 링크 코드를 입력하거나, 또는 문장 중간에 삽입이 가능합니다. 아래와 같은 방법으로 입력하시면 됩니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;문법: [text](링크)
+예시: [네이버](https://www.naver.com)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;네이버 클릭하시면(&amp;amp;#8594) &lt;a href=&#34;https://www.naver.com&#34;&gt;네이버&lt;/a&gt; 네이버 메인 화면에 연결됩니다.&lt;/p&gt;
+&lt;h3 id=&#34;기능-2-이미지-삽입&#34;&gt;기능 2. 이미지 삽입&lt;/h3&gt;
+&lt;p&gt;아래와 같은 방법으로 이미지를 삽입할 수 있습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;문법: ![caption](경로)
+예시: ![rmarkdownlogo](./rmarkdownlogo.jpeg)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/rmarkdown/rmarkdownlogo.jpeg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;다만, image size 작업 조정을 직접 하려면 R 코드 덩어리에 아래와 같은 방법으로 작업할수도 있습니다. (예: out.width=&amp;quot;400px&amp;rdquo;, out.height=&amp;quot;400px&amp;rdquo;)&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;다만, 경험적으로 봤을 때는 개별 이미지를 수정하려면 HTML 소스 코드 또는 소스코드를 직접 입력하는 것을 권장합니다.&lt;br&gt;
+&lt;!-- raw HTML omitted --&gt;
+test.Rmd&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;---&lt;/span&gt;
+title&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Initial R Markdown document&amp;#34;&lt;/span&gt;
+author&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Evan Jung&amp;#34;&lt;/span&gt;
+date&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;10/4/2019&amp;#34;&lt;/span&gt;
+output&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; html_document
+css&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; test.css
+&lt;span style=&#34;color:#f92672&#34;&gt;---&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;## Page with an image {#myImagePage}&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;[Image&lt;span style=&#34;color:#a6e22e&#34;&gt;]&lt;/span&gt;(path&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;to&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;image)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;!-- raw HTML omitted --&gt;
+&lt;h3 id=&#34;기능-3-latex-expression&#34;&gt;기능 3. LaTeX expression&lt;/h3&gt;
+&lt;p&gt;수식작성법은 &lt;a href=&#34;https://www.latex-project.org/&#34;&gt;Latex&lt;/a&gt;라는 문법을 참조해서 작성할 수 있습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$$	x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} $$
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;$$	x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} $$&lt;/p&gt;
+&lt;h3 id=&#34;기능-4-인라인inline-r-코드&#34;&gt;기능 4. 인라인(Inline) R 코드&lt;/h3&gt;
+&lt;p&gt;인라인 R코드를 활용하는 가장 궁극적인 목적은 보고서의 모든 숫자를 재현가능하게 만들기 위해서입니다. 인라인 코드를 작성할 때 &lt;!-- raw HTML omitted --&gt;`r&lt;!-- raw HTML omitted --&gt;와 &lt;!-- raw HTML omitted --&gt;`&lt;!-- raw HTML omitted --&gt;을 사용합니다. 예를 들어, &lt;!-- raw HTML omitted --&gt;`r 2+2`&lt;!-- raw HTML omitted --&gt; 또는 &lt;!-- raw HTML omitted --&gt;`r round(some_value, 2)`&lt;!-- raw HTML omitted --&gt; . R 코드가 실행되어 코드가 결과 값으로 치환됩니다.&lt;/p&gt;
+&lt;h2 id=&#34;step-5-다른-언어와의-호환성-고급&#34;&gt;Step 5. 다른 언어와의 호환성 (고급)&lt;/h2&gt;
+&lt;p&gt;R과 함께 파이썬 또는 SQL을 다루는 머신러닝 개발자가 있다고 가정합니다. 그러면 R Markdown 안에서도 python 코드를 실행 후 작업할 수가 있습니다. 다만, 이때에는 코드 덩어리를 파이썬 또는 sql로 명명해야 적용이 가능합니다.&lt;/p&gt;
+&lt;p&gt;예를 들면 아래와 같이 작성이 가능합니다.&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;option-더-공부하기&#34;&gt;(Option) 더 공부하기&lt;/h2&gt;
+&lt;p&gt;위에서 제공한 자료를 가지고도 충분히 보고서를 작성하는데는 부족함이 없습니다. 다만, 보고서를 조금 더 풍성하게 만들고자 한다면 메뉴얼을 참고해서 보다 전문적으로 작성하는 권장합니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://rmarkdown.rstudio.com/&#34;&gt;R Markdown 공식 홈페이지&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://bookdown.org/yihui/rmarkdown/&#34;&gt;R 마크다운 공식 메뉴얼&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf&#34;&gt;R 마크다운 Cheet Sheet  PDF 파일 다운로드&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;faq&#34;&gt;FAQ&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Email: &lt;a href=&#34;mailto:j2hoon85@gmail.com&#34;&gt;j2hoon85@gmail.com&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;section class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn:1&#34; role=&#34;doc-endnote&#34;&gt;
+&lt;p&gt;&amp;ldquo;R Markdown 기초&amp;rdquo;, &amp;ldquo;Zarathu Official Blog&amp;rdquo;, 2019년 1월 3일 수정, 2019년 10월 4일 접속, &lt;a href=&#34;https://blog.zarathu.com/posts/2019-01-03-rmarkdown/&#34;&gt;https://blog.zarathu.com/posts/2019-01-03-rmarkdown/&lt;/a&gt; &lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id=&#34;fn:2&#34; role=&#34;doc-endnote&#34;&gt;
+&lt;p&gt;&amp;ldquo;Markdown&amp;rdquo;, &amp;ldquo;Daring Fireball&amp;rdquo;, 2004년 12월 17일 수정, 2019년 10월 4일 접속, &lt;a href=&#34;https://daringfireball.net/projects/markdown/&#34;&gt;https://daringfireball.net/projects/markdown/&lt;/a&gt; &lt;a href=&#34;#fnref:2&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/section&gt;
+</description>
+    </item>
     
   </channel>
 </rss>

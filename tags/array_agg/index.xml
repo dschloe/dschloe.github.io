@@ -1,22 +1,187 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>
-	ARRAY_AGG on Data Science | ChloEvan
-	
-	</title>
+    <title>ARRAY_AGG on Data Science | ChloEvan</title>
     <link>https://chloevan.github.io/tags/array_agg/</link>
-    <description>Recent content 
-	
-	in ARRAY_AGG on Data Science | ChloEvan
-	</description>
+    <description>Recent content in ARRAY_AGG on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
-	
-	
+    <language>en-us</language>
     <lastBuildDate>Wed, 29 Apr 2020 10:30:30 +0900</lastBuildDate>
-	
     
         <atom:link href="https://chloevan.github.io/tags/array_agg/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ch08_Creating_Arrays_with_Array_AGG</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch08_creating_arrays_with_array_agg/</link>
+      <pubDate>Wed, 29 Apr 2020 10:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch08_creating_arrays_with_array_agg/</guid>
+      <description>&lt;h2 id=&#34;1-구글-클라우드-설정&#34;&gt;1. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;2-사용자-계정-인증&#34;&gt;2. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3-쿼리-기본&#34;&gt;3. 쿼리 기본&lt;/h2&gt;
+&lt;p&gt;빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp;amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.&lt;/p&gt;
+&lt;p&gt;빅쿼리는 데이터 분석을 위한 기본적인 도구이기 때문에, 웹/앱을 활용한 마케팅 분석이 필요한 업종에서는 어쩌면 반드시 가져가야할 일종의 언어이기도 하다.&lt;/p&gt;
+&lt;p&gt;기본적으로 SQL문법을 지원하며, BigQuery 나름의 문법을 또한 구성하고 있다. 이제 본격적으로 코드를 작성해보자.&lt;/p&gt;
+&lt;p&gt;현재 작성하는 모든 코드는 Python-BigQuery로 연동하여 작성하려고 한다. 이제 간단하게 쿼리를 작성해보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials1/&#34;&gt;Ch05-Query_Essentials(1)&lt;/a&gt;에서는 &lt;code&gt;SELECT&lt;/code&gt;와 &lt;code&gt;AS&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials2/&#34;&gt;Ch05-Query_Essentials(2)&lt;/a&gt;에서는 &lt;code&gt;WHERE&lt;/code&gt;와 &lt;code&gt;EXCEPT&lt;/code&gt;, 그리고 &lt;code&gt;REPLACE&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials3/&#34;&gt;Ch05-Query_Essentials(3)&lt;/a&gt;에서는 &lt;code&gt;SubQuery&lt;/code&gt;에 대해서 집중적으로 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch06_sql_aggregates/&#34;&gt;Ch06 SQL Aggregates&lt;/a&gt;에서는 집계함수를 사용해서 데이터를 조금 더 디테일하게 요약하는 것을 배웠다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch07_split_unnest/&#34;&gt;Ch07 Arrays &amp;amp; Structs&lt;/a&gt;에서는 빅쿼리에서 가상의 테이블과 그리고 배열을 만드는 법을 익혔다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;오늘 포스트에서는 &lt;code&gt;ARRAY_AGG&lt;/code&gt;을 활용하도록 한다. 한국말로는 다중 집계함수, 배열 집계함수 라고 표현하는 것 같기도 하지만, 가급적 원어의 의미를 그대로 담아내고자 &lt;code&gt;ARRAY_AGG&lt;/code&gt;를 사용하였다.&lt;/p&gt;
+&lt;p&gt;우선, &lt;code&gt;gender&lt;/code&gt;와 &lt;code&gt;year&lt;/code&gt;에 따른 &lt;code&gt;trips이 개수&lt;/code&gt; 구하는 쿼리를 작성해본다.&lt;/p&gt;
+&lt;h3 id=&#34;1-without-array_agg&#34;&gt;(1) Without ARRAY_AGG&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bigquerytutorial-274406&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    , EXTRACT(YEAR from starttime) AS year --
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    , COUNT(*) AS numtrips
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE gender != &amp;#39;unknown&amp;#39; and starttime IS NOT NULL
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  GROUP BY gender, year
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  HAVING year &amp;gt; 2016  
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+
+
+|    | gender   |   year |   numtrips |
+|---:|:---------|-------:|-----------:|
+|  0 | male     |   2018 |    3955871 |
+|  1 | female   |   2017 |    3236735 |
+|  2 | male     |   2017 |    9306602 |
+|  3 | female   |   2018 |    1260893 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;2-쿼리-작성-tip&#34;&gt;(2) 쿼리 작성 Tip&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;SELECT&lt;/code&gt; 구문을 짤 때, &lt;code&gt;,&lt;/code&gt;가 쿼리문 맨 앞쪽에 오면 주석 처리 하기가 용이해지는 장점이 있다.&lt;/p&gt;
+&lt;p&gt;간단한 예를 들면,&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt; 
+  gender
+  , &lt;span style=&#34;color:#66d9ef&#34;&gt;EXTRACT&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;YEAR&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;from&lt;/span&gt; starttime) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;year&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;-- extract year
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  , &lt;span style=&#34;color:#66d9ef&#34;&gt;COUNT&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; numtrips  &lt;span style=&#34;color:#75715e&#34;&gt;-- count the number of trips
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; 
+  etc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;위에서 보는 것처럼, 주석 처리의 가독성이 한결 좋아진 것이 눈에 들어온다.&lt;/p&gt;
+&lt;h3 id=&#34;3-with-array_agg&#34;&gt;(3) WITH ARRAY_AGG&lt;/h3&gt;
+&lt;p&gt;그런데, ARRAY_AGG를 활용하지 않을 때 문제점은 &lt;code&gt;gender&lt;/code&gt;의 구분이 조금 불명확다는 데 있다. 이러한 단점을 &lt;code&gt;ARRAY_AGG&lt;/code&gt;를 활용하면 만회할 수 있다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    , ARRAY_AGG(numtrips order by year) AS numtrips
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      gender
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      , EXTRACT(YEAR from starttime) AS year --
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      , COUNT(*) AS numtrips
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WHERE gender != &amp;#39;unknown&amp;#39; and starttime IS NOT NULL
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    GROUP BY gender, year
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    HAVING year &amp;gt; 2016  
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  GROUP BY gender 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | gender   | numtrips           |
+|---:|:---------|:-------------------|
+|  0 | male     | [9306602, 3955871] |
+|  1 | female   | [3236735, 1260893] |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ARRAY Type의 장점은 쿼리의 결과값에 제한이 없다는 점이다. 또한, 결과값을 JSON 형태로 출력함으로써, 업무의 형태를 다양하게 가져갈 수 있다는 장점이 있다.&lt;/p&gt;
+&lt;p&gt;그런데, 한가지 고려해야 할 사항이 있다. 테이블 형태로 저장하지 않는한 NULL 요소는 일반적으로 Array에서는 허용이 된다. 즉, (예:, [1, NULL, 2]) 형태로 임시저장하는 형태의 코드는 작동하지 않는다.&lt;/p&gt;
+&lt;p&gt;다음 코드를 예드를 들어보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH example AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT true AS is_vowel, &amp;#39;a&amp;#39; as letter, 1 as position
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;b&amp;#39;, 2
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;c&amp;#39;, 3
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT ARRAY_AGG(IF(position=2, NULL, position)) as positions from example
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;ERROR:root:An unexpected error occurred while tokenizing input
+The following traceback may be corrupted or invalid
+The error message is: (&#39;EOF in multi-line string&#39;, (1, 2))
+
+
+
+
+---------------------------------------------------------------------------
+
+BadRequest                                Traceback (most recent call last)
+
+&amp;lt;ipython-input-7-227bc549bdfe&amp;gt; in &amp;lt;module&amp;gt;()
+      6   )
+      7   SELECT ARRAY_AGG(IF(position=2, NULL, position)) as positions from example
+----&amp;gt; 8   &#39;&#39;&#39;).to_dataframe()
+      9 
+     10 print(tabulate(temp, tablefmt=&#39;pipe&#39;, headers=&#39;keys&#39;))
+
+
+BadRequest: 400 GET https://bigquery.googleapis.com/bigquery/v2/projects/bigquerytutorial-274406/queries/6e2204e1-25e3-4bb7-9146-383ba6dd14f8?maxResults=0&amp;amp;location=US: Array cannot have a null element; error in writing field positions
+
+(job ID: 6e2204e1-25e3-4bb7-9146-383ba6dd14f8)
+
+                         -----Query Job SQL Follows-----                         
+
+    |    .    |    .    |    .    |    .    |    .    |    .    |    .    |
+   1:
+   2:  WITH example AS (
+   3:    SELECT true AS is_vowel, &#39;a&#39; as letter, 1 as position
+   4:    UNION ALL SELECT false, &#39;b&#39;, 2
+   5:    UNION ALL SELECT false, &#39;c&#39;, 3
+   6:  )
+   7:  SELECT ARRAY_AGG(IF(position=2, NULL, position)) as positions from example
+   8:  
+    |    .    |    .    |    .    |    .    |    .    |    .    |    .    |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;그런데, NULL 요소가 저장되지 않으면 쿼리는 정상적으로 작동한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH example AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT true AS is_vowel, &amp;#39;a&amp;#39; as letter, 1 as position
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;b&amp;#39;, 2
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;c&amp;#39;, 3
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT ARRAY_LENGTH(ARRAY_AGG(IF(position=2, NULL, position))) as positions from example
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    |   positions |
+|---:|------------:|
+|  0 |           3 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;위 코드는 &lt;code&gt;[1, NULL, 3]&lt;/code&gt;의 반환값의 길이를 구하는 코드다. 다시 말하면, &lt;code&gt;[1, NULL, 3]&lt;/code&gt;의 형태로 저장하는 것이 아니기 때문에 쿼리가 작동했다는 뜻이다.&lt;/p&gt;
+&lt;p&gt;매우 짧은 포스트이지만, ARRAY_AGG의 활용법과 그 주의해야 할 점에 대해 익혔다.&lt;/p&gt;
+&lt;p&gt;다음 시간에는 &lt;code&gt;STRUCT&lt;/code&gt;에 대해 배우는 시간을 가지도록 한다.&lt;/p&gt;
+&lt;h2 id=&#34;4-reference&#34;&gt;4. Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, V., &amp;amp; Tigani, J. (2020). Google BigQuery: the definitive guide: data warehousing, analytics, and machine learning at scale. Beijing: OReilly.&lt;/p&gt;
+</description>
+    </item>
     
   </channel>
 </rss>

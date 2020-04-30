@@ -1,22 +1,181 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>
-	dplyr on Data Science | ChloEvan
-	
-	</title>
+    <title>dplyr on Data Science | ChloEvan</title>
     <link>https://chloevan.github.io/categories/dplyr/</link>
-    <description>Recent content 
-	
-	in dplyr on Data Science | ChloEvan
-	</description>
+    <description>Recent content in dplyr on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
-	
-	
+    <language>en-us</language>
     <lastBuildDate>Thu, 30 Apr 2020 10:20:39 +0900</lastBuildDate>
-	
     
         <atom:link href="https://chloevan.github.io/categories/dplyr/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>stackoverflow with dplyr 01 - mutate_all</title>
+      <link>https://chloevan.github.io/r/datatransform/dplyr01_mutate_all/</link>
+      <pubDate>Thu, 30 Apr 2020 10:20:39 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/r/datatransform/dplyr01_mutate_all/</guid>
+      <description>&lt;h2 id=&#34;i-개요&#34;&gt;I. 개요&lt;/h2&gt;
+&lt;p&gt;dplyr 문법에 관한 설명은 사실 차고 넘친다. 구체적인 설명은 하지 않겠다. Google이나 Naver에서 dplyr을 검색해보자! 검색하면 쉽게 정리된 글들이 많이 있다.&lt;/p&gt;
+&lt;p&gt;그런데, 실제 실무에서 다루는 데이터의 질과 양은 다 다르다. 데이터 가공은 결국 연구자의 환경에 따라 달라지는데, 조금 더 효과적으로 dplyr 문법을 사용하려면 결국엔 아이디어가 필요하고, 그리고 &lt;code&gt;stackoverflow&lt;/code&gt;를 찾게 되어 있다. 집단 지성의 힘이랄까?&lt;/p&gt;
+&lt;p&gt;그래서 가급적, &lt;code&gt;stackoverflow&lt;/code&gt;에 나와 있는 문제 중 재미있는 해결법 등을 소개하며 연재하려고 한다.&lt;/p&gt;
+&lt;p&gt;제 강의를 들으신 분들에게 작은 도움이 되기를 바랍니다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-problems&#34;&gt;II. Problems&lt;/h2&gt;
+&lt;p&gt;2017년 쯤 올라온 질문이다. &lt;a href=&#34;https://stackoverflow.com/questions/43314328/how-to-use-dplyrmutate-all-for-rounding-selected-columns&#34;&gt;How to use dplyr::mutate_all for rounding selected columns&lt;/a&gt; 한번 읽기를 바란다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;패키지 버전&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# devtools::install_github(&amp;#34;hadley/dplyr&amp;#34;)&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;packageVersion&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;dplyr&amp;#34;&lt;/span&gt;)
+[1] ‘&lt;span style=&#34;color:#ae81ff&#34;&gt;0.5.0.9001&lt;/span&gt;’
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;데이터&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; df
+&lt;span style=&#34;color:#75715e&#34;&gt;# A tibble: 6 × 7&lt;/span&gt;
+    gene_symbol fold_change  pvalue ctr.mean_exp tre.mean_exp  ctr.cv  tre.cv
+         &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;fctr&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;       &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;dbl&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;   &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;dbl&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;dbl&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;dbl&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;   &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;dbl&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;   &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;dbl&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0610005&lt;/span&gt;C13Rik     &lt;span style=&#34;color:#ae81ff&#34;&gt;1.54037&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.53120&lt;/span&gt;      &lt;span style=&#34;color:#ae81ff&#34;&gt;0.00583&lt;/span&gt;      &lt;span style=&#34;color:#ae81ff&#34;&gt;0.00899&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;5.49291&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;6.06505&lt;/span&gt;
+&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0610007&lt;/span&gt;P14Rik     &lt;span style=&#34;color:#ae81ff&#34;&gt;1.10976&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.00033&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;59.67286&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;66.22232&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.20263&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.28827&lt;/span&gt;
+&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0610009&lt;/span&gt;B22Rik     &lt;span style=&#34;color:#ae81ff&#34;&gt;0.78500&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.00000&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;83.28470&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;65.37819&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.17445&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.33958&lt;/span&gt;
+&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0610009L18&lt;/span&gt;Rik     &lt;span style=&#34;color:#ae81ff&#34;&gt;0.79852&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.00011&lt;/span&gt;      &lt;span style=&#34;color:#ae81ff&#34;&gt;6.88321&lt;/span&gt;      &lt;span style=&#34;color:#ae81ff&#34;&gt;5.49638&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.46288&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.53295&lt;/span&gt;
+&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0610009&lt;/span&gt;O20Rik     &lt;span style=&#34;color:#ae81ff&#34;&gt;0.91615&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.00387&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;14.67696&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;13.44630&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.25430&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.26679&lt;/span&gt;
+&lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0610010&lt;/span&gt;B08Rik     &lt;span style=&#34;color:#ae81ff&#34;&gt;0.87931&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.01455&lt;/span&gt;      &lt;span style=&#34;color:#ae81ff&#34;&gt;1.10363&lt;/span&gt;      &lt;span style=&#34;color:#ae81ff&#34;&gt;0.97043&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.39564&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.52364&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;하고 싶었던 것&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I&amp;rsquo;d like to round the floats (2nd columns onward) to 3 digits. What&amp;rsquo;s the way to do it with dplyr::mutate_all()&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;round() 함수를 적용해서 소수점 3자리로 통일하고 싶다는 것이다. 내용적(content)으로는 사실 간단한 문제다. 그런데, Column이 숫자와, 문자 등 복잡하게 섞여 있으면 프로그래밍적(programming)으로는 쉽지 않다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;시도했던 것&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;cols &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;names&lt;/span&gt;(df)[2&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;]
+&lt;span style=&#34;color:#75715e&#34;&gt;# df &amp;lt;- df %&amp;gt;% mutate_each_(funs(round(.,3)), cols)&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Warning message:&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#&amp;#39;mutate_each_&amp;#39; is deprecated.&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Use &amp;#39;mutate_all&amp;#39; instead.&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# See help(&amp;#34;Deprecated&amp;#34;) &lt;/span&gt;
+
+df &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; df &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;mutate_all&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;funs&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;round&lt;/span&gt;(.,3)), cols)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;에러 메시지&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;Error in &lt;span style=&#34;color:#a6e22e&#34;&gt;mutate_impl&lt;/span&gt;(.data, dots) &lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; 
+  &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt; arguments passed to &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;round&amp;#39;&lt;/span&gt;which requires &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; or &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; arguments
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;우선, 프로그래밍 입문자들에게 위 에러의 공유는 매우 좋은 본보기가 될 것 같다. 프로그래밍과 관련된 업무를 하는 사람에게 에러는 사실 좋은 것이다. 수정하면서 조금 더 나은 결과물이 나오는 하나의 과정이기 때문에 그렇다. (여담이지만, 처음 자바를 배울 때 이게 너무 힘들어서 포기했다. 에러를 잡는데 많은 시간이 걸려서 포기했던 지난날을 떠올리며..)&lt;/p&gt;
+&lt;p&gt;그런데, 실무에서 신입이 가장 어려운 부분은 에러가 난 것을 어떻게 공유하고 전달해야 할지 모르는데 있다. 신입 뿐만 아니라 모든 사람들이 에러와 시간을 보내고 있는데, 위 에러 메시지만 던져주면 당연히 상사도 모른다!&lt;/p&gt;
+&lt;p&gt;위와 같이 전체적인 맥락과 무엇을 하려는지 명시해주면, 에러를 이해하기도 그리고 수정하기가 훨씬 수월해진다.&lt;/p&gt;
+&lt;h2 id=&#34;iii-understanding&#34;&gt;III. Understanding&lt;/h2&gt;
+&lt;p&gt;그렇다면 무엇이 문제일까? 결론적으로 말하면 문법이 맞지 않은 거다. 왜 문법이 맞지 않은 것일까?&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# install.packages(&amp;#34;dplyr&amp;#34;)&lt;/span&gt;
+&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(dplyr)
+&lt;span style=&#34;color:#a6e22e&#34;&gt;packageVersion&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;dplyr&amp;#34;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## [1] &#39;0.8.5&#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;1-mutate_all-vs-mutate_if-or-mutate_at&#34;&gt;(1) mutate_all Vs. mutate_if or mutate_at&lt;/h3&gt;
+&lt;p&gt;mutate_all과 mutate_if는 다르다. 7개의 변수 모두가 변환하는 건 아니다. 그중에서 일부 &lt;code&gt;double&lt;/code&gt; 형태만 바꾸는 것이다. 즉, 애초에 함수를 잘못 쓴것이다.&lt;/p&gt;
+&lt;p&gt;따라서, 관련 답지를 봐도, &lt;code&gt;mutate_all&lt;/code&gt;로 추천하기 보다는 &lt;code&gt;mutate_if&lt;/code&gt;나 &lt;code&gt;mutate_at&lt;/code&gt;으로 추천하는 것을 볼 수 있다.&lt;/p&gt;
+&lt;h3 id=&#34;2-across-소개&#34;&gt;(2) across() 소개&lt;/h3&gt;
+&lt;p&gt;버전이 업그레이드 된 경우에 쓸수 있는 새로운 함수를 소개하고 있는데, 사내망을 이용한다면, 위와 같은 답지는 도움이 안된다. &lt;code&gt;dplyr&lt;/code&gt; 패키지 하나만 업그레이드의 문제가 아니라 의존성 있는 다른 패키지들도 동시 다발적으로 다 설치를 해줘야 한다. 안 그러면 패키지 설치 에러를 잡아야 하는 촌극이 발생한다. (원래 이 문제 해결하려는 게 아니었으니까)&lt;/p&gt;
+&lt;p&gt;물론 인터넷 환경은 상관이 없다. 그러나 사내망이라면 문제가 복잡해지기 때문에, 스터디용으로 활용가치는 있으나 실무에서 즉시 적용하기에는 문제가 있다.&lt;/p&gt;
+&lt;h2 id=&#34;iv-application&#34;&gt;IV. Application&lt;/h2&gt;
+&lt;p&gt;이제 적용을 해보자. 적용을 할 때, 필자가 주로 쓰는 건, 본 포스트처럼, &lt;code&gt;가상의 Sample&lt;/code&gt; 데이터를 만들어보는 것이다.&lt;/p&gt;
+&lt;h3 id=&#34;1-응용방법-1&#34;&gt;(1) 응용방법 1&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;데이터 생성&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(dplyr)
+df  &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;structure&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;list&lt;/span&gt;(gene_symbol &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;structure&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;, .Label &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0610005C13Rik&amp;#34;&lt;/span&gt;, 
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0610007P14Rik&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0610009B22Rik&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0610009L18Rik&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0610009O20Rik&amp;#34;&lt;/span&gt;, 
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0610010B08Rik&amp;#34;&lt;/span&gt;), class &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;factor&amp;#34;&lt;/span&gt;), fold_change &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1.54037&lt;/span&gt;, 
+&lt;span style=&#34;color:#ae81ff&#34;&gt;1.10976&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.785&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.79852&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.91615&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.87931&lt;/span&gt;), pvalue &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;0.5312&lt;/span&gt;, 
+&lt;span style=&#34;color:#ae81ff&#34;&gt;0.00033&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.00011&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.00387&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.01455&lt;/span&gt;), ctr.mean_exp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;0.00583&lt;/span&gt;, 
+&lt;span style=&#34;color:#ae81ff&#34;&gt;59.67286&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;83.2847&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;6.88321&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.67696&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1.10363&lt;/span&gt;), tre.mean_exp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;0.00899&lt;/span&gt;, 
+&lt;span style=&#34;color:#ae81ff&#34;&gt;66.22232&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;65.37819&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5.49638&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;13.4463&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.97043&lt;/span&gt;), ctr.cv &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;5.49291&lt;/span&gt;, 
+&lt;span style=&#34;color:#ae81ff&#34;&gt;0.20263&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.17445&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.46288&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.2543&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.39564&lt;/span&gt;), tre.cv &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;6.06505&lt;/span&gt;, 
+&lt;span style=&#34;color:#ae81ff&#34;&gt;0.28827&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.33958&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.53295&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.26679&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.52364&lt;/span&gt;)), .Names &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;gene_symbol&amp;#34;&lt;/span&gt;, 
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fold_change&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pvalue&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ctr.mean_exp&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;tre.mean_exp&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ctr.cv&amp;#34;&lt;/span&gt;, 
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;tre.cv&amp;#34;&lt;/span&gt;), row.names &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;NA&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;-6L&lt;/span&gt;), class &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;tbl_df&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;tbl&amp;#34;&lt;/span&gt;, 
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;data.frame&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;예시답안을 활용한 적용
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;mutate_at&lt;/code&gt; 함수를 활용해서 적용했다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;df &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;mutate_at&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;, round, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 7
+##   gene_symbol   fold_change pvalue ctr.mean_exp tre.mean_exp ctr.cv tre.cv
+##   &amp;lt;fct&amp;gt;               &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;
+## 1 0610005C13Rik       1.54   0.531        0.006        0.009  5.49   6.06 
+## 2 0610007P14Rik       1.11   0           59.7         66.2    0.203  0.288
+## 3 0610009B22Rik       0.785  0           83.3         65.4    0.174  0.34 
+## 4 0610009L18Rik       0.799  0            6.88         5.50   0.463  0.533
+## 5 0610009O20Rik       0.916  0.004       14.7         13.4    0.254  0.267
+## 6 0610010B08Rik       0.879  0.015        1.10         0.97   0.396  0.524
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;위의 있는 값처럼 &lt;code&gt;digits=3&lt;/code&gt;으로 변환된 것을 확인할 수 있다.&lt;/p&gt;
+&lt;h3 id=&#34;2-응용방법-2&#34;&gt;(2) 응용방법 2&lt;/h3&gt;
+&lt;p&gt;그런데, 만약 &lt;code&gt;Column&lt;/code&gt; 중간에 문자형 데이터가 있을 경우에는 &lt;code&gt;df[2:7]&lt;/code&gt;당연히 적용이 되지 않는다. 그럼 어떻게 해야 할까?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;mutate_if를 활용한 적용
+&lt;ul&gt;
+&lt;li&gt;이번엔 문자열 데이터를 중간에 오도록 살짝 변형하자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;df  &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;structure&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;list&lt;/span&gt;(fold_change &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1.54037&lt;/span&gt;, 
+&lt;span style=&#34;color:#ae81ff&#34;&gt;1.10976&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.785&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.79852&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.91615&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.87931&lt;/span&gt;), pvalue &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;0.5312&lt;/span&gt;, 
+&lt;span style=&#34;color:#ae81ff&#34;&gt;0.00033&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.00011&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.00387&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.01455&lt;/span&gt;), ctr.mean_exp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;0.00583&lt;/span&gt;, 
+&lt;span style=&#34;color:#ae81ff&#34;&gt;59.67286&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;83.2847&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;6.88321&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.67696&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1.10363&lt;/span&gt;), tre.mean_exp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;0.00899&lt;/span&gt;, 
+&lt;span style=&#34;color:#ae81ff&#34;&gt;66.22232&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;65.37819&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5.49638&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;13.4463&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.97043&lt;/span&gt;), gene_symbol &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;structure&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;, .Label &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0610005C13Rik&amp;#34;&lt;/span&gt;, 
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0610007P14Rik&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0610009B22Rik&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0610009L18Rik&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0610009O20Rik&amp;#34;&lt;/span&gt;, 
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0610010B08Rik&amp;#34;&lt;/span&gt;), class &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;factor&amp;#34;&lt;/span&gt;), ctr.cv &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;5.49291&lt;/span&gt;, 
+&lt;span style=&#34;color:#ae81ff&#34;&gt;0.20263&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.17445&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.46288&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.2543&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.39564&lt;/span&gt;), tre.cv &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;6.06505&lt;/span&gt;, 
+&lt;span style=&#34;color:#ae81ff&#34;&gt;0.28827&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.33958&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.53295&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.26679&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.52364&lt;/span&gt;)), .Names &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;( 
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fold_change&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pvalue&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ctr.mean_exp&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;tre.mean_exp&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;gene_symbol&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ctr.cv&amp;#34;&lt;/span&gt;, 
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;tre.cv&amp;#34;&lt;/span&gt;), row.names &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;NA&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;-6L&lt;/span&gt;), class &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;tbl_df&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;tbl&amp;#34;&lt;/span&gt;, 
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;data.frame&amp;#34;&lt;/span&gt;))
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;head&lt;/span&gt;(df)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 7
+##   fold_change  pvalue ctr.mean_exp tre.mean_exp gene_symbol   ctr.cv tre.cv
+##         &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt; &amp;lt;fct&amp;gt;          &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;
+## 1       1.54  0.531        0.00583      0.00899 0610005C13Rik  5.49   6.07 
+## 2       1.11  0.00033     59.7         66.2     0610007P14Rik  0.203  0.288
+## 3       0.785 0           83.3         65.4     0610009B22Rik  0.174  0.340
+## 4       0.799 0.00011      6.88         5.50    0610009L18Rik  0.463  0.533
+## 5       0.916 0.00387     14.7         13.4     0610009O20Rik  0.254  0.267
+## 6       0.879 0.0146       1.10         0.970   0610010B08Rik  0.396  0.524
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;mutate_at를 활용해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;df &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;mutate_at&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;, round, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)
+Error in &lt;span style=&#34;color:#a6e22e&#34;&gt;Math.factor&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; ‘round’ not meaningful for factors
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;보시다시피, &lt;code&gt;round()&lt;/code&gt;함수는 당연한 말이지만, &lt;code&gt;factors&lt;/code&gt;에는 적용되지 않는다. 이제 &lt;code&gt;mutate_if&lt;/code&gt;를 적용해보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;df &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;mutate_if&lt;/span&gt;(is.numeric, round, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 7
+##   fold_change pvalue ctr.mean_exp tre.mean_exp gene_symbol   ctr.cv tre.cv
+##         &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt;        &amp;lt;dbl&amp;gt; &amp;lt;fct&amp;gt;          &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;
+## 1       1.54   0.531        0.006        0.009 0610005C13Rik  5.49   6.06 
+## 2       1.11   0           59.7         66.2   0610007P14Rik  0.203  0.288
+## 3       0.785  0           83.3         65.4   0610009B22Rik  0.174  0.34 
+## 4       0.799  0            6.88         5.50  0610009L18Rik  0.463  0.533
+## 5       0.916  0.004       14.7         13.4   0610009O20Rik  0.254  0.267
+## 6       0.879  0.015        1.10         0.97  0610010B08Rik  0.396  0.524
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;이번에는 잘 적용이 되었다. 이제, &lt;code&gt;mutate_at&lt;/code&gt;을 사용할 것인지, 아니면 &lt;code&gt;mutate_if&lt;/code&gt;를 사용할 것인지는 사용자의 데이터셋 환경에 따라 달라지는 것이다.&lt;/p&gt;
+&lt;p&gt;여기에서 응용하는 것은 사용자에게 달린 문제다.&lt;/p&gt;
+&lt;p&gt;물론, 에러는 또 나올 것이다. 그러면 위와 같은 방법으로 해결하면 된다. 처음이 어렵지만, 시간이 지나면, 이러한 과정은 이제 당연히 느껴질 것이고, 덤으로 &lt;code&gt;영어&lt;/code&gt;실력도 조금씩 늘어날 것이다.&lt;/p&gt;
+&lt;p&gt;작은 도움이 되었기를 바랍니다.&lt;/p&gt;
+&lt;h2 id=&#34;v-reference&#34;&gt;V. Reference&lt;/h2&gt;
+&lt;p&gt;stacoverflow. (2017). &amp;ldquo;How to use dplyr::mutate_all for rounding selected columns&amp;rdquo;. Retrieved from &lt;a href=&#34;https://stackoverflow.com/questions/43314328/how-to-use-dplyrmutate-all-for-rounding-selected-columns&#34;&gt;https://stackoverflow.com/questions/43314328/how-to-use-dplyrmutate-all-for-rounding-selected-columns&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
     
   </channel>
 </rss>

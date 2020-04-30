@@ -1,22 +1,64 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>
-	sort_values on Data Science | ChloEvan
-	
-	</title>
+    <title>sort_values on Data Science | ChloEvan</title>
     <link>https://chloevan.github.io/tags/sort_values/</link>
-    <description>Recent content 
-	
-	in sort_values on Data Science | ChloEvan
-	</description>
+    <description>Recent content in sort_values on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
-	
-	
+    <language>en-us</language>
     <lastBuildDate>Fri, 03 Apr 2020 20:15:47 +0900</lastBuildDate>
-	
     
         <atom:link href="https://chloevan.github.io/tags/sort_values/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Pandas sort_values()</title>
+      <link>https://chloevan.github.io/python/pandas/sort_values/</link>
+      <pubDate>Fri, 03 Apr 2020 20:15:47 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/python/pandas/sort_values/</guid>
+      <description>&lt;h2 id=&#34;i-overview&#34;&gt;I. Overview&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;sort_values()&lt;/code&gt; 함수는 일종의 데이터의 정렬과 연관이 있다. 어려운 내용은 아니기 때문에 빠르게 소스 코드 구현 및 확인 하도록 한다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-sample-tutorial&#34;&gt;II. Sample Tutorial&lt;/h2&gt;
+&lt;p&gt;엑셀로 된 ticket_sales 데이터에서 &lt;code&gt;ticket_quantity&lt;/code&gt;가 가장 많이 팔린 영화 Top3를 구하는 소스코드를 구해본다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+
+url &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://github.com/chloevan/datasets/raw/master/entertainment/movie_ticket_sales.xlsx&amp;#39;&lt;/span&gt;
+sales &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_excel(url)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(sales&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head())
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;          theater_name                  movie_title ticket_type  \
+0     Sumdance Cinemas                Harry Plotter      senior   
+1  The Empirical House  10 Things I Hate About Unix       child   
+2  The Empirical House         The Seaborn Identity       adult   
+3     Sumdance Cinemas  10 Things I Hate About Unix       adult   
+4  The Empirical House                Mamma Median!      senior   
+
+   ticket_quantity  
+0                4  
+1                2  
+2                4  
+3                2  
+4                2  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;데이터가 정상적으로 수집되었다면, 이제 빠르게 &lt;code&gt;Top3&lt;/code&gt; 데이터를 추출하도록 해보자. 소스코드가 어렵지는 않으니, 따라하도록 해본다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;sales_sorted &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sales&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sort_values(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ticket_quantity&amp;#39;&lt;/span&gt;, ascending&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;False)
+sales_sorted &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sales_sorted&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;reset_index(drop&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;True)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Top3에 해당하는 행을 출력한다. &lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(sales_sorted&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;                      theater_name           movie_title ticket_type  \
+0                 Sumdance Cinemas         Harry Plotter      senior   
+1                        The Frame        Kung Fu pandas       child   
+2  Richie&#39;s Famous Minimax Theatre  The Seaborn Identity       adult   
+
+   ticket_quantity  
+0                4  
+1                4  
+2                4  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;위 소스코드에서 중요한 것은 &lt;code&gt;sort_values()&lt;/code&gt; 안에서 &lt;code&gt;해당 Column값을 입력한 후&lt;/code&gt;에 &lt;code&gt;ascending = False&lt;/code&gt;를 하게 되면 내림차순으로 정렬이 된다. 이러한 방식을 통해서 행을 출력할 수 있다.&lt;/p&gt;
+&lt;p&gt;매우 쉽죠?&lt;/p&gt;
+</description>
+    </item>
     
   </channel>
 </rss>
