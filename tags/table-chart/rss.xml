@@ -1,0 +1,248 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Table Chart on Data Science | ChloEvan</title>
+    <link>https://chloevan.github.io/tags/table-chart/</link>
+    <description>Recent content in Table Chart on Data Science | ChloEvan</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 30 Apr 2020 19:15:47 +0900</lastBuildDate>
+    
+        <atom:link href="https://chloevan.github.io/tags/table-chart/rss.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>matplotlib 06 Table Chart</title>
+      <link>https://chloevan.github.io/python/matplotlib/matplotlib_06_table_chart/</link>
+      <pubDate>Thu, 30 Apr 2020 19:15:47 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/python/matplotlib/matplotlib_06_table_chart/</guid>
+      <description>&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
+&lt;p&gt;제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.&lt;/p&gt;
+&lt;p&gt;도움이 되었다면 &lt;code&gt;Github&lt;/code&gt;에 &lt;code&gt;Star&lt;/code&gt;를 눌러주세요.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/chloevan/python_visualisation&#34;&gt;python_visualisation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;i-matplotlib--seaborn&#34;&gt;I. Matplotlib &amp;amp; Seaborn&lt;/h2&gt;
+&lt;h3 id=&#34;1-기본-개요&#34;&gt;(1) 기본 개요&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;Matplotlib&lt;/code&gt;는 파이썬 표준 시각화 도구라고 불리워지며 파이썬 그래프의 기본 토대가 된다고 해도 무방하다. 객체지향 프로그래밍을 지원하므로 세세하게 꾸밀 수 있다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Seaborn&lt;/code&gt; 그래는 파이썬 시각화 도구의 고급 버전이다. &lt;code&gt;Matplotlib&lt;/code&gt;에 비해 비교적 단순한 인터페이스를 제공하기 때문에 초보자도 어렵지 않게 배울 수 있다.&lt;/p&gt;
+&lt;h3 id=&#34;2-matplotlib--seabon-설치&#34;&gt;(2) matplotlib &amp;amp; Seabon 설치&lt;/h3&gt;
+&lt;p&gt;설치방법은 윈도우 명령 프롬프트, MacOS, Linux 터미널에서 &lt;code&gt;pip install matplotlib&lt;/code&gt;입력하면 되지만, 간혹 여러 환경에 따라 달라질 수 있으니 관련 싸이트에서 확인하기를 바란다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;matplotlib 설치 방법: &lt;a href=&#34;https://matplotlib.org/users/installing.html&#34;&gt;https://matplotlib.org/users/installing.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;seaborn 설치 방법: &lt;a href=&#34;https://seaborn.pydata.org/installing.html&#34;&gt;https://seaborn.pydata.org/installing.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;ii-table-chart&#34;&gt;II. Table Chart&lt;/h2&gt;
+&lt;p&gt;Table Chart는 막대 그래프와 테이블을 섞어서 쓰는 형태가 되겠다. 우선 가상의 Sample 데이터를 만들어보자.&lt;/p&gt;
+&lt;h3 id=&#34;1-데이터-생성&#34;&gt;(1) 데이터 생성&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Years under consideration&lt;/span&gt;
+years &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;2010&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;2011&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;2012&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;2013&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;2014&amp;#34;&lt;/span&gt;]
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Available Watt&lt;/span&gt;
+columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;4.5W&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;6.0W&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;7.0W&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;8.5W&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;9.5W&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;13.5W&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;15W&amp;#34;&lt;/span&gt;]
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# UnitsSold&lt;/span&gt;
+unitsSold &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [
+              [&lt;span style=&#34;color:#ae81ff&#34;&gt;65&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;141&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;88&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;111&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;104&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;71&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;99&lt;/span&gt;], 
+              [&lt;span style=&#34;color:#ae81ff&#34;&gt;85&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;142&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;89&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;112&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;103&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;73&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;98&lt;/span&gt;],
+              [&lt;span style=&#34;color:#ae81ff&#34;&gt;75&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;143&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;90&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;113&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;89&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;75&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;93&lt;/span&gt;], 
+              [&lt;span style=&#34;color:#ae81ff&#34;&gt;65&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;144&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;91&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;114&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;90&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;77&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;92&lt;/span&gt;], 
+              [&lt;span style=&#34;color:#ae81ff&#34;&gt;55&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;145&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;92&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;115&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;88&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;79&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;93&lt;/span&gt;]
+            ]
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(years)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(columns)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(unitsSold)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[&#39;2010&#39;, &#39;2011&#39;, &#39;2012&#39;, &#39;2013&#39;, &#39;2014&#39;]
+[&#39;4.5W&#39;, &#39;6.0W&#39;, &#39;7.0W&#39;, &#39;8.5W&#39;, &#39;9.5W&#39;, &#39;13.5W&#39;, &#39;15W&#39;]
+[[65, 141, 88, 111, 104, 71, 99], [85, 142, 89, 112, 103, 73, 98], [75, 143, 90, 113, 89, 75, 93], [65, 144, 91, 114, 90, 77, 92], [55, 145, 92, 115, 88, 79, 93]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이번에는 시각화를 하기 위해 y축을 작성해본다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; np
+values &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;arange(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;600&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;2-색상조합&#34;&gt;(2) 색상조합&lt;/h3&gt;
+&lt;p&gt;전체적인 테이블 차트를 작성하기 전, 먼저 bar 차트를 작성해본다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
+colors &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;cm&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;OrRd(np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;linspace(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.7&lt;/span&gt;, len(years)))
+index &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;arange(len(columns)) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.3&lt;/span&gt;
+bar_width &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.7&lt;/span&gt;
+y_offset &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;zeros(len(columns))
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(colors)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(index)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(y_offset)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[[1.         0.96862745 0.9254902  1.        ]
+ [0.9945867  0.87996924 0.7216609  1.        ]
+ [0.99215686 0.75371011 0.53883891 1.        ]
+ [0.97783929 0.52095348 0.33542484 1.        ]
+ [0.87930796 0.26811226 0.18336025 1.        ]]
+
+[0.3 1.3 2.3 3.3 4.3 5.3 6.3]
+
+[0. 0. 0. 0. 0. 0. 0.]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;colors는 연도를 의미하고, 연도별로 다르게 색상을 줘서 차별점을 둔다는 뜻이다.
+&lt;ul&gt;
+&lt;li&gt;우선, &lt;code&gt;cm&lt;/code&gt;은 &lt;code&gt;matplotlib.pyplot&lt;/code&gt; 색상을 의미하고, &lt;code&gt;OrRd&lt;/code&gt;는 일종의 색상의 종류이다.&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+&lt;li&gt;np.linspace는 일종의 gradation을 주는 것으로 생각하면 된다. &lt;code&gt;len(years)&lt;/code&gt;만큼의 gradation을 주겠다고 선언하는 것과 같다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;index는 columns는 의미하며, X축으로 활용될 것이다.&lt;/li&gt;
+&lt;li&gt;bar_width는 X축에서 각 값끼리의 간격을 의미한다.&lt;/li&gt;
+&lt;li&gt;y_offset은 &lt;code&gt;unitsSold&lt;/code&gt; 값을 담아서 실제 bar chart의 y축 및 table 셀의 값에 해당된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;fig, ax &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;subplots()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/matplotlib/matplotlib_06_table_chart/output_10_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;일종의 그래프를 선언한다는 뜻이다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;cell_text &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; []
+n_rows &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; len(unitsSold)
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; row &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; range(n_rows): 
+  plot &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;bar(index, unitsSold[row], bar_width, bottom&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;y_offset, color&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;colors[row])
+  y_offset &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; y_offset &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; unitsSold[row]
+  cell_text&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;append([&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%1.1f&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (x) &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; x &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; y_offset])
+  i&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(cell_text)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[[&#39;65.0&#39;, &#39;141.0&#39;, &#39;88.0&#39;, &#39;111.0&#39;, &#39;104.0&#39;, &#39;71.0&#39;, &#39;99.0&#39;]]
+[[&#39;65.0&#39;, &#39;141.0&#39;, &#39;88.0&#39;, &#39;111.0&#39;, &#39;104.0&#39;, &#39;71.0&#39;, &#39;99.0&#39;], [&#39;150.0&#39;, &#39;283.0&#39;, &#39;177.0&#39;, &#39;223.0&#39;, &#39;207.0&#39;, &#39;144.0&#39;, &#39;197.0&#39;]]
+[[&#39;65.0&#39;, &#39;141.0&#39;, &#39;88.0&#39;, &#39;111.0&#39;, &#39;104.0&#39;, &#39;71.0&#39;, &#39;99.0&#39;], [&#39;150.0&#39;, &#39;283.0&#39;, &#39;177.0&#39;, &#39;223.0&#39;, &#39;207.0&#39;, &#39;144.0&#39;, &#39;197.0&#39;], [&#39;225.0&#39;, &#39;426.0&#39;, &#39;267.0&#39;, &#39;336.0&#39;, &#39;296.0&#39;, &#39;219.0&#39;, &#39;290.0&#39;]]
+[[&#39;65.0&#39;, &#39;141.0&#39;, &#39;88.0&#39;, &#39;111.0&#39;, &#39;104.0&#39;, &#39;71.0&#39;, &#39;99.0&#39;], [&#39;150.0&#39;, &#39;283.0&#39;, &#39;177.0&#39;, &#39;223.0&#39;, &#39;207.0&#39;, &#39;144.0&#39;, &#39;197.0&#39;], [&#39;225.0&#39;, &#39;426.0&#39;, &#39;267.0&#39;, &#39;336.0&#39;, &#39;296.0&#39;, &#39;219.0&#39;, &#39;290.0&#39;], [&#39;290.0&#39;, &#39;570.0&#39;, &#39;358.0&#39;, &#39;450.0&#39;, &#39;386.0&#39;, &#39;296.0&#39;, &#39;382.0&#39;]]
+[[&#39;65.0&#39;, &#39;141.0&#39;, &#39;88.0&#39;, &#39;111.0&#39;, &#39;104.0&#39;, &#39;71.0&#39;, &#39;99.0&#39;], [&#39;150.0&#39;, &#39;283.0&#39;, &#39;177.0&#39;, &#39;223.0&#39;, &#39;207.0&#39;, &#39;144.0&#39;, &#39;197.0&#39;], [&#39;225.0&#39;, &#39;426.0&#39;, &#39;267.0&#39;, &#39;336.0&#39;, &#39;296.0&#39;, &#39;219.0&#39;, &#39;290.0&#39;], [&#39;290.0&#39;, &#39;570.0&#39;, &#39;358.0&#39;, &#39;450.0&#39;, &#39;386.0&#39;, &#39;296.0&#39;, &#39;382.0&#39;], [&#39;345.0&#39;, &#39;715.0&#39;, &#39;450.0&#39;, &#39;565.0&#39;, &#39;474.0&#39;, &#39;375.0&#39;, &#39;475.0&#39;]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/matplotlib/matplotlib_06_table_chart/output_12_1.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;X축과 y축에 따라 대응하도록 하는데, lopp를 활용하여 그래프를 작성하겠다는 뜻이고, 이는 &lt;code&gt;matplotlib.pyplot&lt;/code&gt;에서는 자주 쓰이는 문법이다.&lt;/li&gt;
+&lt;li&gt;y_offset은 각 리스트에 저장될 &lt;code&gt;unitsSold&lt;/code&gt;이고, loop가 돌 때마다 점점 확장하는 것을 볼 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;colors &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;cm&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;OrRd(np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;linspace(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.7&lt;/span&gt;, len(years)))
+index &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;arange(len(columns)) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.3&lt;/span&gt;
+bar_width &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.7&lt;/span&gt;
+
+y_offset &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;zeros(len(columns))
+fig, ax &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;subplots()
+
+cell_text&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;[]
+n_rows &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; len(unitsSold)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; row &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; range(n_rows): 
+  plot &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;bar(index, unitsSold[row], bar_width, bottom&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;y_offset, color&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;colors[row])
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(plot)
+  y_offset &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; y_offset &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; unitsSold[row]
+  cell_text&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;append([&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%1.1f&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (x) &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; x &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; y_offset])
+  i&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; rect &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; plot:
+    height &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; rect&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_height()
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(height)
+    ax&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;text(rect&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_x() &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; rect&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_width()&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, 
+            y_offset[i], &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%d&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt; 
+            &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; int(y_offset[i]), 
+            ha&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;center&amp;#39;&lt;/span&gt;, 
+            va&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bottom&amp;#39;&lt;/span&gt;)
+    i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; i&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;&amp;lt;BarContainer object of 7 artists&amp;gt;
+65.0
+141.0
+88.0
+111.0
+104.0
+71.0
+99.0
+&amp;lt;BarContainer object of 7 artists&amp;gt;
+85.0
+142.0
+89.0
+112.0
+103.0
+73.0
+98.0
+&amp;lt;BarContainer object of 7 artists&amp;gt;
+75.0
+143.0
+90.0
+113.0
+89.0
+75.0
+93.0
+&amp;lt;BarContainer object of 7 artists&amp;gt;
+65.0
+144.0
+91.0
+114.0
+90.0
+77.0
+92.0
+&amp;lt;BarContainer object of 7 artists&amp;gt;
+55.0
+145.0
+92.0
+115.0
+88.0
+79.0
+93.0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/matplotlib/matplotlib_06_table_chart/output_14_1.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;각각의 &lt;code&gt;plot container&lt;/code&gt;들이 담고있는 값들은 &lt;code&gt;rect.get_height()&lt;/code&gt;을 통해서 리스트 형태로 출력할 수 있다.&lt;/li&gt;
+&lt;li&gt;이를 받아서, text로 시각화하는 과정이 &lt;code&gt;for rect in plot:&lt;/code&gt; 이하 구문이다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;i&lt;/code&gt;를 통해서, loop를 통해 &lt;code&gt;0~6&lt;/code&gt;까지 하나씩 이동하면서 그래프와 함께 텍스트가 출력된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;colors &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;cm&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;OrRd(np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;linspace(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.7&lt;/span&gt;, len(years)))
+index &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;arange(len(columns)) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.3&lt;/span&gt;
+bar_width &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.7&lt;/span&gt;
+
+y_offset &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;zeros(len(columns))
+fig, ax &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;subplots()
+
+cell_text&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;[]
+n_rows &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; len(unitsSold)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; row &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; range(n_rows): 
+  plot &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;bar(index, unitsSold[row], bar_width, bottom&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;y_offset, color&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;colors[row])
+  y_offset &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; y_offset &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; unitsSold[row]
+  cell_text&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;append([&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%1.1f&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (x) &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; x &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; y_offset])
+  i&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; rect &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; plot:
+    height &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; rect&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_height()
+    ax&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;text(rect&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_x() &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; rect&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_width()&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, 
+            y_offset[i], &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%d&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt; 
+            &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; int(y_offset[i]), 
+            ha&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;center&amp;#39;&lt;/span&gt;, 
+            va&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bottom&amp;#39;&lt;/span&gt;)
+    i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; i&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; 
+  
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;table(cellText&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;cell_text, rowLabels&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;years, 
+          rowColours&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;colors, colLabels&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;columns, loc&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bottom&amp;#39;&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ylabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Units Sold&amp;#34;&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;xticks([])
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;title(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Number of LED Bulb Sold/Year&amp;#39;&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;show()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/matplotlib/matplotlib_06_table_chart/output_16_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;이렇게 해서 그래프가 완성이 되었다. 해석은 비교적 용이하다. 짙은 빨간색은 2014년 그래프를 가리키고, 4.5W를 기준으로 상하로 그래프가 작성된 것을 확인할 수 있다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;이제 plt.table 이하 구문을 적용하면 된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iii-실습파일&#34;&gt;III. 실습파일&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;구글코랩에서 빠르게 실습도 할 수 있습니다. &lt;a href=&#34;https://colab.research.google.com/github/chloevan/python_visualisation/blob/master/matplotlib/matplotlib_06_table_chart&#34;&gt;실습&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iv-reference&#34;&gt;IV. Reference&lt;/h2&gt;
+&lt;p&gt;Mukhiya, Uuresh Kumar. Ahmed Usman. Hands-on Exploratory Data Analysis With Python: Perform EDA Techniques to understand, Summarize, and Investigate Your Data. Packt publishing limited, 2020.&lt;/p&gt;
+&lt;section class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn:1&#34; role=&#34;doc-endnote&#34;&gt;
+&lt;p&gt;&lt;a href=&#34;https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html&#34;&gt;Choosing Colormaps in Matplotlib&lt;/a&gt;에 가면 다양한 색상을 확인할 수 있다. &lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/section&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
