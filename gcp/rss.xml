@@ -5,10 +5,121 @@
     <description>Recent content in GCPs on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 29 Apr 2020 10:30:30 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 30 Apr 2020 15:30:30 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/gcp/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ch09 Struct, Tuple</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch09_struct_and_tuple/</link>
+      <pubDate>Thu, 30 Apr 2020 15:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch09_struct_and_tuple/</guid>
+      <description>&lt;h2 id=&#34;1-구글-클라우드-설정&#34;&gt;1. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;2-사용자-계정-인증&#34;&gt;2. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3-쿼리-기본&#34;&gt;3. 쿼리 기본&lt;/h2&gt;
+&lt;p&gt;빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp;amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.&lt;/p&gt;
+&lt;p&gt;빅쿼리는 데이터 분석을 위한 기본적인 도구이기 때문에, 웹/앱을 활용한 마케팅 분석이 필요한 업종에서는 어쩌면 반드시 가져가야할 일종의 언어이기도 하다.&lt;/p&gt;
+&lt;p&gt;기본적으로 SQL문법을 지원하며, BigQuery 나름의 문법을 또한 구성하고 있다. 이제 본격적으로 코드를 작성해보자.&lt;/p&gt;
+&lt;p&gt;현재 작성하는 모든 코드는 Python-BigQuery로 연동하여 작성하려고 한다. 이제 간단하게 쿼리를 작성해보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials1/&#34;&gt;Ch05-Query_Essentials(1)&lt;/a&gt;에서는 &lt;code&gt;SELECT&lt;/code&gt;와 &lt;code&gt;AS&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials2/&#34;&gt;Ch05-Query_Essentials(2)&lt;/a&gt;에서는 &lt;code&gt;WHERE&lt;/code&gt;와 &lt;code&gt;EXCEPT&lt;/code&gt;, 그리고 &lt;code&gt;REPLACE&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials3/&#34;&gt;Ch05-Query_Essentials(3)&lt;/a&gt;에서는 &lt;code&gt;SubQuery&lt;/code&gt;에 대해서 집중적으로 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch06_sql_aggregates/&#34;&gt;Ch06 SQL Aggregates&lt;/a&gt;에서는 집계함수를 사용해서 데이터를 조금 더 디테일하게 요약하는 것을 배웠다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch07_split_unnest/&#34;&gt;Ch07 Arrays &amp;amp; Structs&lt;/a&gt;에서는 빅쿼리에서 가상의 테이블과 그리고 배열을 만드는 법을 익혔다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch08_creating_arrays_with_array_agg/&#34;&gt;Ch08_Creating_Arrays_with_Array_AGG&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;오늘 포스트에서는 &lt;code&gt;STRUCT &amp;amp; Tuple&lt;/code&gt;을 익혀보도록 한다. 한국말로는 &lt;code&gt;구조체&lt;/code&gt;라고 표현하는 것 같다.&lt;/p&gt;
+&lt;h3 id=&#34;1-struct&#34;&gt;(1) Struct&lt;/h3&gt;
+&lt;p&gt;구글 빅쿼리에서는 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types?hl=ko#declaring_a_struct_type&#34;&gt;STRUCT&lt;/a&gt;의 정의를 &lt;code&gt;각각 유형(필수)과 필드 이름(선택사항)이 있는 순서가 지정된 필드의 컨테이너&lt;/code&gt;로 명명하고 있다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ARRAY와 비교했을 때, 자주 쓰이지는 않으나 가끔 필요할 때가 있다.&lt;/li&gt;
+&lt;li&gt;파이썬의 &lt;a href=&#34;https://stackoverflow.com/questions/35988/c-like-structures-in-python&#34;&gt;데이터 클래스&lt;/a&gt;와 비슷함. (&lt;a href=&#34;&#34;&gt;C Structure&lt;/a&gt;와 유사)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;우선 가상의 &lt;code&gt;Struct&lt;/code&gt; 테이블을 만들어 본다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;your_project_id&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    [
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      STRUCT(&amp;#39;male&amp;#39; as gender, [930660, 3955871] as numtrips)
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      , STRUCT(&amp;#39;female&amp;#39; as gender, [3236735, 1260893] as numtrips) 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    ] AS bikerides
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+
+
+|    | bikerides                                                                                                 |
+|---:|:----------------------------------------------------------------------------------------------------------|
+|  0 | [{&#39;gender&#39;: &#39;male&#39;, &#39;numtrips&#39;: [930660, 3955871]}, {&#39;gender&#39;: &#39;female&#39;, &#39;numtrips&#39;: [3236735, 1260893]}] |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;참고로 이번 포스트에서는 각각의 개념에 대해서만 살피고, 실 데이터에서 어떤 문제에서 Struct, ARRAY_AGG 등을 활용해서 쿼리를 작성해야 하는지는 추후에 포스팅 하겠다. 특히, 시계열 데이터를 다룰 때 매우 유용하게 접근 할 수 있음만 기억하자.&lt;/p&gt;
+&lt;h3 id=&#34;2-tuple&#34;&gt;(2) Tuple&lt;/h3&gt;
+&lt;p&gt;만약에 위 구문에서 struct과 별도의 필드명을 주지 않으면 어떻게 될까? 그러나 결과값은 위와 동일하게 나오게 하고싶다면 어떻게 작성해야 할까? 이 코드를 통해서 구조가 어떻게 되는지 이해하는 것이 중요하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    [
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      (&amp;#39;male&amp;#39;, [930660, 3955871])
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      , (&amp;#39;female&amp;#39;, [3236735, 1260893]) 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    ]
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | f0_                                                                                                           |
+|---:|:--------------------------------------------------------------------------------------------------------------|
+|  0 | [{&#39;_field_1&#39;: &#39;male&#39;, &#39;_field_2&#39;: [930660, 3955871]}, {&#39;_field_1&#39;: &#39;female&#39;, &#39;_field_2&#39;: [3236735, 1260893]}] |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;f0_&lt;/code&gt;라는 Cell안에 &lt;code&gt;_field_1&lt;/code&gt;과 &lt;code&gt;field_2&lt;/code&gt;라는 이름으로 구분되어 출력됨을 확인할 수 있다.&lt;/p&gt;
+&lt;h3 id=&#34;3-working-with-array&#34;&gt;(3) Working with Array&lt;/h3&gt;
+&lt;p&gt;이제, 여기에서 우리가 구하고 싶은 것은 &lt;code&gt;ARRAY&lt;/code&gt;안에 있는 &lt;code&gt;numtrips&lt;/code&gt;의 갯수와, gender의 두번째 값을 구한다고 가정합니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    ARRAY_LENGTH(bikerides) as num_items
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    , bikerides[OFFSET(1)].gender as second_gender
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    (SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      [
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        STRUCT(&amp;#39;male&amp;#39; as gender, [930660, 3955871] as numtrips)
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        , STRUCT(&amp;#39;female&amp;#39; as gender, [3236735, 1260893] as numtrips) 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      ] AS bikerides
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    ) 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    |   num_items | second_gender   |
+|---:|------------:|:----------------|
+|  0 |           2 | female          |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Python처럼 &lt;code&gt;OFFSET()&lt;/code&gt;는 0부터 시작한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;다음 시간에는 UNNEST와 ARRAY에 대해 익히도록 한다.&lt;/p&gt;
+&lt;h2 id=&#34;4-reference&#34;&gt;4. Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, V., &amp;amp; Tigani, J. (2020). Google BigQuery: the definitive guide: data warehousing, analytics, and machine learning at scale. Beijing: OReilly.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Ch08_Creating_Arrays_with_Array_AGG</title>
