@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Tensorflow 2.0 Tutorial ch8.3 - 신경 스타일 전이 - Data Science | ChloEvan</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+	<meta property="og:title" content="Tensorflow 2.0 Tutorial ch8.3 - 신경 스타일 전이" />
+<meta property="og:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+ Google Colab Tensorflow 2." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chloevan.github.io/python/tensorflow2.0/ch8_3_1_texture_synthesis/" />
+<meta property="article:published_time" content="2020-05-01T17:20:30+09:00" />
+<meta property="article:modified_time" content="2020-05-01T17:20:30+09:00" />
+
+	<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Tensorflow 2.0 Tutorial ch8.3 - 신경 스타일 전이"/>
+<meta name="twitter:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+ Google Colab Tensorflow 2."/>
+
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+	<meta name="naver-site-verification" content="589373cb2d4668f329792265c1fdbec3a72ec17d" />
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container">
+		<div class="logo">
+			<a class="logo__link" href="/" title="Data Science | ChloEvan" rel="home">
+				<div class="logo__title">Data Science | ChloEvan</div>
+				<div class="logo__tagline">Love your beloved one forever</div>
+			</a>
+		</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/gcp/">
+				
+				<span class="menu__text">GCP</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/python/">
+				
+				<span class="menu__text">Python</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/r/">
+				
+				<span class="menu__text">R</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/settings/">
+				
+				<span class="menu__text">settings</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About ChloEvan</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">Tensorflow 2.0 Tutorial ch8.3 - 신경 스타일 전이</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+	<time class="meta__text" datetime="2020-05-01T17:20:30&#43;09:00">2020-05-01</time>
+</div>
+
+<div class="meta__item-categories meta__item">
+	<svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg>
+	<span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#공지">공지</a></li>
+    <li><a href="#tutorial">Tutorial</a></li>
+    <li><a href="#i-개요">I. 개요</a></li>
+    <li><a href="#ii-컨볼루션-신경망을-사용한-텍스처-합성">II. 컨볼루션 신경망을 사용한 텍스처 합성</a>
+      <ul>
+        <li><a href="#1-텍스처-합성-방법론">(1) 텍스처 합성 방법론</a></li>
+        <li><a href="#2-원본-텍스처-이미지-불러오기">(2) 원본 텍스처 이미지 불러오기</a></li>
+        <li><a href="#3-타깃-텍스처-만들기">(3) 타깃 텍스처 만들기</a></li>
+        <li><a href="#4-특징-추출-모델-만들기">(4) 특징 추출 모델 만들기</a></li>
+        <li><a href="#5-gram-matrix-함수-정의">(5) Gram Matrix 함수 정의</a></li>
+        <li><a href="#6-원본-텍스처에서-gram-matrix-계산">(6) 원본 텍스처에서 Gram Matrix 계산</a></li>
+        <li><a href="#7-타깃-텍스처-업데이트-함수-정의">(7) 타깃 텍스처 업데이트 함수 정의</a></li>
+        <li><a href="#8-이미지-업데이트-함수-정의">(8) 이미지 업데이트 함수 정의</a></li>
+        <li><a href="#9-텍스처-합성-알고리즘-실행">(9) 텍스처 합성 알고리즘 실행</a></li>
+        <li><a href="#10-variation-loss-함수-정의">(10) variation loss 함수 정의</a></li>
+        <li><a href="#11-각-손실의-가중치-추가">(11) 각 손실의 가중치 추가</a></li>
+        <li><a href="#12-variation-loss를-추가한-텍스처-합성-알고리즘-실행">(12) variation loss를 추가한 텍스처 합성 알고리즘 실행</a></li>
+        <li><a href="#13-결론">(13) 결론</a></li>
+      </ul>
+    </li>
+    <li><a href="#iii-연습-파일">III. 연습 파일</a></li>
+    <li><a href="#vi-reference">VI. Reference</a></li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="공지">공지</h2>
+<ul>
+<li>
+<p>본 Tutorial은 교재 <code>시작하세요 텐서플로 2.0 프로그래밍</code>의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.</p>
+</li>
+<li>
+<p>강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.</p>
+</li>
+</ul>
+<p><img src="/img/tensorflow2.0/book.jpg" alt=""><!-- raw HTML omitted --></p>
+<ul>
+<li>본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.</li>
+</ul>
+<h2 id="tutorial">Tutorial</h2>
+<p>이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.</p>
+<ul>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/googlecolab/">Google Colab Tensorflow 2.0 Installation</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch3_3_1_random_signoid/">Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch3_3_2_random_signoid_bias/">Tensorflow 2.0 Tutorial ch3.3.2 - 난수 생성 및 시그모이드 함수 편향성</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch3_3_3_network_and/">Tensorflow 2.0 Tutorial ch3.3.3 - 첫번째 신경망 네트워크 - AND</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch3_3_4_network_or/">Tensorflow 2.0 Tutorial ch3.3.4 - 두번째 신경망 네트워크 - OR</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch3_3_5_network_xor/">Tensorflow 2.0 Tutorial ch3.3.5 - 세번째 신경망 네트워크 - XOR</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch4_1_linear_regression/">Tensorflow 2.0 Tutorial ch4.1 - 선형회귀</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch4_2_multiple_linear_regression/">Tensorflow 2.0 Tutorial ch4.2 - 다항회귀</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch4_3_regression_with_deeplearning/">Tensorflow 2.0 Tutorial ch4.3 - 딥러닝 네트워크를 이용한 회귀</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch4_4_boston_housing_deeplearning/">Tensorflow 2.0 Tutorial ch4.4 - 보스턴 주택 가격 데이터세트</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch5_1_binary_classification/">Tensorflow 2.0 Tutorial ch5.1 - 분류</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch5_2_multi_classification/">Tensorflow 2.0 Tutorial ch5.2 - 다항분류</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch5_3_fashion_mnist/">Tensorflow 2.0 Tutorial ch5.3 - Fashion MNIST</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch6_1_2_cnn_theory/">Tensorflow 2.0 Tutorial ch6.1-2 - CNN 이론</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch6_3_fashion_mnist_with_cnn/">Tensorflow 2.0 Tutorial ch6.3 - Fashion MNIST with CNN 실습</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch6_4_improve_performance/">Tensorflow 2.0 Tutorial ch6.4 - 모형의 성능 높이기</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch7_1_2_rnn_theory1/">Tensorflow 2.0 Tutorial ch7.1 - RNN 이론 (1)</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch7_1_2_rnn_theory2/">Tensorflow 2.0 Tutorial ch7.1 - RNN 이론 (2)</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch7_3_sentimentanalysis/">Tensorflow 2.0 Tutorial ch7.3 - 긍정, 부정 감성 분석</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch7_4_naturallanguagegeneration1/">Tensorflow 2.0 Tutorial ch7.4 - (1) 단어 단위 생성</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch7_4_naturallanguagegeneration2/">Tensorflow 2.0 Tutorial ch7.4 - (2) 단어 단위 생성</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch8_1_tensorflow_hub/">Tensorflow 2.0 Tutorial ch8.1 - 텐서플로 허브</a></li>
+<li><a href="https://chloevan.github.io/python/tensorflow2.0/ch8_2_transfer_learning/">Tensorflow 2.0 Tutorial ch8.2 - 전이 학습과 &amp; Kaggle 대회</a></li>
+</ul>
+<h2 id="i-개요">I. 개요</h2>
+<p>2015년, 딥러닝과 예술의 만남으로 큰 화제가 되었던 신경 스타일 전이 논문<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>은 반 고흐의 (별이 빛나는 밤에)라는 그림과 풍경 사진을 합성해서 반 고흐가 그린 것 같은 스타일의 풍경 이미지를 만들었고, <a href="https://prisma-ai.com/">프리즈마</a>등의 앱은 이 알고리즘을 빠르게 탑재해서 인기를 끌었습니다.</p>
+<p>본 포스트에서는 텍스처 합성에 대해 알아본 뒤 2장의 이미지에서 각각 스타일과 내용을 가져와서 합성하는 신경 스타일 전이에 대해 다루도록 합니다.</p>
+<h2 id="ii-컨볼루션-신경망을-사용한-텍스처-합성">II. 컨볼루션 신경망을 사용한 텍스처 합성</h2>
+<p>텍스처(Texture)는 넓은 의미로는 단순히 이미지만, 컴퓨터 비전에서 쓰이는 좁은 의미로는 지역적으로는 비교적 다양한 값을 가지면서 전체적으로는 비슷한 모습을 보이는 이미지를 뜻합니다.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></p>
+<p>돌, 나무, 구름, 섬유 등의 텍스처에서는 위 조건에 해당하는 일정한 패턴을 관찰할 수 있으며, 이 패턴은 전체적으로 비슷하면서도 지역적으로는 서로 조금씩 다릅니다.</p>
+<h3 id="1-텍스처-합성-방법론">(1) 텍스처 합성 방법론</h3>
+<p>텍스처 합성 방법론은 크게 두가지입니다.</p>
+<ul>
+<li>첫번째, 픽셀이나 이미지를 잘게 쪼갠 단위인 <code>Patch</code>(조각)을 재배열하는 방법입니다. Patch Match 알고리즘을 최적화한 버전입니다.</li>
+<li>두번째, 파라미터에 의한 텍스처 모델링입니다. 먼저 원본 텍스처의 공간적인 통계값(Spatial Statistics)을 사람이 정교하게 만든 여러 개의 필터로 구합니다.</li>
+</ul>
+<p>특히, 교재는 필터 부분을 딥러닝이 가장 제일 잘하는 것으로 설명하고 있고, 여기에 관한 그림 및 이론적인 설명으로 297-300페이제 걸쳐서 설명을 하고 있습니다.</p>
+<ul>
+<li>주요 논문은 <a href="https://papers.nips.cc/paper/5633-texture-synthesis-using-convolutional-neural-networks.pdf">Texture Synthesis Using Convolutional Neural Networks</a> 입니다.</li>
+<li>Gram Matrix을 활용합니다.<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></li>
+</ul>
+<p>이 부분은 교재를 참고하시기를 바랍니다.</p>
+<h3 id="2-원본-텍스처-이미지-불러오기">(2) 원본 텍스처 이미지 불러오기</h3>
+<p>이제 실습 코드로 진행해봅니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
+<span style="color:#66d9ef">try</span>:
+    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
+    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
+<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+    <span style="color:#66d9ef">pass</span>
+<span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
+<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">import</span> tensorflow_hub <span style="color:#f92672">as</span> hub
+
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+<span style="color:#f92672">import</span> cv2
+
+style_path <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;style.jpg&#39;</span>, <span style="color:#e6db74">&#39;http://bit.ly/2mGfZIq&#39;</span>)
+style_image <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>imread(style_path)
+style_image <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>resize(style_image, dsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">224</span>, <span style="color:#ae81ff">224</span>))
+style_image <span style="color:#f92672">=</span> style_image <span style="color:#f92672">/</span> <span style="color:#ae81ff">255.0</span>
+plt<span style="color:#f92672">.</span>imshow(style_image)
+</code></pre></div><pre><code>Downloading data from http://bit.ly/2mGfZIq
+344064/337723 [==============================] - 0s 0us/step
+
+
+
+
+
+&lt;matplotlib.image.AxesImage at 0x7fbf05a4b668&gt;
+</code></pre>
+<p><img src="/img/tensorflow2.0/tutorial_08_03_1/output_6_2.png" alt="png"></p>
+<p><code>tf.keras.utils.get_file()</code> 함수로 파일을 다운로드한 뒤에 <code>OpenCV</code>로 이미지의 크기를 (224, 224)로 조정합니다. 더 큰 크기로 지정해도 상관없지만 일단은 작은 크기에서 어떻게 동작하는지 확인해보고, 큰 크기의 이미지는 다음 절의 신경 스타일 전이에서 시도합니다.</p>
+<h3 id="3-타깃-텍스처-만들기">(3) 타깃 텍스처 만들기</h3>
+<p>그 다음으로는 타깃 텍스처로 사용할 이미지를 만듭니다. 타깃 텍스처는 랜덤 노이즈 이미지에서 시작하며, 랜덤 노이지를 만드는 방법 <code>3.3.1</code>절의 난수생성에서 배운 걸 응용합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">target_image <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>uniform(style_image<span style="color:#f92672">.</span>shape)
+<span style="color:#66d9ef">print</span>(target_image[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,:])
+
+plt<span style="color:#f92672">.</span>imshow(target_image)
+</code></pre></div><pre><code>tf.Tensor([0.06687331 0.9121063  0.9395486 ], shape=(3,), dtype=float32)
+
+
+
+
+
+&lt;matplotlib.image.AxesImage at 0x7fbf055b5eb8&gt;
+</code></pre>
+<p><img src="/img/tensorflow2.0/tutorial_08_03_1/output_9_2.png" alt="png"></p>
+<p><code>style_image</code>와 같은 차원을 가지는 랜덤 노이즈를 생성합니다. 컬러 이미지이기 때문에 차원 수는 (224, 224, 3)으로 마지막에 <code>RGB</code> 차원을 나타내는 3이 붙습니다. 타깃 텍스처의 첫 번째 픽셀(좌측 최상단)의 값을 출력해보면 0~1 사이의 <code>RGB</code>컬러 값을 확인할 수 있습니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> tensorflow.keras.applications <span style="color:#f92672">import</span> VGG19
+<span style="color:#f92672">from</span> tensorflow.keras.applications.vgg19 <span style="color:#f92672">import</span> preprocess_input
+
+vgg <span style="color:#f92672">=</span> VGG19(include_top<span style="color:#f92672">=</span>False, weights<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;imagenet&#39;</span>)
+
+<span style="color:#66d9ef">for</span> layer <span style="color:#f92672">in</span> vgg<span style="color:#f92672">.</span>layers:
+  <span style="color:#66d9ef">print</span>(layer<span style="color:#f92672">.</span>name)
+</code></pre></div><pre><code>Downloading data from https://storage.googleapis.com/tensorflow/keras-applications/vgg19/vgg19_weights_tf_dim_ordering_tf_kernels_notop.h5
+80142336/80134624 [==============================] - 2s 0us/step
+input_1
+block1_conv1
+block1_conv2
+block1_pool
+block2_conv1
+block2_conv2
+block2_pool
+block3_conv1
+block3_conv2
+block3_conv3
+block3_conv4
+block3_pool
+block4_conv1
+block4_conv2
+block4_conv3
+block4_conv4
+block4_pool
+block5_conv1
+block5_conv2
+block5_conv3
+block5_conv4
+block5_pool
+</code></pre>
+<p>전체 네트워크를 불러올 필요가 없이 때문에 <code>include_top</code>인수를 <code>False</code>로 지정해서 마지막의 <code>Dense</code>레이어를 제외한 나머지 레이어를 불러와 <code>vgg</code> 변수에 저장합니다. <code>vgg</code> 변수에 저장된 네트워크에는 특징 추출기의 역할을 하는 컨볼루션 레이어와 풀링 레이어를 포함하고 있습니다. 이 중에서 선택적으로 사용할수도 있지만, <code>Gram Matrix</code>가 지역적인 구조와 전체적인 구조를 모두 잡아낼 수 있도록 앞쪽과 뒤쪽의 레이어를 모두 사용하는 것이 좋습니다.</p>
+<h3 id="4-특징-추출-모델-만들기">(4) 특징 추출 모델 만들기</h3>
+<p>위 내용을 기반으로 특징 추출 모델을 만들어보도록 합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">style_layers <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;block1_conv1&#39;</span>, 
+                <span style="color:#e6db74">&#39;block2_conv1&#39;</span>, 
+                <span style="color:#e6db74">&#39;block3_conv1&#39;</span>, 
+                <span style="color:#e6db74">&#39;block4_conv1&#39;</span>, 
+                <span style="color:#e6db74">&#39;block5_conv1&#39;</span>]
+
+vgg<span style="color:#f92672">.</span>trainable <span style="color:#f92672">=</span> False
+outputs <span style="color:#f92672">=</span> [vgg<span style="color:#f92672">.</span>get_layer(name)<span style="color:#f92672">.</span>output <span style="color:#66d9ef">for</span> name <span style="color:#f92672">in</span> style_layers]
+model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Model([vgg<span style="color:#f92672">.</span>input], outputs)
+</code></pre></div><ul>
+<li>위 코드는 이미지를 입력하면 다섯 개의 레이어에서 출력되는 특징 추출값을 얻을 수 있는 모델입니다.</li>
+<li>이 모델은 <code>model</code>이라는 변수에 저장합니다.</li>
+</ul>
+<h3 id="5-gram-matrix-함수-정의">(5) Gram Matrix 함수 정의</h3>
+<p><code>Gram Matrix</code>를 계산하는 함수를 정의합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">gram_matrix</span>(input_tensor):
+    channels <span style="color:#f92672">=</span> int(input_tensor<span style="color:#f92672">.</span>shape[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+    a <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>reshape(input_tensor, [<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, channels])
+    n <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>shape(a)[<span style="color:#ae81ff">0</span>]
+    gram <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>matmul(a, a, transpose_a<span style="color:#f92672">=</span>True)
+    <span style="color:#66d9ef">return</span> gram <span style="color:#f92672">/</span> tf<span style="color:#f92672">.</span>cast(n, tf<span style="color:#f92672">.</span>float32)
+</code></pre></div><ul>
+<li>먼저 입력된 특징 추출값의 형태를 벡터로 변환시킵니다. 예를 들어, 첫 번째 레이어인 <code>block1_conv1</code>를 통과한 특정 추출값의 차원 수는 (224, 224, 64)입니다.</li>
+<li>이것을 맨 뒤의 차원(채널)인 64만 남기고 나머지를 1차원의 벡터로 만들면 차원 수는 (50176, 64)가 됩니다.</li>
+<li>이렇게 만든 행렬은 자기 자신의 전치행렬과 행렬곱하는 부분은 <code>gram = tf.matmul(a, a, transpose_a = True)</code>입니다. <code>transpose_a</code>라는 인수에 <code>True</code>값을 넣어서 행렬곱을 할 때 전치행렬을 자동으로 만들어서 계산해도 됩니다.</li>
+<li><code>transpose_a</code>가 <code>True</code>이기 때문에 행렬곱 계산 결과의 차원은 <code>[64,50176]X[50176,64] = [64,64]</code>가 됩니다.</li>
+<li><code>(224, 224, 64)</code>가 <code>[64, 64]</code>로 줄어듭니다.</li>
+<li>마지막 <code>return</code>문에서는 1차원 벡터의 길이인 <code>50,176</code>으로 <code>Gram Matrix</code>값을 나눕니다.</li>
+<li>이렇게 나누지 않으면 앞쪽에 오는 레이어일수록 특징 추출값의 이미지가 크기 때문에 <code>Gram Matrix</code>값도 커져서 큰 영향을 줍니다.</li>
+</ul>
+<h3 id="6-원본-텍스처에서-gram-matrix-계산">(6) 원본 텍스처에서 Gram Matrix 계산</h3>
+<p>원본 텍스처에서 <code>Gram Matrix</code> 계산합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">style_image <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>imread(style_path)
+style_image <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>resize(style_image, dsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">224</span>, <span style="color:#ae81ff">224</span>))
+style_image <span style="color:#f92672">=</span> style_image <span style="color:#f92672">/</span> <span style="color:#ae81ff">255.0</span>
+
+style_batch <span style="color:#f92672">=</span> style_image<span style="color:#f92672">.</span>astype(<span style="color:#e6db74">&#39;float32&#39;</span>)
+style_batch <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>expand_dims(style_batch, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+style_output <span style="color:#f92672">=</span> model(preprocess_input(style_batch <span style="color:#f92672">*</span> <span style="color:#ae81ff">255.0</span>))
+</code></pre></div><p><code>style_output</code>은 다섯 레이어를 통과한 특징 추출값으로 구성되어 있습니다. 그중 하나를 <code>matplotlib.pyplot</code>으로 출력합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(style_output[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>shape)
+plt<span style="color:#f92672">.</span>imshow(tf<span style="color:#f92672">.</span>squeeze(style_output[<span style="color:#ae81ff">0</span>][:,:,:,<span style="color:#ae81ff">0</span>], <span style="color:#ae81ff">0</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</code></pre></div><pre><code>(1, 224, 224, 64)
+
+
+
+
+
+&lt;matplotlib.image.AxesImage at 0x7fbef01cf5f8&gt;
+</code></pre>
+<p><img src="/img/tensorflow2.0/tutorial_08_03_1/output_21_2.png" alt="png"></p>
+<p>특징 추출값 [1, 224, 224, 64]을 확인할 수 있습니다. 이렇게 처리된 원본 텍스처의 <code>Gram Matrix</code>값을 계산합니다. 또 값이 어떻게 나오는지 그래프로 분포를 확인해봅니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">style_outputs <span style="color:#f92672">=</span> [gram_matrix(out) <span style="color:#66d9ef">for</span> out <span style="color:#f92672">in</span> style_output]
+
+plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">10</span>))
+<span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>):
+    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">2</span>,c<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+    array <span style="color:#f92672">=</span> sorted(style_outputs[c]<span style="color:#f92672">.</span>numpy()[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>tolist())
+    array <span style="color:#f92672">=</span> array[::<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+    plt<span style="color:#f92672">.</span>bar(range(style_outputs[c]<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]), array)
+    plt<span style="color:#f92672">.</span>title(style_layers[c])
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_08_03_1/output_23_0.png" alt="png"></p>
+<p><code>Gram Matrix</code> 값은 레이어마다 다르게 나오고 최대값에서도 차이가 나는 것을 확인할 수 있습니다. 즉, 이 말은 각 레이어에서 계산되는 <code>Gram Matrix</code>값에 가중치를 곱해주는 방법으로 특정한 레이어가 너무 큰 영향을 끼치지 못하도록 제어를 해야 합니다.</p>
+<p>따라서, 타깃 텍스처를 업데이트 하기 위해 몇 가지 함수를 설정해야 합니다.</p>
+<h3 id="7-타깃-텍스처-업데이트-함수-정의">(7) 타깃 텍스처 업데이트 함수 정의</h3>
+<ul>
+<li>먼저, 타깃 텍스처에서 <code>gram matrix</code>을 구하는 함수가 필요합니다.</li>
+<li>MSE를 구하는 함수가 필요한데, 원본 텍스처의 Gram Matrix 값과, 타깃 텍스처의 Gram Matrix 사이의 <code>MSE</code> 함수가 필요합니다.</li>
+<li>이 때, MSE 값이 0.0에서 1.0사이의 컬러 값이어야 하기 때문에 그 이하나 이상으로 값이 넘어가지 않도록 해주는 함수가 필요합니다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 타깃 텍스처 gram matrix 함수 정의</span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_outputs</span>(image):
+    image_batch <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>expand_dims(image, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+    output <span style="color:#f92672">=</span> model(preprocess_input(image_batch <span style="color:#f92672">*</span> <span style="color:#ae81ff">255.0</span>))
+    outputs <span style="color:#f92672">=</span> [gram_matrix(out) <span style="color:#66d9ef">for</span> out <span style="color:#f92672">in</span> output]
+    <span style="color:#66d9ef">return</span> outputs
+
+<span style="color:#75715e"># MSE 구하는 함수 (원본 텍스처 gram matrix - 타깃 텍스처 gram matrix)</span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_loss</span>(outputs, style_outputs):
+    <span style="color:#66d9ef">return</span> tf<span style="color:#f92672">.</span>reduce_sum([tf<span style="color:#f92672">.</span>reduce_mean((o<span style="color:#f92672">-</span>s)<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>) <span style="color:#66d9ef">for</span> o,s <span style="color:#f92672">in</span> zip(outputs, style_outputs)])
+  
+<span style="color:#75715e"># 0.0~1.0 사이의 컬러값 정의 함수</span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">clip_0_1</span>(image):
+    <span style="color:#66d9ef">return</span> tf<span style="color:#f92672">.</span>clip_by_value(image, clip_value_min<span style="color:#f92672">=</span><span style="color:#ae81ff">0.0</span>, clip_value_max<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>)
+</code></pre></div><h3 id="8-이미지-업데이트-함수-정의">(8) 이미지 업데이트 함수 정의</h3>
+<ul>
+<li>
+<p>지금까지 배워온 딥러닝과의 차이점</p>
+<ul>
+<li>tf.keras를 이용해 모델 정의하고 <code>fit()</code> 함수를 이용해 가중치가 주어진 과제를 잘 수행하도록 하는 것</li>
+<li>그런데, 이번 포스트에서는 학습해야 할 가중치가 존재하지 않음</li>
+<li>존재하는 것은 2개의 이미지와 <code>Gram Matrix</code>의 차이인 MSE 뿐</li>
+</ul>
+</li>
+<li>
+<p><code>GradientType</code>은 이런 상황에 대한 간편한 해결책임. 자동 미분을 통해 입력에 대한 손실을 구한 뒤 다른 변수에 대한 <code>Gradient(기울기)</code>를 계산함. 여기에서 다른 변수는 입력이 될 수도 있고, 가중치가 될 수도 있음.</p>
+</li>
+<li>
+<p>중요한 점은 <code>GradientType</code>의 계산 과정 안에 묶인 변수에 대한 <code>Gradient</code>여야 함.</p>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">opt <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(learning_rate<span style="color:#f92672">=</span><span style="color:#ae81ff">0.2</span>, beta_1<span style="color:#f92672">=</span><span style="color:#ae81ff">0.99</span>, epsilon<span style="color:#f92672">=</span><span style="color:#ae81ff">1e-1</span>)
+
+<span style="color:#a6e22e">@tf.function</span>()
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">train_step</span>(image):
+    <span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>GradientTape() <span style="color:#66d9ef">as</span> tape:
+        outputs <span style="color:#f92672">=</span> get_outputs(image)
+        loss <span style="color:#f92672">=</span> get_loss(outputs, style_outputs)
+
+    grad <span style="color:#f92672">=</span> tape<span style="color:#f92672">.</span>gradient(loss, image)
+    opt<span style="color:#f92672">.</span>apply_gradients([(grad, image)])
+    image<span style="color:#f92672">.</span>assign(clip_0_1(image))
+</code></pre></div><p>첫 줄에서 최적화 함수(<code>optimizer</code>)를 정의함. 논문에서는 <code>L-BFGS</code>라는 최적화 함수를 썼지만, <code>Adam Optimizer</code>를 사용해도 속도는 더 빠르고 결과물은 비슷하게 나옵니다.<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup></p>
+<p><code>tf.function()</code> 함수는 <code>train_step(image)</code> 함수를 인수로 받아서 <code>Autograph</code>라는 강력한 기능을 추가합니다. <code>Autograph</code>는 파이썬 문법으로 텐서플로의 핵심인 그래프(<code>Graph</code>)를 컨트롤 할 수 있게 해줍니다.</p>
+<p><code>2.0</code> 버전을 위해 즉시 실행 모드(<code>Eager Execution</code>)와 <code>tf.function</code> 장식자가 나오면서 이런 불편함이 개선됩니다. <code>tf.function</code>은 해당 장식자를 사용한 함수에서 호출되는 다른 함수도 그래프에 자동으로 포함시킵니다. 그리고 <code>GradientTape</code>은 계산에 관계되는 모든 변수와 연산을 추적하기 때문에 퍼포먼스에 영향을 주는데 <code>tf.function</code>장식자를 붙이면 이 연산들을 고성능의 그래프 연산으로 변환하기 때문에 퍼포먼스를 개선할 수 있습니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>GradientTape() <span style="color:#66d9ef">as</span> tape:
+  outputs <span style="color:#f92672">=</span> get_outputs(image)
+  loss <span style="color:#f92672">=</span> get_loss(outputs, style_outputs)
+</code></pre></div><p><code>GradientTape()</code>는 보통 <code>with</code>와 함께 사용합니다. <code>tape</code>라는 이름으로 새로운 <code>GradientTape</code>의 인스턴스를 생성해서 참조합니다. 앞에서 설명한대로 <code>get_outputs(image)</code>, <code>get_loss(outputs, style_outputs)</code> 함수는 <code>tf.function</code> 장식자를 쓰지 않았지만, 호출한 함수에 장식자가 붙었기 때문에 텐서플로의 그래프에 자동으로 포함됩니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">grad <span style="color:#f92672">=</span> tape<span style="color:#f92672">.</span>gradient(loss, image)
+opt<span style="color:#f92672">.</span>apply_gradients([(grad, image)])
+image<span style="color:#f92672">.</span>assign(clip_0_1(image))
+</code></pre></div><ul>
+<li><code>tape.gradient(loss, image)</code>는 <code>with</code> 구문 안에서 발생한 계산을 추적해서 입력값인 <code>image</code>에 대한 <code>loss</code>의 <code>gradient</code>를 계산합니다.</li>
+<li>이렇게 계산된 <code>gradient</code>는 변수 <code>grad</code>에 저장되고 <code>Adam Optimizer</code>를 통해 <code>image</code>에 영향을 줍니다. 즉, 입력값인 <code>image</code>는 이 계산으로 변화가 됩니다.</li>
+<li><code>clip_0_1(image)</code>함수의 계산 결과를 <code>image</code>에 다시 넣어서 컬러값이 <code>0.0</code>과 <code>1.0</code> 사이에 머물게 합니다.</li>
+</ul>
+<h3 id="9-텍스처-합성-알고리즘-실행">(9) 텍스처 합성 알고리즘 실행</h3>
+<ul>
+<li>이제 앞에서 정의한 <code>train_step(image)</code> 함수를 반복적으로 실행해서 텍스처를 합성합니다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> IPython.display <span style="color:#f92672">as</span> display
+<span style="color:#f92672">import</span> time
+<span style="color:#f92672">import</span> imageio
+
+start <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time()
+
+image <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>Variable(target_image)
+
+epochs <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>
+steps_per_epoch <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+
+step <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">for</span> n <span style="color:#f92672">in</span> range(epochs):
+    <span style="color:#66d9ef">for</span> m <span style="color:#f92672">in</span> range(steps_per_epoch):
+        step <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+        train_step(image)
+    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">%</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">or</span> n <span style="color:#f92672">==</span> epochs <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>:
+        imageio<span style="color:#f92672">.</span>imwrite(<span style="color:#e6db74">&#39;style_epoch_{0}.png&#39;</span><span style="color:#f92672">.</span>format(n), image<span style="color:#f92672">.</span>read_value()<span style="color:#f92672">.</span>numpy())
+    display<span style="color:#f92672">.</span>clear_output(wait<span style="color:#f92672">=</span>True)
+    plt<span style="color:#f92672">.</span>imshow(image<span style="color:#f92672">.</span>read_value())
+    plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;Train step: {}&#34;</span><span style="color:#f92672">.</span>format(step))
+    plt<span style="color:#f92672">.</span>show()
+
+end <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time()
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Total time: {:.1f}&#34;</span><span style="color:#f92672">.</span>format(end<span style="color:#f92672">-</span>start))
+</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_08_03_1/output_32_0.png" alt="png"></p>
+<pre><code>Total time: 119.2
+</code></pre>
+<ul>
+<li>
+<p>먼저 첫 줄에서는 새로운 텍스처 출력을 나타내고 이전 이전 텍스처 출력을 지우기 위해 <code>IPython.display</code>에서 <code>display</code>를 임포트합니다.</p>
+</li>
+<li>
+<p>실행 시간을 추적하기 위해 <code>time</code>을, 합성된 텍스처 이미지를 저장하기 위해 <code>imageio</code>를 import 합니다.</p>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">image <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>Variable(target_image)
+</code></pre></div><ul>
+<li>
+<p>타깃 텍스처에 <code>tf.Variable</code>을 씌워서 <code>image</code>라는 변수로 저장합니다. 텐서플로에서 그래프 연산을 하는 <code>tensor</code>는 <code>tf.Variable</code>이나 <code>tf.Constant</code> 등에 저장되어야 합니다. (<code>tf.keras</code>)에서는 넘파이 <code>array</code>를 넘겨도 자동으로 이런 변환을 해줬지만 여기서는 직접 해야 합니다.</p>
+</li>
+<li>
+<p>중첩 for 문에서는 에포크당 100 step씩 train_step(image)함수를 실행시킵니다.</p>
+</li>
+</ul>
+<h3 id="10-variation-loss-함수-정의">(10) variation loss 함수 정의</h3>
+<ul>
+<li>매끄러운 원본과 달리 자글자글한 노이즈가 보입니다. 이러한 이미지에 생기는 노이즈를 개선하기 위해서 전체 손실에 <code>variation loss</code>라는 것을 추가해볼 수 있습니다. <code>variation loss</code>란 어떤 픽셀과 바로 옆에 인접한 픽셀의 차이입니다. 이 차이가 작을수록 이미지는 매끄럽게 보입니다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">high_pass_x_y</span>(image):
+  x_var <span style="color:#f92672">=</span> image[:, <span style="color:#ae81ff">1</span>:, :] <span style="color:#f92672">-</span> image[:, :<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, :]
+  y_var <span style="color:#f92672">=</span> image[<span style="color:#ae81ff">1</span>:, :, :] <span style="color:#f92672">-</span> image[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, :, :]
+  <span style="color:#66d9ef">return</span> x_var, y_var
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">total_variation_loss</span>(image):
+  x_deltas, y_deltas <span style="color:#f92672">=</span> high_pass_x_y(image)
+  <span style="color:#66d9ef">return</span> tf<span style="color:#f92672">.</span>reduce_mean(x_deltas<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>) <span style="color:#f92672">+</span> tf<span style="color:#f92672">.</span>reduce_mean(y_deltas<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>)
+</code></pre></div><ul>
+<li><code>high_pass_x_y(image)</code> 함수에서는 입력된 <code>image</code>의 <code>x축 방향</code>과 <code>y축 방향</code>의 차이를 구합니다.</li>
+<li><code>x_var</code>는 <code>image(224, 224, 3)</code>의 <code>Shape</code>일 때 <code>(224, 223, 3)</code>이 되고, <code>y_var</code>는 <code>(223, 224, 3)</code>으로 각각 x와 y의 방향으로 1픽셀씩 작은 image가 됩니다.</li>
+<li>total_variation_loss(image) 함수에서는 이렇게 구한 x, y축 방향의 차이를 제곱해서 평균을 낸 다음에 합해서 반환합니다.</li>
+</ul>
+<p>왜 <code>variation loss</code>가 필요한지 원본 텍스처와 타깃 텍스처, 그리고 랜덤 노이즈 텍스처의 <code>variation loss</code>를 비교합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;target :&#39;</span>, total_variation_loss(image<span style="color:#f92672">.</span>read_value()))
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;noise : &#39;</span>, total_variation_loss(tf<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>uniform(style_image<span style="color:#f92672">.</span>shape)))
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;original : &#39;</span>, total_variation_loss(style_image))
+</code></pre></div><pre><code>target : tf.Tensor(0.101396605, shape=(), dtype=float32)
+noise :  tf.Tensor(0.3360309, shape=(), dtype=float32)
+original :  tf.Tensor(0.03641251305469578, shape=(), dtype=float64)
+</code></pre>
+<ul>
+<li>위 결과값은 타깃 텍스처의 <code>variation loss</code>는 랜덤 노이즈의 1/3 정도로 작지만, 원본 텍스처보다는 3배 정도 큽니다.</li>
+</ul>
+<h3 id="11-각-손실의-가중치-추가">(11) 각 손실의 가중치 추가</h3>
+<p>이 차이가 줄어들게 된다면 타깃 텍스처는 원본 텍스처에 더 가까운 모습을 보일 것이라고 가정하고, <code>variation loss</code>를 전체 손실 계산식에 추가합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">total_variation_weight <span style="color:#f92672">=</span> <span style="color:#ae81ff">1e9</span>
+style_weight <span style="color:#f92672">=</span> <span style="color:#ae81ff">1e-1</span>
+
+<span style="color:#a6e22e">@tf.function</span>()
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">train_step</span>(image):
+    <span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>GradientTape() <span style="color:#66d9ef">as</span> tape:
+        outputs <span style="color:#f92672">=</span> get_outputs(image)
+        loss <span style="color:#f92672">=</span> style_weight <span style="color:#f92672">*</span> get_loss(outputs, style_outputs)
+        loss <span style="color:#f92672">+=</span> total_variation_weight <span style="color:#f92672">*</span> total_variation_loss(image)
+
+    grad <span style="color:#f92672">=</span> tape<span style="color:#f92672">.</span>gradient(loss, image)
+    opt<span style="color:#f92672">.</span>apply_gradients([(grad, image)])
+    image<span style="color:#f92672">.</span>assign(clip_0_1(image))
+</code></pre></div><ul>
+<li>지금까지 구한 <code>Gram Matrix</code>는 <code>style loss</code>라고 부릅니다. 이 <code>style loss</code>와 새로 추가된 <code>variation loss</code>에 각각 가중치를 곱해서 전체 손실에 더합니다.</li>
+<li><code>variation loss</code>는 <code>Gram Matrix</code> 계산값에 비해 작기 때문에 큰 가중치를 곱하고, 반대로 <code>style loss</code>는 값을 줄여줍니다. 여기에 들어가는 가중치인 <code>total_variation_weight</code>와 <code>style_weight</code>는 적절한 값을 찾을 때까지 꾸준한 실험이 필요합니다.</li>
+</ul>
+<h3 id="12-variation-loss를-추가한-텍스처-합성-알고리즘-실행">(12) variation loss를 추가한 텍스처 합성 알고리즘 실행</h3>
+<p>개선된 결과를 얻을 수 있는지, 결과값의 <code>variation loss</code>를 출력하면 다음과 같습니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">start <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time()
+
+target_image <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>uniform(style_image<span style="color:#f92672">.</span>shape)
+image <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>Variable(target_image)
+
+epochs <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>
+steps_per_epoch <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+
+step <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">for</span> n <span style="color:#f92672">in</span> range(epochs):
+    <span style="color:#66d9ef">for</span> m <span style="color:#f92672">in</span> range(steps_per_epoch):
+        step <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+        train_step(image)
+    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">%</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">or</span> n <span style="color:#f92672">==</span> epochs <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>:
+        imageio<span style="color:#f92672">.</span>imwrite(<span style="color:#e6db74">&#39;style_epoch_{0}.png&#39;</span><span style="color:#f92672">.</span>format(n), image<span style="color:#f92672">.</span>read_value()<span style="color:#f92672">.</span>numpy())
+    display<span style="color:#f92672">.</span>clear_output(wait<span style="color:#f92672">=</span>True)
+    plt<span style="color:#f92672">.</span>imshow(image<span style="color:#f92672">.</span>read_value())
+    plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;Train step: {}&#34;</span><span style="color:#f92672">.</span>format(step))
+    plt<span style="color:#f92672">.</span>show()
+
+end <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time()
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Total time: {:.1f}&#34;</span><span style="color:#f92672">.</span>format(end<span style="color:#f92672">-</span>start))
+</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_08_03_1/output_43_0.png" alt="png"></p>
+<pre><code>Total time: 119.7
+</code></pre>
+<p>확실히 좀 더 개선된 결과를 얻을 수 있습니다. 이렇게 결과값의 <code>variation loss</code>를 출력해보면 다음과 같습니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;target :&#39;</span>, total_variation_loss(image<span style="color:#f92672">.</span>read_value()))
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;original : &#39;</span>, total_variation_loss(style_image))
+</code></pre></div><pre><code>target : tf.Tensor(0.030996362, shape=(), dtype=float32)
+original :  tf.Tensor(0.03641251305469578, shape=(), dtype=float64)
+</code></pre>
+<p>타깃 텍스처의 <code>variation loss</code>가 원본 텍스처보다도 더 작아진 것을 확인할 수 있습니다. 결과 이미지도 <code>style loss</code>만 사용했을 때 보다 매끄럽게 변한 것 같습니다.</p>
+<h3 id="13-결론">(13) 결론</h3>
+<p>지금까지 배운 것은 <code>style loss</code>와 <code>variation loss</code>를 이용하여 텍스쳐 합성 방법을 알아보도록 합니다.</p>
+<h2 id="iii-연습-파일">III. 연습 파일</h2>
+<ul>
+<li><a href="https://colab.research.google.com/github/chloevan/deeplearningAI/blob/master/tensorflow2.0/ch8_3_1_Texture_Synthesis.ipynb">구글 Colab에서 직접 연습해보자</a></li>
+</ul>
+<h2 id="vi-reference">VI. Reference</h2>
+<p>김환희. (2020). 시작하세요! 텐서플로 2.0 프로그래밍: 기초 이론부터 실전 예제까지 한번에 끝내는 머신러닝, 딥러닝 핵심 가이드. 서울: 위키북스.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Leon A. Gatys, Alexander S. Ecker, Matthias Bethge., (2015). A Neural Algorithm of Artistic Style. <a href="https://arxiv.org/abs/1508.06576">https://arxiv.org/abs/1508.06576</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://www.textures.com/">https://www.textures.com/</a> 에서 텍스처 이미지를 다양하게 확인할 수 있습니다. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>Gram Matrix는 앞에서 본 각 뉴런의 특징 추출값을 1차원의 벡터로 변환한 다음에, 벡터를 쌓아올린 행렬을 그 자신의 전치(<code>transpose</code>) 행렬과 행렬곱해서 얻는 값입니다. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>Ivanov, S. (2017). &ldquo;Picking an optimizer for Style Transfer&rdquo;. Retrieved from <a href="https://blog.slavv.com/picking-an-optimizer-for-style-transfer-86e7b8cba84b">https://blog.slavv.com/picking-an-optimizer-for-style-transfer-86e7b8cba84b</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item"><a class="tags__link btn" href="/tags/deep-learning/" rel="tag">Deep Learning</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/python/" rel="tag">Python</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/google-colab/" rel="tag">Google Colab</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/tensorflow-2.0/" rel="tag">Tensorflow 2.0</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/binary-classification/" rel="tag">Binary Classification</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/classification/" rel="tag">Classification</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%EC%8B%A0%EA%B2%BD-%EC%8A%A4%ED%83%80%EC%9D%BC-%EC%A0%84%EC%9D%B4/" rel="tag">신경 스타일 전이</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/transfer-learning/" rel="tag">Transfer Learning</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="tag">텐서플로 2.0</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="tag">텐서플로 2.0 튜토리얼</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/tensorflow-2.0-tutorial/" rel="tag">Tensorflow 2.0 Tutorial</a></li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="ChloeEvan avatar" src="/img/couple.jpg" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name">About ChloeEvan</span>
+	</div>
+	<div class="authorbox__description">
+		ChloEvan is just one who are loving Chloe &amp; Evan and analyzing Data things. ChloeEvan&#39;s dream is to make the world better through loving Chloe &amp; Evan and working with Data
+	</div>
+</div>
+
+<nav class="post-nav flex">
+	<div class="post-nav__item post-nav__item--prev">
+		<a class="post-nav__link" href="/python/matplotlib/matplotlib_06_table_chart/" rel="prev"><span class="post-nav__caption">«&thinsp;Previous</span><p class="post-nav__post-title">matplotlib 06 Table Chart</p></a>
+	</div>
+</nav>
+
+<section class="comments">
+	<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-chloevan-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH..." value="" name="q" aria-label="SEARCH...">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://chloevan.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/python/tensorflow2.0/ch8_3_1_texture_synthesis/">Tensorflow 2.0 Tutorial ch8.3 - 신경 스타일 전이</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/matplotlib/matplotlib_06_table_chart/">matplotlib 06 Table Chart</a></li>
+			<li class="widget__item"><a class="widget__link" href="/gcp/bigquery/02_basics/ch09_struct_and_tuple/">Ch09 Struct, Tuple</a></li>
+			<li class="widget__item"><a class="widget__link" href="/r/datatransform/dplyr01_mutate_all/">stackoverflow with dplyr 01 - mutate_all</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/tensorflow2.0/ch8_2_transfer_learning/">Tensorflow 2.0 Tutorial ch8.2 - 전이 학습과 &amp; Kaggle 대회</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">bar chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basics/">Basics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bupar/">bupaR</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/corona-shiny-app/">Corona Shiny App</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-handling/">Data Handling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualization/">Data Visualization</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development/">Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ggplot2/">ggplot2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">line grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/new-packages/">New Packages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/">R 마크다운</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0/">Tensorflow 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0-tutorial/">Tensorflow 2.0 Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tutorial/">Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/">구글 클라우드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/">기초통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/">데이터 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">데이터 시각화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/">막대 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/">빅쿼리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/">선 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/">텐서플로 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/">텐서플로 2.0 튜토리얼</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/">프로세스 분석</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="bar chart">bar chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basics/" title="Basics">Basics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery with Python">BigQuery with Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery with R">BigQuery with R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bupar/" title="bupaR">bupaR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-handling/" title="Data Handling">Data Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualization/" title="Data Visualization">Data Visualization</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="Development">Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="dplyr">dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="filter">filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ggplot2/" title="ggplot2">ggplot2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="GRU 레이어">GRU 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="gt">gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="iterrows">iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="leaflet">leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="line grpah">line grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="lists">lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-%EC%84%A4%EC%A0%95/" title="Mathjax 설정">Mathjax 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/new-packages/" title="New Packages">New Packages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="plotly">plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="shinydashboard">shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="sort_values">sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0/" title="Tensorflow 2.0">Tensorflow 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0-tutorial/" title="Tensorflow 2.0 Tutorial">Tensorflow 2.0 Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tutorial/" title="Tutorial">Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="vcrs">vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%8D%EC%A0%95-%EB%B6%80%EC%A0%95-%EA%B0%90%EC%84%B1%EB%B6%84%EC%84%9D/" title="긍정, 부정 감성분석">긍정, 부정 감성분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="데이터 전처리">데이터 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/" title="막대 그래프">막대 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B3%B4%EC%8A%A4%ED%84%B4-%EC%A3%BC%ED%83%9D-%EA%B0%80%EA%B2%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%B8%ED%8A%B8/" title="보스턴 주택 가격 데이터세트">보스턴 주택 가격 데이터세트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B6%84%EB%A5%98/" title="분류">분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" title="빅쿼리">빅쿼리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-r/" title="빅쿼리 R">빅쿼리 R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%EA%B8%B0%EB%B3%B8/" title="빅쿼리 기본">빅쿼리 기본</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%ED%8C%8C%EC%9D%B4%EC%8D%AC/" title="빅쿼리 파이썬">빅쿼리 파이썬</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%B0%EC%A0%90%EB%8F%84/" title="산점도">산점도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" title="선 그래프">선 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/" title="선형회귀">선형회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%88%9C%ED%99%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="순환 신경망">순환 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" title="시각화 문법">시각화 문법</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" title="시그노이드">시그노이드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%A0%EA%B2%BD-%EC%8A%A4%ED%83%80%EC%9D%BC-%EC%A0%84%EC%9D%B4/" title="신경 스타일 전이">신경 스타일 전이</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" title="이항분류">이항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%84%EB%B2%A0%EB%94%A9-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="임베딩 레이어">임베딩 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%83%9D%EC%84%B1/" title="자연어 생성">자연어 생성</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/" title="전이 학습">전이 학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/" title="지도학습">지도학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BB%A8%EB%B3%BC%EB%A3%A8%EC%85%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="컨볼루션 신경망">컨볼루션 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="코로나 대시보드">코로나 대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%8B%A4%EB%A3%A8%EA%B8%B0/" title="테이블 다루기">테이블 다루기</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" title="텐서플로 2.0">텐서플로 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" title="텐서플로 2.0 튜토리얼">텐서플로 2.0 튜토리얼</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-%ED%97%88%EB%B8%8C/" title="텐서플로 허브">텐서플로 허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%97%91%EC%85%80/" title="판다스 엑셀">판다스 엑셀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" title="판다스 자료구조">판다스 자료구조</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="프로세스 마이닝">프로세스 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/" title="프로세스 분석">프로세스 분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80-%ED%8F%B0%ED%8A%B8-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0/" title="한글 폰트 오류 해결">한글 폰트 오류 해결</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="환경설정">환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9A%8C%EA%B7%80%EB%AA%A8%ED%98%95/" title="회귀모형">회귀모형</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9C%B4%EA%B3%A0/" title="휴고">휴고</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2020 ChloEvan.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>
