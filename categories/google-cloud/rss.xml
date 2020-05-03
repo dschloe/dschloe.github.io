@@ -84,39 +84,7 @@ temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span sty
 &lt;li&gt;원하는 결과값은 허리케인이 지도에서 (27.1, -60.1)에 있을 때, 예를 들면 &lt;code&gt;Hurricane Danielle reached Category 4 at 18:00 UTC on 2010-08-01&lt;/code&gt; 라고 말하는 것이다.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;결과 테이블을 보자.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#standardsql
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;WITH hurricanes AS (
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;SELECT
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  MIN(NAME) AS name,
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  ARRAY_AGG(STRUCT(iso_time, latitude, longitude, usa_sshs) ORDER BY iso_time ASC) AS track
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;FROM
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  `bigquery-public-data.noaa_hurricanes.hurricanes`
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;WHERE
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  season = &amp;#39;2010&amp;#39; AND basin = &amp;#39;NA&amp;#39;
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;GROUP BY
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  sid
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;),
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;cat_hurricane AS (
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;SELECT name, track, (SELECT MAX(usa_sshs) FROM UNNEST(track))  AS category
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;from hurricanes
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;ORDER BY category DESC
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;)
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;SELECT 
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  name, 
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  category, 
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  (SELECT AS STRUCT iso_time, latitude, longitude
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   FROM UNNEST(track) 
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   WHERE usa_sshs = category ORDER BY iso_time LIMIT 1).*
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;FROM cat_hurricane
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;ORDER BY category DESC, name ASC
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;LIMIT 5
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | name     |   category | iso_time                  |   latitude |   longitude |
+&lt;pre&gt;&lt;code&gt;|    | name     |   category | iso_time                  |   latitude |   longitude |
 |---:|:---------|-----------:|:--------------------------|-----------:|------------:|
 |  0 | DANIELLE |          4 | 2010-08-27 18:00:00+00:00 |    27.1    |    -60.1    |
 |  1 | EARL     |          4 | 2010-08-30 18:00:00+00:00 |    19      |    -64.2    |

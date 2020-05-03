@@ -207,39 +207,7 @@ temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</s
 <li>원하는 결과값은 허리케인이 지도에서 (27.1, -60.1)에 있을 때, 예를 들면 <code>Hurricane Danielle reached Category 4 at 18:00 UTC on 2010-08-01</code> 라고 말하는 것이다.</li>
 </ul>
 <p>결과 테이블을 보자.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">#standardsql
-</span><span style="color:#e6db74">WITH hurricanes AS (
-</span><span style="color:#e6db74">SELECT
-</span><span style="color:#e6db74">  MIN(NAME) AS name,
-</span><span style="color:#e6db74">  ARRAY_AGG(STRUCT(iso_time, latitude, longitude, usa_sshs) ORDER BY iso_time ASC) AS track
-</span><span style="color:#e6db74">FROM
-</span><span style="color:#e6db74">  `bigquery-public-data.noaa_hurricanes.hurricanes`
-</span><span style="color:#e6db74">WHERE
-</span><span style="color:#e6db74">  season = &#39;2010&#39; AND basin = &#39;NA&#39;
-</span><span style="color:#e6db74">GROUP BY
-</span><span style="color:#e6db74">  sid
-</span><span style="color:#e6db74">),
-</span><span style="color:#e6db74">
-</span><span style="color:#e6db74">cat_hurricane AS (
-</span><span style="color:#e6db74">SELECT name, track, (SELECT MAX(usa_sshs) FROM UNNEST(track))  AS category
-</span><span style="color:#e6db74">from hurricanes
-</span><span style="color:#e6db74">ORDER BY category DESC
-</span><span style="color:#e6db74">)
-</span><span style="color:#e6db74">
-</span><span style="color:#e6db74">SELECT 
-</span><span style="color:#e6db74">  name, 
-</span><span style="color:#e6db74">  category, 
-</span><span style="color:#e6db74">  (SELECT AS STRUCT iso_time, latitude, longitude
-</span><span style="color:#e6db74">   FROM UNNEST(track) 
-</span><span style="color:#e6db74">   WHERE usa_sshs = category ORDER BY iso_time LIMIT 1).*
-</span><span style="color:#e6db74">FROM cat_hurricane
-</span><span style="color:#e6db74">ORDER BY category DESC, name ASC
-</span><span style="color:#e6db74">LIMIT 5
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-<span style="color:#66d9ef">print</span>(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
-</code></pre></div><pre><code>|    | name     |   category | iso_time                  |   latitude |   longitude |
+<pre><code>|    | name     |   category | iso_time                  |   latitude |   longitude |
 |---:|:---------|-----------:|:--------------------------|-----------:|------------:|
 |  0 | DANIELLE |          4 | 2010-08-27 18:00:00+00:00 |    27.1    |    -60.1    |
 |  1 | EARL     |          4 | 2010-08-30 18:00:00+00:00 |    19      |    -64.2    |
