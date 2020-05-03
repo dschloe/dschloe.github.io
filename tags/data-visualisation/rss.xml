@@ -5,10 +5,142 @@
     <description>Recent content in Data Visualisation on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 30 Apr 2020 19:15:47 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 03 May 2020 20:10:39 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/tags/data-visualisation/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ch02 - Histogram</title>
+      <link>https://chloevan.github.io/r/datavisualisation/ch02_histogram/</link>
+      <pubDate>Sun, 03 May 2020 20:10:39 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/r/datavisualisation/ch02_histogram/</guid>
+      <description>&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A picture is worth a thousand words — English Language Adage
+The simple graph has brought more information to the data analyst’s mind than any other device. — John Tukey&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;한장의 그림이 수천단어보다 가치가 있다는 영어속담과, 명료한 시각화가 데이터분석가에게 다른 어떤 도구보다 더 많은 정보를 제공한다는 유명한 데이터 과학자의 조언. 핵심은 시각화이다.&lt;/p&gt;
+&lt;p&gt;본 장에서는 &lt;code&gt;ggplot2&lt;/code&gt; 패키지를 활용한 시각화를 먼저 보여줄 것이다. 먼저 간단하게 &lt;code&gt;ggplot2&lt;/code&gt; 패키지에 소개하자면 &lt;code&gt;Grammar of Graphics&lt;/code&gt;[^1]의 철학을 담아서 &lt;code&gt;R&lt;/code&gt; 생태계에서 유명한 학자 중, &lt;code&gt;Hadley Wickham&lt;/code&gt;에 의해 주도적으로 개발되었다. 그래프에도 문법이 있다는 패키지의 철학 아래, &lt;code&gt;R&lt;/code&gt;의 시각화는 괄목할만한 발전을 이루었고 이는 &lt;code&gt;R&lt;/code&gt;의 대중화에도 큰 영향을 끼쳤다.&lt;/p&gt;
+&lt;p&gt;이제 본격적으로 &lt;code&gt;R&lt;/code&gt; 시각화를 작성해보자.&lt;/p&gt;
+&lt;h2 id=&#34;i-사전준비&#34;&gt;I. 사전준비&lt;/h2&gt;
+&lt;p&gt;본 장에서는 시각화를 위해서 &lt;code&gt;ggplot2&lt;/code&gt;를 주요 패키지로 사용한다. &lt;code&gt;ggplot2&lt;/code&gt; 패키지를 설치했다고 가정한다. 만약 처음 패키지를 설치하는 사람이라면 &lt;a href=&#34;https://wikidocs.net/58057&#34;&gt;R 패키지 설치&lt;/a&gt;[^2]에서 다시 한번 R 패키지 주요 생태계에 대해 이해하도록 한다.&lt;/p&gt;
+&lt;p&gt;Studio를 열고 아래 코드를 실행하자:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(ggplot2)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;library(ggplot2)&lt;/code&gt;를 실행하면 &lt;code&gt;Registered ~&lt;/code&gt;라는 문구가 나왔다면 컴퓨터내 시스템에서 &lt;code&gt;RStudio&lt;/code&gt; 환경으로 &lt;code&gt;ggplot2&lt;/code&gt; 패키지를 정상적으로 불러왔다는 뜻이다. 이제 패키지 내 다양한 함수를 사용할 수 있는 사전준비가 완료된 것으로 이해해도 좋다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-데이터셋---텍사스-부동산-판매데이터&#34;&gt;II. 데이터셋 - 텍사스 부동산 판매데이터&lt;/h2&gt;
+&lt;p&gt;대한민국에서 가장 중요한 문제중의 하나인 부동산과 관련하여 시각화를 진행하려 한다. 지금은 &lt;code&gt;ggplot2&lt;/code&gt; 패키지 내에 존재하는 텍사스 부동산 판매데이터를 통해 시각화를 진행하지만, 향후에는 국내 부동산 데이터를 직접 가져와서 시각화를 진행하기를 바란다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;txhousing&lt;/code&gt; 데이터는 총 &lt;code&gt;8602&lt;/code&gt;개의 관측치와 &lt;code&gt;9&lt;/code&gt;개의 변수로 구성이 되어 있다. &lt;code&gt;txhousing&lt;/code&gt; 데이터의 출처 및 각 변수(&lt;code&gt;Column&lt;/code&gt;)에 대해 조금 더 자세히 알고 싶다면 &lt;code&gt;R&lt;/code&gt; 소스코드 에디터에서 help(&lt;code&gt;txhousing&lt;/code&gt;)을 실행하여 도움말을 참고하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;iii-ggplot2-with-histogram&#34;&gt;III. ggplot2 with Histogram&lt;/h2&gt;
+&lt;p&gt;히스토그램은 언제 그려야 할까?&lt;/p&gt;
+&lt;p&gt;산점도 그래프가 두개의 연속형 변수를 통해서 변수간의 관계를 파악하는 그래프라고 한다면, 히스토그램은 연속형 변수 1개를 활용하여 각 변수마다 고유의 분포를 보여주고 싶을 때 작성한다. &lt;code&gt;txhousing&lt;/code&gt; 데이터에서 sales 변수를 가지고 데이터를 작성하도록 해보자.&lt;/p&gt;
+&lt;p&gt;우선 아래코드를 실행 후 결과를 확인해보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;ggplot&lt;/span&gt;(data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; txhousing, &lt;span style=&#34;color:#a6e22e&#34;&gt;aes&lt;/span&gt;(x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sales)) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;geom_histogram&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/datavisualisation/ch02_histogram_files/figure-html/unnamed-chunk-2-1.png&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;p&gt;위 그래프를 보면, 데이터가 오른쪽으로 꼬리모양 형태를 띠며 분포하고 있는 것을 그리고 있다. 특히, sales 값 중 &amp;gt; 7500 이상 되는 값도 눈에 띄는데, 이것을 통계적인 용어로 이상치(outlier)라고 부른다.&lt;/p&gt;
+&lt;p&gt;그런데, 이상치는 평균을 한쪽으로 치우치게 만들 뿐 아니라 표준편차를 부풀릴 뿐만 아니라 표준편차를 근간으로 하는 모든 통계적인 모델링에 악영향을 미친다.&lt;/p&gt;
+&lt;h3 id=&#34;1-add-color-and-fill&#34;&gt;(1) Add Color and fill&lt;/h3&gt;
+&lt;p&gt;히스토그램의 대략적인 기능을 이해했다면, 이제 본격적으로 시각화에 집중해본다. 색상을 입혀보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;ggplot&lt;/span&gt;(data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; txhousing, &lt;span style=&#34;color:#a6e22e&#34;&gt;aes&lt;/span&gt;(x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sales)) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;geom_histogram&lt;/span&gt;(color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;black&amp;#34;&lt;/span&gt;, fill &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;white&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;theme_bw&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/datavisualisation/ch02_histogram_files/figure-html/unnamed-chunk-3-1.png&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;h3 id=&#34;2-x축에-평균선을-그려보자&#34;&gt;(2) X축에 평균선을 그려보자.&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;평균선을 그리려면, &lt;code&gt;geom_vline()&lt;/code&gt; 함수를 추가해야 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;ggplot&lt;/span&gt;(data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; txhousing, &lt;span style=&#34;color:#a6e22e&#34;&gt;aes&lt;/span&gt;(x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sales)) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;geom_histogram&lt;/span&gt;(color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;black&amp;#34;&lt;/span&gt;, fill &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;white&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;geom_vline&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;aes&lt;/span&gt;(xintercept&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;mean&lt;/span&gt;(sales, na.rm &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TRUE&lt;/span&gt;)), 
+             color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;blue&amp;#34;&lt;/span&gt;, linetype&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;dashed&amp;#34;&lt;/span&gt;, size&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/datavisualisation/ch02_histogram_files/figure-html/unnamed-chunk-4-1.png&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;line types의 종류에는,&lt;code&gt;“blank”, “solid”, “dashed”, “dotted”, “dotdash”, “longdash”, “twodash”&lt;/code&gt;가 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-change-plot-colors-by-groups&#34;&gt;(3) Change Plot Colors by groups&lt;/h3&gt;
+&lt;p&gt;우선 &lt;code&gt;dplyr&lt;/code&gt; 패키지를 활용하여 월별 평균을 구해본다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(dplyr)
+txhousing &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;group_by&lt;/span&gt;(month) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;summarise&lt;/span&gt;(grp.mean &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;mean&lt;/span&gt;(sales, na.rm &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TRUE&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## # A tibble: 12 x 2
+##    month grp.mean
+##    &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;
+##  1     1     357.
+##  2     2     431.
+##  3     3     563.
+##  4     4     578.
+##  5     5     650.
+##  6     6     685.
+##  7     7     666.
+##  8     8     648.
+##  9     9     530.
+## 10    10     516.
+## 11    11     462.
+## 12    12     504.
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;이번에는 &lt;code&gt;data.table&lt;/code&gt;을 활용하여 평균을 구해본다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(data.table)
+txhousing2 &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;data.table&lt;/span&gt;(txhousing)
+txhousing2[, .(Mean&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;mean&lt;/span&gt;(sales, na.rm &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TRUE&lt;/span&gt;)), by &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; month]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;##     month     Mean
+##  1:     1 356.9289
+##  2:     2 430.8285
+##  3:     3 563.1863
+##  4:     4 577.5174
+##  5:     5 649.7366
+##  6:     6 685.1188
+##  7:     7 665.8299
+##  8:     8 647.8975
+##  9:     9 529.6961
+## 10:    10 516.3344
+## 11:    11 462.0295
+## 12:    12 504.4146
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;위 방법 중 마음에 드는 것을 선택해 &lt;code&gt;mean_sales&lt;/code&gt;라고 저장한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(dplyr)
+txhousing &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;group_by&lt;/span&gt;(month) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;summarise&lt;/span&gt;(grp.mean &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;mean&lt;/span&gt;(sales, na.rm &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TRUE&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; mean_sales
+&lt;span style=&#34;color:#a6e22e&#34;&gt;head&lt;/span&gt;(mean_sales)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 2
+##   month grp.mean
+##   &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;
+## 1     1     357.
+## 2     2     431.
+## 3     3     563.
+## 4     4     578.
+## 5     5     650.
+## 6     6     685.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;이 때, 1월과 7월을 비교하는 그래프를 그려본다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;jan_jul &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; txhousing &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;filter&lt;/span&gt;(month &lt;span style=&#34;color:#f92672&#34;&gt;%in%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;mutate&lt;/span&gt;(month &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;as.character&lt;/span&gt;(month))
+mean_jan_jul &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; mean_sales &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;filter&lt;/span&gt;(month &lt;span style=&#34;color:#f92672&#34;&gt;%in%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;mutate&lt;/span&gt;(month &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;as.character&lt;/span&gt;(month))
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;ggplot&lt;/span&gt;(jan_jul, &lt;span style=&#34;color:#a6e22e&#34;&gt;aes&lt;/span&gt;(x&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sales, color&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;month)) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;geom_histogram&lt;/span&gt;(fill&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;white&amp;#39;&lt;/span&gt;, alpha&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;.5&lt;/span&gt;, position &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;identity&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;geom_vline&lt;/span&gt;(data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; mean_jan_jul, 
+             &lt;span style=&#34;color:#a6e22e&#34;&gt;aes&lt;/span&gt;(xintercept&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;grp.mean, color&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;month), 
+             linetype&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;dashed&amp;#39;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;scale_x_log10&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;theme_bw&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 
+  &lt;span style=&#34;color:#a6e22e&#34;&gt;theme&lt;/span&gt;(legend.position&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;top&amp;#34;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/datavisualisation/ch02_histogram_files/figure-html/unnamed-chunk-8-1.png&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;먼저, &lt;code&gt;geom_vline(new_data, ~)&lt;/code&gt;함수 안에 새로운 데이터를 추가해서 작성하는 것도 가능하다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;scale_x_log10()&lt;/code&gt;을 추가하였는데, 로그변환을 통해서 정규변환 형태로 만든 이후에 그래프를 비교하면 보다 시각적으로 비교하는 데 용이하다.&lt;/li&gt;
+&lt;li&gt;위와 같이 1월과 7월별로 히스토그램으로도 충분히 그래프를 비교할 수 있다.&lt;/li&gt;
+&lt;li&gt;또하나의 미션을 주겠다. 전체 평균 데이터셋을 구해서 &lt;code&gt;geom_vline()&lt;/code&gt;함수를 추가해보자.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
     
     <item>
       <title>matplotlib 06 Table Chart</title>
