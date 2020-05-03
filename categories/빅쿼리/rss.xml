@@ -5,10 +5,288 @@
     <description>Recent content in 빅쿼리 on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 02 May 2020 19:30:30 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 02 May 2020 21:30:30 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ch11 Powerful SQL Pattern</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch11_powerful_sql_pattern/</link>
+      <pubDate>Sat, 02 May 2020 21:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch11_powerful_sql_pattern/</guid>
+      <description>&lt;h2 id=&#34;1-구글-클라우드-설정&#34;&gt;1. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;2-사용자-계정-인증&#34;&gt;2. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3-쿼리-기본&#34;&gt;3. 쿼리 기본&lt;/h2&gt;
+&lt;p&gt;빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp;amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.&lt;/p&gt;
+&lt;p&gt;빅쿼리는 데이터 분석을 위한 기본적인 도구이기 때문에, 웹/앱을 활용한 마케팅 분석이 필요한 업종에서는 어쩌면 반드시 가져가야할 일종의 언어이기도 하다.&lt;/p&gt;
+&lt;p&gt;기본적으로 SQL문법을 지원하며, BigQuery 나름의 문법을 또한 구성하고 있다. 이제 본격적으로 코드를 작성해보자.&lt;/p&gt;
+&lt;p&gt;현재 작성하는 모든 코드는 Python-BigQuery로 연동하여 작성하려고 한다. 이제 간단하게 쿼리를 작성해보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials1/&#34;&gt;Ch05-Query_Essentials(1)&lt;/a&gt;에서는 &lt;code&gt;SELECT&lt;/code&gt;와 &lt;code&gt;AS&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials2/&#34;&gt;Ch05-Query_Essentials(2)&lt;/a&gt;에서는 &lt;code&gt;WHERE&lt;/code&gt;와 &lt;code&gt;EXCEPT&lt;/code&gt;, 그리고 &lt;code&gt;REPLACE&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials3/&#34;&gt;Ch05-Query_Essentials(3)&lt;/a&gt;에서는 &lt;code&gt;SubQuery&lt;/code&gt;에 대해서 집중적으로 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch06_sql_aggregates/&#34;&gt;Ch06 SQL Aggregates&lt;/a&gt;에서는 집계함수를 사용해서 데이터를 조금 더 디테일하게 요약하는 것을 배웠다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch07_split_unnest/&#34;&gt;Ch07 Arrays &amp;amp; Structs&lt;/a&gt;에서는 빅쿼리에서 가상의 테이블과 그리고 배열을 만드는 법을 익혔다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch08_creating_arrays_with_array_agg/&#34;&gt;Ch08_Creating_Arrays_with_Array_AGG&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch09_struct_and_tuple/&#34;&gt;Ch09_Array_Of_Struct&lt;/a&gt; Struct을 활용하여 독특한 쿼리 결과문을 확인하였다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch10_unnest_an_array/&#34;&gt;Ch10 UNNEST an Array&lt;/a&gt; 에서, &lt;code&gt;Struct&lt;/code&gt;을 만든 임시 테이블을 보다 가독성 좋게 필드로 구분한 것을 확인하였다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;개요&#34;&gt;개요&lt;/h2&gt;
+&lt;p&gt;빅데이터에서 쿼리는 일종의 시간이다. 그리고 클라우드에서는 비용이다. 따라서 cost-effective하게 쿼리를 작성하는 것이 중요하며 또한 필요하다.&lt;/p&gt;
+&lt;p&gt;이를 위해서는 &lt;code&gt;nested fields&lt;/code&gt;를 활용하는 것이 &lt;code&gt;flattened data&lt;/code&gt;를 활용하는 것보다 좋다.&lt;/p&gt;
+&lt;p&gt;이 때 필요한 것이 Chapter 07-10 배운 개념들이다. 이제 실전에서 &lt;code&gt;STRUCT&lt;/code&gt;, &lt;code&gt;UNNEST&lt;/code&gt;, &lt;code&gt;ARRAY_AGG&lt;/code&gt;를 활용해서 쿼리를 조회하려고 한다.&lt;/p&gt;
+&lt;p&gt;먼저 아래 &lt;code&gt;Table&lt;/code&gt;을 확인해보자.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;위 결과물을 조금 더 시각적으로 보고 싶다면, 꼭 자신의 &lt;a href=&#34;https://console.cloud.google.com/bigquery&#34;&gt;빅쿼리 콘솔&lt;/a&gt;에서 확인하는 것을 권합니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bigquerytutorial-274406&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    sid, season, number, basin, subbasin, name, iso_time, nature, latitude, longitude
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.noaa_hurricanes.hurricanes` 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE season = &amp;#34;1971&amp;#34; and basin = &amp;#34;WP&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 4
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | sid           |   season |   number | basin   | subbasin   | name   | iso_time                  | nature   |   latitude |   longitude |
+|---:|:--------------|---------:|---------:|:--------|:-----------|:-------|:--------------------------|:---------|-----------:|------------:|
+|  0 | 1971141N07156 |     1971 |       49 | WP      | MM         | DINAH  | 1971-05-29 00:00:00+00:00 | TS       |    18.9143 |     110.643 |
+|  1 | 1971160N10135 |     1971 |       54 | WP      | MM         | FREDA  | 1971-06-17 00:00:00+00:00 | TS       |    20.4    |     115.586 |
+|  2 | 1971189N12130 |     1971 |       66 | WP      | MM         | KIM    | 1971-07-13 00:00:00+00:00 | TS       |    18.1857 |     106.886 |
+|  3 | 1971190N09141 |     1971 |       68 | WP      | MM         | JEAN   | 1971-07-15 18:00:00+00:00 | TS       |    14.4857 |     116.229 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;주요 과제&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;여기서 하려는 것은 &lt;code&gt;usa_sshs&lt;/code&gt; (better known as &lt;code&gt;category&lt;/code&gt;)의 최대값을 찾는 것이다.&lt;/li&gt;
+&lt;li&gt;연도는 2010년이다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;basin=NA&lt;/code&gt;는 허리케인이 처음 도착했을 때는 의미한다.&lt;/li&gt;
+&lt;li&gt;원하는 결과값은 허리케인이 지도에서 (27.1, -60.1)에 있을 때, 예를 들면 &lt;code&gt;Hurricane Danielle reached Category 4 at 18:00 UTC on 2010-08-01&lt;/code&gt; 라고 말하는 것이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;결과 테이블을 보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#standardsql
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;WITH hurricanes AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  MIN(NAME) AS name,
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  ARRAY_AGG(STRUCT(iso_time, latitude, longitude, usa_sshs) ORDER BY iso_time ASC) AS track
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;FROM
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  `bigquery-public-data.noaa_hurricanes.hurricanes`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;WHERE
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  season = &amp;#39;2010&amp;#39; AND basin = &amp;#39;NA&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;GROUP BY
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  sid
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;),
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;cat_hurricane AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;SELECT name, track, (SELECT MAX(usa_sshs) FROM UNNEST(track))  AS category
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;from hurricanes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;ORDER BY category DESC
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;)
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  name, 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  category, 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  (SELECT AS STRUCT iso_time, latitude, longitude
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   FROM UNNEST(track) 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   WHERE usa_sshs = category ORDER BY iso_time LIMIT 1).*
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;FROM cat_hurricane
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;ORDER BY category DESC, name ASC
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | name     |   category | iso_time                  |   latitude |   longitude |
+|---:|:---------|-----------:|:--------------------------|-----------:|------------:|
+|  0 | DANIELLE |          4 | 2010-08-27 18:00:00+00:00 |    27.1    |    -60.1    |
+|  1 | EARL     |          4 | 2010-08-30 18:00:00+00:00 |    19      |    -64.2    |
+|  2 | IGOR     |          4 | 2010-09-12 18:00:00+00:00 |    17.7    |    -46.1    |
+|  3 | JULIA    |          4 | 2010-09-15 09:00:00+00:00 |    17.2549 |    -31.8002 |
+|  4 | KARL     |          3 | 2010-09-17 09:00:00+00:00 |    19.6874 |    -95.2465 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;즉, 이렇게 테이블을 만들어 내려고 하는 것이다. 어떻게 작성할까?&lt;/p&gt;
+&lt;h2 id=&#34;step-1-history-of-hurricane-location&#34;&gt;Step 1. History of Hurricane Location.&lt;/h2&gt;
+&lt;p&gt;기본적으로 Hurriance의 동선을 확인해야 하는데, &lt;code&gt;hurricane&lt;/code&gt; 이라는 가상의 테이블을 만든다.&lt;/p&gt;
+&lt;p&gt;조건은 2010년 기준이다.&lt;/p&gt;
+&lt;h3 id=&#34;방법-1-try-group-by&#34;&gt;방법 1. Try Group By&lt;/h3&gt;
+&lt;p&gt;우선, &lt;code&gt;basin&lt;/code&gt;과 &lt;code&gt;season&lt;/code&gt;을 기준으로 필터링을 한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    NAME, iso_time, latitude, longitude, usa_sshs
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.noaa_hurricanes.hurricanes` 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE season = &amp;#34;2010&amp;#34; and basin = &amp;#34;NA&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 4
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | NAME   | iso_time                  |   latitude |   longitude |   usa_sshs |
+|---:|:-------|:--------------------------|-----------:|------------:|-----------:|
+|  0 | OTTO   | 2010-10-07 06:00:00+00:00 |       23.4 |       -68.3 |         -2 |
+|  1 | OTTO   | 2010-10-06 12:00:00+00:00 |       22.6 |       -67.8 |         -2 |
+|  2 | OTTO   | 2010-10-06 06:00:00+00:00 |       22   |       -67.2 |         -2 |
+|  3 | OTTO   | 2010-10-06 18:00:00+00:00 |       23   |       -68.1 |         -2 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;우리가 여기에서 원하는 것은 &lt;code&gt;Each Hurricane&lt;/code&gt;의 위치별 리스트를 확보하는 것이다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;문제는 위 쿼리에서 &lt;code&gt;GROUP sid&lt;/code&gt;를 하게 되면 작동하지 않는다. (한번 해 보면 된다!) 이 때 필요한 것이, &lt;code&gt;ARRAY_AGG&lt;/code&gt;와 &lt;code&gt;STRUCT&lt;/code&gt;을 사용해야 한다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;방법-2-array_agg와-struct&#34;&gt;방법 2. ARRAY_AGG와 STRUCT&lt;/h3&gt;
+&lt;p&gt;이번에는 Powerful한 &lt;code&gt;ARRAY_AGG&lt;/code&gt;와 &lt;code&gt;STRUCT&lt;/code&gt;를 사용했다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    MIN(NAME) AS name, 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    ARRAY_AGG(STRUCT(iso_time, latitude, longitude, usa_sshs) ORDER BY iso_time ASC) as track
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.noaa_hurricanes.hurricanes` 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE season = &amp;#34;2010&amp;#34; and basin = &amp;#34;NA&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  GROUP BY sid
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;       name                                              track
+0      OTTO  [{&#39;iso_time&#39;: 2010-10-06 06:00:00+00:00, &#39;lati...
+1     COLIN  [{&#39;iso_time&#39;: 2010-08-02 12:00:00+00:00, &#39;lati...
+2      EARL  [{&#39;iso_time&#39;: 2010-08-24 00:00:00+00:00, &#39;lati...
+3      IGOR  [{&#39;iso_time&#39;: 2010-09-08 06:00:00+00:00, &#39;lati...
+4  DANIELLE  [{&#39;iso_time&#39;: 2010-08-21 12:00:00+00:00, &#39;lati...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;위 쿼리에 대해서 하나씩 생각해보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;우선, &lt;code&gt;sid(=storm id)&lt;/code&gt;별로 &lt;code&gt;Group By&lt;/code&gt;를 해야 각 &lt;code&gt;Storm&lt;/code&gt; 별로 정렬이 될 것이다. 그 다음 집계함수를 사용해서 원하는 값을 추출할 것이다.&lt;/li&gt;
+&lt;li&gt;그런데, 우리가 원하는 것은 &lt;code&gt;Storm ID&lt;/code&gt;당 각 셀안의 모든 행을 유지하려면 &lt;code&gt;ARRAY_AGG&lt;/code&gt;가 필요하다.&lt;/li&gt;
+&lt;li&gt;단 한개의 필드만 조회하는 것이 아닌, 시계열과 관련된 모든 필드가 같이 들어가야 하는데, 이 때 필요한 것이 &lt;code&gt;STRUCT&lt;/code&gt;이다.&lt;/li&gt;
+&lt;li&gt;그리고, time을 기준으로 정렬하면 된다.
+&lt;code&gt;track field&lt;/code&gt;를 확인해보자. 그동안 배웠던 익숙한 결과물이 나타냈다. 위 &lt;code&gt;with&lt;/code&gt; 를 사용하여 쿼리문의 결과값을 &lt;code&gt;hurricanes&lt;/code&gt;라고 임시 저장한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;step-2-maximum-category&#34;&gt;Step 2. Maximum Category&lt;/h2&gt;
+&lt;p&gt;이제 임시 저장된 &lt;code&gt;hurricanes&lt;/code&gt;를 사용하여 우선 &lt;code&gt;category&lt;/code&gt; field를 만들어야 한다. 이 때 &lt;code&gt;UNNEST&lt;/code&gt;가 사용될 것이다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  with hurricanes AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      MIN(NAME) AS name
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      , ARRAY_AGG(STRUCT(iso_time, latitude, longitude, usa_sshs) ORDER BY iso_time ASC) as track
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    FROM `bigquery-public-data.noaa_hurricanes.hurricanes` 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    WHERE season = &amp;#34;2010&amp;#34; and basin = &amp;#34;NA&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    GROUP BY sid
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    name
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    , track
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    , (SELECT MAX(usa_sshs) FROM UNNEST(track)) AS category
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    hurricanes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  ORDER BY category DESC
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;         name                                              track  category
+0        EARL  [{&#39;iso_time&#39;: 2010-08-24 00:00:00+00:00, &#39;lati...         4
+1        IGOR  [{&#39;iso_time&#39;: 2010-09-08 06:00:00+00:00, &#39;lati...         4
+2    DANIELLE  [{&#39;iso_time&#39;: 2010-08-21 12:00:00+00:00, &#39;lati...         4
+3       JULIA  [{&#39;iso_time&#39;: 2010-09-12 06:00:00+00:00, &#39;lati...         4
+4        KARL  [{&#39;iso_time&#39;: 2010-09-13 18:00:00+00:00, &#39;lati...         3
+5       TOMAS  [{&#39;iso_time&#39;: 2010-10-29 06:00:00+00:00, &#39;lati...         2
+6       PAULA  [{&#39;iso_time&#39;: 2010-10-11 00:00:00+00:00, &#39;lati...         2
+7        ALEX  [{&#39;iso_time&#39;: 2010-06-24 18:00:00+00:00, &#39;lati...         2
+8     RICHARD  [{&#39;iso_time&#39;: 2010-10-19 18:00:00+00:00, &#39;lati...         2
+9        OTTO  [{&#39;iso_time&#39;: 2010-10-06 06:00:00+00:00, &#39;lati...         1
+10      SHARY  [{&#39;iso_time&#39;: 2010-10-28 18:00:00+00:00, &#39;lati...         1
+11       LISA  [{&#39;iso_time&#39;: 2010-09-20 00:00:00+00:00, &#39;lati...         1
+12      COLIN  [{&#39;iso_time&#39;: 2010-08-02 12:00:00+00:00, &#39;lati...         0
+13     NICOLE  [{&#39;iso_time&#39;: 2010-09-28 00:00:00+00:00, &#39;lati...         0
+14     GASTON  [{&#39;iso_time&#39;: 2010-09-01 00:00:00+00:00, &#39;lati...         0
+15    HERMINE  [{&#39;iso_time&#39;: 2010-09-05 06:00:00+00:00, &#39;lati...         0
+16      FIONA  [{&#39;iso_time&#39;: 2010-08-30 00:00:00+00:00, &#39;lati...         0
+17     BONNIE  [{&#39;iso_time&#39;: 2010-07-22 06:00:00+00:00, &#39;lati...         0
+18    MATTHEW  [{&#39;iso_time&#39;: 2010-09-23 12:00:00+00:00, &#39;lati...         0
+19  NOT_NAMED  [{&#39;iso_time&#39;: 2010-08-10 06:00:00+00:00, &#39;lati...        -1
+20  NOT_NAMED  [{&#39;iso_time&#39;: 2010-07-07 06:00:00+00:00, &#39;lati...        -1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;매우 명확하게 &lt;code&gt;category&lt;/code&gt; column 형태로 나온 것을 확인할 수 있다.&lt;/li&gt;
+&lt;li&gt;우선 &lt;code&gt;track&lt;/code&gt;은 배열로 구성 되어 있다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;UNNEST()&lt;/code&gt;를 사용하면 배열이 &lt;code&gt;table&lt;/code&gt; 형태로 변환된다. 이 때, &lt;code&gt;track.*&lt;/code&gt; 형태로 field명이 추출되는 것을 볼 수 있다. 그리고, 난 뒤, &lt;code&gt;MAX(usa_sshs)&lt;/code&gt;를 구하는 것이 위 쿼리에 대한 설명이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;step-3-최종-결과물-출력&#34;&gt;Step 3. 최종 결과물 출력&lt;/h2&gt;
+&lt;p&gt;마찬가지로, Step 2의 결과물을 다시 &lt;code&gt;category_hurricanes&lt;/code&gt;라고 저장한뒤 재 사용하도록 한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;WITH hurricanes AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  MIN(NAME) AS name,
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  ARRAY_AGG(STRUCT(iso_time, latitude, longitude, usa_sshs) ORDER BY iso_time ASC) AS track
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;FROM
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  `bigquery-public-data.noaa_hurricanes.hurricanes`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;WHERE
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  season = &amp;#39;2010&amp;#39; AND basin = &amp;#39;NA&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;GROUP BY
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  sid
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;),
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;cat_hurricane AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;SELECT name, track, (SELECT MAX(usa_sshs) FROM UNNEST(track))  AS category
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;from hurricanes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;ORDER BY category DESC
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;)
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  name
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  , category
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  , (SELECT AS STRUCT iso_time, latitude, longitude
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   FROM UNNEST(track) 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   WHERE usa_sshs = category ORDER BY iso_time LIMIT 1).*
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;FROM cat_hurricane
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;ORDER BY category DESC, name ASC
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;       name  category                  iso_time  latitude  longitude
+0  DANIELLE         4 2010-08-27 18:00:00+00:00   27.1000   -60.1000
+1      EARL         4 2010-08-30 18:00:00+00:00   19.0000   -64.2000
+2      IGOR         4 2010-09-12 18:00:00+00:00   17.7000   -46.1000
+3     JULIA         4 2010-09-15 09:00:00+00:00   17.2549   -31.8002
+4      KARL         3 2010-09-17 09:00:00+00:00   19.6874   -95.2465
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; STRUCT iso_time, latitude, longitude
+   &lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;UNNEST&lt;/span&gt;(track) 
+   &lt;span style=&#34;color:#66d9ef&#34;&gt;WHERE&lt;/span&gt; usa_sshs &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; category &lt;span style=&#34;color:#66d9ef&#34;&gt;ORDER&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;BY&lt;/span&gt; iso_time &lt;span style=&#34;color:#66d9ef&#34;&gt;LIMIT&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;).&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;위 구문에서 &lt;code&gt;.*&lt;/code&gt;을 사용하지 않으면 &lt;code&gt;ARRAY&lt;/code&gt; 형태로 출력된다.&lt;/li&gt;
+&lt;li&gt;만약에 &lt;code&gt;LIMIT 1&lt;/code&gt;로 지정하지 않으면 에러가 난다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;결론&#34;&gt;결론&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;SQL&lt;/code&gt;에서 시계열 데이터를 다루는 것은 생각보다 쉽지 않다. 각 ID당, 초당 또는 분당 단위로 다르게 바뀌는 과정속에서 집계를 구하려면 기존의 &lt;code&gt;Group BY&lt;/code&gt; 방식으로는 생각보다 쉽게 적용이 되지 않을 가능성이 크다.&lt;/p&gt;
+&lt;p&gt;이 때, 필요한 것이 &lt;code&gt;배열(=ARRAY)&lt;/code&gt;을 활용하는 것이다. 차후에 더 나은 예제가 있거나 또한 발견하면 그 때 다시한번 공유하도록 한다.&lt;/p&gt;
+&lt;p&gt;작은 도움이 되기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, V. (2018). &amp;ldquo;Exploring a powerful SQL pattern: ARRAY_AGG, STRUCT and UNNEST&amp;rdquo; Retrieved from &lt;a href=&#34;https://www.freecodecamp.org/news/exploring-a-powerful-sql-pattern-array-agg-struct-and-unnest-b7dcc6263e36/&#34;&gt;https://www.freecodecamp.org/news/exploring-a-powerful-sql-pattern-array-agg-struct-and-unnest-b7dcc6263e36/&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Ch10 UNNEST an Array</title>
