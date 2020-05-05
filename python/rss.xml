@@ -5,10 +5,198 @@
     <description>Recent content in Pythons on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 04 May 2020 17:10:30 +0900</lastBuildDate>
+    <lastBuildDate>Tue, 05 May 2020 14:15:47 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/python/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>pandas pivot table</title>
+      <link>https://chloevan.github.io/python/pandas/pandas_pivot_table/</link>
+      <pubDate>Tue, 05 May 2020 14:15:47 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/python/pandas/pandas_pivot_table/</guid>
+      <description>&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
+&lt;p&gt;제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 &lt;code&gt;Reference&lt;/code&gt;는 꼭 확인하셔서 교재 구매 또는 관련 &lt;code&gt;Reference&lt;/code&gt;를 확인하시기를 바랍니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;데이터는 코로나 데이터를 활용했다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;i-overview&#34;&gt;I. Overview&lt;/h2&gt;
+&lt;p&gt;일부의 사람들이 &lt;code&gt;R&lt;/code&gt;과 &lt;code&gt;Python&lt;/code&gt;을 사용하지만, 대부분의 사람들은 엑셀을 사용한다. 피벗테이블은 모든 직장인이 알아야 하는 필수 용어로, 전체 데이터를 빠르게 요약해주는 일종의 &lt;code&gt;skill&lt;/code&gt;이다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-피벗-테이블-만들기-예제&#34;&gt;II. 피벗 테이블 만들기 예제&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;이제 본격적으로 피벗 테이블을 만들어보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-데이터-가져오기&#34;&gt;(1) 데이터 가져오기&lt;/h3&gt;
+&lt;p&gt;데이터는 코로나 데이터를 활용한다.&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt; 데이터는 아래와 같은 변수로 구성이 되어 있다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;dateRep, day, month, year: 기록된 날짜를 의미한다.&lt;/li&gt;
+&lt;li&gt;cases: 한국에서는 &lt;code&gt;확진자수&lt;/code&gt;로 정의되었다.&lt;/li&gt;
+&lt;li&gt;deaths: 사망자수이다.&lt;/li&gt;
+&lt;li&gt;countriesAndTerritories, geoId, countryterritoryCode: 국가명과 연관이 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+url &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://raw.githubusercontent.com/chloevan/datasets/master/covid_19/covid_19.csv&amp;#39;&lt;/span&gt;
+covid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_csv(url)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(covid&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | dateRep    |   day |   month |   year |   cases |   deaths | countriesAndTerritories   | geoId   | countryterritoryCode   |   popData2018 |
+|---:|:-----------|------:|--------:|-------:|--------:|---------:|:--------------------------|:--------|:-----------------------|--------------:|
+|  0 | 2020/04/05 |     5 |       4 |   2020 |      35 |        1 | Afghanistan               | AF      | AFG                    |   3.71724e+07 |
+|  1 | 2020/04/04 |     4 |       4 |   2020 |       0 |        0 | Afghanistan               | AF      | AFG                    |   3.71724e+07 |
+|  2 | 2020/04/03 |     3 |       4 |   2020 |      43 |        0 | Afghanistan               | AF      | AFG                    |   3.71724e+07 |
+|  3 | 2020/04/02 |     2 |       4 |   2020 |      26 |        0 | Afghanistan               | AF      | AFG                    |   3.71724e+07 |
+|  4 | 2020/04/01 |     1 |       4 |   2020 |      25 |        0 | Afghanistan               | AF      | AFG                    |   3.71724e+07 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;covid&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;info()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;&amp;lt;class &#39;pandas.core.frame.DataFrame&#39;&amp;gt;
+RangeIndex: 8905 entries, 0 to 8904
+Data columns (total 10 columns):
+ #   Column                   Non-Null Count  Dtype  
+---  ------                   --------------  -----  
+ 0   dateRep                  8905 non-null   object 
+ 1   day                      8905 non-null   int64  
+ 2   month                    8905 non-null   int64  
+ 3   year                     8905 non-null   int64  
+ 4   cases                    8905 non-null   int64  
+ 5   deaths                   8905 non-null   int64  
+ 6   countriesAndTerritories  8905 non-null   object 
+ 7   geoId                    8883 non-null   object 
+ 8   countryterritoryCode     8824 non-null   object 
+ 9   popData2018              8873 non-null   float64
+dtypes: float64(1), int64(5), object(4)
+memory usage: 695.8+ KB
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;2-피벗테이블-만들기&#34;&gt;(2) 피벗테이블 만들기&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;판다스에는 &lt;code&gt;.pivot_table()&lt;/code&gt; 함수가 존재한다.&lt;/li&gt;
+&lt;li&gt;각 국가별로 확진자수를 확인해보는 코드를 작성한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;cases_by_country &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;pivot_table(covid, index &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;countryterritoryCode&amp;#39;&lt;/span&gt;, values &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;cases&amp;#39;&lt;/span&gt;, aggfunc&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;sum&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(cases_by_country)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;                      cases
+countryterritoryCode       
+ABW                      64
+AFG                     270
+AGO                      10
+ALB                     333
+AND                     466
+...                     ...
+VNM                     240
+XKX                     126
+ZAF                    1585
+ZMB                      39
+ZWE                       9
+
+[199 rows x 1 columns]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;먼저, 각각의 인수를 확인하자.
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;pivot_table()&lt;/code&gt; 함수를 사용한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;covid&lt;/code&gt;는 데이터를 의미한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;index&lt;/code&gt;는 기준점이 되는 변수를 의미하며, 보통 문자열 변수를 작성한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;values&lt;/code&gt;는 계산하려는 변수를 의미하며, 보통 숫자열 변수를 작성한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;aggfunc&lt;/code&gt;는 기초통계함수가 온다. 여기에서는 &lt;code&gt;sum&lt;/code&gt;이 사용되었다. 참고로 &lt;code&gt;default&lt;/code&gt;는 평균을 의미하는 &lt;code&gt;mean&lt;/code&gt;이 사용된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-피벗테이블-정렬&#34;&gt;(3) 피벗테이블 정렬&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;그런데, 정렬이 되어 있지 않으니 깔끔하게 정리된 것 같지가 않다. &lt;code&gt;cases&lt;/code&gt;를 기준으로 정렬을 해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;cases_by_country2 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; cases_by_country&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sort_values(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;cases&amp;#34;&lt;/span&gt;, ascending&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;False)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;reset_index()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(cases_by_country2)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;    countryterritoryCode   cases
+0                    USA  312237
+1                    ESP  124736
+2                    ITA  124632
+3                    DEU   91714
+4                    CHN   82575
+..                   ...     ...
+194                  GMB       4
+195                  VGB       3
+196                  BDI       3
+197                  TLS       1
+198                  PNG       1
+
+[199 rows x 2 columns]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;정렬을 위해서 &lt;code&gt;sort_values()&lt;/code&gt;함수를 활용했다.&lt;/li&gt;
+&lt;li&gt;내림차순으로 할지, 오름차순으로 할지 결정해야 하는데 기본적으로 오름차순으로 세팅이 되어 있기 때문에 내림차순으로 바꾸려면 &lt;code&gt;ascending=False&lt;/code&gt;로 한다.&lt;/li&gt;
+&lt;li&gt;행의 순서를 바꿔줘야 하기 때문에 &lt;code&gt;reset_index()&lt;/code&gt;로 지정한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-multi-colums&#34;&gt;(4) Multi Colums&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;이번에는 &lt;code&gt;cases&lt;/code&gt;와 &lt;code&gt;deaths&lt;/code&gt;를 한꺼번에 구하도록 해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;cases_deaths_by_country &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;pivot_table(covid, index &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;countryterritoryCode&amp;#39;&lt;/span&gt;, values &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;cases&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;deaths&amp;#39;&lt;/span&gt;], aggfunc&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;sum&amp;#39;&lt;/span&gt;)
+cases_deaths_by_country2 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; cases_deaths_by_country&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sort_values([&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;deaths&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;cases&amp;#34;&lt;/span&gt;], ascending&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;False)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;reset_index()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(cases_deaths_by_country2)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;    countryterritoryCode   cases  deaths
+0                    ITA  124632   15362
+1                    ESP  124736   11744
+2                    USA  312237    8501
+3                    FRA   68605    7560
+4                    GBR   41903    4313
+..                   ...     ...     ...
+194                  SLE       4       0
+195                  BDI       3       0
+196                  VGB       3       0
+197                  PNG       1       0
+198                  TLS       1       0
+
+[199 rows x 3 columns]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;무언가 복잡해 보이지만, 크게 달라지는 것은 없다.&lt;/li&gt;
+&lt;li&gt;다만, 두개 이상의 &lt;code&gt;column&lt;/code&gt;을 입력하려면 함수 안에서 대괄호 &lt;code&gt;[column_1, column_2]&lt;/code&gt; 형태로 입력해주기만 하면 위와 같은 결과물이 나온다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;5-multi-index-and-multi-colums&#34;&gt;(5) Multi Index and Multi Colums&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cases&lt;/code&gt;와 &lt;code&gt;deaths&lt;/code&gt;를 확인하기 위함이니, &lt;code&gt;values&lt;/code&gt;에 입력을 했다. 그러면 &lt;code&gt;확진자수-사망자수 ~ 국가별-월별&lt;/code&gt;을 하려면 어떻게 작성해야 할까? &lt;code&gt;values&lt;/code&gt;에 적용했던 것처럼 &lt;code&gt;index&lt;/code&gt;에 적용 하기만 하면 된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;cases_deaths_by_country_month &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;pivot_table(covid, index &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;countryterritoryCode&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;month&amp;#39;&lt;/span&gt;], values &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;cases&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;deaths&amp;#39;&lt;/span&gt;], aggfunc&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;sum&amp;#39;&lt;/span&gt;)
+cases_deaths_by_country_month2&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;cases_deaths_by_country_month&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sort_values([&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;countryterritoryCode&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;month&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;deaths&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;cases&amp;#34;&lt;/span&gt;], ascending&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;True)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;reset_index()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(cases_deaths_by_country_month2)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;    countryterritoryCode  month  cases  deaths
+0                    ABW      3     50       0
+1                    ABW      4     14       0
+2                    AFG      1      0       0
+3                    AFG      2      1       0
+4                    AFG      3    140       4
+..                   ...    ...    ...     ...
+587                  ZAF      4    259       6
+588                  ZMB      3     35       0
+589                  ZMB      4      4       1
+590                  ZWE      3      7       1
+591                  ZWE      4      2       0
+
+[592 rows x 4 columns]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;각 인수의 의미는 동일하다. 다만, 정렬 순서만 조금 바뀌었는데, &lt;code&gt;8905&lt;/code&gt;개의 데이터가 깔끔하게 요약된 것을 확인할 수 있다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;countryterritoryCode&lt;/code&gt;에서 원하는 데이터를 필터를 해서 국가별로 비교할 수도 있고, 그래프를 작성할 수도 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iii-결론&#34;&gt;III. 결론&lt;/h2&gt;
+&lt;p&gt;피벗 테이블은 위대하다. 데이터를 다루는 모든 Tool에 기본적으로 &lt;code&gt;pivot&lt;/code&gt; 테이블 기능이 들어가 있다. 피벗 테이블을 활용하면 깔끔한 보고서를 만드는데 매우 훌륭한 기초자료가 될 수 있다.&lt;/p&gt;
+&lt;p&gt;위 데이터는 참고로 4/6일까지의 데이터이기 때문에 한달이 지난 시점 어떻게 바뀌었는지 비교 분석하는 것은 독자의 몫으로 남겨둔다.&lt;/p&gt;
+&lt;p&gt;그러나, 아직까지는 파이썬 내에서만 확인이 가능하며, 이를 엑셀로 내보내는 작업이 남는다. 엑셀로 내보내는 것은 결과물이며, 이를 바탕으로 의사결정을 수립하는데 있어서 매우 훌륭한 기초자료가 될 수 있기 때문이다.&lt;/p&gt;
+&lt;p&gt;다음 포스트에서는 피벗테이블과 그래프를 작성하여 엑셀로 내보내는 것까지의 과정을 담아보도록 한다.&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s your turn. Learn by doing.&lt;/p&gt;
+&lt;h2 id=&#34;iv-reference&#34;&gt;IV. Reference&lt;/h2&gt;
+&lt;p&gt;Piepenbreier, N. (2020, April 16). A Step-by-Step Guide to Pandas Pivot Tables. Retrieved from &lt;a href=&#34;https://towardsdatascience.com/a-step-by-step-guide-to-pandas-pivot-tables-e0641d0c6c70&#34;&gt;https://towardsdatascience.com/a-step-by-step-guide-to-pandas-pivot-tables-e0641d0c6c70&lt;/a&gt;&lt;/p&gt;
+&lt;section class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn:1&#34; role=&#34;doc-endnote&#34;&gt;
+&lt;p&gt;데이터 소스는 &lt;code&gt;EU Opne Data Portal&lt;/code&gt;에 &lt;a href=&#34;https://data.europa.eu/euodp/en/data/dataset/covid-19-coronavirus-data/resource/55e8f966-d5c8-438e-85bc-c7a5a26f4863&#34;&gt;COVID-19 Coronavirus data&lt;/a&gt;에서 가져왔고 그중 일부를 csv로 변환하여 &lt;code&gt;github&lt;/code&gt;에 보관했다. &lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/section&gt;
+</description>
+    </item>
     
     <item>
       <title>Tensorflow 2.0 Tutorial ch9.3 - 클러스터링</title>
