@@ -1,0 +1,236 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Python Excel on Data Science | ChloEvan</title>
+    <link>https://chloevan.github.io/tags/python-excel/</link>
+    <description>Recent content in Python Excel on Data Science | ChloEvan</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 08 May 2020 01:15:47 +0900</lastBuildDate>
+    
+        <atom:link href="https://chloevan.github.io/tags/python-excel/rss.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Automate Excel Reporting With Pandas</title>
+      <link>https://chloevan.github.io/python/rpa/automate_excel_reporting_with_pandas/</link>
+      <pubDate>Fri, 08 May 2020 01:15:47 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/python/rpa/automate_excel_reporting_with_pandas/</guid>
+      <description>&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
+&lt;p&gt;제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 &lt;code&gt;Reference&lt;/code&gt;는 꼭 확인하셔서 교재 구매 또는 관련 &lt;code&gt;Reference&lt;/code&gt;를 확인하시기를 바랍니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;데이터는 코로나 데이터를 활용했다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;i-overview&#34;&gt;I. Overview&lt;/h2&gt;
+&lt;p&gt;일부의 사람들이 &lt;code&gt;R&lt;/code&gt;과 &lt;code&gt;Python&lt;/code&gt;을 사용하지만, 대부분의 사람들은 엑셀을 사용한다. 피벗테이블은 모든 직장인이 알아야 하는 필수 용어로, 전체 데이터를 빠르게 요약해주는 일종의 &lt;code&gt;skill&lt;/code&gt;이다.&lt;/p&gt;
+&lt;p&gt;오늘 배울 포스트는 피벗 테이블 작성과 파이썬에서 만들어진 그래프를 엑셀 파일에 포함하여 내보내는 예제를 준비하였다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;본 장에서는 피벗테이블에 대해서는 자세히 다루지는 않는다. 이전 포스트를 참고하기를 바란다.
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/python/pandas/pandas_pivot_table/&#34;&gt;pandas pivot table&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;ii-피벗-테이블-예제&#34;&gt;II. 피벗 테이블 예제&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;국가별로 피벗테이블을 만들어보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-라이브러리-불러오기&#34;&gt;(1) 라이브러리 불러오기&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;엑셀 자동화를 위한 라이브러리를 불러옵니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; openpyxl &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; load_workbook
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; openpyxl.styles &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; Font
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; openpyxl.chart &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; BarChart, Reference
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Pandas&lt;/code&gt; 모듈은 데이터 가공 및 엑셀 파일을 만드는 것과 관련이 있다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Openpyxl&lt;/code&gt; 모듈은 &lt;code&gt;chart&lt;/code&gt;를 엑셀 파일에 추가할 때 필요하다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-데이터-가져오기&#34;&gt;(2) 데이터 가져오기&lt;/h3&gt;
+&lt;p&gt;데이터는 코로나 데이터를 활용한다.&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt; 데이터는 아래와 같은 변수로 구성이 되어 있다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;dateRep, day, month, year: 기록된 날짜를 의미한다.&lt;/li&gt;
+&lt;li&gt;cases: 한국에서는 &lt;code&gt;확진자수&lt;/code&gt;로 정의되었다.&lt;/li&gt;
+&lt;li&gt;deaths: 사망자수이다.&lt;/li&gt;
+&lt;li&gt;countriesAndTerritories, geoId, countryterritoryCode: 국가명과 연관이 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;url &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://raw.githubusercontent.com/chloevan/datasets/master/covid_19/covid_19.csv&amp;#39;&lt;/span&gt;
+covid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_csv(url)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(covid&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    | dateRep    |   day |   month |   year |   cases |   deaths | countriesAndTerritories   | geoId   | countryterritoryCode   |   popData2018 |
+|---:|:-----------|------:|--------:|-------:|--------:|---------:|:--------------------------|:--------|:-----------------------|--------------:|
+|  0 | 2020/04/05 |     5 |       4 |   2020 |      35 |        1 | Afghanistan               | AF      | AFG                    |   3.71724e+07 |
+|  1 | 2020/04/04 |     4 |       4 |   2020 |       0 |        0 | Afghanistan               | AF      | AFG                    |   3.71724e+07 |
+|  2 | 2020/04/03 |     3 |       4 |   2020 |      43 |        0 | Afghanistan               | AF      | AFG                    |   3.71724e+07 |
+|  3 | 2020/04/02 |     2 |       4 |   2020 |      26 |        0 | Afghanistan               | AF      | AFG                    |   3.71724e+07 |
+|  4 | 2020/04/01 |     1 |       4 |   2020 |      25 |        0 | Afghanistan               | AF      | AFG                    |   3.71724e+07 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;covid&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;info()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;&amp;lt;class &#39;pandas.core.frame.DataFrame&#39;&amp;gt;
+RangeIndex: 8905 entries, 0 to 8904
+Data columns (total 10 columns):
+ #   Column                   Non-Null Count  Dtype  
+---  ------                   --------------  -----  
+ 0   dateRep                  8905 non-null   object 
+ 1   day                      8905 non-null   int64  
+ 2   month                    8905 non-null   int64  
+ 3   year                     8905 non-null   int64  
+ 4   cases                    8905 non-null   int64  
+ 5   deaths                   8905 non-null   int64  
+ 6   countriesAndTerritories  8905 non-null   object 
+ 7   geoId                    8883 non-null   object 
+ 8   countryterritoryCode     8824 non-null   object 
+ 9   popData2018              8873 non-null   float64
+dtypes: float64(1), int64(5), object(4)
+memory usage: 695.8+ KB
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;3-피벗테이블-만들기&#34;&gt;(3) 피벗테이블 만들기&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;판다스에는 &lt;code&gt;.pivot_table()&lt;/code&gt; 함수가 존재한다.&lt;/li&gt;
+&lt;li&gt;각 국가별로 확진자수를 확인해보는 코드를 작성한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;cases_by_country &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;pivot_table(covid, index &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;countriesAndTerritories&amp;#39;&lt;/span&gt;, values &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;cases&amp;#39;&lt;/span&gt;, aggfunc&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;sum&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(cases_by_country)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;                         cases
+countriesAndTerritories       
+Afghanistan                270
+Albania                    333
+Algeria                   1300
+Andorra                    466
+Angola                      10
+...                        ...
+Uzbekistan                 266
+Venezuela                  144
+Vietnam                    240
+Zambia                      39
+Zimbabwe                     9
+
+[204 rows x 1 columns]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;먼저, 각각의 인수를 확인하자.
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;pivot_table()&lt;/code&gt; 함수를 사용한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;covid&lt;/code&gt;는 데이터를 의미한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;index&lt;/code&gt;는 기준점이 되는 변수를 의미하며, 보통 문자열 변수를 작성한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;values&lt;/code&gt;는 계산하려는 변수를 의미하며, 보통 숫자열 변수를 작성한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;aggfunc&lt;/code&gt;는 기초통계함수가 온다. 여기에서는 &lt;code&gt;sum&lt;/code&gt;이 사용되었다. 참고로 &lt;code&gt;default&lt;/code&gt;는 평균을 의미하는 &lt;code&gt;mean&lt;/code&gt;이 사용된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-피벗테이블-정렬&#34;&gt;(4) 피벗테이블 정렬&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;그런데, 정렬이 되어 있지 않으니 깔끔하게 정리된 것 같지가 않다. &lt;code&gt;cases&lt;/code&gt;를 기준으로 정렬을 해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;cases_by_country2 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; cases_by_country&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sort_values(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;cases&amp;#34;&lt;/span&gt;, ascending&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;False)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;reset_index()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(cases_by_country2)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;               countriesAndTerritories   cases
+0             United_States_of_America  312237
+1                                Spain  124736
+2                                Italy  124632
+3                              Germany   91714
+4                                China   82575
+..                                 ...     ...
+199                            Burundi       3
+200  Bonaire, Saint Eustatius and Saba       2
+201                   Papua_New_Guinea       1
+202        Falkland_Islands_(Malvinas)       1
+203                        Timor_Leste       1
+
+[204 rows x 2 columns]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;정렬을 위해서 &lt;code&gt;sort_values()&lt;/code&gt;함수를 활용했다.&lt;/li&gt;
+&lt;li&gt;내림차순으로 할지, 오름차순으로 할지 결정해야 하는데 기본적으로 오름차순으로 세팅이 되어 있기 때문에 내림차순으로 바꾸려면 &lt;code&gt;ascending=False&lt;/code&gt;로 한다.&lt;/li&gt;
+&lt;li&gt;행의 순서를 바꿔줘야 하기 때문에 &lt;code&gt;reset_index()&lt;/code&gt;로 지정한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iii-엑셀-파일-만들기&#34;&gt;III. 엑셀 파일 만들기&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;피벗 테이블이 완성이 되었다면 이제, 엑셀 파일을 만들어보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;file_path &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/content/pandas_excel.xlsx&amp;#39;&lt;/span&gt;)
+cases_by_country2&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_excel(file_path, sheet_name &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;cases_by_country2&amp;#39;&lt;/span&gt;, startrow&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;ls
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;pandas_excel.xlsx  sample_data
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;실제 생성되었는지 확인해보자.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;file_path&lt;/code&gt;는 파일명과 함께 &lt;code&gt;file_path&lt;/code&gt;가 저장되는 곳을 말한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sheet_name&lt;/code&gt;는 시트명을 의미하고, &lt;code&gt;startrow=3&lt;/code&gt;을 지정한 이유는 &lt;code&gt;headers&lt;/code&gt;를 추후에 지정하기 위해서다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-엑셀-파일-불러오기-및-제목-입력&#34;&gt;(1) 엑셀 파일 불러오기 및 제목 입력&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;만들어진 엑셀파일을 &lt;code&gt;wb&lt;/code&gt; 함수를 사용해서 불러온다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sheet1[&#39;A1&#39;]&lt;/code&gt;은 엑셀 열의 이름을 의미한다.
+&lt;ul&gt;
+&lt;li&gt;각 열마다 텍스트를&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 엑셀 파일 불러오기&lt;/span&gt;
+wb &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; load_workbook(file_path)
+sheet1 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; wb[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;cases_by_country2&amp;#39;&lt;/span&gt;]
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 셀 텍스트 입력 및 스타일 적용&lt;/span&gt;
+sheet1[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;A1&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Top 5 Cases by Country&amp;#39;&lt;/span&gt;
+sheet1[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;A2&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Data is from EU Opne Data Portal&amp;#39;&lt;/span&gt;
+sheet1[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;A4&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;NO&amp;#39;&lt;/span&gt;
+
+sheet1[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;A1&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;style &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Title&amp;#39;&lt;/span&gt;
+sheet1[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;A2&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;style &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Headline 2&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;2-피벗테이블-insert&#34;&gt;(2) 피벗테이블 Insert&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;작성된 피벗테이블을 &lt;code&gt;for-loop&lt;/code&gt;를 활용하여 입력한다.
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;.style=&#39;Comma&#39;&lt;/code&gt;은 &lt;code&gt;Cell&lt;/code&gt; 값의 텍스트에 스타일을 주겠다는 뜻이며, 숫자이기 때문에 &lt;code&gt;1,000&lt;/code&gt; 형태로 출력된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; range(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;15&lt;/span&gt;):
+    sheet1[f&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;C{i}&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;style&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Comma&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;3-그래프-작성&#34;&gt;(3) 그래프 작성&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;이제 본격적으로 그래프를 작성해본다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 그래프 작성하기&lt;/span&gt;
+bar_chart &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; BarChart()
+
+data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Reference(sheet1, min_col&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, max_col&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, min_row&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;, max_row&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;15&lt;/span&gt;)
+categories &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Reference(sheet1, min_col&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, min_row&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;, max_row&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;15&lt;/span&gt;)
+bar_chart&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;add_data(data, titles_from_data&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;True)
+bar_chart&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;set_categories(categories)
+sheet1&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;add_chart(bar_chart, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;F4&amp;#34;&lt;/span&gt;)
+
+bar_chart&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;title &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Top 5 Cases by Country&amp;#39;&lt;/span&gt;
+bar_chart&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;style &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;
+wb&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;save(filename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; file_path)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;우선 &lt;code&gt;BarChart()&lt;/code&gt;를 객체로 저장한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;data&lt;/code&gt; 즉, value값과, &lt;code&gt;category&lt;/code&gt;값에 해당하는 테이블을 찾는다.
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;col&lt;/code&gt;은 테이블의 변수를 의미하고, &lt;code&gt;row&lt;/code&gt;는 행을 의미한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/image/pandas/pandas_excel/RPA.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;iv-결론&#34;&gt;IV. 결론&lt;/h2&gt;
+&lt;p&gt;Pandas와 엑셀을 활용한 RPA 보고서의 첫발을 내딛었다. 영어로 된 것을 번역하지만, 설명이 조금 아쉬워서, 결국엔 패키지 공식 홈페이지를 가야 이해가 빨리 되었다.&lt;/p&gt;
+&lt;p&gt;다양한 Tutorial이 있으니, 꼭 &lt;a href=&#34;https://openpyxl.readthedocs.io/en/stable/charts/bar.html#vertical-horizontal-and-stacked-bar-charts&#34;&gt;openpyxl&lt;/a&gt;에서 확인 후 함수를 사용하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;v-reference&#34;&gt;V. Reference&lt;/h2&gt;
+&lt;p&gt;Piepenbreier, N. (2020, April 16). Automate Your (Boring!) Excel Reporting with Python!. Retrieved from &lt;a href=&#34;https://towardsdatascience.com/automate-excel-reporting-with-python-233dd61fb0f2&#34;&gt;https://towardsdatascience.com/automate-excel-reporting-with-python-233dd61fb0f2&lt;/a&gt;&lt;/p&gt;
+&lt;section class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn:1&#34; role=&#34;doc-endnote&#34;&gt;
+&lt;p&gt;데이터 소스는 &lt;code&gt;EU Opne Data Portal&lt;/code&gt;에 &lt;a href=&#34;https://data.europa.eu/euodp/en/data/dataset/covid-19-coronavirus-data/resource/55e8f966-d5c8-438e-85bc-c7a5a26f4863&#34;&gt;COVID-19 Coronavirus data&lt;/a&gt;에서 가져왔고 그중 일부를 csv로 변환하여 &lt;code&gt;github&lt;/code&gt;에 보관했다. &lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/section&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
