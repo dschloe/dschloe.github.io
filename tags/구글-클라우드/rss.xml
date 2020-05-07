@@ -5,10 +5,199 @@
     <description>Recent content in 구글 클라우드 on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 03 May 2020 13:30:30 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 07 May 2020 14:30:30 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ch12 Join Explained</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch12_join_explained/</link>
+      <pubDate>Thu, 07 May 2020 14:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch12_join_explained/</guid>
+      <description>&lt;h2 id=&#34;1-구글-클라우드-설정&#34;&gt;1. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;2-사용자-계정-인증&#34;&gt;2. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3-쿼리-기본&#34;&gt;3. 쿼리 기본&lt;/h2&gt;
+&lt;p&gt;빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp;amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.&lt;/p&gt;
+&lt;p&gt;빅쿼리는 데이터 분석을 위한 기본적인 도구이기 때문에, 웹/앱을 활용한 마케팅 분석이 필요한 업종에서는 어쩌면 반드시 가져가야할 일종의 언어이기도 하다.&lt;/p&gt;
+&lt;p&gt;기본적으로 SQL문법을 지원하며, BigQuery 나름의 문법을 또한 구성하고 있다. 이제 본격적으로 코드를 작성해보자.&lt;/p&gt;
+&lt;p&gt;현재 작성하는 모든 코드는 Python-BigQuery로 연동하여 작성하려고 한다. 이제 간단하게 쿼리를 작성해보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials1/&#34;&gt;Ch05-Query_Essentials(1)&lt;/a&gt;에서는 &lt;code&gt;SELECT&lt;/code&gt;와 &lt;code&gt;AS&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials2/&#34;&gt;Ch05-Query_Essentials(2)&lt;/a&gt;에서는 &lt;code&gt;WHERE&lt;/code&gt;와 &lt;code&gt;EXCEPT&lt;/code&gt;, 그리고 &lt;code&gt;REPLACE&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials3/&#34;&gt;Ch05-Query_Essentials(3)&lt;/a&gt;에서는 &lt;code&gt;SubQuery&lt;/code&gt;에 대해서 집중적으로 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch06_sql_aggregates/&#34;&gt;Ch06 SQL Aggregates&lt;/a&gt;에서는 집계함수를 사용해서 데이터를 조금 더 디테일하게 요약하는 것을 배웠다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch07_split_unnest/&#34;&gt;Ch07 Arrays &amp;amp; Structs&lt;/a&gt;에서는 빅쿼리에서 가상의 테이블과 그리고 배열을 만드는 법을 익혔다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch08_creating_arrays_with_array_agg/&#34;&gt;Ch08_Creating_Arrays_with_Array_AGG&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch09_struct_and_tuple/&#34;&gt;Ch09_Array_Of_Struct&lt;/a&gt; Struct을 활용하여 독특한 쿼리 결과문을 확인하였다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch10_unnest_an_array/&#34;&gt;Ch10 UNNEST an Array&lt;/a&gt; 에서, &lt;code&gt;Struct&lt;/code&gt;을 만든 임시 테이블을 보다 가독성 좋게 필드로 구분한 것을 확인하였다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch11_powerful_sql_pattern/&#34;&gt;Ch11 Powerful SQL Pattern&lt;/a&gt;에서 &lt;code&gt;ARRAY&lt;/code&gt;, &lt;code&gt;Struct&lt;/code&gt;, &lt;code&gt;UNNEST&lt;/code&gt;을 활용하여 &lt;code&gt;Powerful&lt;/code&gt;한 쿼리를 작성하였습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;개요&#34;&gt;개요&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;이번 시간에는 &lt;code&gt;Table Join&lt;/code&gt;에 대해서 배우도록 한다. 이 때 &lt;code&gt;Table Join&lt;/code&gt;을 할 때의 고려사항은 두개의 서로 다른 조직이 서로 다른 테이블을 가지고 있는데, 그 두개의 데이터를 연동하는 것에 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bigquerytutorial-274406&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH bicycle_rentals AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      COUNT(starttime) as num_trips,
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      EXTRACT(DATE from starttime) as trip_date
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    FROM `bigquery-public-data`.new_york_citibike.citibike_trips GROUP BY trip_date
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    ),
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    rainy_days AS
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      date,
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      (MAX(prcp) &amp;gt; 5) AS rainy
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    FROM (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        wx.date AS date,
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        IF (wx.element = &amp;#39;PRCP&amp;#39;, wx.value/10, NULL) AS prcp
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      FROM
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;       `bigquery-public-data`.ghcn_d.ghcnd_2016 AS wx
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      WHERE
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        wx.id = &amp;#39;USW00094728&amp;#39;)
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    GROUP BY  date
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    ROUND(AVG(bk.num_trips)) AS num_trips,
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    wx.rainy
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM bicycle_rentals AS bk
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  JOIN rainy_days AS wx
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  ON bk.trip_date = wx.date
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  GROUP BY wx.rainy 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(temp, tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+
+
+|    |   num_trips | rainy   |
+|---:|------------:|:--------|
+|  0 |       39107 | False   |
+|  1 |       32052 | True    |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;위 결과값에 대해 조금 디테일하게 공부하는 시간을 가져보도록 한다.&lt;/li&gt;
+&lt;li&gt;우선, 위 &lt;code&gt;bicycle_rentals&lt;/code&gt;과 &lt;code&gt;rainy_days&lt;/code&gt;는 테이블 이기보다는 개념적으로 &lt;code&gt;From_Item&lt;/code&gt;이라고 생각하는 것이 좋다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rainy_days&lt;/code&gt;는 &lt;code&gt;Global Historical Climate Network (GHCN) observation&lt;/code&gt;에서 데이터를 추출하였고, &lt;code&gt;id=USW00094728&lt;/code&gt; 인 뉴욕의 한 지역만 추출하였다.&lt;/li&gt;
+&lt;li&gt;여기에서 하려는 것은 &lt;code&gt;날씨(외부데이터)&lt;/code&gt;를 통해서 &lt;code&gt;num_trips&lt;/code&gt;를 계산하는 것인데, &lt;code&gt;rainy&lt;/code&gt;가 있는 날과 없는 날을 구분해서 작성하는 것이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;step-1-with-bicycle_rentals&#34;&gt;Step 1. WITH bicycle_rentals&lt;/h2&gt;
+&lt;p&gt;우선 &lt;code&gt;bicycle_rentals&lt;/code&gt;을 통해서 결과값을 먼저 확인해보자. 코드는 위와 동일하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH bicycle_rentals AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    COUNT(starttime) as num_trips,
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    EXTRACT(DATE from starttime) as trip_date
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   GROUP BY trip_date
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;)
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;SELECT * from bicycle_rentals LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe() 
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;   num_trips   trip_date
+0      30344  2015-08-16
+1      38348  2016-03-31
+2      65517  2016-09-23
+3      26289  2018-04-16
+4       9028  2014-01-19
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;쿼리 결과값에 보는 것처럼, 각 &lt;code&gt;date (날짜)&lt;/code&gt;별로 &lt;code&gt;num_trips&lt;/code&gt;의 &lt;code&gt;count&lt;/code&gt;를 진행한 것이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;step-2-rainy-days&#34;&gt;Step 2. Rainy Days&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;이번에는 &lt;code&gt;Rainy Days&lt;/code&gt;의 쿼리를 짜본다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH rainy_days AS
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;   (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      date,
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      (MAX(prcp) &amp;gt; 5) AS rainy
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    FROM (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      SELECT
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        wx.date AS date,
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        IF (wx.element = &amp;#39;PRCP&amp;#39;, wx.value/10, NULL) AS prcp
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      FROM
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;       `bigquery-public-data`.ghcn_d.ghcnd_2016 AS wx
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      WHERE
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        wx.id = &amp;#39;USW00094728&amp;#39;)
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    GROUP BY  date
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT * from rainy_days LIMIT 5
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;         date  rainy
+0  2016-10-11  False
+1  2016-12-13  False
+2  2016-09-28  False
+3  2016-01-25  False
+4  2016-05-24  False
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Rainy Days&lt;/code&gt;의 쿼리 결과물은 위에서 보는 것처럼, &lt;code&gt;date&lt;/code&gt;와 &lt;code&gt;rainy&lt;/code&gt;로 조회가 된 것을 확인할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;step-3-join&#34;&gt;Step 3. Join&lt;/h2&gt;
+&lt;p&gt;우선 쿼리문을 보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-SQL&#34; data-lang=&#34;SQL&#34;&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt;
+    ROUND(&lt;span style=&#34;color:#66d9ef&#34;&gt;AVG&lt;/span&gt;(bk.num_trips)) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; num_trips,
+    wx.rainy
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; bicycle_rentals &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; bk
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;JOIN&lt;/span&gt; rainy_days &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; wx
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;ON&lt;/span&gt; wx.date &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bk.trip_date 
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;GROUP&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;BY&lt;/span&gt; wx.rainy 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;우선 기준점은 &lt;code&gt;bicycle_rentals&lt;/code&gt;가 된다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;JOIN&lt;/code&gt; 다음에는 두번째 테이블 &lt;code&gt;rainy_days&lt;/code&gt;가 따라오는데, 두 테이블 모두 &lt;code&gt;Alias&lt;/code&gt; 문법을 써서 글자수를 줄였다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ON&lt;/code&gt; 다음에는 날짜를 기준으로 합치게 된다.
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;bk.trip_date = wx.date&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rainy&lt;/code&gt;를 기준으로 &lt;code&gt;AVG&lt;/code&gt;와 함께 &lt;code&gt;GROUP BY&lt;/code&gt;를 사용하여 그룹화를 진행하여 테이블을 요약한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;결론&#34;&gt;결론&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;두개의 다른 테이블을 조인할 때 명심해야 하는 것 중 하나는 원 RAW 데이터는 그대로 살려야 하며, 가상의 임시 테이블을 만드는 것이 중요하다.&lt;/li&gt;
+&lt;li&gt;또한, 처음 데이터를 불러올 때 부터 &lt;code&gt;FROM&lt;/code&gt; 절에서 1차로 가공하는 것이 좋다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;이제 다음 포스트에서는 본격적인 3가지 경우의 수에 따른 쿼리문을 만들어 본다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;INNER JOIN&lt;/li&gt;
+&lt;li&gt;CROSS JOIN&lt;/li&gt;
+&lt;li&gt;OUTER JOIN&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, V. (2018). &amp;ldquo;Exploring a powerful SQL pattern: ARRAY_AGG, STRUCT and UNNEST&amp;rdquo; Retrieved from &lt;a href=&#34;https://www.freecodecamp.org/news/exploring-a-powerful-sql-pattern-array-agg-struct-and-unnest-b7dcc6263e36/&#34;&gt;https://www.freecodecamp.org/news/exploring-a-powerful-sql-pattern-array-agg-struct-and-unnest-b7dcc6263e36/&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Ch11 Powerful SQL Pattern</title>
