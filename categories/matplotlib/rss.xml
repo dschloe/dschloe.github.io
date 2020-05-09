@@ -5,10 +5,120 @@
     <description>Recent content in Matplotlib on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 30 Apr 2020 19:15:47 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 09 May 2020 15:15:47 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/categories/matplotlib/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>matplotlib 07 Polar Chart</title>
+      <link>https://chloevan.github.io/python/matplotlib/matplotlib_07_polar_chart/</link>
+      <pubDate>Sat, 09 May 2020 15:15:47 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/python/matplotlib/matplotlib_07_polar_chart/</guid>
+      <description>&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
+&lt;p&gt;제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.&lt;/p&gt;
+&lt;h2 id=&#34;i-matplotlib--seaborn&#34;&gt;I. Matplotlib &amp;amp; Seaborn&lt;/h2&gt;
+&lt;h3 id=&#34;1-기본-개요&#34;&gt;(1) 기본 개요&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;Matplotlib&lt;/code&gt;는 파이썬 표준 시각화 도구라고 불리워지며 파이썬 그래프의 기본 토대가 된다고 해도 무방하다. 객체지향 프로그래밍을 지원하므로 세세하게 꾸밀 수 있다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Seaborn&lt;/code&gt; 그래는 파이썬 시각화 도구의 고급 버전이다. &lt;code&gt;Matplotlib&lt;/code&gt;에 비해 비교적 단순한 인터페이스를 제공하기 때문에 초보자도 어렵지 않게 배울 수 있다.&lt;/p&gt;
+&lt;h3 id=&#34;2-matplotlib--seabon-설치&#34;&gt;(2) matplotlib &amp;amp; Seabon 설치&lt;/h3&gt;
+&lt;p&gt;설치방법은 윈도우 명령 프롬프트, MacOS, Linux 터미널에서 &lt;code&gt;pip install matplotlib&lt;/code&gt;입력하면 되지만, 간혹 여러 환경에 따라 달라질 수 있으니 관련 싸이트에서 확인하기를 바란다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;matplotlib 설치 방법: &lt;a href=&#34;https://matplotlib.org/users/installing.html&#34;&gt;https://matplotlib.org/users/installing.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;seaborn 설치 방법: &lt;a href=&#34;https://seaborn.pydata.org/installing.html&#34;&gt;https://seaborn.pydata.org/installing.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;ii-polar-chart&#34;&gt;II. Polar Chart&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;Polar Chart&lt;/code&gt;는 보통 &lt;code&gt;Spider Web Plot&lt;/code&gt;이라고 부르기도 한다. 이번에는 간단하게 데이터를 만들어서 그래프를 작성하도록 해보자.&lt;/p&gt;
+&lt;h3 id=&#34;1-데이터-생성&#34;&gt;(1) 데이터 생성&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;주요 과목별 중간고사 점수와 기말고사 점수 데이터를 만들었다고 가정해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 주요 과목&lt;/span&gt;
+subjects &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Korean Language&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Math&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Science&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;History&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Programming&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;English&amp;#34;&lt;/span&gt;]
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# grades&lt;/span&gt;
+mid_grades &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;95&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;90&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;92&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;85&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;70&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;95&lt;/span&gt;]
+final_grades &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;75&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;90&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;75&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;86&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;93&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;75&lt;/span&gt;]
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# theta&lt;/span&gt;
+theta &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;linspace(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;pi, len(mid_grades))
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(theta)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[0.         1.04719755 2.0943951  3.14159265 4.1887902  5.23598776
+ 6.28318531]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;위 코드에서 첫번째 값과 마지막 값이 동일한 것을 확인할 수 있다. 이유는 원 그래프를 그릴 때, 선이 이어지도록 해줘야 하기 때문에 &lt;code&gt;polar graph&lt;/code&gt;를 작성할 때는 데이터 셋에 주의해야 한다.&lt;/li&gt;
+&lt;li&gt;우선 &lt;code&gt;np.linspace&lt;/code&gt; 값은 축을 작성할 때, 간격 만들기에 사용되는 함수이다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;theta&lt;/code&gt; 값의 역할은 x축의 역할을 한다. 즉, &lt;code&gt;plt.plot(x, y)&lt;/code&gt; 형태로 작성할 때, &lt;code&gt;x&lt;/code&gt;값 대신 대응하여 &lt;code&gt;theta&lt;/code&gt;값을 입력해주면 된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-spider-plot-초기화&#34;&gt;(2) Spider Plot 초기화&lt;/h3&gt;
+&lt;p&gt;첫번째로 해야할 작업은 &lt;code&gt;Spider Plot&lt;/code&gt;을 생성하는 것이다. 우선 코드를 확인해보자.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; np
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
+
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;figure(figsize &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;))
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;subplot(polar&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;True)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;&amp;lt;matplotlib.axes._subplots.PolarAxesSubplot at 0x7f58477a7cf8&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/matplotlib/matplotlib_07_polar_chart/output_8_1.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Spider Plot&lt;/code&gt; 그래프를 그리기 위해서는 &lt;code&gt;plt.subplot()&lt;/code&gt;안에 인수 &lt;code&gt;polar=True&lt;/code&gt;값을 입력해주면 된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-격자-생성&#34;&gt;(3) 격자 생성&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;우선 코드를 작성한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; np
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
+
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;figure(figsize &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;))
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;subplot(polar&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;True)
+
+(lines, labels) &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;thetagrids(range(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;360&lt;/span&gt;, int(&lt;span style=&#34;color:#ae81ff&#34;&gt;360&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;len(subjects))), (subjects))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/matplotlib/matplotlib_07_polar_chart/output_11_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;입력값을 변수 두개에 저장하는 코드를 진행한다. (&lt;code&gt;lines&lt;/code&gt;, &lt;code&gt;labels&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.thetagrids.html&#34;&gt;plt.thetagrids&lt;/a&gt;는 &lt;code&gt;polar&lt;/code&gt; 그래프 작성에 필요한 &lt;code&gt;theta gridlines&lt;/code&gt;을 획득하기 위한 것이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;(lines, labels) &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;thetagrids(range(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;360&lt;/span&gt;, int(&lt;span style=&#34;color:#ae81ff&#34;&gt;360&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;len(subjects))), (subjects))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;그래프 특성상, 격자(&lt;code&gt;line&lt;/code&gt;)와 함께 &lt;code&gt;lables&lt;/code&gt;가 동시에 필요하기 때문에 &lt;code&gt;입력 값을 변수 두 개에 저장하는&lt;/code&gt; 형태로 작성하였다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-방사형-그래프-완성&#34;&gt;(4) 방사형 그래프 완성&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;우선 코드부터 확인한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; np
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
+
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;figure(figsize &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;))
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;subplot(polar&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;True)
+
+(lines, labels) &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;thetagrids(range(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;360&lt;/span&gt;, int(&lt;span style=&#34;color:#ae81ff&#34;&gt;360&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;len(subjects))), (subjects))
+
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(theta, mid_grades)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fill(theta, mid_grades, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;, alpha&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.2&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(theta, final_grades)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;legend(labels&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Mid-Term Grades&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Final-Term Grades&amp;#39;&lt;/span&gt;))
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;title(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Mid Vs. Final grades by Subject&amp;#34;&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;show()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/matplotlib/matplotlib_07_polar_chart/output_14_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;plot.fill&lt;/code&gt;을 작성한 이유는, &lt;code&gt;mid_grades&lt;/code&gt;의 영역을 표시하기 위함이다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&#39;b&#39;&lt;/code&gt;는 파란색을 뜻하는 &lt;code&gt;blue&lt;/code&gt;를 의미한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;alpha&lt;/code&gt;는 투명도를 의미하며 0~1 사이의 값이 온다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iii-실습파일&#34;&gt;III. 실습파일&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;구글코랩에서 빠르게 실습도 할 수 있습니다. &lt;a href=&#34;https://colab.research.google.com/github/chloevan/python_visualisation/blob/master/matplotlib/matplotlib_07_polar_chart.ipynb&#34;&gt;실습&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iv-reference&#34;&gt;IV. Reference&lt;/h2&gt;
+&lt;p&gt;Mukhiya, Uuresh Kumar. Ahmed Usman. Hands-on Exploratory Data Analysis With Python: Perform EDA Techniques to understand, Summarize, and Investigate Your Data. Packt publishing limited, 2020.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>matplotlib 06 Table Chart</title>
