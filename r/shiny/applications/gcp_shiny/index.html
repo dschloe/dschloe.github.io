@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Shiny App Deployment Using GCP - Data Science | ChloEvan</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+	<meta property="og:title" content="Shiny App Deployment Using GCP" />
+<meta property="og:description" content="I. 개요 Google Data Studio는 놀랍도록 유연한 도구로서 마케팅 대행사 중 Google Analytics를 활용한 업체들은 대부분 항상 사용합니다. 때로는 유연성이 더 필요할 때 R &lsquo;s Shiny 패키지를 사용하여 데이터 시각화 / 대시 보드 앱을 만드는 것이 매우 쉽습니다. 이 옵션을 사용하면 모든 소스의 데이터를 예측 모델링과 함께 사용할 수 있는 장점이 있습니다.
+이 블로그 게시물은 3 부분으로 나누어져 있습니다.
+ 먼저 Google Cloud Virtual Machine (VM)을 설정하고 웹 액세스를 허용하도록 방화벽 규칙을 구성합니다." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chloevan.github.io/r/shiny/applications/gcp_shiny/" />
+<meta property="article:published_time" content="2020-05-10T19:47:18+09:00" />
+<meta property="article:modified_time" content="2020-05-10T19:47:18+09:00" />
+
+	<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Shiny App Deployment Using GCP"/>
+<meta name="twitter:description" content="I. 개요 Google Data Studio는 놀랍도록 유연한 도구로서 마케팅 대행사 중 Google Analytics를 활용한 업체들은 대부분 항상 사용합니다. 때로는 유연성이 더 필요할 때 R &lsquo;s Shiny 패키지를 사용하여 데이터 시각화 / 대시 보드 앱을 만드는 것이 매우 쉽습니다. 이 옵션을 사용하면 모든 소스의 데이터를 예측 모델링과 함께 사용할 수 있는 장점이 있습니다.
+이 블로그 게시물은 3 부분으로 나누어져 있습니다.
+ 먼저 Google Cloud Virtual Machine (VM)을 설정하고 웹 액세스를 허용하도록 방화벽 규칙을 구성합니다."/>
+
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+	<meta name="naver-site-verification" content="589373cb2d4668f329792265c1fdbec3a72ec17d" />
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container">
+		<div class="logo">
+			<a class="logo__link" href="/" title="Data Science | ChloEvan" rel="home">
+				<div class="logo__title">Data Science | ChloEvan</div>
+				<div class="logo__tagline">Love your beloved one forever</div>
+			</a>
+		</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/gcp/">
+				
+				<span class="menu__text">GCP</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/python/">
+				
+				<span class="menu__text">Python</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/r/">
+				
+				<span class="menu__text">R</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/settings/">
+				
+				<span class="menu__text">settings</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About ChloEvan</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">Shiny App Deployment Using GCP</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+	<time class="meta__text" datetime="2020-05-10T19:47:18&#43;09:00">2020-05-10</time>
+</div>
+
+<div class="meta__item-categories meta__item">
+	<svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg>
+	<span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/shiny/" rel="category">Shiny</a>, <a class="meta__link" href="/categories/deployment/" rel="category">Deployment</a>, <a class="meta__link" href="/categories/corona-shiny-app/" rel="category">Corona Shiny App</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#i-개요">I. 개요</a></li>
+    <li><a href="#ii-가상환경-설치">II. 가상환경 설치</a>
+      <ul>
+        <li><a href="#1-구글-클라우드-platform-계정">(1) 구글 클라우드 Platform 계정</a></li>
+        <li><a href="#2-가상환경-설정하기">(2) 가상환경 설정하기</a></li>
+      </ul>
+    </li>
+    <li><a href="#iii-가상환경에-r과-rstudio-설치진행하기">III. 가상환경에 R과 RStudio 설치진행하기</a>
+      <ul>
+        <li><a href="#1단계-소프트웨어-업데이트하기">1단계: 소프트웨어 업데이트하기</a></li>
+        <li><a href="#2단계-sourceslist-파일에-default-list-설치하기">2단계: Sources.list 파일에 Default List 설치하기</a></li>
+        <li><a href="#3단계-r-설치하기">3단계: R 설치하기</a></li>
+        <li><a href="#4단계-r-패키지-설치하기">4단계: R 패키지 설치하기</a></li>
+        <li><a href="#5단계-r-shiny-설치하기">5단계: R Shiny 설치하기</a></li>
+        <li><a href="#6단계-r-studio-서버-설치하기">6단계: R Studio 서버 설치하기</a></li>
+        <li><a href="#7단계-r-shiny-서버-설치하기">7단계: R Shiny 서버 설치하기</a></li>
+      </ul>
+    </li>
+    <li><a href="#iv-shiny-app-배포">IV. Shiny App 배포</a>
+      <ul>
+        <li><a href="#1-uir">(1) ui.R</a></li>
+        <li><a href="#2-serverr">(2) server.R</a></li>
+      </ul>
+    </li>
+    <li><a href="#v-다른-사용자도-볼수-있도록-하고-싶다면">V. 다른 사용자도 볼수 있도록 하고 싶다면?</a>
+      <ul>
+        <li><a href="#1-작업-파일을-ui-파일에-붙이기">(1) 작업 파일을 ui 파일에 붙이기</a></li>
+        <li><a href="#2-웹주소-확인하기">(2) 웹주소 확인하기</a></li>
+      </ul>
+    </li>
+    <li><a href="#v-reference">V. Reference</a></li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="i-개요">I. 개요</h2>
+<p>Google Data Studio는 놀랍도록 유연한 도구로서 마케팅 대행사 중 Google Analytics를 활용한 업체들은 대부분 항상 사용합니다. 때로는 유연성이 더 필요할 때 R &lsquo;s Shiny 패키지를 사용하여 데이터 시각화 / 대시 보드 앱을 만드는 것이 매우 쉽습니다. 이 옵션을 사용하면 모든 소스의 데이터를 예측 모델링과 함께 사용할 수 있는 장점이 있습니다.</p>
+<p>이 블로그 게시물은 3 부분으로 나누어져 있습니다.</p>
+<ol>
+<li>먼저 Google Cloud Virtual Machine (VM)을 설정하고 웹 액세스를 허용하도록 방화벽 규칙을 구성합니다.</li>
+<li>R, RStudio 및 Shiny를 설치합니다.</li>
+<li>마지막으로 우리는 Shiny 앱을 배포하려고 합니다.</li>
+</ol>
+<h2 id="ii-가상환경-설치">II. 가상환경 설치</h2>
+<p>먼저 필자의 로컬 컴퓨터 환경은 다음과 같습니다.</p>
+<ul>
+<li>MacBook Air (13-inch, 2017)</li>
+<li>MacOS Mojave Version 10.14.4</li>
+<li>Processor 2.2 GHZ Intel Core i7</li>
+<li>Memory 8 GB 1600 MHZ DDR3</li>
+</ul>
+<p>2017년 판매기준, 맥북에서 가장 저 사양의 컴퓨터라고 보시면 됩니다. 사실 큰 의미는 없습니다. 인터넷으로 구글 클라우드에 접속하면 되는 것이기 때문입니다. 물론 gcloud SDK를 설치해서 한다면 OS 버전 확인은 필수입니다.</p>
+<h3 id="1-구글-클라우드-platform-계정">(1) 구글 클라우드 Platform 계정</h3>
+<p>먼저 Google Cloud Platform 계정이 있어야하며 프로젝트를 설정해야합니다. 자세한 사항은 링크를 참고하여 주시기 바랍니다. 링크 - <a href="https://cloud.google.com/">구글 클라우드 플랫폼</a></p>
+<h3 id="2-가상환경-설정하기">(2) 가상환경 설정하기</h3>
+<p>보통 gcloud SDK를 활용하여 가상환경을 만들기도 합니다만, Terminal 환경이 익숙하지 않은 분들에게는 일단은 추천하지 않습니다. SDK를 활용하여 도전하고 싶다면 다음 링크를 참고하여 주시기 바랍니다. 링크 - <a href="https://cloud.google.com/sdk/install">Google Cloud SDK</a></p>
+<p>구글 클라우드 환경에서 간단한 클릭으로 가상환경 설정하기를 진행하려고 합니다.</p>
+<h4 id="1단계-vm-클릭하기">1단계: VM 클릭하기</h4>
+<p><img src="/img/shiny/gcp_shiny/rshiny_1.png" alt=""></p>
+<h4 id="2단계-vm-환경-설정하기">2단계: VM 환경 설정하기</h4>
+<p>설정은 여러 방식으로 할 수 있습니다만, 전 기본만 사용해서 세팅하도록 하겠습니다. 제가 설정한 방법은 아래와 같습니다.</p>
+<ul>
+<li>Name: rshinydemo</li>
+<li>Region: asia-east1 (Taiwan)</li>
+<li>Zone: asia-east1-c</li>
+<li>Machine Type: small (1-shared vCPU) / 1.7 GB memory</li>
+<li>Boot Disk: Ubuntu 18.04 LTS</li>
+<li>Identify and API Access: Allow full access to all Cloud APIs</li>
+<li>Firewall: Allow HTTP traffic &amp; Allow HTTPs traffic</li>
+</ul>
+<p>위 내용을 아래 화면에서 입력 또는 클릭하면 됩니다.</p>
+<p><img src="/img/shiny/gcp_shiny/rshiny_2.png" alt=""></p>
+<p>최종결과값이 아래와 같이 나오면 기본 환경 설정은 된 것입니다.</p>
+<p><img src="/img/shiny/gcp_shiny/rshiny_2.png" alt=""></p>
+<h4 id="3단계-고정-ip-설정하기">3단계: 고정 IP 설정하기</h4>
+<p>고정 외부 IP에 접속하기 위해 고정 IP를 설정하는 방법을 진행해야 합니다. VPC Network에서 External <code>IP Addresses</code>를 클릭후 <code>Ephemeral</code>를 <code>Static</code>를 바꿔 줍니다. 그러면, 고정 IP 등록에 관한 팝업창이 활성화가 되는데, 이 때 적절한 이름으로 등록합니다. 아래 화면처럼 바꿔줍니다.
+<img src="/img/shiny/gcp_shiny/external_ip.png" alt="Alt text"></p>
+<h4 id="4단계-apache-웹서버로-외부-접속-되는지-확인하기">4단계: Apache 웹서버로 외부 접속 되는지 확인하기</h4>
+<p>Cloud Shell를 연 다음, 간단하게 아래 코드를 입력하여 웹서버가 정상적으로 열리는지 확인합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo apt-get update
+$ sudo apt-get install apache2
+$ sudo systemctl status apache2
+<span style="color:#960050;background-color:#1e0010">●</span> apache2.service - The Apache HTTP Server
+...
+</code></pre></div><p>여기까지 진행 후, 위 초록색 색상의 <code>apache2.service - The Apache HTTP Server</code> 보이면 서버는 현재 작동중이라는 뜻입니다.</p>
+<p>마지막으로 외부 IP를 활용하여, 확인하겠습니다.</p>
+<p><img src="/img/shiny/gcp_shiny/apache2.png" alt="Alt text"></p>
+<h2 id="iii-가상환경에-r과-rstudio-설치진행하기">III. 가상환경에 R과 RStudio 설치진행하기</h2>
+<p>아래 그림 상단 오른쪽에 Activate Cloud Shell을 클릭하면 가상환경 위 Terminal 환경이 나올겁니다. 여기에서 기본적인 R과 RStudio를 가상환경에서 설치 진행하도록 하겠습니다.</p>
+<p><img src="/img/shiny/gcp_shiny/rshiny_6.png" alt="Alt text"></p>
+<p>아래 그림에서 검은색 화면이 Cloud Shell 화면입니다.</p>
+<p><img src="/img/shiny/gcp_shiny/rshiny_7.png" alt="Alt text"></p>
+<p>이제부터 Terminal 소스 코드를 입력하겠습니다.</p>
+<h3 id="1단계-소프트웨어-업데이트하기">1단계: 소프트웨어 업데이트하기</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">sudo apt-get update 
+sudo apt-get upgrade
+</code></pre></div><p>만약, 중간에  **Do you want to continue? [Y/N]**라는 질문이 나오면 <strong>Y</strong>라고 답하고 계속 진행합니다.</p>
+<p>성공적으로 끝나면 R 저장소를 sources.list 파일에 추가해야 우분투가 응용 프로그램을 가져올 위치를 알 수 있습니다. 아래의 코드 청크는 저장소 목록에 한 줄을 추가 한 다음 우분투 서버가 R을 다운로드하고 기존 패키지를 업데이트하며 r-base 및 r-base dev를 설치하는 데 필요한 키를 전달합니다.</p>
+<h3 id="2단계-sourceslist-파일에-default-list-설치하기">2단계: Sources.list 파일에 Default List 설치하기</h3>
+<p><code>cd /etc/apt/sources.list</code> 파일을 열어서 아래 코드를 추가합니다. (만약에 없을 경우)</p>
+<pre><code>$ sudo apt-get install emacs ## &lt;- 편집 에디터 설치입니다. (옵션)
+$ sudo emacs sources.list
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">deb http<span style="color:#960050;background-color:#1e0010">:</span>//archive.ubuntu.com/ubuntu bionic universe multiverse
+deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//archive.ubuntu.com/ubuntu bionic universe multiverse
+
+deb http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic universe
+deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic universe
+deb http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic-updates universe
+deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic-updates universe
+
+deb http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic multiverse
+deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic multiverse
+deb http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic-updates multiverse
+deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic-updates multiverse
+
+deb http<span style="color:#960050;background-color:#1e0010">:</span>//security.ubuntu.com/ubuntu bionic-security universe
+deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//security.ubuntu.com/ubuntu bionic-security universe
+deb http<span style="color:#960050;background-color:#1e0010">:</span>//security.ubuntu.com/ubuntu bionic-security multiverse
+deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//security.ubuntu.com/ubuntu bionic-security multiverse
+</code></pre></div><h3 id="3단계-r-설치하기">3단계: R 설치하기</h3>
+<p><code>cd /etc/apt/sources.list</code> 파일을 열어서 아래 코드를 추가합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">deb http<span style="color:#960050;background-color:#1e0010">:</span>//cran.rstudio.com/bin/linux/ubuntu xenial/
+</code></pre></div><p>그 다음, CRAN Network와 연결 할 수 있는 Key ID를 입력합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+$ sudo apt install software-properties-common
+$ sudo apt install apt-transport-https
+$ sudo apt update
+$ sudo apt install r-base
+</code></pre></div><p>만약에 <code>depends: r-commended</code>와 같은 에러가 발생이 되면 다음과 같이 수정을 합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo apt-get install update-manager-core
+$ sudo <span style="color:#66d9ef">do</span>-release-upgrade
+</code></pre></div><p>위 코드에서 만약 에러가 나면 아래 코드에서 <code>Prompt=normal</code>로 되어 있는지 확인합니다. 만약 <code>lts</code>로 등록되어 있으면, <code>normal</code>로 수정 후 다시 <code>sudo do-release-upgrade</code> 명령어를 입력하고 ENTER를 수행합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ cat /etc/update-manager/release-upgrades
+</code></pre></div><h3 id="4단계-r-패키지-설치하기">4단계: R 패키지 설치하기</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo apt-get install libcurl4-openssl-dev libssl-dev libxml2-dev
+</code></pre></div><h3 id="5단계-r-shiny-설치하기">5단계: R Shiny 설치하기</h3>
+<h4 id="첫번째-방법-r-프로그램에서-r-shiny-설치하기">첫번째 방법: R 프로그램에서 R Shiny 설치하기</h4>
+<p>먼저 R을 실행하여 정상적으로 프로그램이 열리는지 확인합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo R
+</code></pre></div><p>다음부터는 R 스크립트를 활용하여 몇몇 패키지를 설치합니다. (설치시간 오래 걸립니다!)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">install.packages</span>(<span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#39;shiny&#39;</span>, <span style="color:#e6db74">&#39;rmarkdown&#39;</span>, <span style="color:#e6db74">&#39;dplyr&#39;</span>))
+</code></pre></div><p>패키지 설치 후 <strong>q()</strong> 입력 후 작업공간을 저장합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">(save workspace<span style="color:#f92672">?</span> y for yes.)
+</code></pre></div><h4 id="두번째-방법-터미널에서-r-shiny-설치하기">두번째 방법: 터미널에서 R Shiny 설치하기</h4>
+<p><code>install.packages()</code> 함수를 활용하여 shiny 패키지를 설치합니다. (설치시간 오래 걸립니다!)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo su - \
+-c <span style="color:#e6db74">&#34;R -e \&#34;</span>install.packages(<span style="color:#e6db74">&#39;shiny&#39;</span>, repos=<span style="color:#e6db74">&#39;https://cran.rstudio.com/&#39;</span>)\<span style="color:#e6db74">&#34;&#34;</span>
+</code></pre></div><p>어떤 방법을 하던 큰 상관은 없습니다.</p>
+<h3 id="6단계-r-studio-서버-설치하기">6단계: R Studio 서버 설치하기</h3>
+<p>RStudio 싸이트에서 직접 참고하였습니다. (Ubuntu 18+)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo apt-get install gdebi-core
+$ sudo wget https<span style="color:#960050;background-color:#1e0010">:</span>//download2.rstudio.org/server/bionic/amd64/rstudio-server-1.2.1335-amd64.deb
+$ sudo gdebi rstudio-server-1.2.1335-amd64.deb
+</code></pre></div><p><img src="/img/shiny/gcp_shiny/rstudio-server.png" alt="Alt text"></p>
+<p>위와 같은 형태가 나오면 성공입니다. 사용자(evan)를 추가하여 실제로 접속하도록 하겠습니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo adduser evan
+</code></pre></div><p>http://외부IP:8787를 URL에 접속하면 RStudio Server가 접속이 될 것입니다.
+<img src="/img/shiny/gcp_shiny/rserver.png" alt="Alt text"></p>
+<p>방금전에 만든 사용자 ID와 비번을 입력하여 접속합니다. 제대로 접속되었는지 확인합니다.
+<img src="/img/shiny/gcp_shiny/rserver_main.png" alt="Alt text"></p>
+<h3 id="7단계-r-shiny-서버-설치하기">7단계: R Shiny 서버 설치하기</h3>
+<p>다시 터미널로 가서 아래와 같은 명령어를 입력합니다. 마찬가지로 R Shiny Server 홈페이지에서 직접 참고하였습니다.
+참고: <a href="https://www.rstudio.com/products/shiny/download-server/">https://www.rstudio.com/products/shiny/download-server/</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo wget https<span style="color:#960050;background-color:#1e0010">:</span>//download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-1.5.9.923-amd64.deb
+$ sudo gdebi shiny-server-1.5.9.923-amd64.deb
+$ sudo systemctl status shiny-server.service
+</code></pre></div><p>http://외부IP:3838를 URL에 접속하면 RShiny Server가 접속이 될 것입니다.
+<img src="/img/shiny/gcp_shiny/shinyserveraccess.png" alt="Alt text"></p>
+<p>위와 같이 나왔다면 서버는 정상적으로 작동중입니다.</p>
+<h2 id="iv-shiny-app-배포">IV. Shiny App 배포</h2>
+<p>여기에서는 Shiny App에 관한 내용은 대해서는 생략하겠습니다.</p>
+<h3 id="1-uir">(1) ui.R</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(shiny)
+
+<span style="color:#75715e"># Define UI for application that draws a histogram</span>
+<span style="color:#a6e22e">shinyUI</span>(<span style="color:#a6e22e">fluidPage</span>(
+
+    <span style="color:#75715e"># Application title</span>
+    <span style="color:#a6e22e">titlePanel</span>(<span style="color:#e6db74">&#34;Old Faithful Geyser Data&#34;</span>),
+
+    <span style="color:#75715e"># Sidebar with a slider input for number of bins</span>
+    <span style="color:#a6e22e">sidebarLayout</span>(
+        <span style="color:#a6e22e">sidebarPanel</span>(
+            <span style="color:#a6e22e">sliderInput</span>(<span style="color:#e6db74">&#34;bins&#34;</span>,
+                        <span style="color:#e6db74">&#34;Number of bins:&#34;</span>,
+                        min <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
+                        max <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>,
+                        value <span style="color:#f92672">=</span> <span style="color:#ae81ff">30</span>)
+        ),
+
+        <span style="color:#75715e"># Show a plot of the generated distribution</span>
+        <span style="color:#a6e22e">mainPanel</span>(
+            <span style="color:#a6e22e">plotOutput</span>(<span style="color:#e6db74">&#34;distPlot&#34;</span>)
+        )
+    )
+))
+</code></pre></div><h3 id="2-serverr">(2) server.R</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(shiny)
+
+<span style="color:#75715e"># Define server logic required to draw a histogram</span>
+<span style="color:#a6e22e">shinyServer</span>(<span style="color:#a6e22e">function</span>(input, output) {
+
+    output<span style="color:#f92672">$</span>distPlot <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">renderPlot</span>({
+
+        <span style="color:#75715e"># generate bins based on input$bins from ui.R</span>
+        x    <span style="color:#f92672">&lt;-</span> faithful[, <span style="color:#ae81ff">2</span>]
+        bins <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">seq</span>(<span style="color:#a6e22e">min</span>(x), <span style="color:#a6e22e">max</span>(x), length.out <span style="color:#f92672">=</span> input<span style="color:#f92672">$</span>bins <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+
+        <span style="color:#75715e"># draw the histogram with the specified number of bins</span>
+        <span style="color:#a6e22e">hist</span>(x, breaks <span style="color:#f92672">=</span> bins, col <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;darkgray&#39;</span>, border <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;white&#39;</span>)
+
+    })
+
+})
+</code></pre></div><p>위와 같이 두개의 파일을 생성 후, 마지막으로 <strong>Run App</strong>을 실행합니다.
+<img src="/img/shiny/gcp_shiny/runApp.png" alt="Alt text"></p>
+<p>아래 주소에서도 확인할 수 있습니다.
+<img src="/img/shiny/gcp_shiny/runApp_activation.png" alt="Alt text"></p>
+<h2 id="v-다른-사용자도-볼수-있도록-하고-싶다면">V. 다른 사용자도 볼수 있도록 하고 싶다면?</h2>
+<h3 id="1-작업-파일을-ui-파일에-붙이기">(1) 작업 파일을 ui 파일에 붙이기</h3>
+<p>기본값으로, Shiny Server 는 <code>/srv/shiny-server/</code>를 싸이트 디렉토리로 사용합니다. 따라서, R 작업파일 디렉토리를 <code>/srv/shiny-server/</code>에 복사하도록 합니다.</p>
+<p>제 경우는 <code>/home/evan/R/shiny/sample/</code>에 <code>ui.R</code> 파일과 <code>server.R</code>파일이 있기 때문에 아래와 같이 명령어를 통해 파일을 넣어놨습니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo cp -r evan/R/shiny/sample/ /srv/shiny-server/
+</code></pre></div><h3 id="2-웹주소-확인하기">(2) 웹주소 확인하기</h3>
+<p>브라우저 주소 입력창에 <strong>http://외부IP주소:3838/sample</strong> 입력합니다. <strong>sample</strong> 폴더명과 똑같다고 생각하면 됩니다.
+<img src="/img/shiny/gcp_shiny/sample.png" alt="Alt text"></p>
+<h2 id="v-reference">V. Reference</h2>
+<p>조대협 . (2016, May 30). 구글 클라우드 생성하기 - VM 생성과 접속. Retrieved from <a href="https://bcho.tistory.com/1107">https://bcho.tistory.com/1107</a></p>
+<p>Download RStudio Server. (n.d.). Retrieved from <a href="https://www.rstudio.com/products/rstudio/download-server/">https://www.rstudio.com/products/rstudio/download-server/</a></p>
+<p>How to Deploy Interactive R Apps with Shiny Server. (2018, December 18). Retrieved from <a href="https://www.linode.com/docs/development/r/how-to-deploy-rshiny-server-on-ubuntu-and-debian/">https://www.linode.com/docs/development/r/how-to-deploy-rshiny-server-on-ubuntu-and-debian/</a></p>
+<p>Installation of R 3.5 on Ubuntu 18.04 LTS and tips for spatial packages. (2018, August 10). Retrieved from <a href="https://www.r-bloggers.com/installation-of-r-3-5-on-ubuntu-18-04-lts-and-tips-for-spatial-packages/">https://www.r-bloggers.com/installation-of-r-3-5-on-ubuntu-18-04-lts-and-tips-for-spatial-packages/</a></p>
+<p>Introduction: Server documentation. (n.d.). Retrieved from <a href="https://help.ubuntu.com/lts/serverguide/configuration.html.en">https://help.ubuntu.com/lts/serverguide/configuration.html.en</a></p>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item"><a class="tags__link btn" href="/tags/development/" rel="tag">Development</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/deployment/" rel="tag">Deployment</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/r/" rel="tag">R</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/shiny/" rel="tag">Shiny</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/shiny-dashboard/" rel="tag">Shiny Dashboard</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/shiny-project/" rel="tag">Shiny Project</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/google-cloud/" rel="tag">Google Cloud</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/shiny-app-%EB%B0%B0%ED%8F%AC/" rel="tag">Shiny App 배포</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/%EC%83%A4%EC%9D%B4%EB%8B%88-%EC%95%B1-%EB%B0%B0%ED%8F%AC/" rel="tag">샤이니 앱 배포</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/dashboard/" rel="tag">Dashboard</a></li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="ChloeEvan avatar" src="/img/couple.jpg" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name">About ChloeEvan</span>
+	</div>
+	<div class="authorbox__description">
+		ChloEvan is just one who are loving Chloe &amp; Evan and analyzing Data things. ChloeEvan&#39;s dream is to make the world better through loving Chloe &amp; Evan and working with Data
+	</div>
+</div>
+
+<nav class="post-nav flex">
+	<div class="post-nav__item post-nav__item--prev">
+		<a class="post-nav__link" href="/r/basics/dataframe/" rel="prev"><span class="post-nav__caption">«&thinsp;Previous</span><p class="post-nav__post-title">Basic Objects - Dataframe</p></a>
+	</div>
+</nav>
+
+<section class="comments">
+	<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-chloevan-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH..." value="" name="q" aria-label="SEARCH...">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://chloevan.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/r/shiny/applications/gcp_shiny/">Shiny App Deployment Using GCP</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/matplotlib/matplotlib_07_polar_chart/">matplotlib 07 Polar Chart</a></li>
+			<li class="widget__item"><a class="widget__link" href="/settings/daily_coding/">Github에 Daily 코딩 설정</a></li>
+			<li class="widget__item"><a class="widget__link" href="/gcp/bigquery/02_basics/ch13_inner_join/">Ch13 Inner Join</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/rpa/automate_excel_reporting_with_pandas/">Automate Excel Reporting With Pandas</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">bar chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basics/">Basics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bupar/">bupaR</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/corona-shiny-app/">Corona Shiny App</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-handling/">Data Handling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualization/">Data Visualization</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deployment/">Deployment</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development/">Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ggplot2/">ggplot2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github/">Github</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">line grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/missing-values/">Missing Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/new-packages/">New Packages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pivot-table/">pivot table</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-basic/">Python Basic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/">R 마크다운</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rpa/">RPA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0/">Tensorflow 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0-tutorial/">Tensorflow 2.0 Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tutorial/">Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/">구글 클라우드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/">기초통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/">데이터 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">데이터 시각화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/">막대 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B3%B4%EA%B3%A0%EC%84%9C-%EC%9E%90%EB%8F%99%ED%99%94/">보고서 자동화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/">빅쿼리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/">선 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/">텐서플로 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/">텐서플로 2.0 튜토리얼</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/">프로세스 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/">피벗 테이블</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/auto-encoder/" title="Auto Encoder">Auto Encoder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="bar chart">bar chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basics/" title="Basics">Basics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery with Python">BigQuery with Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery with R">BigQuery with R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bupar/" title="bupaR">bupaR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/clustering/" title="Clustering">Clustering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dashboard/" title="Dashboard">Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-handling/" title="Data Handling">Data Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualization/" title="Data Visualization">Data Visualization</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dataframe/" title="DataFrame">DataFrame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deployment/" title="Deployment">Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="Development">Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="dplyr">dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enumerate/" title="enumerate">enumerate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="filter">filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/for-loop/" title="for-loop">for-loop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gghistostats/" title="gghistostats">gghistostats</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ggplot2/" title="ggplot2">ggplot2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github/" title="Github">Github</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="GRU 레이어">GRU 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="gt">gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/histogram/" title="Histogram">Histogram</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="iterrows">iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/join/" title="JOIN">JOIN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="leaflet">leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="line grpah">line grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="lists">lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-%EC%84%A4%EC%A0%95/" title="Mathjax 설정">Mathjax 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/new-packages/" title="New Packages">New Packages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pivot-table/" title="pivot table">pivot table</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="plotly">plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/polar-chart/" title="Polar Chart">Polar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/productive-box/" title="productive-box">productive-box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-basic/" title="Python Basic">Python Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-excel/" title="Python Excel">Python Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rpa/" title="RPA">RPA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-app-%EB%B0%B0%ED%8F%AC/" title="Shiny App 배포">Shiny App 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="shinydashboard">shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="sort_values">sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/super-resolution/" title="Super Resolution">Super Resolution</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0/" title="Tensorflow 2.0">Tensorflow 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0-tutorial/" title="Tensorflow 2.0 Tutorial">Tensorflow 2.0 Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tutorial/" title="Tutorial">Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="vcrs">vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%8D%EC%A0%95-%EB%B6%80%EC%A0%95-%EA%B0%90%EC%84%B1%EB%B6%84%EC%84%9D/" title="긍정, 부정 감성분석">긍정, 부정 감성분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C/" title="깃허브">깃허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="깃허브 환경설정">깃허브 환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="데이터 전처리">데이터 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/" title="막대 그래프">막대 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B3%B4%EC%8A%A4%ED%84%B4-%EC%A3%BC%ED%83%9D-%EA%B0%80%EA%B2%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%B8%ED%8A%B8/" title="보스턴 주택 가격 데이터세트">보스턴 주택 가격 데이터세트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B6%84%EB%A5%98/" title="분류">분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" title="빅쿼리">빅쿼리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-r/" title="빅쿼리 R">빅쿼리 R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%EA%B8%B0%EB%B3%B8/" title="빅쿼리 기본">빅쿼리 기본</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%ED%8C%8C%EC%9D%B4%EC%8D%AC/" title="빅쿼리 파이썬">빅쿼리 파이썬</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%B0%EC%A0%90%EB%8F%84/" title="산점도">산점도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%83%A4%EC%9D%B4%EB%8B%88-%EC%95%B1-%EB%B0%B0%ED%8F%AC/" title="샤이니 앱 배포">샤이니 앱 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" title="선 그래프">선 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/" title="선형회귀">선형회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%88%9C%ED%99%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="순환 신경망">순환 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" title="시각화 문법">시각화 문법</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" title="시그노이드">시그노이드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%A0%EA%B2%BD-%EC%8A%A4%ED%83%80%EC%9D%BC-%EC%A0%84%EC%9D%B4/" title="신경 스타일 전이">신경 스타일 전이</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%98%A4%ED%86%A0%EC%9D%B8%EC%BD%94%EB%8D%94/" title="오토인코더">오토인코더</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" title="이항분류">이항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%84%EB%B2%A0%EB%94%A9-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="임베딩 레이어">임베딩 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%83%9D%EC%84%B1/" title="자연어 생성">자연어 생성</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/" title="전이 학습">전이 학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/" title="지도학습">지도학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B4%88%ED%95%B4%EC%83%81%EB%8F%84/" title="초해상도">초해상도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BB%A8%EB%B3%BC%EB%A3%A8%EC%85%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="컨볼루션 신경망">컨볼루션 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="코로나 대시보드">코로나 대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%8B%A4%EB%A3%A8%EA%B8%B0/" title="테이블 다루기">테이블 다루기</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" title="텐서플로 2.0">텐서플로 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" title="텐서플로 2.0 튜토리얼">텐서플로 2.0 튜토리얼</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-%ED%97%88%EB%B8%8C/" title="텐서플로 허브">텐서플로 허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%97%91%EC%85%80/" title="판다스 엑셀">판다스 엑셀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" title="판다스 자료구조">판다스 자료구조</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="프로세스 마이닝">프로세스 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/" title="프로세스 분석">프로세스 분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/" title="피벗 테이블">피벗 테이블</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80-%ED%8F%B0%ED%8A%B8-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0/" title="한글 폰트 오류 해결">한글 폰트 오류 해결</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="환경설정">환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9A%8C%EA%B7%80%EB%AA%A8%ED%98%95/" title="회귀모형">회귀모형</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9C%B4%EA%B3%A0/" title="휴고">휴고</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9E%88%EC%8A%A4%ED%86%A0%EA%B7%B8%EB%9E%A8/" title="히스토그램">히스토그램</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2020 ChloEvan.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>
