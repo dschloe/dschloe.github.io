@@ -267,7 +267,9 @@ Wall time: 12min 4s</p>
 
 swfiter_temp[<span style="color:#e6db74">&#39;f&#39;</span>] <span style="color:#f92672">=</span> swfiter_temp<span style="color:#f92672">.</span>swifter<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: add_col_fun(x[<span style="color:#e6db74">&#39;a&#39;</span>], x[<span style="color:#e6db74">&#39;b&#39;</span>]), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
 <span style="color:#66d9ef">print</span>(tabulate(swfiter_temp<span style="color:#f92672">.</span>head(), tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
-</code></pre></div><h3 id="2-set_npartitions-적용">(2) set_npartitions 적용</h3>
+</code></pre></div><p>CPU times: user 5.4 s, sys: 6.77 s, total: 12.2 s
+Wall time: 9min 4s</p>
+<h3 id="2-set_npartitions-적용">(2) set_npartitions 적용</h3>
 <ul>
 <li>
 <p>그런데, 병렬처리는 보통 코어를 할당해주어야 한다. <code>swifter</code> 패키지에는 이러한 코어를 할당해줄 수 있는 함수(<code>set_npartitions())</code>가 존재한다.</p>
@@ -297,8 +299,10 @@ multiprocessing<span style="color:#f92672">.</span>cpu_count()
 <span style="color:#f92672">import</span> swifter
 swifter_npartitions_temp[<span style="color:#e6db74">&#39;f&#39;</span>] <span style="color:#f92672">=</span> swifter_npartitions_temp<span style="color:#f92672">.</span>swifter<span style="color:#f92672">.</span>set_npartitions(<span style="color:#ae81ff">8</span>)<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: add_col_fun(x[<span style="color:#e6db74">&#39;a&#39;</span>], x[<span style="color:#e6db74">&#39;b&#39;</span>]), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
 <span style="color:#66d9ef">print</span>(tabulate(swifter_npartitions_temp<span style="color:#f92672">.</span>head(), tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
-</code></pre></div><ul>
-<li><code>swifter</code>에 <code>npartitions(8)</code>에 두개를 주었을 때, 속도가 약 2배 정도 빠른 것으로 확인된다. 만약 <code>CPU</code>개수를 추가하면 추가할 수록 연산 속도가 더 빨라질 것으로 기대할 수 있다.</li>
+</code></pre></div><p>CPU times: user 4.16 s, sys: 4.89 s, total: 9.05 s
+Wall time: 8min 36s</p>
+<ul>
+<li><code>swifter</code>에 <code>npartitions(8)</code>에 설정할 때, 속도가 약 30-40% 향상 된 것으로 확인된다. 만약 <code>CPU</code>개수를 추가하면 추가할 수록 연산 속도가 더 빨라질 것으로 기대할 수 있다.</li>
 <li>간단한 함수 적용으로 연산처리 속도가 향상됨을 볼 수 있다.</li>
 <li>실제 <code>github</code> 페이지에 가면 <code>pandas apply</code> Vs. <code>Dask apply</code> Vs. <code>Vectorized</code> Vs. <code>swift apply</code>에 관한 비교 코드가 있으니 실제로 비교해보는 것을 추천한다.
 <ul>
