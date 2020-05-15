@@ -5,10 +5,190 @@
     <description>Recent content in 빅쿼리 on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 08 May 2020 14:30:30 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 15 May 2020 17:30:30 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ch14 Cross Join</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch14_cross_join/</link>
+      <pubDate>Fri, 15 May 2020 17:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch14_cross_join/</guid>
+      <description>&lt;h2 id=&#34;i-구글-클라우드-설정&#34;&gt;I. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-사용자-계정-인증&#34;&gt;II. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;iii-쿼리-기본&#34;&gt;III. 쿼리 기본&lt;/h2&gt;
+&lt;p&gt;빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp;amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.&lt;/p&gt;
+&lt;p&gt;빅쿼리는 데이터 분석을 위한 기본적인 도구이기 때문에, 웹/앱을 활용한 마케팅 분석이 필요한 업종에서는 어쩌면 반드시 가져가야할 일종의 언어이기도 하다.&lt;/p&gt;
+&lt;p&gt;기본적으로 SQL문법을 지원하며, BigQuery 나름의 문법을 또한 구성하고 있다. 이제 본격적으로 코드를 작성해보자.&lt;/p&gt;
+&lt;p&gt;현재 작성하는 모든 코드는 Python-BigQuery로 연동하여 작성하려고 한다. 이제 간단하게 쿼리를 작성해보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials1/&#34;&gt;Ch05-Query_Essentials(1)&lt;/a&gt;에서는 &lt;code&gt;SELECT&lt;/code&gt;와 &lt;code&gt;AS&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials2/&#34;&gt;Ch05-Query_Essentials(2)&lt;/a&gt;에서는 &lt;code&gt;WHERE&lt;/code&gt;와 &lt;code&gt;EXCEPT&lt;/code&gt;, 그리고 &lt;code&gt;REPLACE&lt;/code&gt;에 대해 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch05_query_essentials3/&#34;&gt;Ch05-Query_Essentials(3)&lt;/a&gt;에서는 &lt;code&gt;SubQuery&lt;/code&gt;에 대해서 집중적으로 배우는 시간을 가졌다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch06_sql_aggregates/&#34;&gt;Ch06 SQL Aggregates&lt;/a&gt;에서는 집계함수를 사용해서 데이터를 조금 더 디테일하게 요약하는 것을 배웠다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch07_split_unnest/&#34;&gt;Ch07 Arrays &amp;amp; Structs&lt;/a&gt;에서는 빅쿼리에서 가상의 테이블과 그리고 배열을 만드는 법을 익혔다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch08_creating_arrays_with_array_agg/&#34;&gt;Ch08_Creating_Arrays_with_Array_AGG&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch09_struct_and_tuple/&#34;&gt;Ch09_Array_Of_Struct&lt;/a&gt; Struct을 활용하여 독특한 쿼리 결과문을 확인하였다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch10_unnest_an_array/&#34;&gt;Ch10 UNNEST an Array&lt;/a&gt; 에서, &lt;code&gt;Struct&lt;/code&gt;을 만든 임시 테이블을 보다 가독성 좋게 필드로 구분한 것을 확인하였다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch11_powerful_sql_pattern/&#34;&gt;Ch11 Powerful SQL Pattern&lt;/a&gt;에서 &lt;code&gt;ARRAY&lt;/code&gt;, &lt;code&gt;Struct&lt;/code&gt;, &lt;code&gt;UNNEST&lt;/code&gt;을 활용하여 &lt;code&gt;Powerful&lt;/code&gt;한 쿼리를 작성하였습니다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch12_join_explained/&#34;&gt;Ch12 Join Explained&lt;/a&gt;에서 처음으로 두개의 다른 조직에서 온 데이터를 합쳐서 의미있는 데이터를 만들어가는 과정을 진행하였습니다.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch13_inner_join/&#34;&gt;Ch13 Inner Join&lt;/a&gt;에서 Table Join에 대해 학습하는 시간을 가졌습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iv-cross-join&#34;&gt;IV. CROSS JOIN&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;CROSS JOIN&lt;/code&gt;은 Cartesian(=카타시안) Product라고 불리기도 한다.&lt;/li&gt;
+&lt;li&gt;크로스 조인은 모든 경우의 수를 전부 표현해주는 방식입니다.&lt;/li&gt;
+&lt;li&gt;기준테이블이 A일경우 A의 데이터 한 ROW를 B테이블 전체와 JOIN하는 방식입니다.&lt;/li&gt;
+&lt;li&gt;행의 결과는 $N \times M$ 나타나게 됩니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-가상-테이블-만들기&#34;&gt;(1) 가상 테이블 만들기&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;두개의 가상 테이블을 만들어 &lt;code&gt;Table Join&lt;/code&gt;을 하도록 합니다.&lt;/li&gt;
+&lt;li&gt;먼저 &lt;code&gt;cross join&lt;/code&gt;을 활용한 쿼리에 대해 확인해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;your_project_id&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH winners AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT &amp;#39;John&amp;#39; as person, &amp;#39;100m&amp;#39; as event
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Hiroshi&amp;#39;, &amp;#39;200m&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Sita&amp;#39;, &amp;#39;400m&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  ),
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  gifts AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT &amp;#39;Google Home&amp;#39; as gift
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Google Hub&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Pixel3&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT person, gift
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM winners
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  CROSS JOIN gifts
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+
+
+    person         gift
+0     John  Google Home
+1     John   Google Hub
+2     John       Pixel3
+3  Hiroshi  Google Home
+4  Hiroshi   Google Hub
+5  Hiroshi       Pixel3
+6     Sita  Google Home
+7     Sita   Google Hub
+8     Sita       Pixel3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;2-step-by-step---winners&#34;&gt;(2) Step by Step - Winners&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Winners&lt;/code&gt; 데이터는 어떻게 생겼을까?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH winners AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT &amp;#39;John&amp;#39; as person, &amp;#39;100m&amp;#39; as event
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Hiroshi&amp;#39;, &amp;#39;200m&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Sita&amp;#39;, &amp;#39;400m&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT *
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM winners
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;    person event
+0     John  100m
+1  Hiroshi  200m
+2     Sita  400m
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;총 3개의 데이터와 &lt;code&gt;event&lt;/code&gt;로 구성된 것을 확인할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-step-by-step---gifts&#34;&gt;(3) Step by Step - gifts&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;gifts&lt;/code&gt;로 구성된 데이터를 확인해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH gifts AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT &amp;#39;Google Home&amp;#39; as gift
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Google Hub&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Pixel3&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT *
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM gifts
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;          gift
+0  Google Home
+1   Google Hub
+2       Pixel3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;위 데이터는 단순하게 3개의 데이터와 1개의 열로만 구성된 데이터임을 확인할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-결과-생각해보기&#34;&gt;(4) 결과 생각해보기&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;이번에는 쿼리를 주어진 결과에 대해 다시한번 생각해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH winners AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT &amp;#39;John&amp;#39; as person, &amp;#39;100m&amp;#39; as event
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Hiroshi&amp;#39;, &amp;#39;200m&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Sita&amp;#39;, &amp;#39;400m&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  ),
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  gifts AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT &amp;#39;Google Home&amp;#39; as gift
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Google Hub&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Pixel3&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT person, gift
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM winners
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  CROSS JOIN gifts
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;    person         gift
+0     John  Google Home
+1     John   Google Hub
+2     John       Pixel3
+3  Hiroshi  Google Home
+4  Hiroshi   Google Hub
+5  Hiroshi       Pixel3
+6     Sita  Google Home
+7     Sita   Google Hub
+8     Sita       Pixel3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;우선 기준이 되는 &lt;code&gt;winners&lt;/code&gt; 데이터가 3개가 있었고, 조인 시키려는 &lt;code&gt;gifts&lt;/code&gt; 데이터가 3개가 있다.&lt;/li&gt;
+&lt;li&gt;즉, 위 데이터는 $3 \times 3 = 9$의 형태로 조회되었다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;v-결론&#34;&gt;V. 결론&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;간단하게 &lt;code&gt;Cross Join&lt;/code&gt;에 대해서 익혀봤다. 다음 시간에는 &lt;code&gt;Outer Join&lt;/code&gt;에 대해서 배워보도록 하자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;vi-reference&#34;&gt;VI. Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, V. (2018). &amp;ldquo;Exploring a powerful SQL pattern: ARRAY_AGG, STRUCT and UNNEST&amp;rdquo; Retrieved from &lt;a href=&#34;https://www.freecodecamp.org/news/exploring-a-powerful-sql-pattern-array-agg-struct-and-unnest-b7dcc6263e36/&#34;&gt;https://www.freecodecamp.org/news/exploring-a-powerful-sql-pattern-array-agg-struct-and-unnest-b7dcc6263e36/&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Ch13 Inner Join</title>
