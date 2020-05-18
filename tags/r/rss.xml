@@ -5,10 +5,173 @@
     <description>Recent content in R on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 15 May 2020 11:10:39 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 18 May 2020 08:20:39 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/tags/r/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>R - Select Helper Functions</title>
+      <link>https://chloevan.github.io/r/datatransform/dplyr02_select_helper/</link>
+      <pubDate>Mon, 18 May 2020 08:20:39 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/r/datatransform/dplyr02_select_helper/</guid>
+      <description>&lt;h2 id=&#34;i-개요&#34;&gt;I. 개요&lt;/h2&gt;
+&lt;p&gt;dplyr 문법에서 &lt;code&gt;select&lt;/code&gt;에 대해 다룬다. 보통 &lt;code&gt;select&lt;/code&gt;는 열 추출 함수로 소개되고 있다. 그런데, &lt;code&gt;select&lt;/code&gt; 함수에는 열 추출을 할 때 도와주는 &lt;code&gt;helper functions&lt;/code&gt;가 있는데, 간단하게 소개하고자 한다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;starts_with&lt;/li&gt;
+&lt;li&gt;ends_with&lt;/li&gt;
+&lt;li&gt;contains&lt;/li&gt;
+&lt;li&gt;matches&lt;/li&gt;
+&lt;li&gt;num_range&lt;/li&gt;
+&lt;li&gt;one_of&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;작은 도움이 되었기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-사전-준비&#34;&gt;II. 사전 준비&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;본격적인 실습에 앞서서, 패키지를 로드 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(dplyr)
+&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(nycflights13)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;flights 데이터셋의 변수들을 확인하자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;(flights)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## Rows: 336,776
+## Columns: 19
+## $ year           &amp;lt;int&amp;gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, …
+## $ month          &amp;lt;int&amp;gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+## $ day            &amp;lt;int&amp;gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+## $ dep_time       &amp;lt;int&amp;gt; 517, 533, 542, 544, 554, 554, 555, 557, 557, 558, 558,…
+## $ sched_dep_time &amp;lt;int&amp;gt; 515, 529, 540, 545, 600, 558, 600, 600, 600, 600, 600,…
+## $ dep_delay      &amp;lt;dbl&amp;gt; 2, 4, 2, -1, -6, -4, -5, -3, -3, -2, -2, -2, -2, -2, -…
+## $ arr_time       &amp;lt;int&amp;gt; 830, 850, 923, 1004, 812, 740, 913, 709, 838, 753, 849…
+## $ sched_arr_time &amp;lt;int&amp;gt; 819, 830, 850, 1022, 837, 728, 854, 723, 846, 745, 851…
+## $ arr_delay      &amp;lt;dbl&amp;gt; 11, 20, 33, -18, -25, 12, 19, -14, -8, 8, -2, -3, 7, -…
+## $ carrier        &amp;lt;chr&amp;gt; &amp;quot;UA&amp;quot;, &amp;quot;UA&amp;quot;, &amp;quot;AA&amp;quot;, &amp;quot;B6&amp;quot;, &amp;quot;DL&amp;quot;, &amp;quot;UA&amp;quot;, &amp;quot;B6&amp;quot;, &amp;quot;EV&amp;quot;, &amp;quot;B6&amp;quot;, …
+## $ flight         &amp;lt;int&amp;gt; 1545, 1714, 1141, 725, 461, 1696, 507, 5708, 79, 301, …
+## $ tailnum        &amp;lt;chr&amp;gt; &amp;quot;N14228&amp;quot;, &amp;quot;N24211&amp;quot;, &amp;quot;N619AA&amp;quot;, &amp;quot;N804JB&amp;quot;, &amp;quot;N668DN&amp;quot;, &amp;quot;N39…
+## $ origin         &amp;lt;chr&amp;gt; &amp;quot;EWR&amp;quot;, &amp;quot;LGA&amp;quot;, &amp;quot;JFK&amp;quot;, &amp;quot;JFK&amp;quot;, &amp;quot;LGA&amp;quot;, &amp;quot;EWR&amp;quot;, &amp;quot;EWR&amp;quot;, &amp;quot;LGA&amp;quot;…
+## $ dest           &amp;lt;chr&amp;gt; &amp;quot;IAH&amp;quot;, &amp;quot;IAH&amp;quot;, &amp;quot;MIA&amp;quot;, &amp;quot;BQN&amp;quot;, &amp;quot;ATL&amp;quot;, &amp;quot;ORD&amp;quot;, &amp;quot;FLL&amp;quot;, &amp;quot;IAD&amp;quot;…
+## $ air_time       &amp;lt;dbl&amp;gt; 227, 227, 160, 183, 116, 150, 158, 53, 140, 138, 149, …
+## $ distance       &amp;lt;dbl&amp;gt; 1400, 1416, 1089, 1576, 762, 719, 1065, 229, 944, 733,…
+## $ hour           &amp;lt;dbl&amp;gt; 5, 5, 5, 5, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, …
+## $ minute         &amp;lt;dbl&amp;gt; 15, 29, 40, 45, 0, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 59, …
+## $ time_hour      &amp;lt;dttm&amp;gt; 2013-01-01 05:00:00, 2013-01-01 05:00:00, 2013-01-01 …
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;총 19개의 변수들로 구성이 되어 있는 것을 확인 할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iii-다양한-helpers-응용&#34;&gt;III. 다양한 Helpers 응용&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;앞서 개요에서 소개한 것처럼 순차적으로 helpers 활용한 변수추출을 진행하도록 한다.&lt;/li&gt;
+&lt;li&gt;필자는 간단하게 소개하는 것이기 때문에, 어떻게 응용할지는 각자 주어진 데이터에서 다시한번 응용하는 것을 추천한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;help(select)&lt;/code&gt;를 실행하면 더 자세히 나와 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-starts_with&#34;&gt;(1) starts_with&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;변수명의 &lt;code&gt;prefix&lt;/code&gt;를 가져오는 것이다.&lt;/li&gt;
+&lt;li&gt;예를 들어 알파벳 문자 &lt;code&gt;a&lt;/code&gt;만 가져오도록 해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;flights &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;starts_with&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;a&amp;#34;&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## Rows: 336,776
+## Columns: 3
+## $ arr_time  &amp;lt;int&amp;gt; 830, 850, 923, 1004, 812, 740, 913, 709, 838, 753, 849, 853…
+## $ arr_delay &amp;lt;dbl&amp;gt; 11, 20, 33, -18, -25, 12, 19, -14, -8, 8, -2, -3, 7, -14, 3…
+## $ air_time  &amp;lt;dbl&amp;gt; 227, 227, 160, 183, 116, 150, 158, 53, 140, 138, 149, 158, …
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;만약 여기에서 &lt;code&gt;ar&lt;/code&gt;로 변경하면, &lt;code&gt;air_time&lt;/code&gt; 변수는 추출되지 않는다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;flights &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;starts_with&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ar&amp;#34;&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## Rows: 336,776
+## Columns: 2
+## $ arr_time  &amp;lt;int&amp;gt; 830, 850, 923, 1004, 812, 740, 913, 709, 838, 753, 849, 853…
+## $ arr_delay &amp;lt;dbl&amp;gt; 11, 20, 33, -18, -25, 12, 19, -14, -8, 8, -2, -3, 7, -14, 3…
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;2-ends_with&#34;&gt;(2) ends_with&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;starts_with&lt;/code&gt;의 정확히 반대되는 개념이다. 변수명의 &lt;code&gt;suffix&lt;/code&gt;를 기준으로 변수명을 추출한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;flights &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;ends_with&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;y&amp;#34;&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## Rows: 336,776
+## Columns: 3
+## $ day       &amp;lt;int&amp;gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+## $ dep_delay &amp;lt;dbl&amp;gt; 2, 4, 2, -1, -6, -4, -5, -3, -3, -2, -2, -2, -2, -2, -1, 0,…
+## $ arr_delay &amp;lt;dbl&amp;gt; 11, 20, 33, -18, -25, 12, 19, -14, -8, 8, -2, -3, 7, -14, 3…
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;y&lt;/code&gt;와 연관된 변수명은 3가지였다.&lt;/li&gt;
+&lt;li&gt;그런데, 조금더 구체적으로 &lt;code&gt;delay&lt;/code&gt;라는 글자를 기준으로 추출해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;flights &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;ends_with&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;delay&amp;#34;&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## Rows: 336,776
+## Columns: 2
+## $ dep_delay &amp;lt;dbl&amp;gt; 2, 4, 2, -1, -6, -4, -5, -3, -3, -2, -2, -2, -2, -2, -1, 0,…
+## $ arr_delay &amp;lt;dbl&amp;gt; 11, 20, 33, -18, -25, 12, 19, -14, -8, 8, -2, -3, 7, -14, 3…
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;3-contains&#34;&gt;(3) contains&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;변수명에 특정 문자열이 있으면 추출할 때 유용하다.&lt;/li&gt;
+&lt;li&gt;특정 문자열 &lt;code&gt;el&lt;/code&gt;을 조회하는 함수를 작성하도록 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;flights &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;contains&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;el&amp;#34;&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## Rows: 336,776
+## Columns: 2
+## $ dep_delay &amp;lt;dbl&amp;gt; 2, 4, 2, -1, -6, -4, -5, -3, -3, -2, -2, -2, -2, -2, -1, 0,…
+## $ arr_delay &amp;lt;dbl&amp;gt; 11, 20, 33, -18, -25, 12, 19, -14, -8, 8, -2, -3, 7, -14, 3…
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;4-matches&#34;&gt;(4) matches&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;helper&lt;/code&gt; 함수 중에서 정규 표현식 입력이 가능한 유일한 &lt;code&gt;helper&lt;/code&gt; 함수 이다.&lt;/li&gt;
+&lt;li&gt;우선 아래코드를 확인해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;flights &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;matches&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;a{1}&amp;#34;&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## Rows: 336,776
+## Columns: 10
+## $ year           &amp;lt;int&amp;gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, …
+## $ day            &amp;lt;int&amp;gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+## $ dep_delay      &amp;lt;dbl&amp;gt; 2, 4, 2, -1, -6, -4, -5, -3, -3, -2, -2, -2, -2, -2, -…
+## $ arr_time       &amp;lt;int&amp;gt; 830, 850, 923, 1004, 812, 740, 913, 709, 838, 753, 849…
+## $ sched_arr_time &amp;lt;int&amp;gt; 819, 830, 850, 1022, 837, 728, 854, 723, 846, 745, 851…
+## $ arr_delay      &amp;lt;dbl&amp;gt; 11, 20, 33, -18, -25, 12, 19, -14, -8, 8, -2, -3, 7, -…
+## $ carrier        &amp;lt;chr&amp;gt; &amp;quot;UA&amp;quot;, &amp;quot;UA&amp;quot;, &amp;quot;AA&amp;quot;, &amp;quot;B6&amp;quot;, &amp;quot;DL&amp;quot;, &amp;quot;UA&amp;quot;, &amp;quot;B6&amp;quot;, &amp;quot;EV&amp;quot;, &amp;quot;B6&amp;quot;, …
+## $ tailnum        &amp;lt;chr&amp;gt; &amp;quot;N14228&amp;quot;, &amp;quot;N24211&amp;quot;, &amp;quot;N619AA&amp;quot;, &amp;quot;N804JB&amp;quot;, &amp;quot;N668DN&amp;quot;, &amp;quot;N39…
+## $ air_time       &amp;lt;dbl&amp;gt; 227, 227, 160, 183, 116, 150, 158, 53, 140, 138, 149, …
+## $ distance       &amp;lt;dbl&amp;gt; 1400, 1416, 1089, 1576, 762, 719, 1065, 229, 944, 733,…
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;a{1}&lt;/code&gt;는 변수명에서 &lt;code&gt;a&lt;/code&gt;가 1번 이상 나온 것을 확인하여 추출하는 정규표현식이다.&lt;/li&gt;
+&lt;li&gt;정규표현식의 관한 정리된 글을 활용하여 익히도록 한다.
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://data-make.tistory.com/44&#34;&gt;정규표현식을 사용한 데이터 추출&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;5-num_range&#34;&gt;(5) num_range&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;num_range&lt;/code&gt;는 변수명 중에서 &lt;code&gt;A1&lt;/code&gt;, &lt;code&gt;A2&lt;/code&gt;와 같이 코드화하여 정리하는 테이블에 변수명을 추출할 때 유용하다.&lt;/li&gt;
+&lt;li&gt;아래코드를 확인해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;set.seed&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+df &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;data.frame&lt;/span&gt;(A1 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;runif&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;), 
+                 A2 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;runif&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;), 
+                 A3 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;runif&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;), 
+                 A4 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;runif&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;), 
+                 A5 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;runif&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;))
+
+df &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;num_range&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;A&amp;#39;&lt;/span&gt;, range &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## Rows: 10
+## Columns: 3
+## $ A2 &amp;lt;dbl&amp;gt; 0.2059746, 0.1765568, 0.6870228, 0.3841037, 0.7698414, 0.4976992, …
+## $ A3 &amp;lt;dbl&amp;gt; 0.93470523, 0.21214252, 0.65167377, 0.12555510, 0.26722067, 0.3861…
+## $ A4 &amp;lt;dbl&amp;gt; 0.4820801, 0.5995658, 0.4935413, 0.1862176, 0.8273733, 0.6684667, …
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;6-one_of&#34;&gt;(6) one_of&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;one_of&lt;/code&gt;를 활용할 때는 &lt;code&gt;vector&lt;/code&gt;를 응용하는데, 이 때 &lt;code&gt;vector&lt;/code&gt;안에 있는 변수명과 매칭되는 테이블을 추출한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;flights &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;one_of&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;tailnum&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;year&amp;#34;&lt;/span&gt;))) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## Rows: 336,776
+## Columns: 2
+## $ tailnum &amp;lt;chr&amp;gt; &amp;quot;N14228&amp;quot;, &amp;quot;N24211&amp;quot;, &amp;quot;N619AA&amp;quot;, &amp;quot;N804JB&amp;quot;, &amp;quot;N668DN&amp;quot;, &amp;quot;N39463&amp;quot;, &amp;quot;…
+## $ year    &amp;lt;int&amp;gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2…
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;vi-reference&#34;&gt;VI. Reference&lt;/h2&gt;
+&lt;p&gt;출처: &lt;a href=&#34;https://dplyr.tidyverse.org/reference/select.html&#34;&gt;Select/rename variables by name&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>ch04 - Modeling Visualisation</title>
