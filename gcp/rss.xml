@@ -5,10 +5,108 @@
     <description>Recent content in GCPs on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 19 May 2020 07:30:30 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 21 May 2020 07:30:30 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/gcp/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ch16 Data Types - Numeric types</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch16_data_types_numeric_types/</link>
+      <pubDate>Thu, 21 May 2020 07:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch16_data_types_numeric_types/</guid>
+      <description>&lt;h2 id=&#34;i-구글-클라우드-설정&#34;&gt;I. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-사용자-계정-인증&#34;&gt;II. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;iii-data-types-functions-and-operators&#34;&gt;III. Data Types, Functions, and Operators&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;다른 프로그래밍 언어와 마찬가지로 데이터 타입은 매우 기본적인 문법이며, 이를 숙지하는 것은 기본 문법 에러를 해결하는 데 있어서 매우 큰 도움이 된다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;BigQuery&lt;/code&gt;는 아래와 같이 다양한 데이터 유형을 지원한다. &lt;code&gt;(numeric, string, time, geographic, structured, and semi-structured data)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-int64&#34;&gt;(1) INT64&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;빅쿼리에서 유일한 &lt;code&gt;integer&lt;/code&gt; 데이터 유형이며, 데이터 유형의 범위는 $10^{-19}$~$10^{19}$ 사이의 값을 표현할 수 있다.&lt;/li&gt;
+&lt;li&gt;For real-valued numbers 값을 위해서는 &lt;code&gt;FLOAT64&lt;/code&gt;, For Booleans, &lt;code&gt;BOOL&lt;/code&gt;을 사용한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-numeric&#34;&gt;(2) Numeric&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Numeric&lt;/code&gt; 데이터 유형은 소수점을 포함하여 모든 숫자의 개수가 38개 까지 표현 할 수 있고, 소수점은 9자리까지 표현할 수 있다.&lt;/li&gt;
+&lt;li&gt;금융데이터와 같이 계산이 필요할 때 사용된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-string&#34;&gt;(3) String&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;보통 우리가 아는 문자열을 의미한다. 원문에서는 &lt;code&gt;BYTES&lt;/code&gt;와 비교를 하였는데, 우선 원문을 참고하기를 바란다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;This is a first-class type and represents variable-length sequences of Unicode characters. &lt;code&gt;BYTES&lt;/code&gt; are variable-length sequence of characters &lt;code&gt;(not Unicode)&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;4-timestamp&#34;&gt;(4) Timestamp&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;시간상의 &lt;code&gt;an absolute point in time&lt;/code&gt;을 의미한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;5-datetime&#34;&gt;(5) Datetime&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;날짜와 시간을 의미하며, &lt;code&gt;Date&lt;/code&gt; &amp;amp; &lt;code&gt;Time&lt;/code&gt;을 구분해서 사용할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;6-geography&#34;&gt;(6) Geography&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;지도 데이터와 관련된, 지도상의 &lt;code&gt;points&lt;/code&gt;, &lt;code&gt;lines&lt;/code&gt;, and &lt;code&gt;polygons&lt;/code&gt;를 표현할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;7-struct-and-array&#34;&gt;(7) Struct and Array&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;이 부분에 대한 설명은 필자의 글에서 확인하기를 바란다.
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/gcp/bigquery/02_basics/ch07_split_unnest/&#34;&gt;Ch07 Arrays &amp;amp; Structs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iv-numeric-types-and-functions&#34;&gt;IV. Numeric Types and Functions&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;사칙연산을 수행할 때는 &lt;code&gt;INT 64&lt;/code&gt;와 &lt;code&gt;FLOAT 64&lt;/code&gt; 데이터타입으로 해야 한다.&lt;/li&gt;
+&lt;li&gt;간단하게 코드를 작성해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;your_project_id&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH example AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT &amp;#39;Sat&amp;#39; AS day, 1451 AS numrides, 1018 AS oneways
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT &amp;#39;Sun&amp;#39;, 2376, 936
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT *, (oneways/numrides) AS frac_oneway
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM example
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;   day  numrides  oneways  frac_oneway
+0  Sat      1451     1018     0.701585
+1  Sun      2376      936     0.393939
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;(oneways/numrides)&lt;/code&gt;와 같이 연산 할 수 있음을 확인하였다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bit&lt;/code&gt; 연산을 위한 &lt;code&gt;&amp;lt;&amp;lt;&lt;/code&gt;, &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt;, &lt;code&gt;&amp;amp;&lt;/code&gt;, &lt;code&gt;|&lt;/code&gt;와 같은 연산도 지원한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;v-reference&#34;&gt;V. Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, V. (2018). &amp;ldquo;Exploring a powerful SQL pattern: ARRAY_AGG, STRUCT and UNNEST&amp;rdquo; Retrieved from &lt;a href=&#34;https://www.freecodecamp.org/news/exploring-a-powerful-sql-pattern-array-agg-struct-and-unnest-b7dcc6263e36/&#34;&gt;https://www.freecodecamp.org/news/exploring-a-powerful-sql-pattern-array-agg-struct-and-unnest-b7dcc6263e36/&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Ch15 Outer Join</title>
