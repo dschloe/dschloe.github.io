@@ -5,10 +5,76 @@
     <description>Recent content in 빅쿼리 파이썬 on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 21 May 2020 07:30:30 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 22 May 2020 22:30:30 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%ED%8C%8C%EC%9D%B4%EC%8D%AC/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ch17 Types of Functions</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch17_types_of_functions/</link>
+      <pubDate>Fri, 22 May 2020 22:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch17_types_of_functions/</guid>
+      <description>&lt;h2 id=&#34;i-구글-클라우드-설정&#34;&gt;I. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-사용자-계정-인증&#34;&gt;II. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;iii-types-of-functions&#34;&gt;III. Types of Functions&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;빅쿼리에는 매우 유용한 &lt;code&gt;function&lt;/code&gt;이 존재한다. 간단하게 확인해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-scalar&#34;&gt;(1) Scalar&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Scalar&lt;/code&gt;는 하나 이상의 입력 변수에 대해 &lt;code&gt;연산&lt;/code&gt;을 수행하고, 단일 값을 반환한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Scalar&lt;/code&gt;함수는 반환 데이터 유형이 허용되는 모든 곳에서 사용이 가능하다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Round(3.14)&lt;/code&gt;의 경우 &lt;code&gt;float64&lt;/code&gt; 형태의 3을 반환한다. 즉, 이런 경우, &lt;code&gt;float64&lt;/code&gt;를 지원되는 모든 곳에서는 &lt;code&gt;Rount()&lt;/code&gt;함수 사용이 가능하다는 뜻이다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;SUBSTR(&amp;quot;hello&amp;quot;, 1, 2)&lt;/code&gt;는 &lt;code&gt;&amp;quot;he&amp;quot;&lt;/code&gt;를 반환하는데, 3개의 입력 파라미터를 사용하는 스칼라 함수의 예다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-aggregate&#34;&gt;(2) Aggregate&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;값 집합에 대한 계산을 수행하고 단일 값을 반환하는 함수를 의미한다.&lt;/li&gt;
+&lt;li&gt;집합 함수는 행 그룹에 걸쳐 계산을 수행하기 위해 GROUP BY와 함께 종종 사용된다.&lt;/li&gt;
+&lt;li&gt;예를 들어, MAX(tripduration)는 트립기간 컬럼 내에서 최대값을 계산한다. 기타 집계함수로는 sum(), count(), avg() 등이 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-analytic&#34;&gt;(3) Analytic&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;분석 함수는 값 집합에서 작동하지만 집합의 각 값에 대한 출력을 반환한다.&lt;/li&gt;
+&lt;li&gt;윈도우 프레임(=A window frame)을 사용하여 분석 기능이 적용되는 행 집합을 지정한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;row_number()&lt;/code&gt;, &lt;code&gt;rank()&lt;/code&gt;, etc 등이 대표적인 &lt;code&gt;Analytic&lt;/code&gt; 함수들이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-table-valued&#34;&gt;(4) Table Valued&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Table Valued&lt;/code&gt;는 결과 집합을 반환하고 따라서 FROM 절에서 사용할 수 있는 함수이다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Array&lt;/code&gt;에서 &lt;code&gt;UNNEST&lt;/code&gt;를 호출 할 수 있고, 호출된 &lt;code&gt;UNNEST&lt;/code&gt;에서 선택할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;5-user-defined&#34;&gt;(5) User Defined&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;기본 제공되지 않지만 사용자가 구현을 지정하는 기능. 사용자 정의 함수는 SQL(또는 JavaScript)로 작성될 수 있으며, 앞서 언급한 유형 중 하나를 반환할 수 있다.&lt;/li&gt;
+&lt;li&gt;예를 들면 다음과 같이 작성이 가능하다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;CREATE&lt;/span&gt; TEMP &lt;span style=&#34;color:#66d9ef&#34;&gt;FUNCTION&lt;/span&gt; lastElement(arr &lt;span style=&#34;color:#66d9ef&#34;&gt;ANY&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TYPE&lt;/span&gt;) 
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; (arr[ORDINAL(ARRAY_LENGTH(arr))]);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;iv-결론&#34;&gt;IV. 결론&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;빅쿼리의 &lt;code&gt;Functions&lt;/code&gt;에 관한 기본적인 이론에 대해 익혔다.&lt;/li&gt;
+&lt;li&gt;본장에서 실제 &lt;code&gt;Numeric Types&lt;/code&gt;를 가지고 활용하는 방법에 대해 익히도록 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;v-reference&#34;&gt;V. Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, V. (2018). &amp;ldquo;Exploring a powerful SQL pattern: ARRAY_AGG, STRUCT and UNNEST&amp;rdquo; Retrieved from &lt;a href=&#34;https://www.freecodecamp.org/news/exploring-a-powerful-sql-pattern-array-agg-struct-and-unnest-b7dcc6263e36/&#34;&gt;https://www.freecodecamp.org/news/exploring-a-powerful-sql-pattern-array-agg-struct-and-unnest-b7dcc6263e36/&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Ch16 Data Types - Numeric types</title>
