@@ -5,10 +5,322 @@
     <description>Recent content in Google Colab on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 23 May 2020 21:01:47 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 24 May 2020 11:11:47 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/categories/google-colab/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Colab &#43; Drive &#43; Github Workflow</title>
+      <link>https://chloevan.github.io/settings/colab_drive_github_settings/</link>
+      <pubDate>Sun, 24 May 2020 11:11:47 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/settings/colab_drive_github_settings/</guid>
+      <description>&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
+&lt;p&gt;제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.&lt;/p&gt;
+&lt;h2 id=&#34;i-동기-부여-및-개요&#34;&gt;I. 동기 부여 및 개요&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Google Colab&lt;/code&gt;을 알게 된 이후에, 모든 파일을 가급적 여기에서 작성을 한다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Why?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;첫째, &lt;code&gt;GPU&lt;/code&gt;를 무료로 사용할 수 있다.&lt;/li&gt;
+&lt;li&gt;둘째, 맥북에어의 저용량을 쓰는 나에게 있어, 시스템 파일 등을 &lt;code&gt;Local&lt;/code&gt;로 내려받는데 버거움이 있다.&lt;/li&gt;
+&lt;li&gt;셋째, 온라인 강의 및 책을 협업해서 써야 하는데, 각 &lt;code&gt;Local&lt;/code&gt; 환경을 구축하는 번거로움을 없애고 싶었다.&lt;/li&gt;
+&lt;li&gt;마지막으로, 파일 공유가 가능하다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;문제는 &lt;code&gt;Google Colab&lt;/code&gt; + &lt;code&gt;Drive&lt;/code&gt; + &lt;code&gt;Github&lt;/code&gt;로 연동하여 소스파일을 관리해야 하는 시점이 도래했다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;주 목적은 &lt;code&gt;Google Colab&lt;/code&gt;을 향후에 팀 프로젝트로 연결하고자 하는 준비 차원에서 작성을 해본다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/settings/colab_drive_github_settings/triangle.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;ii-기존-방식---google-colab-with-github&#34;&gt;II. 기존 방식 - Google Colab with Github&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;기존에는 [파일]-[Github에 사본저장]을 클릭하여 조금은 수동으로 파일을 저장하고 있었다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/settings/colab_drive_github_settings/before.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;그런데, 가끔 파일을 다른 &lt;code&gt;repo&lt;/code&gt;에 저장하는 등의 실수(&lt;code&gt;mistake&lt;/code&gt;)를 저지르기도 하여, 불필요한 작업을 수행하였다. 삭제하는 것이 어려운 것은 아니나, 가끔 있어야 하는 파일이 없을 때, 조금 황당하기도 했다.&lt;/li&gt;
+&lt;li&gt;이제, 본격적으로 &lt;code&gt;프로젝트 폴더&lt;/code&gt; 단위로 &lt;code&gt;github&lt;/code&gt;와 연동하는 작업을 수행하고, &lt;code&gt;Drive&lt;/code&gt;에 이를 반영하도록 하자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iii-업무-개선---colab-with-drive&#34;&gt;III. 업무 개선 - Colab with Drive&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;각종 경진대회에 나가는 &lt;code&gt;repo&lt;/code&gt;를 하나 만들었다.&lt;/li&gt;
+&lt;li&gt;그 &lt;code&gt;repo&lt;/code&gt;는 그대로 &lt;code&gt;Drive&lt;/code&gt;로 내려받는데, &lt;code&gt;colab&lt;/code&gt;을 이용한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-mount-google-drive-to-google-colab&#34;&gt;(1) Mount Google Drive to Google Colab&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;구글 드라이브(Drive)&lt;/code&gt;를 &lt;code&gt;구글 코랩(Colab)&lt;/code&gt;에 &lt;code&gt;mount&lt;/code&gt;하기 위해 아래 코드를 작성한다.&lt;/li&gt;
+&lt;li&gt;이 때 &lt;code&gt;authorization code&lt;/code&gt;가 활성화 되는데, 인증을 진행한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Mount Google Drive&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; drive &lt;span style=&#34;color:#75715e&#34;&gt;# import drive from google colab&lt;/span&gt;
+
+ROOT &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/content/drive&amp;#34;&lt;/span&gt;     &lt;span style=&#34;color:#75715e&#34;&gt;# default location for the drive&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(ROOT)                 &lt;span style=&#34;color:#75715e&#34;&gt;# print content of ROOT (Optional)&lt;/span&gt;
+drive&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;mount(ROOT)           &lt;span style=&#34;color:#75715e&#34;&gt;# we mount the google drive at /content/drive&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;/content/drive
+Go to this URL in a browser: https://accounts.google.com/o/oauth2/auth?client_id=947318989803-6bn6qk8qdgf4n4g3pfee6491hc0brc4i.apps.googleusercontent.com&amp;amp;redirect_uri=urn%3aietf%3awg%3aoauth%3a2.0%3aoob&amp;amp;response_type=code&amp;amp;scope=email%20https%3a%2f%2fwww.googleapis.com%2fauth%2fdocs.test%20https%3a%2f%2fwww.googleapis.com%2fauth%2fdrive%20https%3a%2f%2fwww.googleapis.com%2fauth%2fdrive.photos.readonly%20https%3a%2f%2fwww.googleapis.com%2fauth%2fpeopleapi.readonly
+
+Enter your authorization code:
+··········
+Mounted at /content/drive
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Mounted at /content/drive&lt;/code&gt; 결과값이 나오면 성공적으로 &lt;code&gt;Google Drive&lt;/code&gt;가 &lt;code&gt;mount&lt;/code&gt;가 되었다는 뜻이다.&lt;/li&gt;
+&lt;li&gt;간단하게 &lt;code&gt;CLI(=Command-Line Interface)&lt;/code&gt;을 활용하여 현재 경로를 확인한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;pwd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;&#39;/content&#39;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;ls
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[0m[01;34mdrive[0m/  [01;34msample_data[0m/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;cd drive&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;My Drive&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Colab Notebooks&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;/content/drive/My Drive/Colab Notebooks
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;ls
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;&#39;Colaboratory에 오신 것을 환영합니다의 사본&#39;   [0m[01;34mpython_edu[0m/
+&#39;colab_package_settings.ipynb의 사본&#39;          tempMelonData.ipynb
+ [01;34mcompetition_temp[0m/                             Untitled0.ipynb
+ [01;34mdeeplearningAI[0m/                               Untitled1.ipynb
+ [01;34mgcp_tutorial[0m/                                 Untitled2.ipynb
+ [01;34mimg[0m/                                          Untitled3.ipynb
+ melonData.ipynb                              [01;34m&#39;카카오X멜론 공모전&#39;[0m[K/
+ [01;34mpkg_folders[0m/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;iv-업무-개선---clone-github-repo-to-google-drive&#34;&gt;IV. 업무 개선 - Clone Github Repo to Google Drive&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;우선 깃허브에서 &lt;code&gt;competition&lt;/code&gt;이라는 &lt;code&gt;Repo&lt;/code&gt;를 사전에 만들었다. (이 부분은 안다는 것으로 전제한다!)
+&lt;ul&gt;
+&lt;li&gt;만약, 처음 &lt;code&gt;Github&lt;/code&gt;를 접한다면, 댓글을 남겨주실 것을 권한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;필자는 &lt;code&gt;Colab Notebooks&lt;/code&gt; 폴더 안에 &lt;code&gt;competiton&lt;/code&gt;라는 &lt;code&gt;repo&lt;/code&gt;를 다운로드 받을 것이다.&lt;/li&gt;
+&lt;li&gt;이 때, 아래 4개의 변수를 &lt;code&gt;script&lt;/code&gt;에 저장할 필요가 있다.
+&lt;ul&gt;
+&lt;li&gt;GIT_TOKEN (GitHub Access Token)&lt;/li&gt;
+&lt;li&gt;MY_GOOGLE_DRIVE_PATH&lt;/li&gt;
+&lt;li&gt;GIT_USERNAME&lt;/li&gt;
+&lt;li&gt;GIT_REPOSITORY&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-깃허브-access-token&#34;&gt;(1) 깃허브 Access Token&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;[Profile]-[Settings]-[Developer settings]-[Personal Access tokens] 순서대로 클릭한다.
+&lt;img src=&#34;https://chloevan.github.io/img/settings/colab_drive_github_settings/settings_01.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;이 때, 꼭 아래 그림처럼 &lt;code&gt;repo&lt;/code&gt;를 클릭한다.
+&lt;img src=&#34;https://chloevan.github.io/img/settings/colab_drive_github_settings/settings_02.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-4가지-변수-할당&#34;&gt;(2) 4가지 변수 할당&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;소스 코드 작성 전, 몇가지 주의사항이 있다.
+&lt;ul&gt;
+&lt;li&gt;첫째, 구글 드라이브와 경로에 해당하는 폴더 명과 깃허브의 &lt;code&gt;repo&lt;/code&gt;명을 통일시킨다 (필자는 &lt;code&gt;competition&lt;/code&gt;으로 통일함).&lt;/li&gt;
+&lt;li&gt;이 때 한가지 주의점은 &lt;code&gt;Access Token&lt;/code&gt;은 외부로 유출시키지 않는다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;pwd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;&#39;/content/drive/My Drive/Colab Notebooks&#39;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Clone github repository setup&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# import join used to join ROOT path and MY_GOOGLE_DRIVE_PATH&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; os.path &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; join  
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# path to your project on Google Drive&lt;/span&gt;
+MY_GOOGLE_DRIVE_PATH &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;My Drive/Colab Notebooks/&amp;#39;&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# replace with your github username&lt;/span&gt;
+GIT_USERNAME &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;chloevan&amp;#34;&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# definitely replace with your&lt;/span&gt;
+GIT_TOKEN &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;27e6426ead8d8c63444979436bda4ea8aaf2aea3&amp;#34;&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Replace with your github repository in this case we want &lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# to clone deep-learning-v2-pytorch repository&lt;/span&gt;
+GIT_REPOSITORY &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;competition&amp;#34;&lt;/span&gt;
+
+PROJECT_PATH &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; join(ROOT, MY_GOOGLE_DRIVE_PATH)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# It&amp;#39;s good to print out the value if you are not sure &lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PROJECT_PATH: &amp;#34;&lt;/span&gt;, PROJECT_PATH)  
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# In case we haven&amp;#39;t created the folder already; we will create a folder in the project path &lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# !mkdir &amp;#34;{PROJECT_PATH}&amp;#34;    &lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;#GIT_PATH = &amp;#34;https://{GIT_TOKEN}@github.com/{GIT_USERNAME}/{GIT_REPOSITORY}.git&amp;#34; this return 400 Bad Request for me&lt;/span&gt;
+GIT_PATH &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;https://&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; GIT_TOKEN &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;@github.com/&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; GIT_USERNAME &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; GIT_REPOSITORY &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;.git&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;GIT_PATH: &amp;#34;&lt;/span&gt;, GIT_PATH)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;PROJECT_PATH:  /content/drive/My Drive/Colab Notebooks/
+GIT_PATH:  https://27e6426ead8d8c63444979436bda4ea8aaf2aea3@github.com/chloevan/competition.git
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;2-깃허브-연동-두가지-옵션&#34;&gt;(2) 깃허브 연동 두가지 옵션&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;여기에서 고려해야 할 사항은 구글 드라이브내 이미 존재하는 파일과 합치는 부분이 있다.&lt;/li&gt;
+&lt;li&gt;아래 코드를 확인해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&#34;language-terminal&#34; data-lang=&#34;terminal&#34;&gt;!git clone &amp;quot;{GIT_PATH}&amp;quot; ./temp      # clone github repository to temp folder
+!mv ./temp/* &amp;quot;{PROJECT_PATH}&amp;quot;       # move all files/folders in temp folder to folder defined in project path
+!rm -rf ./temp                      # remove all the files/folders in temp folder
+!rsync -aP --exclude=data/ &amp;quot;{PROJECT_PATH}&amp;quot;/*  ./   # use remote sync to copy from google drive to local runtime google colab
+                                                    # but exclude data folder
+                                                    # https://www.computerhope.com/unix/rsync.htm
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;첫번째라인의 코드는 깃허브 &lt;code&gt;repo&lt;/code&gt;를 드라이브 내 &lt;code&gt;temp&lt;/code&gt;폴더에 저장한다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;두번째라인의 코드는 &lt;code&gt;temp&lt;/code&gt;폴더의 모든 파일을 &lt;code&gt;{PROJECT_PATH}&lt;/code&gt;에 잘라넣기 한다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;세번째라인의 코드는 기존 &lt;code&gt;temp&lt;/code&gt;를 삭제 한다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;네번째라인의 코드는 큰 용량을 차지하는 &lt;code&gt;data&lt;/code&gt;와 같은 부분은 제외한다는 뜻이다. (이 부분은 별도의 에러를 경험해야 필요성을 알 수 있을 것 같다!)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;여기에서는 간단하게 &lt;code&gt;!git clone&lt;/code&gt;을 실행한다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;cd &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;{PROJECT_PATH}&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git clone &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;{GIT_PATH}&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;/content/drive/My Drive/Colab Notebooks
+Cloning into &#39;competition&#39;...
+remote: Enumerating objects: 7, done.[K
+remote: Counting objects: 100% (7/7), done.[K
+remote: Compressing objects: 100% (4/4), done.[K
+remote: Total 7 (delta 0), reused 0 (delta 0), pack-reused 0[K
+Unpacking objects: 100% (7/7), done.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;에러가 없다면, 정상적으로 &lt;code&gt;git clone&lt;/code&gt;이 수행된 것이다.&lt;/li&gt;
+&lt;li&gt;이 때, 구글 드라이브 내 &lt;code&gt;competition&lt;/code&gt; 폴더에서 &lt;code&gt;.git&lt;/code&gt; 폴더가 생성되었는지 확인한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/settings/colab_drive_github_settings/settings_03.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;3-폴더-정보-확인&#34;&gt;(3) 폴더 정보 확인&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git clone&lt;/code&gt;을 통해서 파일을 내려받았다면, 간단한 명령어로 폴더를 탐색한다.&lt;/li&gt;
+&lt;li&gt;이 때 &lt;code&gt;git branch&lt;/code&gt;를 실행하면 &lt;code&gt;master folder&lt;/code&gt;외에 어떤 &lt;code&gt;branch&lt;/code&gt;들이 있는지 확인이 가능하다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;pwd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;&#39;/content/drive/My Drive/Colab Notebooks&#39;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;cd competition&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;/content/drive/My Drive/Colab Notebooks/competition
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git branch
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;* [32mmaster[m
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git checkout master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Already on &#39;master&#39;
+Your branch is up to date with &#39;origin/master&#39;.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git status
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;On branch master
+Your branch is up to date with &#39;origin/master&#39;.
+
+nothing to commit, working tree clean
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;v-파일-추가-및-업데이트&#34;&gt;V. 파일 추가 및 업데이트&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;이제 위 &lt;code&gt;competition&lt;/code&gt;에 참가하기 위한 기본 파일들을 &lt;code&gt;kakao_arena_3&lt;/code&gt;에 저장한다.
+&lt;ul&gt;
+&lt;li&gt;위 부분은 터미널 명령어가 약하다면 구글 드라이브에서 직접 실행해도 상관없다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-파일-추가-및-깃허브-업데이트&#34;&gt;(1) 파일 추가 및 깃허브 업데이트&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;간단한게 현재 경로의 파일을 확인하고 소스코드를 작성한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;apt&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;get install tree
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;tree
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following NEW packages will be installed:
+  tree
+0 upgraded, 1 newly installed, 0 to remove and 31 not upgraded.
+Need to get 40.7 kB of archives.
+After this operation, 105 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu bionic/universe amd64 tree amd64 1.7.0-5 [40.7 kB]
+Fetched 40.7 kB in 0s (117 kB/s)
+Selecting previously unselected package tree.
+(Reading database ... 144433 files and directories currently installed.)
+Preparing to unpack .../tree_1.7.0-5_amd64.deb ...
+Unpacking tree (1.7.0-5) ...
+Setting up tree (1.7.0-5) ...
+Processing triggers for man-db (2.8.3-2ubuntu0.1) ...
+.
+├── kakao_arena_3
+│   └── README.md
+└── README.md
+
+1 directory, 2 files
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;!tree&lt;/code&gt;가 실행되지 않는다면, 다음 해당 패키지를 다음 코드 셀에서 다음 명령어를 입력 후 실행한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&#34;language-terminal&#34; data-lang=&#34;terminal&#34;&gt;!apt-get install tree
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;source&lt;/code&gt; 폴더에 아무것도 없기 때문에, &lt;code&gt;temp.ipynb&lt;/code&gt;파일 생성 후 저장한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;tree
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;.
+├── kakao_arena_3
+│   ├── README.md
+│   └── source
+│       └── temp.ipynb
+└── README.md
+
+2 directories, 3 files
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;추가된 파일을 확인 후 깃허브에 파일을 저장해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Add / track changed files&lt;/span&gt;
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git add &lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Linked to account&lt;/span&gt;
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git config &lt;span style=&#34;color:#f92672&#34;&gt;--&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;global&lt;/span&gt; user&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;email &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;j2hoon85@gmail.com&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git config &lt;span style=&#34;color:#f92672&#34;&gt;--&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;global&lt;/span&gt; user&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;name &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;chloevan&amp;#34;&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# commit the changes&lt;/span&gt;
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git commit &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;m &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;create temp file&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[master dc8af91] create temp file
+ 1 file changed, 1 insertion(+)
+ create mode 100644 kakao_arena_3/source/temp.ipynb
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# push the changes to github repo&lt;/span&gt;
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git push
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Counting objects: 5, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (5/5), 653 bytes | 163.00 KiB/s, done.
+Total 5 (delta 0), reused 0 (delta 0)
+To https://github.com/chloevan/competition.git
+   04ca27a..dc8af91  master -&amp;gt; master
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;생성된 파일이 깃허브에 잘 올라갔는지 학인해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/settings/colab_drive_github_settings/settings_03.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+&lt;p&gt;Say, V. (2020, January 01). Google Drive + Google Colab + GitHub; Don&amp;rsquo;t Just Read, Do It! Retrieved May 24, 2020, from &lt;a href=&#34;https://towardsdatascience.com/google-drive-google-colab-github-dont-just-read-do-it-5554d5824228&#34;&gt;https://towardsdatascience.com/google-drive-google-colab-github-dont-just-read-do-it-5554d5824228&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Żero, O. (2019, October 30). Colaboratory + Drive + Github - the workflow made simpler. Retrieved May 24, 2020, from &lt;a href=&#34;https://towardsdatascience.com/colaboratory-drive-github-the-workflow-made-simpler-bde89fba8a39&#34;&gt;https://towardsdatascience.com/colaboratory-drive-github-the-workflow-made-simpler-bde89fba8a39&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Python Package Settings on Google Colab</title>
