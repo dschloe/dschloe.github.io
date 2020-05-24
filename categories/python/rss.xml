@@ -5,10 +5,250 @@
     <description>Recent content in Python on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 24 May 2020 11:11:47 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 24 May 2020 13:11:47 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/categories/python/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Kakao Arena 3 EDA on Google Colab</title>
+      <link>https://chloevan.github.io/settings/kakao_arena_3_eda/</link>
+      <pubDate>Sun, 24 May 2020 13:11:47 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/settings/kakao_arena_3_eda/</guid>
+      <description>&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
+&lt;p&gt;제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.&lt;/p&gt;
+&lt;h2 id=&#34;i-개요&#34;&gt;I. 개요&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;프로젝트 폴더 내에서 간단하게 EDA를 실습하는 시간을 갖도록 한다.&lt;/li&gt;
+&lt;li&gt;관련 패키지는 우선 다른 곳에서 설치 되었다는 것을 가정한다.
+&lt;ul&gt;
+&lt;li&gt;참고: &lt;a href=&#34;https://chloevan.github.io/settings/colab_package_settings/&#34;&gt;Python Package Settings on Google Colab&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;본 포스트의 핵심은 환경설정이 &lt;code&gt;Google Colab + Drive내&lt;/code&gt;에서 작업하는 것이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;ii-패키지-불러오기&#34;&gt;II. 패키지 불러오기&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;다음과 같은 순서로 실행한다.&lt;/li&gt;
+&lt;li&gt;첫째, 나눔고딕 한글 폰트를 설치한다.&lt;/li&gt;
+&lt;li&gt;둘째, 내부 패키지를 먼저 불러온다.&lt;/li&gt;
+&lt;li&gt;셋째, 런타임을 다시 실행한다.&lt;/li&gt;
+&lt;li&gt;넷째, &lt;code&gt;Drive&lt;/code&gt; 마운트를 진행한다.&lt;/li&gt;
+&lt;li&gt;다섯째, 외부 패키지를 불러온다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-나눔고딕-폰트-불러오기&#34;&gt;(1) 나눔고딕 폰트 불러오기&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;다음과 같은 방식으로 폰트를 불러온다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;config InlineBackend&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;figure_format &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;retina&amp;#39;&lt;/span&gt;
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;apt &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;qq &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;y install fonts&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;nanum
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;The following NEW packages will be installed:
+  fonts-nanum
+0 upgraded, 1 newly installed, 0 to remove and 31 not upgraded.
+Need to get 9,604 kB of archives.
+After this operation, 29.5 MB of additional disk space will be used.
+Selecting previously unselected package fonts-nanum.
+(Reading database ... 144433 files and directories currently installed.)
+Preparing to unpack .../fonts-nanum_20170925-1_all.deb ...
+Unpacking fonts-nanum (20170925-1) ...
+Setting up fonts-nanum (20170925-1) ...
+Processing triggers for fontconfig (2.12.6-0ubuntu2) ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;2-내부에-기-설치된-패키지-불러오기&#34;&gt;(2) 내부에 기 설치된 패키지 불러오기&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;관련 패키지를 불러온다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; datetime &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; timedelta, datetime
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; glob
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; itertools &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; chain
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; json
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; os
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; re
+
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; np
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; wordcloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; WordCloud
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; nltk
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; nltk.corpus &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; stopwords
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; collections &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; Counter
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; sklearn.feature_extraction.text &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; TfidfVectorizer
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; sklearn.feature_extraction.text &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; CountVectorizer
+
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; pandas.plotting &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; register_matplotlib_converters
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; seaborn &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; sns
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; mpl
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.font_manager &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; fm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;fontpath &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf&amp;#39;&lt;/span&gt;
+font &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fm&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;FontProperties(fname&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;fontpath, size&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;rc(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;font&amp;#39;&lt;/span&gt;, family&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;NanumBarunGothic&amp;#39;&lt;/span&gt;) 
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;rcParams[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;figure.figsize&amp;#34;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;)
+register_matplotlib_converters()
+mpl&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;font_manager&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;_rebuild()
+mpl&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;pyplot&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;rc(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;font&amp;#39;&lt;/span&gt;, family&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;NanumGothic&amp;#39;&lt;/span&gt;)
+fm&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;_rebuild()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;3-외부-패키지인-konlpy-불러오기&#34;&gt;(3) 외부 패키지인 &lt;code&gt;konlpy&lt;/code&gt; 불러오기&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;다음 코드를 실행하기 전 반드시 [런타임]-[런타임 다시 시작]을 누르자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Mount Google Drive&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; drive &lt;span style=&#34;color:#75715e&#34;&gt;# import drive from google colab&lt;/span&gt;
+
+ROOT &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/content/drive&amp;#34;&lt;/span&gt;     &lt;span style=&#34;color:#75715e&#34;&gt;# default location for the drive&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(ROOT)                 &lt;span style=&#34;color:#75715e&#34;&gt;# print content of ROOT (Optional)&lt;/span&gt;
+drive&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;mount(ROOT)           &lt;span style=&#34;color:#75715e&#34;&gt;# we mount the google drive at /content/drive&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;/content/drive
+Drive already mounted at /content/drive; to attempt to forcibly remount, call drive.mount(&amp;quot;/content/drive&amp;quot;, force_remount=True).
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; os&lt;span style=&#34;color:#f92672&#34;&gt;,&lt;/span&gt; sys
+my_path &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/content/notebooks&amp;#39;&lt;/span&gt;
+os&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;symlink(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/content/drive/My Drive/Colab Notebooks/competition/pkgs_folder&amp;#39;&lt;/span&gt;, my_path)
+sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;path&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;insert(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,my_path)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; konlpy.tag &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; Twitter
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;위 코드에서 만약 에러가 나면 처음부터 다시 해야 하니, 유의 바란다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;options&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;mode&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;chained_assignment &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; None
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;iii-데이터-불러오기&#34;&gt;III. 데이터 불러오기&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;이제 깃허브 프로젝트인 &lt;code&gt;competition&lt;/code&gt;으로 파일 경로를 변경 한 뒤, 데이터를 불러오도록 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# import join used to join ROOT path and MY_GOOGLE_DRIVE_PATH&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; os.path &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; join  
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# path to your project on Google Drive&lt;/span&gt;
+MY_GOOGLE_DRIVE_PATH &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;My Drive/Colab Notebooks/competition&amp;#39;&lt;/span&gt;
+
+PROJECT_PATH &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; join(ROOT, MY_GOOGLE_DRIVE_PATH)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;cd &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;{PROJECT_PATH}&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;/content/drive/My Drive/Colab Notebooks/competition
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git status
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;On branch master
+Your branch is up to date with &#39;origin/master&#39;.
+
+Changes not staged for commit:
+  (use &amp;quot;git add/rm &amp;lt;file&amp;gt;...&amp;quot; to update what will be committed)
+  (use &amp;quot;git checkout -- &amp;lt;file&amp;gt;...&amp;quot; to discard changes in working directory)
+
+    [31mmodified:   .gitignore[m
+    [31mdeleted:    kakao_arena_3/source/temp.ipynb[m
+    [31mdeleted:    kakao_arena_3/source/temp2.ipynb[m
+
+Untracked files:
+  (use &amp;quot;git add &amp;lt;file&amp;gt;...&amp;quot; to include in what will be committed)
+
+    [31mkakao_arena_3/source/kakao_arena_3_eda.ipynb[m
+
+no changes added to commit (use &amp;quot;git add&amp;quot; and/or &amp;quot;git commit -a&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;ls
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;kakao_arena_3  pkgs_folder  README.md
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# genre_gn_all.json&lt;/span&gt;
+genre_gn_all &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_json(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;kakao_arena_3/data/genre_gn_all.json&amp;#39;&lt;/span&gt;, typ &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;series&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color:#75715e&#34;&gt;# 장르코드 : gnr_code, 장르명 : gnr_name&lt;/span&gt;
+genre_gn_all &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;DataFrame(genre_gn_all, columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;gnr_name&amp;#39;&lt;/span&gt;])&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;reset_index()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;rename(columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;index&amp;#39;&lt;/span&gt; : &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;gnr_code&amp;#39;&lt;/span&gt;})
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(genre_gn_all&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head())
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;  gnr_code gnr_name
+0   GN0100      발라드
+1   GN0101   세부장르전체
+2   GN0102      &#39;80
+3   GN0103      &#39;90
+4   GN0104      &#39;00
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 장르코드 뒷자리 두 자리가 00이 아닌 코드를 필터링&lt;/span&gt;
+dtl_gnr_code &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; genre_gn_all[genre_gn_all[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;gnr_code&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;str[&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;:] &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;00&amp;#39;&lt;/span&gt;]
+dtl_gnr_code&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;rename(columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;gnr_code&amp;#39;&lt;/span&gt; : &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;dtl_gnr_code&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;gnr_name&amp;#39;&lt;/span&gt; : &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;dtl_gnr_name&amp;#39;&lt;/span&gt;}, inplace &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(dtl_gnr_code&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head())
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;  dtl_gnr_code dtl_gnr_name
+1       GN0101       세부장르전체
+2       GN0102          &#39;80
+3       GN0103          &#39;90
+4       GN0104          &#39;00
+5       GN0105         &#39;10-
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;iv-데이터-시각화-구현&#34;&gt;IV. 데이터 시각화 구현&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;한글 시각화를 구현한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Plotting a bar graph of the number of stores in each city, for the first ten cities listed&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# in the column &amp;#39;City&amp;#39;&lt;/span&gt;
+dtl_gnr_name_count  &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; dtl_gnr_code[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;dtl_gnr_name&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;value_counts()
+dtl_gnr_name_count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; dtl_gnr_name_count[:&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;,]
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;figure(figsize&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;))
+sns&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;barplot(dtl_gnr_name_count&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;index, dtl_gnr_name_count&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;values, alpha&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.8&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;title(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;한글 시각화 테스트&amp;#39;&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ylabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Number of Occurrences&amp;#39;&lt;/span&gt;, fontsize&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;xlabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;세부장르&amp;#39;&lt;/span&gt;, fontsize&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;)
+plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;show()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;static/img/settings/kakao_arena_3_eda/output_22_0.png/output_22_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;한글 시각화가 정상적으로 나온 것을 꼭 확인한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;v-github-연동&#34;&gt;V. Github 연동&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;우선 깃허브와 연동하자.&lt;/li&gt;
+&lt;li&gt;그리고, 작성된 코드를 업데이트 하도록 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Clone github repository setup&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# import join used to join ROOT path and MY_GOOGLE_DRIVE_PATH&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; os.path &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; join  
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# path to your project on Google Drive&lt;/span&gt;
+MY_GOOGLE_DRIVE_PATH &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;My Drive/Colab Notebooks/&amp;#39;&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# replace with your github username&lt;/span&gt;
+GIT_USERNAME &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;chloevan&amp;#34;&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# definitely replace with your&lt;/span&gt;
+GIT_TOKEN &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;your_token&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# this is temporary, whenever you add, need to get token number&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Replace with your github repository in this case we want &lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# to clone deep-learning-v2-pytorch repository&lt;/span&gt;
+GIT_REPOSITORY &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;competition&amp;#34;&lt;/span&gt;
+
+PROJECT_PATH &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; join(ROOT, MY_GOOGLE_DRIVE_PATH)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# It&amp;#39;s good to print out the value if you are not sure &lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PROJECT_PATH: &amp;#34;&lt;/span&gt;, PROJECT_PATH)  
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# In case we haven&amp;#39;t created the folder already; we will create a folder in the project path &lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# !mkdir &amp;#34;{PROJECT_PATH}&amp;#34;    &lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;#GIT_PATH = &amp;#34;https://{GIT_TOKEN}@github.com/{GIT_USERNAME}/{GIT_REPOSITORY}.git&amp;#34; this return 400 Bad Request for me&lt;/span&gt;
+GIT_PATH &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;https://&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; GIT_TOKEN &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;@github.com/&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; GIT_USERNAME &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; GIT_REPOSITORY &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;.git&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;GIT_PATH: &amp;#34;&lt;/span&gt;, GIT_PATH)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;PROJECT_PATH:  /content/drive/My Drive/Colab Notebooks/
+GIT_PATH:  https://619..your_token..46b@github.com/chloevan/competition.git
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git remote set&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;url origin &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;{GIT_PATH}&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git add &lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Linked to account&lt;/span&gt;
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git config &lt;span style=&#34;color:#f92672&#34;&gt;--&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;global&lt;/span&gt; user&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;email &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;your_email_address&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git config &lt;span style=&#34;color:#f92672&#34;&gt;--&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;global&lt;/span&gt; user&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;name &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;your_username&amp;#34;&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Git commit&lt;/span&gt;
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git commit &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;m &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;finally updated&amp;#34;&lt;/span&gt;
+
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;git push
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[master c93a004] finally updated
+1 file changed, 1 insertion(+), 1 deletion(-)
+Counting objects: 15, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (15/15), 1.79 KiB | 367.00 KiB/s, done.
+Total 15 (delta 9), reused 0 (delta 0)
+remote: Resolving deltas: 100% (9/9), completed with 3 local objects.
+To https://github.com/chloevan/competition.git
+  320ecd5..c93a004  master -&amp;gt; master
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>Colab &#43; Drive &#43; Github Workflow</title>

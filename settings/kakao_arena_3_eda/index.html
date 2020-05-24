@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Kakao Arena 3 EDA on Google Colab - Data Science | ChloEvan</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+	<meta property="og:title" content="Kakao Arena 3 EDA on Google Colab" />
+<meta property="og:description" content="공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+I. 개요  프로젝트 폴더 내에서 간단하게 EDA를 실습하는 시간을 갖도록 한다. 관련 패키지는 우선 다른 곳에서 설치 되었다는 것을 가정한다.  참고: Python Package Settings on Google Colab   본 포스트의 핵심은 환경설정이 Google Colab &#43; Drive내에서 작업하는 것이다.  II." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chloevan.github.io/settings/kakao_arena_3_eda/" />
+<meta property="article:published_time" content="2020-05-24T13:11:47+09:00" />
+<meta property="article:modified_time" content="2020-05-24T13:11:47+09:00" />
+
+	<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kakao Arena 3 EDA on Google Colab"/>
+<meta name="twitter:description" content="공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+I. 개요  프로젝트 폴더 내에서 간단하게 EDA를 실습하는 시간을 갖도록 한다. 관련 패키지는 우선 다른 곳에서 설치 되었다는 것을 가정한다.  참고: Python Package Settings on Google Colab   본 포스트의 핵심은 환경설정이 Google Colab &#43; Drive내에서 작업하는 것이다.  II."/>
+
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+	<meta name="naver-site-verification" content="589373cb2d4668f329792265c1fdbec3a72ec17d" />
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container">
+		<div class="logo">
+			<a class="logo__link" href="/" title="Data Science | ChloEvan" rel="home">
+				<div class="logo__title">Data Science | ChloEvan</div>
+				<div class="logo__tagline">Love your beloved one forever</div>
+			</a>
+		</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/ds-projects/">
+				
+				<span class="menu__text">DS-Projects</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/gcp/">
+				
+				<span class="menu__text">GCP</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/kaggle/">
+				
+				<span class="menu__text">Kaggle</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/python/">
+				
+				<span class="menu__text">Python</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/r/">
+				
+				<span class="menu__text">R</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/settings/">
+				
+				<span class="menu__text">settings</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About ChloEvan</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">Kakao Arena 3 EDA on Google Colab</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+	<time class="meta__text" datetime="2020-05-24T13:11:47&#43;09:00">2020-05-24</time>
+</div>
+
+<div class="meta__item-categories meta__item">
+	<svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg>
+	<span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/settings/" rel="category">Settings</a>, <a class="meta__link" href="/categories/google-colab/" rel="category">Google Colab</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#공지">공지</a></li>
+    <li><a href="#i-개요">I. 개요</a></li>
+    <li><a href="#ii-패키지-불러오기">II. 패키지 불러오기</a>
+      <ul>
+        <li><a href="#1-나눔고딕-폰트-불러오기">(1) 나눔고딕 폰트 불러오기</a></li>
+        <li><a href="#2-내부에-기-설치된-패키지-불러오기">(2) 내부에 기 설치된 패키지 불러오기</a></li>
+        <li><a href="#3-외부-패키지인-konlpy-불러오기">(3) 외부 패키지인 <code>konlpy</code> 불러오기</a></li>
+      </ul>
+    </li>
+    <li><a href="#iii-데이터-불러오기">III. 데이터 불러오기</a></li>
+    <li><a href="#iv-데이터-시각화-구현">IV. 데이터 시각화 구현</a></li>
+    <li><a href="#v-github-연동">V. Github 연동</a></li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="공지">공지</h2>
+<p>제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.</p>
+<h2 id="i-개요">I. 개요</h2>
+<ul>
+<li>프로젝트 폴더 내에서 간단하게 EDA를 실습하는 시간을 갖도록 한다.</li>
+<li>관련 패키지는 우선 다른 곳에서 설치 되었다는 것을 가정한다.
+<ul>
+<li>참고: <a href="https://chloevan.github.io/settings/colab_package_settings/">Python Package Settings on Google Colab</a></li>
+</ul>
+</li>
+<li>본 포스트의 핵심은 환경설정이 <code>Google Colab + Drive내</code>에서 작업하는 것이다.</li>
+</ul>
+<h2 id="ii-패키지-불러오기">II. 패키지 불러오기</h2>
+<ul>
+<li>다음과 같은 순서로 실행한다.</li>
+<li>첫째, 나눔고딕 한글 폰트를 설치한다.</li>
+<li>둘째, 내부 패키지를 먼저 불러온다.</li>
+<li>셋째, 런타임을 다시 실행한다.</li>
+<li>넷째, <code>Drive</code> 마운트를 진행한다.</li>
+<li>다섯째, 외부 패키지를 불러온다.</li>
+</ul>
+<h3 id="1-나눔고딕-폰트-불러오기">(1) 나눔고딕 폰트 불러오기</h3>
+<ul>
+<li>다음과 같은 방식으로 폰트를 불러온다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">%</span>config InlineBackend<span style="color:#f92672">.</span>figure_format <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;retina&#39;</span>
+<span style="color:#960050;background-color:#1e0010">!</span>apt <span style="color:#f92672">-</span>qq <span style="color:#f92672">-</span>y install fonts<span style="color:#f92672">-</span>nanum
+</code></pre></div><pre><code>The following NEW packages will be installed:
+  fonts-nanum
+0 upgraded, 1 newly installed, 0 to remove and 31 not upgraded.
+Need to get 9,604 kB of archives.
+After this operation, 29.5 MB of additional disk space will be used.
+Selecting previously unselected package fonts-nanum.
+(Reading database ... 144433 files and directories currently installed.)
+Preparing to unpack .../fonts-nanum_20170925-1_all.deb ...
+Unpacking fonts-nanum (20170925-1) ...
+Setting up fonts-nanum (20170925-1) ...
+Processing triggers for fontconfig (2.12.6-0ubuntu2) ...
+</code></pre>
+<h3 id="2-내부에-기-설치된-패키지-불러오기">(2) 내부에 기 설치된 패키지 불러오기</h3>
+<ul>
+<li>관련 패키지를 불러온다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> datetime <span style="color:#f92672">import</span> timedelta, datetime
+<span style="color:#f92672">import</span> glob
+<span style="color:#f92672">from</span> itertools <span style="color:#f92672">import</span> chain
+<span style="color:#f92672">import</span> json
+<span style="color:#f92672">import</span> os
+<span style="color:#f92672">import</span> re
+
+<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+
+<span style="color:#f92672">from</span> wordcloud <span style="color:#f92672">import</span> WordCloud
+<span style="color:#f92672">import</span> nltk
+<span style="color:#f92672">from</span> nltk.corpus <span style="color:#f92672">import</span> stopwords
+<span style="color:#f92672">from</span> collections <span style="color:#f92672">import</span> Counter
+<span style="color:#f92672">from</span> sklearn.feature_extraction.text <span style="color:#f92672">import</span> TfidfVectorizer
+<span style="color:#f92672">from</span> sklearn.feature_extraction.text <span style="color:#f92672">import</span> CountVectorizer
+
+<span style="color:#f92672">from</span> pandas.plotting <span style="color:#f92672">import</span> register_matplotlib_converters
+<span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+<span style="color:#f92672">import</span> matplotlib <span style="color:#f92672">as</span> mpl
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+<span style="color:#f92672">import</span> matplotlib.font_manager <span style="color:#f92672">as</span> fm
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">fontpath <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf&#39;</span>
+font <span style="color:#f92672">=</span> fm<span style="color:#f92672">.</span>FontProperties(fname<span style="color:#f92672">=</span>fontpath, size<span style="color:#f92672">=</span><span style="color:#ae81ff">9</span>)
+plt<span style="color:#f92672">.</span>rc(<span style="color:#e6db74">&#39;font&#39;</span>, family<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;NanumBarunGothic&#39;</span>) 
+plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#34;figure.figsize&#34;</span>] <span style="color:#f92672">=</span> (<span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">10</span>)
+register_matplotlib_converters()
+mpl<span style="color:#f92672">.</span>font_manager<span style="color:#f92672">.</span>_rebuild()
+mpl<span style="color:#f92672">.</span>pyplot<span style="color:#f92672">.</span>rc(<span style="color:#e6db74">&#39;font&#39;</span>, family<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;NanumGothic&#39;</span>)
+fm<span style="color:#f92672">.</span>_rebuild()
+</code></pre></div><h3 id="3-외부-패키지인-konlpy-불러오기">(3) 외부 패키지인 <code>konlpy</code> 불러오기</h3>
+<ul>
+<li>다음 코드를 실행하기 전 반드시 [런타임]-[런타임 다시 시작]을 누르자.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Mount Google Drive</span>
+<span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> drive <span style="color:#75715e"># import drive from google colab</span>
+
+ROOT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/content/drive&#34;</span>     <span style="color:#75715e"># default location for the drive</span>
+<span style="color:#66d9ef">print</span>(ROOT)                 <span style="color:#75715e"># print content of ROOT (Optional)</span>
+drive<span style="color:#f92672">.</span>mount(ROOT)           <span style="color:#75715e"># we mount the google drive at /content/drive</span>
+</code></pre></div><pre><code>/content/drive
+Drive already mounted at /content/drive; to attempt to forcibly remount, call drive.mount(&quot;/content/drive&quot;, force_remount=True).
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> os<span style="color:#f92672">,</span> sys
+my_path <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;/content/notebooks&#39;</span>
+os<span style="color:#f92672">.</span>symlink(<span style="color:#e6db74">&#39;/content/drive/My Drive/Colab Notebooks/competition/pkgs_folder&#39;</span>, my_path)
+sys<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>,my_path)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> konlpy.tag <span style="color:#f92672">import</span> Twitter
+</code></pre></div><ul>
+<li>위 코드에서 만약 에러가 나면 처음부터 다시 해야 하니, 유의 바란다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">pd<span style="color:#f92672">.</span>options<span style="color:#f92672">.</span>mode<span style="color:#f92672">.</span>chained_assignment <span style="color:#f92672">=</span> None
+</code></pre></div><h2 id="iii-데이터-불러오기">III. 데이터 불러오기</h2>
+<ul>
+<li>이제 깃허브 프로젝트인 <code>competition</code>으로 파일 경로를 변경 한 뒤, 데이터를 불러오도록 한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># import join used to join ROOT path and MY_GOOGLE_DRIVE_PATH</span>
+<span style="color:#f92672">from</span> os.path <span style="color:#f92672">import</span> join  
+
+<span style="color:#75715e"># path to your project on Google Drive</span>
+MY_GOOGLE_DRIVE_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;My Drive/Colab Notebooks/competition&#39;</span>
+
+PROJECT_PATH <span style="color:#f92672">=</span> join(ROOT, MY_GOOGLE_DRIVE_PATH)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">%</span>cd <span style="color:#e6db74">&#34;{PROJECT_PATH}&#34;</span>
+</code></pre></div><pre><code>/content/drive/My Drive/Colab Notebooks/competition
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>git status
+</code></pre></div><pre><code>On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use &quot;git add/rm &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)
+
+    [31mmodified:   .gitignore[m
+    [31mdeleted:    kakao_arena_3/source/temp.ipynb[m
+    [31mdeleted:    kakao_arena_3/source/temp2.ipynb[m
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+
+    [31mkakao_arena_3/source/kakao_arena_3_eda.ipynb[m
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>ls
+</code></pre></div><pre><code>kakao_arena_3  pkgs_folder  README.md
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># genre_gn_all.json</span>
+genre_gn_all <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_json(<span style="color:#e6db74">&#39;kakao_arena_3/data/genre_gn_all.json&#39;</span>, typ <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;series&#39;</span>)
+<span style="color:#75715e"># 장르코드 : gnr_code, 장르명 : gnr_name</span>
+genre_gn_all <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(genre_gn_all, columns <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;gnr_name&#39;</span>])<span style="color:#f92672">.</span>reset_index()<span style="color:#f92672">.</span>rename(columns <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;index&#39;</span> : <span style="color:#e6db74">&#39;gnr_code&#39;</span>})
+<span style="color:#66d9ef">print</span>(genre_gn_all<span style="color:#f92672">.</span>head())
+</code></pre></div><pre><code>  gnr_code gnr_name
+0   GN0100      발라드
+1   GN0101   세부장르전체
+2   GN0102      '80
+3   GN0103      '90
+4   GN0104      '00
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 장르코드 뒷자리 두 자리가 00이 아닌 코드를 필터링</span>
+dtl_gnr_code <span style="color:#f92672">=</span> genre_gn_all[genre_gn_all[<span style="color:#e6db74">&#39;gnr_code&#39;</span>]<span style="color:#f92672">.</span>str[<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>:] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;00&#39;</span>]
+dtl_gnr_code<span style="color:#f92672">.</span>rename(columns <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;gnr_code&#39;</span> : <span style="color:#e6db74">&#39;dtl_gnr_code&#39;</span>, <span style="color:#e6db74">&#39;gnr_name&#39;</span> : <span style="color:#e6db74">&#39;dtl_gnr_name&#39;</span>}, inplace <span style="color:#f92672">=</span> True)
+<span style="color:#66d9ef">print</span>(dtl_gnr_code<span style="color:#f92672">.</span>head())
+</code></pre></div><pre><code>  dtl_gnr_code dtl_gnr_name
+1       GN0101       세부장르전체
+2       GN0102          '80
+3       GN0103          '90
+4       GN0104          '00
+5       GN0105         '10-
+</code></pre>
+<h2 id="iv-데이터-시각화-구현">IV. 데이터 시각화 구현</h2>
+<ul>
+<li>한글 시각화를 구현한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Plotting a bar graph of the number of stores in each city, for the first ten cities listed</span>
+<span style="color:#75715e"># in the column &#39;City&#39;</span>
+dtl_gnr_name_count  <span style="color:#f92672">=</span> dtl_gnr_code[<span style="color:#e6db74">&#39;dtl_gnr_name&#39;</span>]<span style="color:#f92672">.</span>value_counts()
+dtl_gnr_name_count <span style="color:#f92672">=</span> dtl_gnr_name_count[:<span style="color:#ae81ff">10</span>,]
+plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">5</span>))
+sns<span style="color:#f92672">.</span>barplot(dtl_gnr_name_count<span style="color:#f92672">.</span>index, dtl_gnr_name_count<span style="color:#f92672">.</span>values, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">0.8</span>)
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;한글 시각화 테스트&#39;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Number of Occurrences&#39;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">12</span>)
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;세부장르&#39;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">12</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="static/img/settings/kakao_arena_3_eda/output_22_0.png/output_22_0.png" alt="png"></p>
+<ul>
+<li>한글 시각화가 정상적으로 나온 것을 꼭 확인한다.</li>
+</ul>
+<h2 id="v-github-연동">V. Github 연동</h2>
+<ul>
+<li>우선 깃허브와 연동하자.</li>
+<li>그리고, 작성된 코드를 업데이트 하도록 한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Clone github repository setup</span>
+<span style="color:#75715e"># import join used to join ROOT path and MY_GOOGLE_DRIVE_PATH</span>
+<span style="color:#f92672">from</span> os.path <span style="color:#f92672">import</span> join  
+
+<span style="color:#75715e"># path to your project on Google Drive</span>
+MY_GOOGLE_DRIVE_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;My Drive/Colab Notebooks/&#39;</span>
+
+<span style="color:#75715e"># replace with your github username</span>
+GIT_USERNAME <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;chloevan&#34;</span>
+
+<span style="color:#75715e"># definitely replace with your</span>
+GIT_TOKEN <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;your_token&#34;</span> <span style="color:#75715e"># this is temporary, whenever you add, need to get token number</span>
+
+<span style="color:#75715e"># Replace with your github repository in this case we want </span>
+<span style="color:#75715e"># to clone deep-learning-v2-pytorch repository</span>
+GIT_REPOSITORY <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;competition&#34;</span>
+
+PROJECT_PATH <span style="color:#f92672">=</span> join(ROOT, MY_GOOGLE_DRIVE_PATH)
+
+<span style="color:#75715e"># It&#39;s good to print out the value if you are not sure </span>
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;PROJECT_PATH: &#34;</span>, PROJECT_PATH)  
+
+<span style="color:#75715e"># In case we haven&#39;t created the folder already; we will create a folder in the project path </span>
+<span style="color:#75715e"># !mkdir &#34;{PROJECT_PATH}&#34;    </span>
+
+<span style="color:#75715e">#GIT_PATH = &#34;https://{GIT_TOKEN}@github.com/{GIT_USERNAME}/{GIT_REPOSITORY}.git&#34; this return 400 Bad Request for me</span>
+GIT_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://&#34;</span> <span style="color:#f92672">+</span> GIT_TOKEN <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;@github.com/&#34;</span> <span style="color:#f92672">+</span> GIT_USERNAME <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/&#34;</span> <span style="color:#f92672">+</span> GIT_REPOSITORY <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;.git&#34;</span>
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;GIT_PATH: &#34;</span>, GIT_PATH)
+</code></pre></div><pre><code>PROJECT_PATH:  /content/drive/My Drive/Colab Notebooks/
+GIT_PATH:  https://619..your_token..46b@github.com/chloevan/competition.git
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>git remote set<span style="color:#f92672">-</span>url origin <span style="color:#e6db74">&#34;{GIT_PATH}&#34;</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>git add <span style="color:#f92672">.</span>
+
+<span style="color:#75715e"># Linked to account</span>
+<span style="color:#960050;background-color:#1e0010">!</span>git config <span style="color:#f92672">--</span><span style="color:#66d9ef">global</span> user<span style="color:#f92672">.</span>email <span style="color:#e6db74">&#34;your_email_address&#34;</span>
+<span style="color:#960050;background-color:#1e0010">!</span>git config <span style="color:#f92672">--</span><span style="color:#66d9ef">global</span> user<span style="color:#f92672">.</span>name <span style="color:#e6db74">&#34;your_username&#34;</span>
+
+<span style="color:#75715e"># Git commit</span>
+<span style="color:#960050;background-color:#1e0010">!</span>git commit <span style="color:#f92672">-</span>m <span style="color:#e6db74">&#34;finally updated&#34;</span>
+
+<span style="color:#960050;background-color:#1e0010">!</span>git push
+</code></pre></div><pre><code>[master c93a004] finally updated
+1 file changed, 1 insertion(+), 1 deletion(-)
+Counting objects: 15, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (15/15), 1.79 KiB | 367.00 KiB/s, done.
+Total 15 (delta 9), reused 0 (delta 0)
+remote: Resolving deltas: 100% (9/9), completed with 3 local objects.
+To https://github.com/chloevan/competition.git
+  320ecd5..c93a004  master -&gt; master
+</code></pre>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item"><a class="tags__link btn" href="/tags/python/" rel="tag">Python</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/settings/" rel="tag">Settings</a></li>
+		<li class="tags__item"><a class="tags__link btn" href="/tags/google-colab/" rel="tag">Google Colab</a></li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="ChloeEvan avatar" src="/img/couple.jpg" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name">About ChloeEvan</span>
+	</div>
+	<div class="authorbox__description">
+		ChloEvan is just one who are loving Chloe &amp; Evan and analyzing Data things. ChloeEvan&#39;s dream is to make the world better through loving Chloe &amp; Evan and working with Data
+	</div>
+</div>
+
+<nav class="post-nav flex">
+	<div class="post-nav__item post-nav__item--prev">
+		<a class="post-nav__link" href="/settings/colab_drive_github_settings/" rel="prev"><span class="post-nav__caption">«&thinsp;Previous</span><p class="post-nav__post-title">Colab &#43; Drive &#43; Github Workflow</p></a>
+	</div>
+</nav>
+
+<section class="comments">
+	<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-chloevan-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH..." value="" name="q" aria-label="SEARCH...">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://chloevan.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/settings/kakao_arena_3_eda/">Kakao Arena 3 EDA on Google Colab</a></li>
+			<li class="widget__item"><a class="widget__link" href="/settings/colab_drive_github_settings/">Colab &#43; Drive &#43; Github Workflow</a></li>
+			<li class="widget__item"><a class="widget__link" href="/settings/colab_package_settings/">Python Package Settings on Google Colab</a></li>
+			<li class="widget__item"><a class="widget__link" href="/gcp/bigquery/02_basics/ch17_types_of_functions/">Ch17 Types of Functions</a></li>
+			<li class="widget__item"><a class="widget__link" href="/kaggle/competition_m5_eda_1/">competition - M5 EDA</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">bar chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basics/">Basics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bupar/">bupaR</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/corona-shiny-app/">Corona Shiny App</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-handling/">Data Handling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-science-project/">Data Science Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualization/">Data Visualization</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deployment/">Deployment</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development/">Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ggplot2/">ggplot2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github/">Github</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-colab/">Google Colab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/histogram/">Histogram</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle/">Kaggle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">line grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/missing-values/">Missing Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/new-packages/">New Packages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pivot-table/">pivot table</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/project/">Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-basic/">Python Basic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/">R 마크다운</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regular-expression/">regular expression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rpa/">RPA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0/">Tensorflow 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0-tutorial/">Tensorflow 2.0 Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tutorial/">Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/">구글 클라우드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/">기초통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/">데이터 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">데이터 시각화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">데이터 싸이언스 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/">막대 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B3%B4%EA%B3%A0%EC%84%9C-%EC%9E%90%EB%8F%99%ED%99%94/">보고서 자동화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/">빅쿼리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/">선 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/">정규표현식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/">텐서플로 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/">텐서플로 2.0 튜토리얼</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/">프로세스 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/">피벗 테이블</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/append/" title="append">append</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/auto-encoder/" title="Auto Encoder">Auto Encoder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="bar chart">bar chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basics/" title="Basics">Basics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery with Python">BigQuery with Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery with R">BigQuery with R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/broadcasting/" title="Broadcasting">Broadcasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bupar/" title="bupaR">bupaR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/clustering/" title="Clustering">Clustering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cross-join/" title="Cross Join">Cross Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dashboard/" title="Dashboard">Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-handling/" title="Data Handling">Data Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-types/" title="Data Types">Data Types</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualization/" title="Data Visualization">Data Visualization</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dataframe/" title="DataFrame">DataFrame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deployment/" title="Deployment">Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="Development">Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="dplyr">dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enumerate/" title="enumerate">enumerate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/extend/" title="extend">extend</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="filter">filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/for-loop/" title="for-loop">for-loop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gghistostats/" title="gghistostats">gghistostats</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ggplot2/" title="ggplot2">ggplot2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github/" title="Github">Github</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="GRU 레이어">GRU 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="gt">gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/histogram/" title="Histogram">Histogram</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-segmentation/" title="Image Segmentation">Image Segmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-settings/" title="Image Settings">Image Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/insert/" title="insert">insert</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interview/" title="Interview">Interview</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="iterrows">iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/join/" title="JOIN">JOIN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle/" title="Kaggle">Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lambda/" title="lambda">lambda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="leaflet">leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="line grpah">line grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/list/" title="list">list</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="lists">lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m5-forecasting/" title="M5 Forecasting">M5 Forecasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-%EC%84%A4%EC%A0%95/" title="Mathjax 설정">Mathjax 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiprocessing/" title="multiprocessing">multiprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/new-packages/" title="New Packages">New Packages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numpy/" title="NumPy">NumPy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outer-join/" title="Outer Join">Outer Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pivot-table/" title="pivot table">pivot table</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="plotly">plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/polar-chart/" title="Polar Chart">Polar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/productive-box/" title="productive-box">productive-box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-basic/" title="Python Basic">Python Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-excel/" title="Python Excel">Python Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="Python 포트폴리오">Python 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="R 포트폴리오">R 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regular-expression/" title="regular expression">regular expression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rpa/" title="RPA">RPA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-app-%EB%B0%B0%ED%8F%AC/" title="Shiny App 배포">Shiny App 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="shinydashboard">shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="sort_values">sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/super-resolution/" title="Super Resolution">Super Resolution</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/swifter/" title="swifter">swifter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0/" title="Tensorflow 2.0">Tensorflow 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0-tutorial/" title="Tensorflow 2.0 Tutorial">Tensorflow 2.0 Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tutorial/" title="Tutorial">Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/types-of-functions/" title="Types of Functions">Types of Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="vcrs">vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%8D%EC%A0%95-%EB%B6%80%EC%A0%95-%EA%B0%90%EC%84%B1%EB%B6%84%EC%84%9D/" title="긍정, 부정 감성분석">긍정, 부정 감성분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C/" title="깃허브">깃허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="깃허브 환경설정">깃허브 환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="데이터 싸이언스 프로젝트">데이터 싸이언스 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="데이터 전처리">데이터 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/" title="막대 그래프">막대 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%AA%A8%EB%8D%B8%EB%A7%81-%EC%8B%9C%EA%B0%81%ED%99%94/" title="모델링 시각화">모델링 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B3%B4%EC%8A%A4%ED%84%B4-%EC%A3%BC%ED%83%9D-%EA%B0%80%EA%B2%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%B8%ED%8A%B8/" title="보스턴 주택 가격 데이터세트">보스턴 주택 가격 데이터세트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B6%84%EB%A5%98/" title="분류">분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" title="빅쿼리">빅쿼리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-r/" title="빅쿼리 R">빅쿼리 R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%EA%B8%B0%EB%B3%B8/" title="빅쿼리 기본">빅쿼리 기본</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%ED%8C%8C%EC%9D%B4%EC%8D%AC/" title="빅쿼리 파이썬">빅쿼리 파이썬</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%B0%EC%A0%90%EB%8F%84/" title="산점도">산점도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%83%A4%EC%9D%B4%EB%8B%88-%EC%95%B1-%EB%B0%B0%ED%8F%AC/" title="샤이니 앱 배포">샤이니 앱 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" title="선 그래프">선 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/" title="선형회귀">선형회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%88%9C%ED%99%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="순환 신경망">순환 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" title="시각화 문법">시각화 문법</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" title="시그노이드">시그노이드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%A0%EA%B2%BD-%EC%8A%A4%ED%83%80%EC%9D%BC-%EC%A0%84%EC%9D%B4/" title="신경 스타일 전이">신경 스타일 전이</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%98%A4%ED%86%A0%EC%9D%B8%EC%BD%94%EB%8D%94/" title="오토인코더">오토인코더</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B6%84%ED%95%A0/" title="이미지 분할">이미지 분할</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%84%A4%EC%A0%95/" title="이미지 설정">이미지 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" title="이항분류">이항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%84%EB%B2%A0%EB%94%A9-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="임베딩 레이어">임베딩 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%83%9D%EC%84%B1/" title="자연어 생성">자연어 생성</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/" title="전이 학습">전이 학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/" title="정규표현식">정규표현식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/" title="지도학습">지도학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B4%88%ED%95%B4%EC%83%81%EB%8F%84/" title="초해상도">초해상도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BB%A8%EB%B3%BC%EB%A3%A8%EC%85%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="컨볼루션 신경망">컨볼루션 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="코로나 대시보드">코로나 대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%8B%A4%EB%A3%A8%EA%B8%B0/" title="테이블 다루기">테이블 다루기</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" title="텐서플로 2.0">텐서플로 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" title="텐서플로 2.0 튜토리얼">텐서플로 2.0 튜토리얼</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-%ED%97%88%EB%B8%8C/" title="텐서플로 허브">텐서플로 허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%97%91%EC%85%80/" title="판다스 엑셀">판다스 엑셀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" title="판다스 자료구조">판다스 자료구조</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="포트폴리오">포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="프로세스 마이닝">프로세스 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/" title="프로세스 분석">프로세스 분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/" title="피벗 테이블">피벗 테이블</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80-%ED%8F%B0%ED%8A%B8-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0/" title="한글 폰트 오류 해결">한글 폰트 오류 해결</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="환경설정">환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9A%8C%EA%B7%80%EB%AA%A8%ED%98%95/" title="회귀모형">회귀모형</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9C%B4%EA%B3%A0/" title="휴고">휴고</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9E%88%EC%8A%A4%ED%86%A0%EA%B7%B8%EB%9E%A8/" title="히스토그램">히스토그램</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2020 ChloEvan.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>
