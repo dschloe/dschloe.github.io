@@ -5,10 +5,139 @@
     <description>Recent content in 빅쿼리 기본 on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 26 May 2020 18:30:30 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 27 May 2020 20:30:30 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%EA%B8%B0%EB%B3%B8/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ch20 Logical Operations</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch20_logical_operations/</link>
+      <pubDate>Wed, 27 May 2020 20:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch20_logical_operations/</guid>
+      <description>&lt;h2 id=&#34;i-구글-클라우드-설정&#34;&gt;I. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-사용자-계정-인증&#34;&gt;II. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;iii-logical-operations&#34;&gt;III. Logical Operations&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;WHERE&lt;/code&gt; 절의 필터링에 관한 섹션에서 &lt;code&gt;WHERE&lt;/code&gt; 절은 &lt;code&gt;AND&lt;/code&gt;, &lt;code&gt;OR&lt;/code&gt; 및 &lt;code&gt;NOT&lt;/code&gt;를 포함하는 &lt;code&gt;BOOL&lt;/code&gt;식 뿐만 아니라 실행 순서를 제어하는 괄호를 포함할 수 있다고 호출한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;your_project_id&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    gender, tripduration
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE (tripduration &amp;lt; 600 AND gender = &amp;#39;female&amp;#39;)
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+
+
+         gender  tripduration
+0        female           238
+1        female           389
+2        female           397
+3        female           385
+4        female           499
+...         ...           ...
+5020698  female           412
+5020699  female           468
+5020700  female           561
+5020701  female           450
+5020702  female           583
+
+[5020703 rows x 2 columns]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;다음과 같이 &lt;code&gt;BOOL&lt;/code&gt; 변수와 비교 연산자를 사용할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH example AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT NULL AS is_vowel, NULL as letter, -1 as position
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT true, &amp;#39;a&amp;#39;, 1
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;b&amp;#39;, 2
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;c&amp;#39;, 3
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT * 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM example 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE is_vowel != false
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;   is_vowel letter  position
+0      True      a         1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;그런데, 이번의 예에서와 같이 내장 상수와 비교할 때 &lt;code&gt;IS&lt;/code&gt; 연산자를 사용하는 것이 더 간단한 경우가 많다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH example AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT NULL AS is_vowel, NULL as letter, -1 as position
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT true, &amp;#39;a&amp;#39;, 1
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;b&amp;#39;, 2
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;c&amp;#39;, 3
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT * 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM example 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE is_vowel IS NOT false
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;  is_vowel letter  position
+0     None   None        -1
+1     True      a         1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;의미상으로는 똑같아 보이겠지만, 결과는 다르다.&lt;/li&gt;
+&lt;li&gt;비교연산자(&lt;code&gt;=, !=, &amp;lt;, etc&lt;/code&gt;)의 결과는 &lt;code&gt;NULL&lt;/code&gt;과의 비교를 위해 &lt;code&gt;NULL&lt;/code&gt;을 반환하지만, &lt;code&gt;IS&lt;/code&gt; 연산자는 그렇지 않다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iv-null에-대한-추가적인-tip&#34;&gt;IV. NULL에 대한 추가적인 Tip&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;NULL&lt;/code&gt; 일반적으로 수집되지 않은 결측값 또는 값을 나타낸다. 값이 없고 &lt;code&gt;0도 아니고&lt;/code&gt;, &lt;code&gt;빈 문자열&lt;/code&gt;도 아니다.&lt;/li&gt;
+&lt;li&gt;데이터 집합에 &lt;code&gt;NULL&lt;/code&gt;이 있는 경우 &lt;code&gt;NULL&lt;/code&gt;과의 비교는 항상 &lt;code&gt;NULL&lt;/code&gt;을 반환하므로 &lt;code&gt;WHERE&lt;/code&gt; 절에서 &lt;code&gt;NULL&lt;/code&gt; 값을 필터링하는 것에 주의 한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;IS&lt;/code&gt; 연산자를 사용하여 값이 &lt;code&gt;NULL&lt;/code&gt;인지 확인한다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;BOOL&lt;/code&gt; 변수를 직접 사용하는 것이 더 간단하고 읽기 쉽다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH example AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT NULL AS is_vowel, NULL as letter, -1 as position
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT true, &amp;#39;a&amp;#39;, 1
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;b&amp;#39;, 2
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT false, &amp;#39;c&amp;#39;, 3
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT * 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM example 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WHERE is_vowel
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;   is_vowel letter  position
+0      True      a         1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;v-reference&#34;&gt;V. Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, V. (2018). &amp;ldquo;Exploring a powerful SQL pattern: ARRAY_AGG, STRUCT and UNNEST&amp;rdquo; Retrieved from &lt;a href=&#34;https://www.freecodecamp.org/news/exploring-a-powerful-sql-pattern-array-agg-struct-and-unnest-b7dcc6263e36/&#34;&gt;https://www.freecodecamp.org/news/exploring-a-powerful-sql-pattern-array-agg-struct-and-unnest-b7dcc6263e36/&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Ch19 Comparisons Decimal Calculations</title>
