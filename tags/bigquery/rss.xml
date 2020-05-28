@@ -5,10 +5,85 @@
     <description>Recent content in BigQuery on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 27 May 2020 20:30:30 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 28 May 2020 12:30:30 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/tags/bigquery/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ch21 Conditional Expressions</title>
+      <link>https://chloevan.github.io/gcp/bigquery/02_basics/ch21_conditional_expressions/</link>
+      <pubDate>Thu, 28 May 2020 12:30:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/gcp/bigquery/02_basics/ch21_conditional_expressions/</guid>
+      <description>&lt;h2 id=&#34;i-구글-클라우드-설정&#34;&gt;I. 구글 클라우드 설정&lt;/h2&gt;
+&lt;p&gt;본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to &lt;a href=&#34;https://console.cloud.google.com/cloud-resource-manager&#34;&gt;Cloud Resource Manager&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;그리고, 비용결제를 위한 카드를 등록한다. &lt;a href=&#34;https://support.google.com/cloud/answer/6293499#enable-billing&#34;&gt;Enable billing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.&lt;a href=&#34;https://console.cloud.google.com/flows/enableapi?apiid=bigquery&#34;&gt;Enable BigQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위 API를 이용하지 않으면 &lt;code&gt;Python&lt;/code&gt; 또는 &lt;code&gt;R&lt;/code&gt;과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 &lt;a href=&#34;https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko&#34;&gt;BigQuery 권장사항: 비용 관리&lt;/a&gt;에서 확인하기를 바란다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-사용자-계정-인증&#34;&gt;II. 사용자 계정 인증&lt;/h2&gt;
+&lt;p&gt;구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. &lt;code&gt;Gmail&lt;/code&gt; 인증 절차와 비슷하다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.colab &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; auth
+auth&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;authenticate_user()
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Authenticated&amp;#39;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Authenticated
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;iii-conditional-expressions&#34;&gt;III. Conditional Expressions&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Booleans&lt;/code&gt;가 유용하다는 것은 WHERE 조항에만 있는 것이 아니다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;SELECT&lt;/code&gt;의 조건부 식을 사용하여 많은 쿼리를 단순화할 수 있다.&lt;/li&gt;
+&lt;li&gt;예를 들어, 원하는 마크업과 해당 항목에 해당하는 세율을 기준으로 카탈로그에 있는 각 항목의 판매 가격을 계산해야 한다고 가정해 보자.&lt;/li&gt;
+&lt;li&gt;카탈로그에 필요한 정보 중 일부가 누락된 경우 기본 마크업 또는 기본 세율을 귀속시킬 수 있다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;IF&lt;/code&gt; 기능을 사용하여 다음을 달성할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; google.cloud &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; bigquery
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+
+project_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;your_project_id&amp;#39;&lt;/span&gt;
+client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bigquery&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Client(project&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;project_id)
+
+temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  WITH catalog AS (
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    SELECT 30.0 AS costPrice, 0.15 AS markup, 0.1 AS taxRate
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT NULL, 0.21, 0.15
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT 30.0, NULL, 0.09
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT 30.0, 0.30, NULL
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    UNION ALL SELECT 30.0, NULL, NULL
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  )
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  SELECT 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    *, ROUND(
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      costPrice * 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      IF(markup IS NULL, 1.05, 1+markup) * 
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;      IF(taxRate IS NULL, 1.10, 1+taxRate)
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    , 2) AS salesPrice
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  FROM catalog
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;  &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_dataframe()
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+
+
+   costPrice  markup  taxRate  salesPrice
+0       30.0    0.15     0.10       37.95
+1        NaN    0.21     0.15         NaN
+2       30.0     NaN     0.09       34.34
+3       30.0    0.30      NaN       42.90
+4       30.0     NaN      NaN       34.65
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;이렇게 하면 비용을 알 수 없는 항목을 제외한 모든 품목에 대해 유효한 판매 가격을 산출할 수 있다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;IF&lt;/code&gt; 함수의 작동 방식은 첫 번째 매개변수가 평가 조건이라는 것이다.&lt;/li&gt;
+&lt;li&gt;첫번째 파라미터의 조건이 참이면 두 번째 파라미터가 사용되거나 또는 세 번째 파라미터가 사용된다.&lt;/li&gt;
+&lt;li&gt;이 기능은 &lt;code&gt;SELECT&lt;/code&gt; 에서 발생하기 때문에 행별로 수행된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iv-reference&#34;&gt;IV. Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, V., &amp;amp; Tigani, J. (2020). Google BigQuery: the definitive guide: data warehousing, analytics, and machine learning at scale. Beijing: OReilly.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Ch20 Logical Operations</title>
