@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Missing Values on Data Science | ChloEvan</title>
@@ -7,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Sat, 02 May 2020 19:15:47 +0900</lastBuildDate>
     
-        <atom:link href="https://chloevan.github.io/tags/missing-values/rss.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://chloevan.github.io/tags/missing-values/rss.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -16,179 +17,8 @@
       <pubDate>Sat, 02 May 2020 19:15:47 +0900</pubDate>
       
       <guid>https://chloevan.github.io/python/transformation/dealing_with_na_01/</guid>
-      <description>&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
-&lt;p&gt;제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 &lt;code&gt;Reference&lt;/code&gt;는 꼭 확인하셔서 교재 구매 또는 관련 &lt;code&gt;Reference&lt;/code&gt;를 확인하시기를 바랍니다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;원문: &lt;a href=&#34;https://towardsdatascience.com/6-different-ways-to-compensate-for-missing-values-data-imputation-with-examples-6022d9ca0779&#34;&gt;6 Different Ways to Compensate for Missing Values In a Dataset (Data Imputation with examples)&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;i-overview&#34;&gt;I. Overview&lt;/h2&gt;
-&lt;p&gt;실제 데이터를 다루다보면 여러가지 이유로 결측치와 마주하게 된다. 특별한 이유가 없다면, 현업에서는 당연히 NA를 처리해야 한다. 그렇지 않다면 데이터 분석(시각화, 통계, 머신러닝 모형)에 영향을 줄 수 밖에 없다.&lt;/p&gt;
-&lt;p&gt;원인은 크게 3가지로 구분될 수 있지만, 이러한 주제는 보통 논문을 통해서 다뤄지니, 여기에서는 일단 건너뛰자. (You like theory?)&lt;/p&gt;
-&lt;p&gt;질문, 어떻게 처리해야 할까? (결국 이런걸 원하는 것이니!)&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;참고로, 여기에서는 &lt;code&gt;Module&lt;/code&gt; 설치 등은 다루지 않으며, 데이터는 &lt;code&gt;Scikit-learn&lt;/code&gt;의 &lt;code&gt;California Housing Dataset&lt;/code&gt;을 참고했다.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h2 id=&#34;방법-1-아무것도-하지-않는다&#34;&gt;방법 1. 아무것도 하지 않는다!&lt;/h2&gt;
-&lt;p&gt;굉장히 편한 방법이다. 그런데, 이 방법론을 쓰려면 알고리즘을 잘 선택해야 한다. &lt;code&gt;XGBoost&lt;/code&gt;와 같은 알고리즘은 NA값에 대해 대체할 만한 가장 최적의 것으로 대체하며 학습하기도 하지만, 일반적으로 선형회귀모형은 결과가 도출되지 않는다.&lt;/p&gt;
-&lt;h2 id=&#34;방법-2-평균-또는-중간값으로-대체&#34;&gt;방법 2. 평균 또는 중간값으로 대체&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;Numeric&lt;/code&gt; 데이터에만 적용이 가능하고, 각 Column마다 독립적으로 적용을 한다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;장점: 쉽고 빠르고, small 데이터에 적용이 가능하다.&lt;/li&gt;
-&lt;li&gt;단점 (오역 방지차 원문을 그대로 인용)
-&lt;ul&gt;
-&lt;li&gt;Doesn&amp;rsquo;t factor the correlations between features. It only works on the column level.&lt;/li&gt;
-&lt;li&gt;Will give poor results on encoded categorical features (do NOT use it on categorical features).&lt;/li&gt;
-&lt;li&gt;Not very accurate&lt;/li&gt;
-&lt;li&gt;Doesn&amp;rsquo;t account for the uncertainty in the imputations&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; sklearn.datasets &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; fetch_california_housing
-&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; sklearn.linear_model &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; LinearRegression
-&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; sklearn.model_selection &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; StratifiedKFold
-&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; sklearn.metrics &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; mean_squared_error
-&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; math &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; sqrt
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; random
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; np
-random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;seed(&lt;span style=&#34;color:#ae81ff&#34;&gt;20200502&lt;/span&gt;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;1-fetching-데이터&#34;&gt;(1) Fetching 데이터&lt;/h3&gt;
-&lt;p&gt;데이터를 가져와서 확인해보자.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
-&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
-
-dataset &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fetch_california_housing()
-train, target &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;DataFrame(dataset&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;data), pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;DataFrame(dataset&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;target)
-train_columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;0&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;1&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;2&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;3&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;4&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;5&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;6&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;7&amp;#39;&lt;/span&gt;]
-train&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;insert(loc&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;len(train_columns), column&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;target&amp;#39;&lt;/span&gt;, value&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;target)
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(train&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    |      0 |   1 |       2 |       3 |    4 |       5 |     6 |   target |       7 |
-|---:|-------:|----:|--------:|--------:|-----:|--------:|------:|---------:|--------:|
-|  0 | 8.3252 |  41 | 6.98413 | 1.02381 |  322 | 2.55556 | 37.88 |    4.526 | -122.23 |
-|  1 | 8.3014 |  21 | 6.23814 | 0.97188 | 2401 | 2.10984 | 37.86 |    3.585 | -122.22 |
-|  2 | 7.2574 |  52 | 8.28814 | 1.07345 |  496 | 2.80226 | 37.85 |    3.521 | -122.24 |
-|  3 | 5.6431 |  52 | 5.81735 | 1.07306 |  558 | 2.54795 | 37.85 |    3.413 | -122.25 |
-|  4 | 3.8462 |  52 | 6.28185 | 1.08108 |  565 | 2.18147 | 37.85 |    3.422 | -122.25 |
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id=&#34;2-na값-임의-대체&#34;&gt;(2) NA값 임의 대체&lt;/h3&gt;
-&lt;p&gt;실험을 위해 첫번째 Column에 약 40%에 해당하는 &lt;code&gt;Column&lt;/code&gt;을 부여한다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;column &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; train[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;] &lt;span style=&#34;color:#75715e&#34;&gt;# 20640&lt;/span&gt;
-missing_pct &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; int(column&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;size &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.4&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;# 8256&lt;/span&gt;
-i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;choice(range(column&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shape[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;])) &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; _ &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; range(missing_pct)]
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(i[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;:&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;])
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[17455, 4645, 7718, 11453, 7913]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;column[i]&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;NaN
-column&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;0    8.3252
-1    8.3014
-2       NaN
-3       NaN
-4       NaN
-5       NaN
-6       NaN
-7       NaN
-8    2.0804
-9       NaN
-Name: 0, dtype: float64
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id=&#34;3-평균값-대체-scikit-learn-활용&#34;&gt;(3) 평균값 대체 (Scikit-learn) 활용&lt;/h3&gt;
-&lt;p&gt;Scikit-learn 모듈을 활용해서 결측값을 대체해보자.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; sklearn.impute &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; SimpleImputer
-imp_mean &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SimpleImputer(strategy&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;mean&amp;#39;&lt;/span&gt;)
-imputed_DF &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;DataFrame(imp_mean&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fit_transform(train))
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(imputed_DF&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    |       0 |   1 |       2 |        3 |    4 |       5 |     6 |     7 |       8 |
-|---:|--------:|----:|--------:|---------:|-----:|--------:|------:|------:|--------:|
-|  0 | 8.3252  |  41 | 6.98413 | 1.02381  |  322 | 2.55556 | 37.88 | 4.526 | -122.23 |
-|  1 | 8.3014  |  21 | 6.23814 | 0.97188  | 2401 | 2.10984 | 37.86 | 3.585 | -122.22 |
-|  2 | 3.86937 |  52 | 8.28814 | 1.07345  |  496 | 2.80226 | 37.85 | 3.521 | -122.24 |
-|  3 | 3.86937 |  52 | 5.81735 | 1.07306  |  558 | 2.54795 | 37.85 | 3.413 | -122.25 |
-|  4 | 3.86937 |  52 | 6.28185 | 1.08108  |  565 | 2.18147 | 37.85 | 3.422 | -122.25 |
-|  5 | 3.86937 |  52 | 4.76166 | 1.10363  |  413 | 2.1399  | 37.85 | 2.697 | -122.25 |
-|  6 | 3.86937 |  52 | 4.93191 | 0.951362 | 1094 | 2.1284  | 37.84 | 2.992 | -122.25 |
-|  7 | 3.86937 |  52 | 4.79753 | 1.06182  | 1157 | 1.78825 | 37.84 | 2.414 | -122.25 |
-|  8 | 2.0804  |  42 | 4.29412 | 1.11765  | 1206 | 2.02689 | 37.84 | 2.267 | -122.26 |
-|  9 | 3.86937 |  52 | 4.97059 | 0.990196 | 1551 | 2.17227 | 37.84 | 2.611 | -122.25 |
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;첫번째 행의 값을 보면, &lt;code&gt;NaN&lt;/code&gt;이 &lt;code&gt;3.869374&lt;/code&gt; 형태로 바뀐 것을 볼 수가 있다.&lt;/p&gt;
-&lt;p&gt;만약, 바로 머신러닝 모형에 적용한다면, 2D array 형태로 출력해야 되면, 다음과 같은 코드를 유지하면 된다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;imp_mean &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SimpleImputer(strategy&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;mean&amp;#39;&lt;/span&gt;)
-imp_mean&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fit(train)
-imputed_train_df &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; imp_mean&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;transform(train)
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; range(len(imputed_train_df)):
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(i, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;-&amp;#34;&lt;/span&gt;, imputed_train_df[i])
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;0 - [   8.3252       41.            6.98412698    1.02380952  322.
-    2.55555556   37.88          4.526      -122.23      ]
-1 - [ 8.30140000e+00  2.10000000e+01  6.23813708e+00  9.71880492e-01
-  2.40100000e+03  2.10984183e+00  3.78600000e+01  3.58500000e+00
- -1.22220000e+02]
-2 - [   3.86937366   52.            8.28813559    1.07344633  496.
-    2.80225989   37.85          3.521      -122.24      ]
-3 - [   3.86937366   52.            5.8173516     1.07305936  558.
-    2.54794521   37.85          3.413      -122.25      ]
-4 - [   3.86937366   52.            6.28185328    1.08108108  565.
-    2.18146718   37.85          3.422      -122.25      ]
-5 - [   3.86937366   52.            4.76165803    1.10362694  413.
-    2.13989637   37.85          2.697      -122.25      ]
-6 - [ 3.86937366e+00  5.20000000e+01  4.93190661e+00  9.51361868e-01
-  1.09400000e+03  2.12840467e+00  3.78400000e+01  2.99200000e+00
- -1.22250000e+02]
-7 - [ 3.86937366e+00  5.20000000e+01  4.79752705e+00  1.06182380e+00
-  1.15700000e+03  1.78825348e+00  3.78400000e+01  2.41400000e+00
- -1.22250000e+02]
-8 - [ 2.08040000e+00  4.20000000e+01  4.29411765e+00  1.11764706e+00
-  1.20600000e+03  2.02689076e+00  3.78400000e+01  2.26700000e+00
- -1.22260000e+02]
-9 - [ 3.86937366e+00  5.20000000e+01  4.97058824e+00  9.90196078e-01
-  1.55100000e+03  2.17226891e+00  3.78400000e+01  2.61100000e+00
- -1.22250000e+02]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id=&#34;방법-3-최빈값-대체&#34;&gt;방법 3. 최빈값 대체&lt;/h2&gt;
-&lt;p&gt;최빈값은, 특정 Column에서 가장 많이 나타나는 값으로 대체하는 것이다. 특히 이 방법은 &lt;code&gt;categorical features&lt;/code&gt;를 다룰 때 사용한다. 그러나, 데이터에 자칫 편향성을 가져다 줄 수 있다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;column &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; train[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;] &lt;span style=&#34;color:#75715e&#34;&gt;# 20640&lt;/span&gt;
-missing_pct &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; int(column&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;size &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.4&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;# 8256&lt;/span&gt;
-i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;choice(range(column&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shape[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;])) &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; _ &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; range(missing_pct)]
-column[i]&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;NaN
-column&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;0    41.0
-1    21.0
-2    52.0
-3     NaN
-4     NaN
-5     NaN
-6     NaN
-7    52.0
-8    42.0
-9    52.0
-Name: 1, dtype: float64
-&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; sklearn.impute &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; SimpleImputer
-imp_mean &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SimpleImputer(strategy&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;most_frequent&amp;#39;&lt;/span&gt;)
-imputed_DF &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;DataFrame(imp_mean&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fit_transform(train))
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(imputed_DF&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pipe&amp;#39;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keys&amp;#39;&lt;/span&gt;))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;|    |      0 |   1 |       2 |        3 |    4 |       5 |     6 |     7 |       8 |
-|---:|-------:|----:|--------:|---------:|-----:|--------:|------:|------:|--------:|
-|  0 | 8.3252 |  41 | 6.98413 | 1.02381  |  322 | 2.55556 | 37.88 | 4.526 | -122.23 |
-|  1 | 8.3014 |  21 | 5       | 0.97188  | 2401 | 2.10984 | 37.86 | 3.585 | -122.22 |
-|  2 | 3.125  |  52 | 8.28814 | 1.07345  |  496 | 2.80226 | 37.85 | 3.521 | -122.24 |
-|  3 | 3.125  |  52 | 5.81735 | 1.07306  |  558 | 2.54795 | 37.85 | 3.413 | -122.25 |
-|  4 | 3.125  |  52 | 5       | 1.08108  |  565 | 2.18147 | 37.85 | 3.422 | -122.25 |
-|  5 | 3.125  |  52 | 5       | 1.10363  |  413 | 2.1399  | 37.85 | 2.697 | -122.25 |
-|  6 | 3.125  |  52 | 4.93191 | 0.951362 | 1094 | 2.1284  | 37.84 | 2.992 | -122.25 |
-|  7 | 3.125  |  52 | 5       | 1.06182  | 1157 | 1.78825 | 37.84 | 2.414 | -122.25 |
-|  8 | 2.0804 |  42 | 5       | 1.11765  | 1206 | 2.02689 | 37.84 | 2.267 | -122.26 |
-|  9 | 3.125  |  52 | 5       | 0.990196 | 1551 | 2.17227 | 37.84 | 2.611 | -122.25 |
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;1&lt;/code&gt; Column을 보면 알겠지만, 모두 가장 빈번하게 나온 &lt;code&gt;52&lt;/code&gt;로 대체가 된 것을 확인할 수 있다.&lt;/p&gt;
-&lt;h2 id=&#34;결론&#34;&gt;결론&lt;/h2&gt;
-&lt;p&gt;결측치 처리에 대해 잠깐 다뤘다. 각각의 방법론에는 모두 장단점이 있기 때문에 신중을 기해야 하며, 특히, &lt;code&gt;numeric feature&lt;/code&gt;에 적용해야 할 방법과 &lt;code&gt;categorical feature&lt;/code&gt;에 적용해야 할 방법에 대해 구분 지어서 생각을 해야 한다.&lt;/p&gt;
-&lt;p&gt;다음 시간에는 통계적 기법을 활용한 결측치 대체에 대해 포스팅을 하도록 하겠다. 작은 도움이 되기를 바란다.&lt;/p&gt;
-</description>
+      <description>공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+ 원문: 6 Different Ways to Compensate for Missing Values In a Dataset (Data Imputation with examples)  I. Overview 실제 데이터를 다루다보면 여러가지 이유로 결측치와 마주하게 된다. 특별한 이유가 없다면, 현업에서는 당연히 NA를 처리해야 한다. 그렇지 않다면 데이터 분석(시각화, 통계, 머신러닝 모형)에 영향을 줄 수 밖에 없다.</description>
     </item>
     
   </channel>

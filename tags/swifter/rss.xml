@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>swifter on Data Science | ChloEvan</title>
@@ -7,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Wed, 13 May 2020 14:15:47 +0900</lastBuildDate>
     
-        <atom:link href="https://chloevan.github.io/tags/swifter/rss.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://chloevan.github.io/tags/swifter/rss.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -16,181 +17,10 @@
       <pubDate>Wed, 13 May 2020 14:15:47 +0900</pubDate>
       
       <guid>https://chloevan.github.io/python/pandas/pandas_lambda_swifter/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/python_edu/02_datatransformation/pandas_logo.png#center&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
-&lt;p&gt;제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 &lt;code&gt;Reference&lt;/code&gt;는 꼭 확인하셔서 교재 구매 또는 관련 &lt;code&gt;Reference&lt;/code&gt;를 확인하시기를 바랍니다.&lt;/p&gt;
-&lt;p&gt;지난 포스트에서는 &lt;code&gt;lambda&lt;/code&gt;의 기본적인 개념에 대해서 익혔다면, 이제 본격적인 데이터 전처리와 관련된 예제를 올리려고 한다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/python/basic/lambda_and_list_comprehension/&#34;&gt;Python - Lambda and List Comprehension&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;ii-가상의-데이터셋-만들기&#34;&gt;II. 가상의 데이터셋 만들기&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;25M 행과 5개의 열로 구성된 가상의 숫자 데이터 프레임을 만들어보자.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; np
-&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
-
-pd_temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;DataFrame(np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;randint(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;, size &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;25000000&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)), columns&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;list(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;abcde&amp;#39;&lt;/span&gt;))
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(pd_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th align=&#34;right&#34;&gt;&lt;/th&gt;
-&lt;th align=&#34;right&#34;&gt;a&lt;/th&gt;
-&lt;th align=&#34;right&#34;&gt;b&lt;/th&gt;
-&lt;th align=&#34;right&#34;&gt;c&lt;/th&gt;
-&lt;th align=&#34;right&#34;&gt;d&lt;/th&gt;
-&lt;th align=&#34;right&#34;&gt;e&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td align=&#34;right&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;44&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;28&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;17&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;36&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;35&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;93&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;31&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;45&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;17&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;97&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;56&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;89&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;51&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;53&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;92&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;35&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;17&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;87&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;45&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;59&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;95&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h2 id=&#34;iii-성능-테스트&#34;&gt;III. 성능 테스트&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;새로운 컬럼(&lt;code&gt;f&lt;/code&gt;)을 만드는데, if condition을 적용해서 실험을 해본다. 우선 새로운 컬럼을 만드는 함수는 아래와 같이 작성해보자.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;add_col_fun&lt;/span&gt;(a,b):
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;50&lt;/span&gt;: 
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; True
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;elif&lt;/span&gt; b &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;75&lt;/span&gt;:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; True
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; False
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;1-apply--lambda&#34;&gt;(1) apply + lambda&lt;/h3&gt;
-&lt;p&gt;보통 &lt;code&gt;pandas&lt;/code&gt;를 활용하면 &lt;code&gt;apply + lambda&lt;/code&gt; 사용을 권장한다. 이 때 성능 테스트를 위해 &lt;code&gt;%%time&lt;/code&gt;을 활용해보자.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# dataframe 복사&lt;/span&gt;
-defaul_temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd_temp
-swfiter_temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd_temp
-swifter_npartitions_temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd_temp
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%%&lt;/span&gt;time
-defaul_temp[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;f&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; defaul_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;apply(&lt;span style=&#34;color:#66d9ef&#34;&gt;lambda&lt;/span&gt; x: add_col_fun(x[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;a&amp;#39;&lt;/span&gt;], x[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;]), axis&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(defaul_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;CPU times: user 12min 3s, sys: 236 ms, total: 12min 3s
-Wall time: 12min 4s&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;간단하게 &lt;code&gt;2개&lt;/code&gt;의 column을 활용하여 &lt;code&gt;column&lt;/code&gt; &lt;code&gt;1개&lt;/code&gt;를 추가 하는데도 약 12분 가까이 걸리는 걸 확인할 수 있다. (솔직히 넘 느리다)&lt;/li&gt;
-&lt;li&gt;그러면 어떻게 수정해야 할까?&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;iv-introduction-to-swifter&#34;&gt;IV. Introduction to Swifter&lt;/h2&gt;
-&lt;p&gt;먼저 &lt;code&gt;swifter&lt;/code&gt;의 공식 문서를 확인해보자. 필자는 패키지를 볼 때마다, &lt;code&gt;정의&lt;/code&gt; 또는 &lt;code&gt;개발 목적&lt;/code&gt;을 먼저 확인하는 편이다. 그러면 나머지 필요한 함수는 그 때마다 찾아서 쓰면 된다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;swifter&lt;/code&gt; 공식 문서: &lt;a href=&#34;https://pypi.org/project/swifter/&#34;&gt;https://pypi.org/project/swifter/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;페이지를 방문하면 패키지의 간단한 정의를 확인할 수 있다.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;A package which efficiently applies any function to a pandas dataframe or series in the fastest available manner&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;즉, 위 패키지는 판다스의 &lt;code&gt;dataframe&lt;/code&gt; 또는 &lt;code&gt;series&lt;/code&gt;를 빠르게 사용할 수 있도록 도와주는 일종의 &lt;code&gt;helper&lt;/code&gt;패키지 처럼 보인다.&lt;/p&gt;
-&lt;p&gt;어떻게 사용할까?&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;pip install swifter
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;1-application-to-swifter&#34;&gt;(1) Application to Swifter&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;이번에는 default &lt;code&gt;swifter&lt;/code&gt;를 사용하여 &lt;code&gt;f&lt;/code&gt; column을 추가해보자.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%%&lt;/span&gt;time
-
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; swifter
-
-swfiter_temp[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;f&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; swfiter_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;swifter&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;apply(&lt;span style=&#34;color:#66d9ef&#34;&gt;lambda&lt;/span&gt; x: add_col_fun(x[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;a&amp;#39;&lt;/span&gt;], x[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;]), axis&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(swfiter_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;CPU times: user 5.4 s, sys: 6.77 s, total: 12.2 s
-Wall time: 9min 4s&lt;/p&gt;
-&lt;h3 id=&#34;2-set_npartitions-적용&#34;&gt;(2) set_npartitions 적용&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;그런데, 병렬처리는 보통 코어를 할당해주어야 한다. &lt;code&gt;swifter&lt;/code&gt; 패키지에는 이러한 코어를 할당해줄 수 있는 함수(&lt;code&gt;set_npartitions())&lt;/code&gt;가 존재한다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;계산방식은 아래와 같다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;$CPUcount \times hyperthreading \times 2$&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;만약 내 컴퓨터의 CPU가 6개이고, hyperthreading이 2개라면 npartitions=24개가 된다.&lt;/li&gt;
-&lt;li&gt;CPU를 2개만 사용한다면 &lt;code&gt;npartitions(8)&lt;/code&gt;만 추가하면 된다.&lt;/li&gt;
-&lt;li&gt;코드는 아래와 같이 작성할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# core 개수 확인&lt;/span&gt;
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; multiprocessing
-
-multiprocessing&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;cpu_count()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;2&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;구글 코랩에서 구동중이었는데, CPU가 2개였다!&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%%&lt;/span&gt;time
-
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; swifter
-swifter_npartitions_temp[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;f&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; swifter_npartitions_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;swifter&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;set_npartitions(&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;apply(&lt;span style=&#34;color:#66d9ef&#34;&gt;lambda&lt;/span&gt; x: add_col_fun(x[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;a&amp;#39;&lt;/span&gt;], x[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;]), axis&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(swifter_npartitions_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;CPU times: user 4.16 s, sys: 4.89 s, total: 9.05 s
-Wall time: 8min 36s&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;swifter&lt;/code&gt;에 &lt;code&gt;npartitions(8)&lt;/code&gt;에 설정할 때, 속도가 약 30-40% 향상 된 것으로 확인된다. 만약 &lt;code&gt;CPU&lt;/code&gt;개수를 추가하면 추가할 수록 연산 속도가 더 빨라질 것으로 기대할 수 있다.&lt;/li&gt;
-&lt;li&gt;간단한 함수 적용으로 연산처리 속도가 향상됨을 볼 수 있다.&lt;/li&gt;
-&lt;li&gt;실제 &lt;code&gt;github&lt;/code&gt; 페이지에 가면 &lt;code&gt;pandas apply&lt;/code&gt; Vs. &lt;code&gt;Dask apply&lt;/code&gt; Vs. &lt;code&gt;Vectorized&lt;/code&gt; Vs. &lt;code&gt;swift apply&lt;/code&gt;에 관한 비교 코드가 있으니 실제로 비교해보는 것을 추천한다.
-&lt;ul&gt;
-&lt;li&gt;swifter github 문서: &lt;a href=&#34;https://github.com/jmcarpenter2/swifter&#34;&gt;https://github.com/jmcarpenter2/swifter&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/pandas/swifter/comparison.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;h2 id=&#34;v-결론&#34;&gt;V. 결론&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;pandas dataframe을 활용 할 때, 보통 &lt;code&gt;apply + lambda&lt;/code&gt;를 활용하는 것은 거의 정규화 되고 있다. 이유는 &lt;code&gt;lambda&lt;/code&gt;를 사용하는 것이 훨씬 간편하기 때문에 그렇다.&lt;/li&gt;
-&lt;li&gt;문제는 속도다. 속도가 느리기 때문에 다른 대체제를 활용하는 경우가 종종 있다. (예: &lt;code&gt;dask&lt;/code&gt;, &lt;code&gt;pyspark&lt;/code&gt; 등)&lt;/li&gt;
-&lt;li&gt;각각의 &lt;code&gt;package&lt;/code&gt;를 알고 있다면 도움이 되지만, 문제는 각 패키지에 맞는 문법을 익혀야 하는 것은 부담일 수 있다.&lt;/li&gt;
-&lt;li&gt;그러나, 간단하게 &lt;code&gt;swifter&lt;/code&gt; 패키지를 활용하면 간단한 단어 추가로도 성능을 개선하는데 도움을 줄 수 있다는 것에 주목할 필요가 있다.&lt;/li&gt;
-&lt;li&gt;또한, cpu 갯수에 맞게 할당을 해주면 더 좋은 속도 개선을 이룰 수 있음을 확인할 수 있었다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;It&amp;rsquo;s your turn. Learn by doing.&lt;/p&gt;
-&lt;h2 id=&#34;vi-reference&#34;&gt;VI. Reference&lt;/h2&gt;
-&lt;p&gt;jmcarpenter2. swifter. Retrieved from &lt;a href=&#34;https://github.com/jmcarpenter2/swifter&#34;&gt;https://github.com/jmcarpenter2/swifter&lt;/a&gt;&lt;/p&gt;
-</description>
+      <description>공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+지난 포스트에서는 lambda의 기본적인 개념에 대해서 익혔다면, 이제 본격적인 데이터 전처리와 관련된 예제를 올리려고 한다.
+ Python - Lambda and List Comprehension  II. 가상의 데이터셋 만들기  25M 행과 5개의 열로 구성된 가상의 숫자 데이터 프레임을 만들어보자.
+import pandas as pd import numpy as np from tabulate import tabulate pd_temp = pd.</description>
     </item>
     
   </channel>

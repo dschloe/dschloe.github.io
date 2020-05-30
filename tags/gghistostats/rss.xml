@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>gghistostats on Data Science | ChloEvan</title>
@@ -7,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Mon, 04 May 2020 11:10:39 +0900</lastBuildDate>
     
-        <atom:link href="https://chloevan.github.io/tags/gghistostats/rss.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://chloevan.github.io/tags/gghistostats/rss.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -16,127 +17,9 @@
       <pubDate>Mon, 04 May 2020 11:10:39 +0900</pubDate>
       
       <guid>https://chloevan.github.io/r/datavisualisation/ch03_gghistostats/</guid>
-      <description>&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;A picture is worth a thousand words — English Language Adage
-The simple graph has brought more information to the data analyst’s mind than any other device. — John Tukey&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;한장의 그림이 수천단어보다 가치가 있다는 영어속담과, 명료한 시각화가 데이터분석가에게 다른 어떤 도구보다 더 많은 정보를 제공한다는 유명한 데이터 과학자의 조언. 핵심은 시각화이다.&lt;/p&gt;
-&lt;p&gt;본 장에서는 &lt;code&gt;ggplot2&lt;/code&gt; 패키지를 활용한 시각화를 먼저 보여줄 것이다. 먼저 간단하게 &lt;code&gt;ggplot2&lt;/code&gt; 패키지에 소개하자면 &lt;code&gt;Grammar of Graphics&lt;/code&gt;&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;의 철학을 담아서 &lt;code&gt;R&lt;/code&gt; 생태계에서 유명한 학자 중, &lt;code&gt;Hadley Wickham&lt;/code&gt;에 의해 주도적으로 개발되었다. 그래프에도 문법이 있다는 패키지의 철학 아래, &lt;code&gt;R&lt;/code&gt;의 시각화는 괄목할만한 발전을 이루었고 이는 &lt;code&gt;R&lt;/code&gt;의 대중화에도 큰 영향을 끼쳤다.&lt;/p&gt;
-&lt;p&gt;이제 본격적으로 &lt;code&gt;R&lt;/code&gt; 시각화를 작성해보자.&lt;/p&gt;
-&lt;h2 id=&#34;i-사전준비&#34;&gt;I. 사전준비&lt;/h2&gt;
-&lt;p&gt;본 장에서는 시각화를 위해서 &lt;code&gt;ggplot2&lt;/code&gt;를 주요 패키지로 사용한다. &lt;code&gt;ggplot2&lt;/code&gt; 패키지를 설치했다고 가정한다. 만약 처음 패키지를 설치하는 사람이라면 &lt;a href=&#34;https://wikidocs.net/58057&#34;&gt;R 패키지 설치&lt;/a&gt;[^2]에서 다시 한번 R 패키지 주요 생태계에 대해 이해하도록 한다.&lt;/p&gt;
-&lt;p&gt;Studio를 열고 아래 코드를 실행하자:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(ggplot2)
-&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(ggstatsplot)
-&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(dplyr)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;이번에는 보고서에 작성할 시각화 보고서를 작성해보자.&lt;/p&gt;
-&lt;h2 id=&#34;ii-데이터셋---텍사스-부동산-판매데이터&#34;&gt;II. 데이터셋 - 텍사스 부동산 판매데이터&lt;/h2&gt;
-&lt;p&gt;대한민국에서 가장 중요한 문제중의 하나인 부동산과 관련하여 시각화를 진행하려 한다. 지금은 &lt;code&gt;ggplot2&lt;/code&gt; 패키지 내에 존재하는 텍사스 부동산 판매데이터를 통해 시각화를 진행하지만, 향후에는 국내 부동산 데이터를 직접 가져와서 시각화를 진행하기를 바란다.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;txhousing&lt;/code&gt; 데이터는 총 &lt;code&gt;8602&lt;/code&gt;개의 관측치와 &lt;code&gt;9&lt;/code&gt;개의 변수로 구성이 되어 있다. &lt;code&gt;txhousing&lt;/code&gt; 데이터의 출처 및 각 변수(&lt;code&gt;Column&lt;/code&gt;)에 대해 조금 더 자세히 알고 싶다면 &lt;code&gt;R&lt;/code&gt; 소스코드 에디터에서 help(&lt;code&gt;txhousing&lt;/code&gt;)을 실행하여 도움말을 참고하기를 바란다.&lt;/p&gt;
-&lt;h2 id=&#34;iii-ggplot2-with-histogram&#34;&gt;III. ggplot2 with Histogram&lt;/h2&gt;
-&lt;p&gt;지난 포스트 &lt;a href=&#34;https://chloevan.github.io/r/datavisualisation/ch02_histogram/&#34;&gt;ch02 - Histogram&lt;/a&gt;에서 히스토그램에 관한 그래프를 그려봤다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;예시) 이 때, 1월과 7월을 비교하는 그래프를 그려본다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;txhousing &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
-  &lt;span style=&#34;color:#a6e22e&#34;&gt;group_by&lt;/span&gt;(month) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt;
-  &lt;span style=&#34;color:#a6e22e&#34;&gt;summarise&lt;/span&gt;(grp.mean &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;mean&lt;/span&gt;(sales, na.rm &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TRUE&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; mean_sales
-
-jan_jul &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; txhousing &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
-  &lt;span style=&#34;color:#a6e22e&#34;&gt;filter&lt;/span&gt;(month &lt;span style=&#34;color:#f92672&#34;&gt;%in%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
-  &lt;span style=&#34;color:#a6e22e&#34;&gt;mutate&lt;/span&gt;(month &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;as.character&lt;/span&gt;(month))
-mean_jan_jul &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; mean_sales &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
-  &lt;span style=&#34;color:#a6e22e&#34;&gt;filter&lt;/span&gt;(month &lt;span style=&#34;color:#f92672&#34;&gt;%in%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; 
-  &lt;span style=&#34;color:#a6e22e&#34;&gt;mutate&lt;/span&gt;(month &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;as.character&lt;/span&gt;(month))
-
-&lt;span style=&#34;color:#a6e22e&#34;&gt;ggplot&lt;/span&gt;(jan_jul, &lt;span style=&#34;color:#a6e22e&#34;&gt;aes&lt;/span&gt;(x&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sales, color&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;month)) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;
-  &lt;span style=&#34;color:#a6e22e&#34;&gt;geom_histogram&lt;/span&gt;(fill&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;white&amp;#39;&lt;/span&gt;, alpha&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;.5&lt;/span&gt;, position &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;identity&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 
-  &lt;span style=&#34;color:#a6e22e&#34;&gt;geom_vline&lt;/span&gt;(data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; mean_jan_jul, 
-             &lt;span style=&#34;color:#a6e22e&#34;&gt;aes&lt;/span&gt;(xintercept&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;grp.mean, color&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;month), 
-             linetype&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;dashed&amp;#39;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 
-  &lt;span style=&#34;color:#a6e22e&#34;&gt;scale_x_log10&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 
-  &lt;span style=&#34;color:#a6e22e&#34;&gt;theme_bw&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 
-  &lt;span style=&#34;color:#a6e22e&#34;&gt;theme&lt;/span&gt;(legend.position&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;top&amp;#34;&lt;/span&gt;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/datavisualisation/ch03_gghistostats_files/figure-html/unnamed-chunk-2-1.png&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
-&lt;p&gt;그렇지만, 통계 결과 보고서로 제출하기에는 무언가 아쉽다. ggplot2 패키지 extension 중에서 &lt;code&gt;ggstatsplot&lt;/code&gt; 패키지가 있다. 꾸준하게 버전이 업데이트 중인 것으로 봐서 통계 보고서 작성 시, 참조하면 좋을 것 같다.&lt;/p&gt;
-&lt;h2 id=&#34;iv-gghistostats&#34;&gt;IV. gghistostats&lt;/h2&gt;
-&lt;p&gt;우선 &lt;a href=&#34;https://indrajeetpatil.github.io/ggstatsplot/articles/web_only/gghistostats.html&#34;&gt;tutorial&lt;/a&gt;를 참조해서 시각화를 작성해보자.&lt;/p&gt;
-&lt;h3 id=&#34;1-sample-tutorial&#34;&gt;(1) Sample Tutorial&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(psych)
-dplyr&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;(x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; psych&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;sat.act)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## Rows: 700
-## Columns: 6
-## $ gender    &amp;lt;int&amp;gt; 2, 2, 2, 1, 1, 1, 2, 1, 2, 2, 1, 2, 1, 2, 2, 2, 2, 2, 1, 2,…
-## $ education &amp;lt;int&amp;gt; 3, 3, 3, 4, 2, 5, 5, 3, 4, 5, 3, 4, 4, 4, 3, 4, 3, 4, 4, 4,…
-## $ age       &amp;lt;int&amp;gt; 19, 23, 20, 27, 33, 26, 30, 19, 23, 40, 23, 34, 32, 41, 20,…
-## $ ACT       &amp;lt;int&amp;gt; 24, 35, 21, 26, 31, 28, 36, 22, 22, 35, 32, 29, 21, 35, 27,…
-## $ SATV      &amp;lt;int&amp;gt; 500, 600, 480, 550, 600, 640, 610, 520, 400, 730, 760, 710,…
-## $ SATQ      &amp;lt;int&amp;gt; 500, 500, 470, 520, 550, 640, 500, 560, 600, 800, 710, 600,…
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;이 때, &lt;code&gt;ACT&lt;/code&gt; 변수를 가지고 히스토그램으로 시각화 예제가 나온다. 그대로 복사하기 보다는 하나씩 scripting 해서 각각의 인수(Argument)가 무엇을 의미하는지 음미하면서 실습을 진행한다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;ggstatsplot&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;gghistostats&lt;/span&gt;(
-  data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; psych&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;sat.act, &lt;span style=&#34;color:#75715e&#34;&gt;# data from which variable is to be taken&lt;/span&gt;
-  x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; ACT, &lt;span style=&#34;color:#75715e&#34;&gt;# numeric variable&lt;/span&gt;
-  results.subtitle &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;FALSE&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# don&amp;#39;t run statistical tests&lt;/span&gt;
-  messages &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;FALSE&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# turn off messages&lt;/span&gt;
-  xlab &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ACT Score&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# x-axis label&lt;/span&gt;
-  title &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Distribution of ACT Scores&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# title for the plot&lt;/span&gt;
-  subtitle &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;N = 700&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# subtitle for the plot&lt;/span&gt;
-  caption &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Data courtesy of: SAPA project (https://sapa-project.org)&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# caption for the plot&lt;/span&gt;
-  centrality.k &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# show 1 decimal places for centrality label&lt;/span&gt;
-)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/datavisualisation/ch03_gghistostats_files/figure-html/unnamed-chunk-4-1.png&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
-&lt;p&gt;위와 같은 보고서를 출력할 수가 있다.&lt;/p&gt;
-&lt;h3 id=&#34;2-1월과-7월-데이터-비교-그래프&#34;&gt;(2) 1월과 7월 데이터 비교 그래프&lt;/h3&gt;
-&lt;p&gt;그렇다면 한번 적용해보자. 그런데, 우리는 1월과 7월 데이터만 필요하다. 이 때에는 &lt;code&gt;grouping.var&lt;/code&gt; 인수와 &lt;code&gt;plotgrid.args&lt;/code&gt;를 추가하기만 하면 된다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;ggstatsplot&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;grouped_gghistostats&lt;/span&gt;(
-  data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; jan_jul, &lt;span style=&#34;color:#75715e&#34;&gt;# jan_jul 변경&lt;/span&gt;
-  x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sales, &lt;span style=&#34;color:#75715e&#34;&gt;# sales &lt;/span&gt;
-  xlab &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Sales&amp;#34;&lt;/span&gt;,
-  grouping.var &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; month, &lt;span style=&#34;color:#75715e&#34;&gt;# grouping variable 1 = Jan, 7 = Jul&lt;/span&gt;
-  title.prefix &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Month&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# prefix for the fixed title&lt;/span&gt;
-  k &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# number of decimal places in results&lt;/span&gt;
-  type &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;r&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# robust test: one-sample percentile bootstrap&lt;/span&gt;
-  test.value &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# test value against which sample mean is to be compared&lt;/span&gt;
-  test.value.line &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TRUE&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# show a vertical line at `test.value`&lt;/span&gt;
-  bar.measure &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;density&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# density&lt;/span&gt;
-  centrality.parameter &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;median&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# plotting centrality parameter&lt;/span&gt;
-  centrality.line.args &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;list&lt;/span&gt;(color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#D55E00&amp;#34;&lt;/span&gt;),
-  centrality.label.args &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;list&lt;/span&gt;(color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#D55E00&amp;#34;&lt;/span&gt;),
-  test.value.line.args &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;list&lt;/span&gt;(color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#009E73&amp;#34;&lt;/span&gt;),
-  test.value.label.args &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;list&lt;/span&gt;(color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#009E73&amp;#34;&lt;/span&gt;),
-  messages &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;FALSE&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# turn off messages&lt;/span&gt;
-  ggtheme &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; ggthemes&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;theme_stata&lt;/span&gt;(), &lt;span style=&#34;color:#75715e&#34;&gt;# changing default theme&lt;/span&gt;
-  ggstatsplot.layer &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;FALSE&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;# turn off ggstatsplot theme layer&lt;/span&gt;
-  &lt;span style=&#34;color:#75715e&#34;&gt;# arguments relevant for ggstatsplot::combine_plots&lt;/span&gt;
-  title.text &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Distribution of Sales across Month(Jan&amp;#34;&lt;/span&gt;,
-  caption.text &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Data is from ggplot2 package&amp;#34;&lt;/span&gt;,
-  plotgrid.args &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;list&lt;/span&gt;(
-    nrow &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;,
-    ncol &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,
-    labels &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;January&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;July&amp;#34;&lt;/span&gt;)
-  )
-)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/datavisualisation/ch03_gghistostats_files/figure-html/unnamed-chunk-5-1.png&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
-&lt;p&gt;위 그래프처럼, 그룹별로도 시각화를 작성할 수 있다. 그러나, 조금 더 디자인을 하기 원한다면, &lt;code&gt;purrr&lt;/code&gt; 패키지와 같이 코드를 작성하는 것을 권하고 있다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://indrajeetpatil.github.io/ggstatsplot/articles/web_only/purrr_examples.html?q=purr&#34;&gt;using ggstatsplot with the purrr package&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1 id=&#34;v-향후-방향&#34;&gt;V. 향후 방향&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;올해 논문도 써야 하는데, 위 패키지를 근거로 하나둘씩 한글화를 만들어 봐야겠다는 생각이 든다.&lt;/li&gt;
-&lt;li&gt;중간중간 시간이 날 때마다 &lt;code&gt;논문을 위한 시각화&lt;/code&gt; 함수를 만들어 봐야겠다.&lt;/li&gt;
-&lt;li&gt;또한, 위 코드에서 보는 것처럼, 한글 설명이 없어서, 위 패키지를 작성하면서 한글화 작업도 조금씩 병행해보려고 한다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;section class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
-&lt;hr&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn:1&#34; role=&#34;doc-endnote&#34;&gt;
-&lt;p&gt;Hadley Wickham이 작성한 ggplot2 패키지에 관한 논문을 읽어보는 것을 제안한다. “The Layered Grammar of Graphics”, &lt;a href=&#34;http://vita.had.co.nz/papers/layered-grammar.pdf&#34;&gt;http://vita.had.co.nz/papers/layered-grammar.pdf&lt;/a&gt; &lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/section&gt;
-</description>
+      <description>Intro  A picture is worth a thousand words — English Language Adage The simple graph has brought more information to the data analyst’s mind than any other device. — John Tukey
+ 한장의 그림이 수천단어보다 가치가 있다는 영어속담과, 명료한 시각화가 데이터분석가에게 다른 어떤 도구보다 더 많은 정보를 제공한다는 유명한 데이터 과학자의 조언. 핵심은 시각화이다.
+본 장에서는 ggplot2 패키지를 활용한 시각화를 먼저 보여줄 것이다. 먼저 간단하게 ggplot2 패키지에 소개하자면 Grammar of Graphics1의 철학을 담아서 R 생태계에서 유명한 학자 중, Hadley Wickham에 의해 주도적으로 개발되었다.</description>
     </item>
     
   </channel>
