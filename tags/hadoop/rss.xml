@@ -5,10 +5,92 @@
     <description>Recent content in Hadoop on Data Science | ChloEvan</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 02 Jun 2020 10:13:30 +0900</lastBuildDate>
+    <lastBuildDate>Tue, 02 Jun 2020 16:13:30 +0900</lastBuildDate>
     
         <atom:link href="https://chloevan.github.io/tags/hadoop/rss.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>(AWS Project) BigData with Hadoop 02 - 사전작업</title>
+      <link>https://chloevan.github.io/aws/02_bigdataplatform/step_2_setup/</link>
+      <pubDate>Tue, 02 Jun 2020 16:13:30 +0900</pubDate>
+      
+      <guid>https://chloevan.github.io/aws/02_bigdataplatform/step_2_setup/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/aws/02_bigdataPlatform/aws-project_analyze-big-data_diagram.png#center&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;i-amazon-s3-bucket-생성-주요-요건&#34;&gt;I. Amazon S3 Bucket 생성 주요 요건&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Hive 쿼리의 출력 데이터를 저장할 Amazon S3 버킷과 폴더를 지정한다.&lt;/li&gt;
+&lt;li&gt;자습서에서는 &lt;code&gt;default log location&lt;/code&gt;을 사용하지만, 원하는 경우에는 &lt;code&gt;custom location&lt;/code&gt;을 지정할 수 있다.&lt;/li&gt;
+&lt;li&gt;하둡의 요구사항 중, &lt;code&gt;bucket&lt;/code&gt;과 &lt;code&gt;folder names&lt;/code&gt; 다음과 같은 규칙을 적용한다.
+&lt;ul&gt;
+&lt;li&gt;letters, numbers, periods(.), and hyphens(-) 등을 입력한다.&lt;/li&gt;
+&lt;li&gt;마지막 글자는 숫자로 끝맺음을 하지 않는다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;이러한 요구 사항을 충족하는 폴더에 이미 액세스할 수 있는 경우 이 튜토리얼에 해당 폴더를 사용하십시오.&lt;/li&gt;
+&lt;li&gt;출력 폴더는 비어 있어야 한다.&lt;/li&gt;
+&lt;li&gt;버킷 이름은 모든 &lt;code&gt;AWS 계정&lt;/code&gt;에서 독특(&lt;code&gt;unique&lt;/code&gt;)해야 한다는 점을 기억해야 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;ii-creating-a-bucket&#34;&gt;II. Creating a Bucket&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;이제 &lt;code&gt;bucket&lt;/code&gt;을 생성하는 예제를 해본다.
+&lt;ul&gt;
+&lt;li&gt;관련 예제는 &lt;code&gt;Amazon Simple Storage Service Getting Started Guide&lt;/code&gt;문서에서 &lt;a href=&#34;https://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html&#34;&gt;Create a Bucket&lt;/a&gt;을 찾아서 확인해본다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Note (영어)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;You are not charged for creating a bucket. You are charged only for storing objects in the bucket and for transferring objects in and out of the bucket. The charges that you incur through following the examples in this guide are minimal (less than $1). For more information about storage charges, see &lt;a href=&#34;http://aws.amazon.com/s3/pricing/&#34;&gt;Amazon S3 Pricing&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;파파고 번역: 버킷을 만들면 요금이 부과되지 않는다. 버킷에 객체를 저장하고 버킷 내부 및 외부로 객체를 전송하는 경우에만 요금이 부과된다. 본 안내서의 예제를 따라가면서 발생하는 요금은 최소(1달러 미만)이다. 스토리지 요금에 대한 자세한 내용은 문서를 참조한다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;이제 버킷을 만들어본다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;첫째, 아마존 내 &lt;code&gt;S3&lt;/code&gt;에 접속한다. (&lt;a href=&#34;https://console.aws.amazon.com/s3/&#34;&gt;https://console.aws.amazon.com/s3/&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;둘째, &lt;code&gt;버킷 만들기&lt;/code&gt; 버튼을 클릭한다. (s3://chloevanbucket/MyHiveQueryResults) 아래 그림에서 &lt;code&gt;버킷이름&lt;/code&gt;을 추가해야 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/aws/02_bigdataPlatform/step_02/tutorial_01.png#center&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;이름 짓는 규칙이 있기 때문에 이 부분은 한번 읽어보는 것을 권한다. &lt;a href=&#34;https://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html#bucketnamingrules&#34;&gt;Rules for Bucket Naming&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;여기에서는 &lt;code&gt;chloevanbucket&lt;/code&gt; 짓도록 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+&lt;li&gt;셋째, &lt;code&gt;리전(Region)&lt;/code&gt;을 추가한다. 이 때, 현재 지역과 가장 가까운 곳에 지정하는 것이 좋다.
+&lt;ul&gt;
+&lt;li&gt;필자는 아시아 태평양(서울)을 입력했다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;넷째, &lt;code&gt;[옵션구성]&lt;/code&gt; 및 &lt;code&gt;[권한설정]&lt;/code&gt; 등은 특별한 사유가 없다면 아마존에서 제공한 그대로 사용한다.
+&lt;ul&gt;
+&lt;li&gt;특히, 권한설정에서 &lt;code&gt;모든 퍼블릭 액세스 차단&lt;/code&gt;이 클릭되어 있는데, 여러 옵션이 있다. 만약 이 옵션에 대해 조금더 자세히 알고 싶다면, &lt;a href=&#34;https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html&#34;&gt;Using Amazon S3 Block Public Access&lt;/a&gt; 참조한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;버킷을 다 만든 후에는 &lt;code&gt;chloevanbucket&lt;/code&gt;을 클릭하면 아래와 같은 화면이 나타날 것이다.
+&lt;img src=&#34;https://chloevan.github.io/img/aws/02_bigdataPlatform/step_02/tutorial_02.png#center&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;그리고 폴더를 추가하는데, 이번에는 &lt;code&gt;MyHiveQueryResults&lt;/code&gt; 이름을 지정한다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iii-create-an-amazon-ec2-key-pair&#34;&gt;III. Create an Amazon EC2 Key Pair&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;SSH(Secure Shell) 프로토콜&lt;/code&gt;을 사용하여 보안 채널을 통해 클러스터의 노드에 연결하려면 &lt;code&gt;Amazon Elastic Compute Cloud(Amazon EC2)&lt;/code&gt; 키 쌍이 있어야 한다.&lt;/li&gt;
+&lt;li&gt;사용할 키 쌍이 이미 있는 경우 이 단계를 생략해도 좋다. 키 쌍이 없는 경우 운영 체제에 따라 다음 절차 중 하나를 수행한다.
+&lt;ul&gt;
+&lt;li&gt;윈도우 버전: &lt;a href=&#34;https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair&#34;&gt;Creating Your Key Pair Using Amazon EC2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;맥 또는 리눅스 버전: &lt;a href=&#34;https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair&#34;&gt;Creating Your Key Pair Using Amazon EC2&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
     
     <item>
       <title>(AWS Project) BigData with Hadoop 01 - Overview</title>
