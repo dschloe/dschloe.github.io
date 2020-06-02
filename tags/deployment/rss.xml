@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Deployment on Data Science | ChloEvan</title>
@@ -8,7 +7,7 @@
     <language>en-us</language>
     <lastBuildDate>Sun, 10 May 2020 19:47:18 +0900</lastBuildDate>
     
-	<atom:link href="https://chloevan.github.io/tags/deployment/rss.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://chloevan.github.io/tags/deployment/rss.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,8 +16,204 @@
       <pubDate>Sun, 10 May 2020 19:47:18 +0900</pubDate>
       
       <guid>https://chloevan.github.io/r/shiny/applications/gcp_shiny/</guid>
-      <description>I. 개요 Google Data Studio는 놀랍도록 유연한 도구로서 마케팅 대행사 중 Google Analytics를 활용한 업체들은 대부분 항상 사용합니다. 때로는 유연성이 더 필요할 때 R &amp;rsquo;s Shiny 패키지를 사용하여 데이터 시각화 / 대시 보드 앱을 만드는 것이 매우 쉽습니다. 이 옵션을 사용하면 모든 소스의 데이터를 예측 모델링과 함께 사용할 수 있는 장점이 있습니다.
-이 블로그 게시물은 3 부분으로 나누어져 있습니다. 1. 먼저 Google Cloud Virtual Machine (VM)을 설정하고 웹 액세스를 허용하도록 방화벽 규칙을 구성합니다.</description>
+      <description>&lt;h2 id=&#34;i-개요&#34;&gt;I. 개요&lt;/h2&gt;
+&lt;p&gt;Google Data Studio는 놀랍도록 유연한 도구로서 마케팅 대행사 중 Google Analytics를 활용한 업체들은 대부분 항상 사용합니다. 때로는 유연성이 더 필요할 때 R &amp;lsquo;s Shiny 패키지를 사용하여 데이터 시각화 / 대시 보드 앱을 만드는 것이 매우 쉽습니다. 이 옵션을 사용하면 모든 소스의 데이터를 예측 모델링과 함께 사용할 수 있는 장점이 있습니다.&lt;/p&gt;
+&lt;p&gt;이 블로그 게시물은 3 부분으로 나누어져 있습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;먼저 Google Cloud Virtual Machine (VM)을 설정하고 웹 액세스를 허용하도록 방화벽 규칙을 구성합니다.&lt;/li&gt;
+&lt;li&gt;R, RStudio 및 Shiny를 설치합니다.&lt;/li&gt;
+&lt;li&gt;마지막으로 우리는 Shiny 앱을 배포하려고 합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;ii-가상환경-설치&#34;&gt;II. 가상환경 설치&lt;/h2&gt;
+&lt;p&gt;먼저 필자의 로컬 컴퓨터 환경은 다음과 같습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;MacBook Air (13-inch, 2017)&lt;/li&gt;
+&lt;li&gt;MacOS Mojave Version 10.14.4&lt;/li&gt;
+&lt;li&gt;Processor 2.2 GHZ Intel Core i7&lt;/li&gt;
+&lt;li&gt;Memory 8 GB 1600 MHZ DDR3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;2017년 판매기준, 맥북에서 가장 저 사양의 컴퓨터라고 보시면 됩니다. 사실 큰 의미는 없습니다. 인터넷으로 구글 클라우드에 접속하면 되는 것이기 때문입니다. 물론 gcloud SDK를 설치해서 한다면 OS 버전 확인은 필수입니다.&lt;/p&gt;
+&lt;h3 id=&#34;1-구글-클라우드-platform-계정&#34;&gt;(1) 구글 클라우드 Platform 계정&lt;/h3&gt;
+&lt;p&gt;먼저 Google Cloud Platform 계정이 있어야하며 프로젝트를 설정해야합니다. 자세한 사항은 링크를 참고하여 주시기 바랍니다. 링크 - &lt;a href=&#34;https://cloud.google.com/&#34;&gt;구글 클라우드 플랫폼&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;2-가상환경-설정하기&#34;&gt;(2) 가상환경 설정하기&lt;/h3&gt;
+&lt;p&gt;보통 gcloud SDK를 활용하여 가상환경을 만들기도 합니다만, Terminal 환경이 익숙하지 않은 분들에게는 일단은 추천하지 않습니다. SDK를 활용하여 도전하고 싶다면 다음 링크를 참고하여 주시기 바랍니다. 링크 - &lt;a href=&#34;https://cloud.google.com/sdk/install&#34;&gt;Google Cloud SDK&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;구글 클라우드 환경에서 간단한 클릭으로 가상환경 설정하기를 진행하려고 합니다.&lt;/p&gt;
+&lt;h4 id=&#34;1단계-vm-클릭하기&#34;&gt;1단계: VM 클릭하기&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/rshiny_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h4 id=&#34;2단계-vm-환경-설정하기&#34;&gt;2단계: VM 환경 설정하기&lt;/h4&gt;
+&lt;p&gt;설정은 여러 방식으로 할 수 있습니다만, 전 기본만 사용해서 세팅하도록 하겠습니다. 제가 설정한 방법은 아래와 같습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Name: rshinydemo&lt;/li&gt;
+&lt;li&gt;Region: asia-east1 (Taiwan)&lt;/li&gt;
+&lt;li&gt;Zone: asia-east1-c&lt;/li&gt;
+&lt;li&gt;Machine Type: small (1-shared vCPU) / 1.7 GB memory&lt;/li&gt;
+&lt;li&gt;Boot Disk: Ubuntu 18.04 LTS&lt;/li&gt;
+&lt;li&gt;Identify and API Access: Allow full access to all Cloud APIs&lt;/li&gt;
+&lt;li&gt;Firewall: Allow HTTP traffic &amp;amp; Allow HTTPs traffic&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;위 내용을 아래 화면에서 입력 또는 클릭하면 됩니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/rshiny_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;최종결과값이 아래와 같이 나오면 기본 환경 설정은 된 것입니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/rshiny_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h4 id=&#34;3단계-고정-ip-설정하기&#34;&gt;3단계: 고정 IP 설정하기&lt;/h4&gt;
+&lt;p&gt;고정 외부 IP에 접속하기 위해 고정 IP를 설정하는 방법을 진행해야 합니다. VPC Network에서 External &lt;code&gt;IP Addresses&lt;/code&gt;를 클릭후 &lt;code&gt;Ephemeral&lt;/code&gt;를 &lt;code&gt;Static&lt;/code&gt;를 바꿔 줍니다. 그러면, 고정 IP 등록에 관한 팝업창이 활성화가 되는데, 이 때 적절한 이름으로 등록합니다. 아래 화면처럼 바꿔줍니다.
+&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/external_ip.png&#34; alt=&#34;Alt text&#34;&gt;&lt;/p&gt;
+&lt;h4 id=&#34;4단계-apache-웹서버로-외부-접속-되는지-확인하기&#34;&gt;4단계: Apache 웹서버로 외부 접속 되는지 확인하기&lt;/h4&gt;
+&lt;p&gt;Cloud Shell를 연 다음, 간단하게 아래 코드를 입력하여 웹서버가 정상적으로 열리는지 확인합니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;$ sudo apt-get update
+$ sudo apt-get install apache2
+$ sudo systemctl status apache2
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;●&lt;/span&gt; apache2.service - The Apache HTTP Server
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;여기까지 진행 후, 위 초록색 색상의 &lt;code&gt;apache2.service - The Apache HTTP Server&lt;/code&gt; 보이면 서버는 현재 작동중이라는 뜻입니다.&lt;/p&gt;
+&lt;p&gt;마지막으로 외부 IP를 활용하여, 확인하겠습니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/apache2.png&#34; alt=&#34;Alt text&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;iii-가상환경에-r과-rstudio-설치진행하기&#34;&gt;III. 가상환경에 R과 RStudio 설치진행하기&lt;/h2&gt;
+&lt;p&gt;아래 그림 상단 오른쪽에 Activate Cloud Shell을 클릭하면 가상환경 위 Terminal 환경이 나올겁니다. 여기에서 기본적인 R과 RStudio를 가상환경에서 설치 진행하도록 하겠습니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/rshiny_6.png&#34; alt=&#34;Alt text&#34;&gt;&lt;/p&gt;
+&lt;p&gt;아래 그림에서 검은색 화면이 Cloud Shell 화면입니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/rshiny_7.png&#34; alt=&#34;Alt text&#34;&gt;&lt;/p&gt;
+&lt;p&gt;이제부터 Terminal 소스 코드를 입력하겠습니다.&lt;/p&gt;
+&lt;h3 id=&#34;1단계-소프트웨어-업데이트하기&#34;&gt;1단계: 소프트웨어 업데이트하기&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;sudo apt-get update 
+sudo apt-get upgrade
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;만약, 중간에  **Do you want to continue? [Y/N]**라는 질문이 나오면 &lt;strong&gt;Y&lt;/strong&gt;라고 답하고 계속 진행합니다.&lt;/p&gt;
+&lt;p&gt;성공적으로 끝나면 R 저장소를 sources.list 파일에 추가해야 우분투가 응용 프로그램을 가져올 위치를 알 수 있습니다. 아래의 코드 청크는 저장소 목록에 한 줄을 추가 한 다음 우분투 서버가 R을 다운로드하고 기존 패키지를 업데이트하며 r-base 및 r-base dev를 설치하는 데 필요한 키를 전달합니다.&lt;/p&gt;
+&lt;h3 id=&#34;2단계-sourceslist-파일에-default-list-설치하기&#34;&gt;2단계: Sources.list 파일에 Default List 설치하기&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;cd /etc/apt/sources.list&lt;/code&gt; 파일을 열어서 아래 코드를 추가합니다. (만약에 없을 경우)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get install emacs ## &amp;lt;- 편집 에디터 설치입니다. (옵션)
+$ sudo emacs sources.list
+&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;deb http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//archive.ubuntu.com/ubuntu bionic universe multiverse
+deb-src http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//archive.ubuntu.com/ubuntu bionic universe multiverse
+
+deb http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//us.archive.ubuntu.com/ubuntu/ bionic universe
+deb-src http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//us.archive.ubuntu.com/ubuntu/ bionic universe
+deb http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//us.archive.ubuntu.com/ubuntu/ bionic-updates universe
+deb-src http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//us.archive.ubuntu.com/ubuntu/ bionic-updates universe
+
+deb http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//us.archive.ubuntu.com/ubuntu/ bionic multiverse
+deb-src http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//us.archive.ubuntu.com/ubuntu/ bionic multiverse
+deb http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//us.archive.ubuntu.com/ubuntu/ bionic-updates multiverse
+deb-src http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//us.archive.ubuntu.com/ubuntu/ bionic-updates multiverse
+
+deb http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//security.ubuntu.com/ubuntu bionic-security universe
+deb-src http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//security.ubuntu.com/ubuntu bionic-security universe
+deb http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//security.ubuntu.com/ubuntu bionic-security multiverse
+deb-src http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//security.ubuntu.com/ubuntu bionic-security multiverse
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;3단계-r-설치하기&#34;&gt;3단계: R 설치하기&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;cd /etc/apt/sources.list&lt;/code&gt; 파일을 열어서 아래 코드를 추가합니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;deb http&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//cran.rstudio.com/bin/linux/ubuntu xenial/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;그 다음, CRAN Network와 연결 할 수 있는 Key ID를 입력합니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+$ sudo apt install software-properties-common
+$ sudo apt install apt-transport-https
+$ sudo apt update
+$ sudo apt install r-base
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;만약에 &lt;code&gt;depends: r-commended&lt;/code&gt;와 같은 에러가 발생이 되면 다음과 같이 수정을 합니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;$ sudo apt-get install update-manager-core
+$ sudo &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;-release-upgrade
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;위 코드에서 만약 에러가 나면 아래 코드에서 &lt;code&gt;Prompt=normal&lt;/code&gt;로 되어 있는지 확인합니다. 만약 &lt;code&gt;lts&lt;/code&gt;로 등록되어 있으면, &lt;code&gt;normal&lt;/code&gt;로 수정 후 다시 &lt;code&gt;sudo do-release-upgrade&lt;/code&gt; 명령어를 입력하고 ENTER를 수행합니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;$ cat /etc/update-manager/release-upgrades
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;4단계-r-패키지-설치하기&#34;&gt;4단계: R 패키지 설치하기&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;$ sudo apt-get install libcurl4-openssl-dev libssl-dev libxml2-dev
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;5단계-r-shiny-설치하기&#34;&gt;5단계: R Shiny 설치하기&lt;/h3&gt;
+&lt;h4 id=&#34;첫번째-방법-r-프로그램에서-r-shiny-설치하기&#34;&gt;첫번째 방법: R 프로그램에서 R Shiny 설치하기&lt;/h4&gt;
+&lt;p&gt;먼저 R을 실행하여 정상적으로 프로그램이 열리는지 확인합니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;$ sudo R
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;다음부터는 R 스크립트를 활용하여 몇몇 패키지를 설치합니다. (설치시간 오래 걸립니다!)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;install.packages&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;shiny&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;rmarkdown&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;dplyr&amp;#39;&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;패키지 설치 후 &lt;strong&gt;q()&lt;/strong&gt; 입력 후 작업공간을 저장합니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;(save workspace&lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt; y for yes.)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;두번째-방법-터미널에서-r-shiny-설치하기&#34;&gt;두번째 방법: 터미널에서 R Shiny 설치하기&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;install.packages()&lt;/code&gt; 함수를 활용하여 shiny 패키지를 설치합니다. (설치시간 오래 걸립니다!)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;$ sudo su - \
+-c &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;R -e \&amp;#34;&lt;/span&gt;install.packages(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;shiny&amp;#39;&lt;/span&gt;, repos=&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://cran.rstudio.com/&amp;#39;&lt;/span&gt;)\&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;어떤 방법을 하던 큰 상관은 없습니다.&lt;/p&gt;
+&lt;h3 id=&#34;6단계-r-studio-서버-설치하기&#34;&gt;6단계: R Studio 서버 설치하기&lt;/h3&gt;
+&lt;p&gt;RStudio 싸이트에서 직접 참고하였습니다. (Ubuntu 18+)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;$ sudo apt-get install gdebi-core
+$ sudo wget https&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//download2.rstudio.org/server/bionic/amd64/rstudio-server-1.2.1335-amd64.deb
+$ sudo gdebi rstudio-server-1.2.1335-amd64.deb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/rstudio-server.png&#34; alt=&#34;Alt text&#34;&gt;&lt;/p&gt;
+&lt;p&gt;위와 같은 형태가 나오면 성공입니다. 사용자(evan)를 추가하여 실제로 접속하도록 하겠습니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;$ sudo adduser evan
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;http://외부IP:8787를 URL에 접속하면 RStudio Server가 접속이 될 것입니다.
+&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/rserver.png&#34; alt=&#34;Alt text&#34;&gt;&lt;/p&gt;
+&lt;p&gt;방금전에 만든 사용자 ID와 비번을 입력하여 접속합니다. 제대로 접속되었는지 확인합니다.
+&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/rserver_main.png&#34; alt=&#34;Alt text&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;7단계-r-shiny-서버-설치하기&#34;&gt;7단계: R Shiny 서버 설치하기&lt;/h3&gt;
+&lt;p&gt;다시 터미널로 가서 아래와 같은 명령어를 입력합니다. 마찬가지로 R Shiny Server 홈페이지에서 직접 참고하였습니다.
+참고: &lt;a href=&#34;https://www.rstudio.com/products/shiny/download-server/&#34;&gt;https://www.rstudio.com/products/shiny/download-server/&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;$ sudo wget https&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-1.5.9.923-amd64.deb
+$ sudo gdebi shiny-server-1.5.9.923-amd64.deb
+$ sudo systemctl status shiny-server.service
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;http://외부IP:3838를 URL에 접속하면 RShiny Server가 접속이 될 것입니다.
+&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/shinyserveraccess.png&#34; alt=&#34;Alt text&#34;&gt;&lt;/p&gt;
+&lt;p&gt;위와 같이 나왔다면 서버는 정상적으로 작동중입니다.&lt;/p&gt;
+&lt;h2 id=&#34;iv-shiny-app-배포&#34;&gt;IV. Shiny App 배포&lt;/h2&gt;
+&lt;p&gt;여기에서는 Shiny App에 관한 내용은 대해서는 생략하겠습니다.&lt;/p&gt;
+&lt;h3 id=&#34;1-uir&#34;&gt;(1) ui.R&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(shiny)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Define UI for application that draws a histogram&lt;/span&gt;
+&lt;span style=&#34;color:#a6e22e&#34;&gt;shinyUI&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;fluidPage&lt;/span&gt;(
+
+    &lt;span style=&#34;color:#75715e&#34;&gt;# Application title&lt;/span&gt;
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;titlePanel&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Old Faithful Geyser Data&amp;#34;&lt;/span&gt;),
+
+    &lt;span style=&#34;color:#75715e&#34;&gt;# Sidebar with a slider input for number of bins&lt;/span&gt;
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;sidebarLayout&lt;/span&gt;(
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;sidebarPanel&lt;/span&gt;(
+            &lt;span style=&#34;color:#a6e22e&#34;&gt;sliderInput&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;bins&amp;#34;&lt;/span&gt;,
+                        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Number of bins:&amp;#34;&lt;/span&gt;,
+                        min &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,
+                        max &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;50&lt;/span&gt;,
+                        value &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;30&lt;/span&gt;)
+        ),
+
+        &lt;span style=&#34;color:#75715e&#34;&gt;# Show a plot of the generated distribution&lt;/span&gt;
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;mainPanel&lt;/span&gt;(
+            &lt;span style=&#34;color:#a6e22e&#34;&gt;plotOutput&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;distPlot&amp;#34;&lt;/span&gt;)
+        )
+    )
+))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;2-serverr&#34;&gt;(2) server.R&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(shiny)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Define server logic required to draw a histogram&lt;/span&gt;
+&lt;span style=&#34;color:#a6e22e&#34;&gt;shinyServer&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;function&lt;/span&gt;(input, output) {
+
+    output&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;distPlot &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;renderPlot&lt;/span&gt;({
+
+        &lt;span style=&#34;color:#75715e&#34;&gt;# generate bins based on input$bins from ui.R&lt;/span&gt;
+        x    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; faithful[, &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;]
+        bins &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;seq&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;min&lt;/span&gt;(x), &lt;span style=&#34;color:#a6e22e&#34;&gt;max&lt;/span&gt;(x), length.out &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; input&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;bins &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+
+        &lt;span style=&#34;color:#75715e&#34;&gt;# draw the histogram with the specified number of bins&lt;/span&gt;
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;hist&lt;/span&gt;(x, breaks &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bins, col &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;darkgray&amp;#39;&lt;/span&gt;, border &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;white&amp;#39;&lt;/span&gt;)
+
+    })
+
+})
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;위와 같이 두개의 파일을 생성 후, 마지막으로 &lt;strong&gt;Run App&lt;/strong&gt;을 실행합니다.
+&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/runApp.png&#34; alt=&#34;Alt text&#34;&gt;&lt;/p&gt;
+&lt;p&gt;아래 주소에서도 확인할 수 있습니다.
+&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/runApp_activation.png&#34; alt=&#34;Alt text&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;v-다른-사용자도-볼수-있도록-하고-싶다면&#34;&gt;V. 다른 사용자도 볼수 있도록 하고 싶다면?&lt;/h2&gt;
+&lt;h3 id=&#34;1-작업-파일을-ui-파일에-붙이기&#34;&gt;(1) 작업 파일을 ui 파일에 붙이기&lt;/h3&gt;
+&lt;p&gt;기본값으로, Shiny Server 는 &lt;code&gt;/srv/shiny-server/&lt;/code&gt;를 싸이트 디렉토리로 사용합니다. 따라서, R 작업파일 디렉토리를 &lt;code&gt;/srv/shiny-server/&lt;/code&gt;에 복사하도록 합니다.&lt;/p&gt;
+&lt;p&gt;제 경우는 &lt;code&gt;/home/evan/R/shiny/sample/&lt;/code&gt;에 &lt;code&gt;ui.R&lt;/code&gt; 파일과 &lt;code&gt;server.R&lt;/code&gt;파일이 있기 때문에 아래와 같이 명령어를 통해 파일을 넣어놨습니다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;$ sudo cp -r evan/R/shiny/sample/ /srv/shiny-server/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;2-웹주소-확인하기&#34;&gt;(2) 웹주소 확인하기&lt;/h3&gt;
+&lt;p&gt;브라우저 주소 입력창에 &lt;strong&gt;http://외부IP주소:3838/sample&lt;/strong&gt; 입력합니다. &lt;strong&gt;sample&lt;/strong&gt; 폴더명과 똑같다고 생각하면 됩니다.
+&lt;img src=&#34;https://chloevan.github.io/img/shiny/gcp_shiny/sample.png&#34; alt=&#34;Alt text&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;v-reference&#34;&gt;V. Reference&lt;/h2&gt;
+&lt;p&gt;조대협 . (2016, May 30). 구글 클라우드 생성하기 - VM 생성과 접속. Retrieved from &lt;a href=&#34;https://bcho.tistory.com/1107&#34;&gt;https://bcho.tistory.com/1107&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Download RStudio Server. (n.d.). Retrieved from &lt;a href=&#34;https://www.rstudio.com/products/rstudio/download-server/&#34;&gt;https://www.rstudio.com/products/rstudio/download-server/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;How to Deploy Interactive R Apps with Shiny Server. (2018, December 18). Retrieved from &lt;a href=&#34;https://www.linode.com/docs/development/r/how-to-deploy-rshiny-server-on-ubuntu-and-debian/&#34;&gt;https://www.linode.com/docs/development/r/how-to-deploy-rshiny-server-on-ubuntu-and-debian/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Installation of R 3.5 on Ubuntu 18.04 LTS and tips for spatial packages. (2018, August 10). Retrieved from &lt;a href=&#34;https://www.r-bloggers.com/installation-of-r-3-5-on-ubuntu-18-04-lts-and-tips-for-spatial-packages/&#34;&gt;https://www.r-bloggers.com/installation-of-r-3-5-on-ubuntu-18-04-lts-and-tips-for-spatial-packages/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Introduction: Server documentation. (n.d.). Retrieved from &lt;a href=&#34;https://help.ubuntu.com/lts/serverguide/configuration.html.en&#34;&gt;https://help.ubuntu.com/lts/serverguide/configuration.html.en&lt;/a&gt;&lt;/p&gt;
+</description>
     </item>
     
   </channel>

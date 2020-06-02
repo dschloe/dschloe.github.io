@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Across Datasets on Data Science | ChloEvan</title>
@@ -8,7 +7,7 @@
     <language>en-us</language>
     <lastBuildDate>Sun, 19 Apr 2020 00:13:30 +0900</lastBuildDate>
     
-	<atom:link href="https://chloevan.github.io/tags/across-datasets/rss.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://chloevan.github.io/tags/across-datasets/rss.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,10 +16,115 @@
       <pubDate>Sun, 19 Apr 2020 00:13:30 +0900</pubDate>
       
       <guid>https://chloevan.github.io/gcp/bigquery/01_settings/ch02_working_with_bigquery/</guid>
-      <description>I. Get Started 일단 시작해보자. https://console.cloud.google.com/bigquery
-뉴욕주의 자전거 렌탈이 비가 올때와 그렇지 않을 때 수치를 비교하고자 않다. 어떻게 해야할까? 일단, 필요한 데이터는 두가지가 될 것이다. 첫번째는 자전거 렌탈 데이터가 필요하고, 두번째는 뉴욕주의 날씨와 관련된 데이터이다. 두개의 데이터를 조인(join)한 후 수치를 구해야 할 것이다.
-위 화면에서 아래 소스코드를 입력한다.
-WITH bicycle_rentals AS ( SELECT COUNT(starttime) as num_trips, EXTRACT(DATE from starttime) as trip_date FROM `bigquery-public-data.new_york_citibike.citibike_trips` GROUP BY trip_date ), rainy_days AS ( SELECT date, (MAX(prcp) &amp;gt; 5) AS rainy FROM ( SELECT wx.</description>
+      <description>&lt;h2 id=&#34;i-get-started&#34;&gt;I. Get Started&lt;/h2&gt;
+&lt;p&gt;일단 시작해보자. &lt;a href=&#34;https://console.cloud.google.com/bigquery&#34;&gt;https://console.cloud.google.com/bigquery&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/gcp/bigquery/02_Figure.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;뉴욕주의 자전거 렌탈이 비가 올때와 그렇지 않을 때 수치를 비교하고자 않다. 어떻게 해야할까? 일단, 필요한 데이터는 두가지가 될 것이다. 첫번째는 자전거 렌탈 데이터가 필요하고, 두번째는 뉴욕주의 날씨와 관련된 데이터이다. 두개의 데이터를 조인(join)한 후 수치를 구해야 할 것이다.&lt;/p&gt;
+&lt;p&gt;위 화면에서 아래 소스코드를 입력한다.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;WITH&lt;/span&gt; bicycle_rentals &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; (
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;COUNT&lt;/span&gt;(starttime) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; num_trips,
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;EXTRACT&lt;/span&gt;(DATE &lt;span style=&#34;color:#66d9ef&#34;&gt;from&lt;/span&gt; starttime) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; trip_date
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;`&lt;/span&gt;bigquery&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;data&lt;/span&gt;.new_york_citibike.citibike_trips&lt;span style=&#34;color:#f92672&#34;&gt;`&lt;/span&gt; 
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;GROUP&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;BY&lt;/span&gt; trip_date
+),
+
+rainy_days &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt;
+(
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt;
+  date,
+  (&lt;span style=&#34;color:#66d9ef&#34;&gt;MAX&lt;/span&gt;(prcp) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; rainy
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; (
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt; wx.date &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; date,
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;IF&lt;/span&gt; (wx.element &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PRCP&amp;#39;&lt;/span&gt;, wx.value&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;NULL&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; prcp
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;`&lt;/span&gt;bigquery&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;data&lt;/span&gt;.ghcn_d.ghcnd_2016&lt;span style=&#34;color:#f92672&#34;&gt;`&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; wx 
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;WHERE&lt;/span&gt; wx.id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;USW00094728&amp;#39;&lt;/span&gt;
+)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;GROUP&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;BY&lt;/span&gt;
+  date
+)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt; 
+  ROUND(&lt;span style=&#34;color:#66d9ef&#34;&gt;AVG&lt;/span&gt;(bk.num_trips)) &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; num_trips, 
+  wx.rainy
+&lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; bicycle_rentals &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; bk
+&lt;span style=&#34;color:#66d9ef&#34;&gt;JOIN&lt;/span&gt; rainy_days &lt;span style=&#34;color:#66d9ef&#34;&gt;AS&lt;/span&gt; wx
+&lt;span style=&#34;color:#66d9ef&#34;&gt;ON&lt;/span&gt; wx.date &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bk.trip_date
+&lt;span style=&#34;color:#66d9ef&#34;&gt;GROUP&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;BY&lt;/span&gt; wx.rainy
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;center&#34;&gt;ROW&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;num_trips&lt;/th&gt;
+&lt;th&gt;rainy&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;center&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;39107.0&lt;/td&gt;
+&lt;td&gt;false&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&#34;center&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;32052.0&lt;/td&gt;
+&lt;td&gt;true&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/gcp/bigquery/03_Insight.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;일단, 위 SQL문법에 대한 이해는 잠시 미뤄두자. &lt;code&gt;citibike_trips&lt;/code&gt;데이터의 용량은 &lt;code&gt;7.47GB&lt;/code&gt;이고, &lt;code&gt;ghcnd_2016&lt;/code&gt; 데이터의 용량은 &lt;code&gt;1.39GB&lt;/code&gt;이다. 그런데, Query 처리 속도는 &lt;code&gt;1.4&lt;/code&gt;초만 걸렸다. 만약 이 것을 &lt;code&gt;Local&lt;/code&gt;에서 구현한다면 어떻게 될까? 아무리 성능 좋은 MacOS 노트북이라 하더라도 최소 &lt;code&gt;10초&lt;/code&gt;이상은 걸릴 것이다. 이러한 속도를 무시해서는 안된다.&lt;/p&gt;
+&lt;p&gt;위 소스코드를 통해서 얻고자 하는 &lt;code&gt;인사이트(Insight)&lt;/code&gt;는 두개의 다른 데이터(&lt;code&gt;new_york_citibike.citibike_trips&lt;/code&gt; &amp;amp; &lt;code&gt;data.ghcn_d.ghcnd_2016&lt;/code&gt;)가 &lt;code&gt;Join&lt;/code&gt;해서 결과를 만들어 내고 있다. 일반적인 &lt;code&gt;MAX()&lt;/code&gt;, &lt;code&gt;AVG()&lt;/code&gt; 함수를 활용해서 쉽게 데이터를 요약할 수 있다는데 그 장점이 있다.&lt;/p&gt;
+&lt;p&gt;이것의 장점은 무엇일까? 전사적으로 데이터가 &lt;code&gt;BigQuery&lt;/code&gt;에 축적이 되고 있다면, 데이터를 통해서 객관적인 지표를 보다 정확하게 그리고 무엇보다도 빠르게 전달할 수 있다는 점이 있다.&lt;/p&gt;
+&lt;p&gt;다양한 Interface를 제공하는데, 특히 &lt;code&gt;BigQuery&lt;/code&gt;에 적재된 데이터를 구글의 시각화 도구인 &lt;code&gt;Data Studio&lt;/code&gt;뿐만 아니라 &lt;code&gt;Tableau&lt;/code&gt;, &lt;code&gt;Looker&lt;/code&gt;등과 연동할 수 있다는 장점이 있다. 이를 통해서 빠르게 대시보드를 구현할 수도 있다. 물론, R &amp;amp; Python과도 연동이 가능하다.&lt;/p&gt;
+&lt;h2 id=&#34;ii-etl-el-and-elt로써-기능하는-bigquery&#34;&gt;II. ETL, EL, and ELT로써 기능하는 BigQuery&lt;/h2&gt;
+&lt;p&gt;전통적인 방법으로 &lt;code&gt;Hadoop&lt;/code&gt; 에코시스템을 통해서 데이터 추출(&lt;code&gt;Extract&lt;/code&gt;), 데이터 가공(&lt;code&gt;Transform&lt;/code&gt;), 데이터 로드(&lt;code&gt;Load&lt;/code&gt;)의 과정을 지나게 된다. BigQuery는 이러한 데이터파이프 라인의 최종적인 종착지로 기능을 하게된다.&lt;/p&gt;
+&lt;p&gt;가장 이상적인 방법은 아래 그림과 같다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/gcp/bigquery/04_ETL.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;조금 쉽게 설명하면 아래와 같다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Extract: Cloud Pub/Sub &amp;amp; Cloud Stroage에서 Stream &amp;amp; Batch 스타일로 데이터를 내보낸다.&lt;/li&gt;
+&lt;li&gt;Transform: Cloud Dataflow에서 데이터 가공을 한 뒤, Stream &amp;amp; Batch 형태로 데이터를 내보낸다.&lt;/li&gt;
+&lt;li&gt;Load: 이렇게 1차 가공된 데이터를 BigQuery에 모두 쌓이는 형태가 된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;가장 대표적인 예가 Firebase와 빅쿼리의 연동인데, Firebase는 웹/앱 영역을 담당하는데, 여기에서 추출된 모든 데이터가 빅쿼리로 전송되는 형태이다.&lt;/p&gt;
+&lt;p&gt;EL, ETL, ELT로써 요약하면 아래와 같이 작성이 가능하다.&lt;/p&gt;
+&lt;h3 id=&#34;1-el&#34;&gt;(1) EL&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Architecture:
+&lt;ul&gt;
+&lt;li&gt;Extract data from files on Google Cloud Storage.&lt;/li&gt;
+&lt;li&gt;Load it into BigQuery’s native storage.&lt;/li&gt;
+&lt;li&gt;You can trigger this from Cloud Composer, Cloud Functions, or scheduled&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;When you&amp;rsquo;d use it: Batch load of historical data. Scheduled periodic loads of log files(e.g., once a day)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-etl&#34;&gt;(2) ETL&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Architecture:
+&lt;ul&gt;
+&lt;li&gt;Extract data from Pub/Sub, Google Cloud Storage, Cloud Spanner, Cloud SQL, etc.&lt;/li&gt;
+&lt;li&gt;Transform the data using Cloud Dataflow.&lt;/li&gt;
+&lt;li&gt;Have Dataflow pipeline write to BigQuery&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;When you’d use it: When the raw data needs to be quality controlled, transformed, or enriched before being loaded into BigQuery. When the data loading needs to happen continuously, i.e., if the use case requires streaming. When you want to integrate with continuous integration/continuous delivery (CI/CD) systems and perform unit testing on all&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-elt&#34;&gt;(3) ELT&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Architecture:
+&lt;ul&gt;
+&lt;li&gt;Extract data from files in Google Cloud Storage.&lt;/li&gt;
+&lt;li&gt;Store data in close-to-rawformat in BigQuery.&lt;/li&gt;
+&lt;li&gt;Transform the data on the fly using BigQuery views.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;When you&amp;rsquo;d use it: Experimental datasets where you are not yet sure what kinds of transformations are needed to make the data usable. Any production dataset where the transformation can be expressed in SQL.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ETL의 과정도 추후에 예시를 통해서 작성을 할 예정이다. 그 때 다시한번 다루도록 한다.&lt;/p&gt;
+&lt;h2 id=&#34;iii-reference&#34;&gt;III. Reference&lt;/h2&gt;
+&lt;p&gt;Lakshmanan, Valliappa,Tigani, Jordan. Google BigQuery: The Definitive Guide (Kindle Location 239). O&amp;rsquo;Reilly Media. Kindle Edition.&lt;/p&gt;
+</description>
     </item>
     
   </channel>
