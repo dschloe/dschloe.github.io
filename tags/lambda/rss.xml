@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>lambda on Data Science | ChloEvan</title>
@@ -7,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Wed, 13 May 2020 14:15:47 +0900</lastBuildDate>
     
-        <atom:link href="https://chloevan.github.io/tags/lambda/rss.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://chloevan.github.io/tags/lambda/rss.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -16,181 +17,9 @@
       <pubDate>Wed, 13 May 2020 14:15:47 +0900</pubDate>
       
       <guid>https://chloevan.github.io/python/pandas/pandas_lambda_swifter/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/python_edu/02_datatransformation/pandas_logo.png#center&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
-&lt;p&gt;제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 &lt;code&gt;Reference&lt;/code&gt;는 꼭 확인하셔서 교재 구매 또는 관련 &lt;code&gt;Reference&lt;/code&gt;를 확인하시기를 바랍니다.&lt;/p&gt;
-&lt;p&gt;지난 포스트에서는 &lt;code&gt;lambda&lt;/code&gt;의 기본적인 개념에 대해서 익혔다면, 이제 본격적인 데이터 전처리와 관련된 예제를 올리려고 한다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/python/basic/lambda_and_list_comprehension/&#34;&gt;Python - Lambda and List Comprehension&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;ii-가상의-데이터셋-만들기&#34;&gt;II. 가상의 데이터셋 만들기&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;25M 행과 5개의 열로 구성된 가상의 숫자 데이터 프레임을 만들어보자.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; np
-&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; tabulate &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tabulate
-
-pd_temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;DataFrame(np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;randint(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;, size &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;25000000&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)), columns&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;list(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;abcde&amp;#39;&lt;/span&gt;))
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(pd_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th align=&#34;right&#34;&gt;&lt;/th&gt;
-&lt;th align=&#34;right&#34;&gt;a&lt;/th&gt;
-&lt;th align=&#34;right&#34;&gt;b&lt;/th&gt;
-&lt;th align=&#34;right&#34;&gt;c&lt;/th&gt;
-&lt;th align=&#34;right&#34;&gt;d&lt;/th&gt;
-&lt;th align=&#34;right&#34;&gt;e&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td align=&#34;right&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;44&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;28&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;17&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;36&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;35&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;93&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;31&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;45&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;17&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;97&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;56&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;89&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;51&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;53&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;92&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;35&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;17&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;87&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;45&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;59&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;95&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h2 id=&#34;iii-성능-테스트&#34;&gt;III. 성능 테스트&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;새로운 컬럼(&lt;code&gt;f&lt;/code&gt;)을 만드는데, if condition을 적용해서 실험을 해본다. 우선 새로운 컬럼을 만드는 함수는 아래와 같이 작성해보자.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;add_col_fun&lt;/span&gt;(a,b):
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;50&lt;/span&gt;: 
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; True
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;elif&lt;/span&gt; b &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;75&lt;/span&gt;:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; True
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; False
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;1-apply--lambda&#34;&gt;(1) apply + lambda&lt;/h3&gt;
-&lt;p&gt;보통 &lt;code&gt;pandas&lt;/code&gt;를 활용하면 &lt;code&gt;apply + lambda&lt;/code&gt; 사용을 권장한다. 이 때 성능 테스트를 위해 &lt;code&gt;%%time&lt;/code&gt;을 활용해보자.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# dataframe 복사&lt;/span&gt;
-defaul_temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd_temp
-swfiter_temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd_temp
-swifter_npartitions_temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd_temp
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%%&lt;/span&gt;time
-defaul_temp[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;f&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; defaul_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;apply(&lt;span style=&#34;color:#66d9ef&#34;&gt;lambda&lt;/span&gt; x: add_col_fun(x[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;a&amp;#39;&lt;/span&gt;], x[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;]), axis&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(defaul_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;CPU times: user 12min 3s, sys: 236 ms, total: 12min 3s
-Wall time: 12min 4s&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;간단하게 &lt;code&gt;2개&lt;/code&gt;의 column을 활용하여 &lt;code&gt;column&lt;/code&gt; &lt;code&gt;1개&lt;/code&gt;를 추가 하는데도 약 12분 가까이 걸리는 걸 확인할 수 있다. (솔직히 넘 느리다)&lt;/li&gt;
-&lt;li&gt;그러면 어떻게 수정해야 할까?&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;iv-introduction-to-swifter&#34;&gt;IV. Introduction to Swifter&lt;/h2&gt;
-&lt;p&gt;먼저 &lt;code&gt;swifter&lt;/code&gt;의 공식 문서를 확인해보자. 필자는 패키지를 볼 때마다, &lt;code&gt;정의&lt;/code&gt; 또는 &lt;code&gt;개발 목적&lt;/code&gt;을 먼저 확인하는 편이다. 그러면 나머지 필요한 함수는 그 때마다 찾아서 쓰면 된다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;swifter&lt;/code&gt; 공식 문서: &lt;a href=&#34;https://pypi.org/project/swifter/&#34;&gt;https://pypi.org/project/swifter/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;페이지를 방문하면 패키지의 간단한 정의를 확인할 수 있다.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;A package which efficiently applies any function to a pandas dataframe or series in the fastest available manner&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;즉, 위 패키지는 판다스의 &lt;code&gt;dataframe&lt;/code&gt; 또는 &lt;code&gt;series&lt;/code&gt;를 빠르게 사용할 수 있도록 도와주는 일종의 &lt;code&gt;helper&lt;/code&gt;패키지 처럼 보인다.&lt;/p&gt;
-&lt;p&gt;어떻게 사용할까?&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;pip install swifter
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;1-application-to-swifter&#34;&gt;(1) Application to Swifter&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;이번에는 default &lt;code&gt;swifter&lt;/code&gt;를 사용하여 &lt;code&gt;f&lt;/code&gt; column을 추가해보자.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%%&lt;/span&gt;time
-
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; swifter
-
-swfiter_temp[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;f&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; swfiter_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;swifter&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;apply(&lt;span style=&#34;color:#66d9ef&#34;&gt;lambda&lt;/span&gt; x: add_col_fun(x[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;a&amp;#39;&lt;/span&gt;], x[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;]), axis&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(swfiter_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;CPU times: user 5.4 s, sys: 6.77 s, total: 12.2 s
-Wall time: 9min 4s&lt;/p&gt;
-&lt;h3 id=&#34;2-set_npartitions-적용&#34;&gt;(2) set_npartitions 적용&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;그런데, 병렬처리는 보통 코어를 할당해주어야 한다. &lt;code&gt;swifter&lt;/code&gt; 패키지에는 이러한 코어를 할당해줄 수 있는 함수(&lt;code&gt;set_npartitions())&lt;/code&gt;가 존재한다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;계산방식은 아래와 같다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;$CPUcount \times hyperthreading \times 2$&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;만약 내 컴퓨터의 CPU가 6개이고, hyperthreading이 2개라면 npartitions=24개가 된다.&lt;/li&gt;
-&lt;li&gt;CPU를 2개만 사용한다면 &lt;code&gt;npartitions(8)&lt;/code&gt;만 추가하면 된다.&lt;/li&gt;
-&lt;li&gt;코드는 아래와 같이 작성할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# core 개수 확인&lt;/span&gt;
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; multiprocessing
-
-multiprocessing&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;cpu_count()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;2&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;구글 코랩에서 구동중이었는데, CPU가 2개였다!&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;%%&lt;/span&gt;time
-
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; swifter
-swifter_npartitions_temp[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;f&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; swifter_npartitions_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;swifter&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;set_npartitions(&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;apply(&lt;span style=&#34;color:#66d9ef&#34;&gt;lambda&lt;/span&gt; x: add_col_fun(x[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;a&amp;#39;&lt;/span&gt;], x[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;]), axis&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(tabulate(swifter_npartitions_temp&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(), tablefmt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pipe&amp;#34;&lt;/span&gt;, headers&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keys&amp;#34;&lt;/span&gt;))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;CPU times: user 4.16 s, sys: 4.89 s, total: 9.05 s
-Wall time: 8min 36s&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;swifter&lt;/code&gt;에 &lt;code&gt;npartitions(8)&lt;/code&gt;에 설정할 때, 속도가 약 30-40% 향상 된 것으로 확인된다. 만약 &lt;code&gt;CPU&lt;/code&gt;개수를 추가하면 추가할 수록 연산 속도가 더 빨라질 것으로 기대할 수 있다.&lt;/li&gt;
-&lt;li&gt;간단한 함수 적용으로 연산처리 속도가 향상됨을 볼 수 있다.&lt;/li&gt;
-&lt;li&gt;실제 &lt;code&gt;github&lt;/code&gt; 페이지에 가면 &lt;code&gt;pandas apply&lt;/code&gt; Vs. &lt;code&gt;Dask apply&lt;/code&gt; Vs. &lt;code&gt;Vectorized&lt;/code&gt; Vs. &lt;code&gt;swift apply&lt;/code&gt;에 관한 비교 코드가 있으니 실제로 비교해보는 것을 추천한다.
-&lt;ul&gt;
-&lt;li&gt;swifter github 문서: &lt;a href=&#34;https://github.com/jmcarpenter2/swifter&#34;&gt;https://github.com/jmcarpenter2/swifter&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/pandas/swifter/comparison.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;h2 id=&#34;v-결론&#34;&gt;V. 결론&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;pandas dataframe을 활용 할 때, 보통 &lt;code&gt;apply + lambda&lt;/code&gt;를 활용하는 것은 거의 정규화 되고 있다. 이유는 &lt;code&gt;lambda&lt;/code&gt;를 사용하는 것이 훨씬 간편하기 때문에 그렇다.&lt;/li&gt;
-&lt;li&gt;문제는 속도다. 속도가 느리기 때문에 다른 대체제를 활용하는 경우가 종종 있다. (예: &lt;code&gt;dask&lt;/code&gt;, &lt;code&gt;pyspark&lt;/code&gt; 등)&lt;/li&gt;
-&lt;li&gt;각각의 &lt;code&gt;package&lt;/code&gt;를 알고 있다면 도움이 되지만, 문제는 각 패키지에 맞는 문법을 익혀야 하는 것은 부담일 수 있다.&lt;/li&gt;
-&lt;li&gt;그러나, 간단하게 &lt;code&gt;swifter&lt;/code&gt; 패키지를 활용하면 간단한 단어 추가로도 성능을 개선하는데 도움을 줄 수 있다는 것에 주목할 필요가 있다.&lt;/li&gt;
-&lt;li&gt;또한, cpu 갯수에 맞게 할당을 해주면 더 좋은 속도 개선을 이룰 수 있음을 확인할 수 있었다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;It&amp;rsquo;s your turn. Learn by doing.&lt;/p&gt;
-&lt;h2 id=&#34;vi-reference&#34;&gt;VI. Reference&lt;/h2&gt;
-&lt;p&gt;jmcarpenter2. swifter. Retrieved from &lt;a href=&#34;https://github.com/jmcarpenter2/swifter&#34;&gt;https://github.com/jmcarpenter2/swifter&lt;/a&gt;&lt;/p&gt;
-</description>
+      <description>공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+지난 포스트에서는 lambda의 기본적인 개념에 대해서 익혔다면, 이제 본격적인 데이터 전처리와 관련된 예제를 올리려고 한다.
+ Python - Lambda and List Comprehension  II. 가상의 데이터셋 만들기  25M 행과 5개의 열로 구성된 가상의 숫자 데이터 프레임을 만들어보자.  import pandas as pd import numpy as np from tabulate import tabulate pd_temp = pd.</description>
     </item>
     
     <item>
@@ -199,106 +28,10 @@ Wall time: 8min 36s&lt;/p&gt;
       <pubDate>Tue, 12 May 2020 17:12:47 +0900</pubDate>
       
       <guid>https://chloevan.github.io/python/basic/lambda_and_list_comprehension/</guid>
-      <description>&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
-&lt;p&gt;제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.&lt;/p&gt;
-&lt;h2 id=&#34;i-개요&#34;&gt;I. 개요&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;Python&lt;/code&gt;을 활용한 데이터전처리를 수행할 때, &lt;code&gt;Lambda and List Comprehension&lt;/code&gt; 활용하면 매우 &lt;code&gt;handy&lt;/code&gt;한 경험을 할 수 있다. 특히, 코드 수행 시, &lt;code&gt;for-loop&lt;/code&gt;가 많을 때 유용하다.&lt;/p&gt;
-&lt;h2 id=&#34;ii-lambda-expression&#34;&gt;II. Lambda Expression&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/python/lambda/lambda.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;우선 &lt;code&gt;Lambda&lt;/code&gt;의 표현 방법은 아래와 같다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;lambda&lt;/span&gt; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;인자&lt;/span&gt; : &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;표현식&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;어떻게 사용할 수 있을까요? 우선, &lt;code&gt;temp_sum&lt;/code&gt;이라는 함수를 만들어 본다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;temp_sum&lt;/span&gt;(x, y):
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; x &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; y
-
-temp_sum(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;5
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이번에는 &lt;code&gt;lambda&lt;/code&gt;를 활용해서 &lt;code&gt;sum&lt;/code&gt;을 적용해보자.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;temp_sum &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;lambda&lt;/span&gt; x,y:x&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;y)(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;)
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(temp_sum)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;5
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;하나는 함수를 만들어서 사용했고, &lt;code&gt;lambda&lt;/code&gt;를 활용할 때는 함수를 쓰지 않고 작성했다.&lt;/p&gt;
-&lt;p&gt;한가지 특징이 있다면, 일반적으로 함수는 &lt;code&gt;return&lt;/code&gt; 문이 존재하지만, &lt;code&gt;lambda&lt;/code&gt;는 없다는 점이다.&lt;/p&gt;
-&lt;h2 id=&#34;iii-with-functions&#34;&gt;III. With functions&lt;/h2&gt;
-&lt;p&gt;그런데, &lt;code&gt;lambda&lt;/code&gt; 자체가 독립적으로 쓰일 때 보다는 &lt;code&gt;map()&lt;/code&gt;, &lt;code&gt;filter()&lt;/code&gt;, &lt;code&gt;list comprehesion&lt;/code&gt;과 같이 쓰일 때, 보다 효율적이다.&lt;/p&gt;
-&lt;h3 id=&#34;1-map&#34;&gt;(1) map()&lt;/h3&gt;
-&lt;p&gt;문법은 아래와 같다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;map(func, iterables)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;map()&lt;/code&gt; 함수는 함수와 인자를 받는데, 이때의 함수라 하면, &lt;code&gt;lambda&lt;/code&gt;도 포함한다.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;iterables&lt;/code&gt; 나오는데, 이는 일반적인 &lt;code&gt;list&lt;/code&gt;와는 다르다.&lt;/li&gt;
-&lt;li&gt;따라서, &lt;code&gt;map()&lt;/code&gt;의 결과값은 &lt;code&gt;iterables&lt;/code&gt;로 반환되며, &lt;code&gt;list&lt;/code&gt;로 변환해야 &lt;code&gt;list&lt;/code&gt; 형태로 결과를 볼 수 있다.&lt;/li&gt;
-&lt;li&gt;조금 더 구체적으로 &lt;code&gt;map&lt;/code&gt;의 사용용법은 아래와 같다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;list(map(func, iterables))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;이제 &lt;code&gt;list&lt;/code&gt; 객체에 &lt;code&gt;map()&lt;/code&gt; + &lt;code&gt;lambda&lt;/code&gt;를 활용해서 각 &lt;code&gt;list&lt;/code&gt;에 3씩 구하도록 한다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;num_list &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;]
-increased &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; list(map(&lt;span style=&#34;color:#66d9ef&#34;&gt;lambda&lt;/span&gt; x: x &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, num_list))
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(increased)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[8, 9, 10]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id=&#34;2-filter&#34;&gt;(2) filter()&lt;/h3&gt;
-&lt;p&gt;이번에는 &lt;code&gt;filter()&lt;/code&gt; 함수를 활용한다. &lt;code&gt;map()&lt;/code&gt;와 마찬가지로 문법은 동일하다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;filter(func, iterables)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;iterables&lt;/code&gt;에 대해서는 별도로 추가적인 설명하지 않는다. &lt;code&gt;list&lt;/code&gt;로 받았기 때문에, 이번에도 &lt;code&gt;list&lt;/code&gt;로 변환해서 출력을 한다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;list&lt;/code&gt;안에 있는 각각의 값에서, &lt;code&gt;2로 나눈 값이 0&lt;/code&gt;이 아닌 것만 출력하는 구문을 짜도록 한다. 기대하는 값은 &lt;code&gt;[5,7]&lt;/code&gt;이다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;num_list &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;]
-odd_num &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; list(filter(&lt;span style=&#34;color:#66d9ef&#34;&gt;lambda&lt;/span&gt; x: x&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, num_list))
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(odd_num)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[5, 7]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id=&#34;3-list-comprehension&#34;&gt;(3) List Comprehension&lt;/h3&gt;
-&lt;p&gt;우선 문법을 보자.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;[expression &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; item &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; list &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; condition]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;위 구문을 가지고 무엇을 하고 싶을 때 써야할까?&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;expression&lt;/code&gt; 사용자가 하려는 문법 (이번에는 곱셈을 해본다)&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;item&lt;/code&gt;은 &lt;code&gt;list&lt;/code&gt;가 올것이다.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;if&lt;/code&gt;는 item의 각 아이템을 조건문으로 &lt;code&gt;filter&lt;/code&gt;하는 개념이다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;우선 아래 코드를 보자.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;num_list &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;]
-sqrt_list &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [x&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;x &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; x &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; num_list &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; x&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(sqrt_list)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[4, 16, 36, 64, 100]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;1-10까지 숫자를 포함하는 리스트가 있다. 2로 나눈 값 중 나머지가 0이 되는 값을 뽑은 뒤 각 숫자의 제곱을 하도록 반환하는 값이다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;List Comprehension&lt;/code&gt;의 강력함은 이렇게 여러 문법이 한줄로 코딩하여 속도 뿐만 아니라 코드의 가독성도 부여하는데 의의가 있다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;이번에는 &lt;code&gt;lambda&lt;/code&gt;를 적용한다. 우선 &lt;code&gt;lambda&lt;/code&gt;는 어디에 들어가야 할까? 당연한 말이지만, &lt;code&gt;expression&lt;/code&gt; 영역에 들어가야 한다. 우선 아래 코드를 확인해보자.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;num_list &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;]
-sqrt_list &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [(&lt;span style=&#34;color:#66d9ef&#34;&gt;lambda&lt;/span&gt; x: x&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;x)(x) &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; x &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; num_list &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; x&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(sqrt_list)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[4, 16, 36, 64, 100]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;lambda&lt;/code&gt;를 어떻게 썼는지 확인해보면 &lt;code&gt;(lambda x: x*x)(x)&lt;/code&gt;라고 표현되어 있는 것을 볼 수 있는데, 앞 부분에서 &lt;code&gt;lambda expression&lt;/code&gt;(Chapter 2)에 대해 설명했기 때문에 생략한다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;위 코드에서 보는 것처럼, &lt;code&gt;List Comprehension&lt;/code&gt;과 &lt;code&gt;Lambda Expression&lt;/code&gt;을 같이 쓰는 것은 조금 비효율적일 수 있다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;iv-more-study&#34;&gt;IV. More Study&lt;/h2&gt;
-&lt;p&gt;기본문법이다. 그런데, 아직까지 확실히 &lt;code&gt;Lambda&lt;/code&gt;가 좋은지는 필자 역시 모르겠다. 그런데, &lt;code&gt;Lambda&lt;/code&gt;가 데이터 전처리 때, 사용하면 매우 강력한 무기가 될 수 있음을 다음 포스트에서 기술하려고 한다.&lt;/p&gt;
-&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
-&lt;p&gt;Suvhotta. (2020, January 27). Python: Lambda and List Comprehension. Retrieved May 12, 2020, from &lt;a href=&#34;https://dev.to/suvhotta/python-lambda-and-list-comprehension-5128&#34;&gt;https://dev.to/suvhotta/python-lambda-and-list-comprehension-5128&lt;/a&gt;&lt;/p&gt;
-</description>
+      <description>공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+I. 개요 Python을 활용한 데이터전처리를 수행할 때, Lambda and List Comprehension 활용하면 매우 handy한 경험을 할 수 있다. 특히, 코드 수행 시, for-loop가 많을 때 유용하다.
+II. Lambda Expression 우선 Lambda의 표현 방법은 아래와 같다.
+lambda 인자 : 표현식 어떻게 사용할 수 있을까요?</description>
     </item>
     
   </channel>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>선형회귀 on Data Science | ChloEvan</title>
@@ -7,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Tue, 14 Apr 2020 22:40:30 +0900</lastBuildDate>
     
-        <atom:link href="https://chloevan.github.io/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/rss.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://chloevan.github.io/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/rss.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -16,199 +17,8 @@
       <pubDate>Tue, 14 Apr 2020 22:40:30 +0900</pubDate>
       
       <guid>https://chloevan.github.io/python/tensorflow2.0/ch4_1_linear_regression/</guid>
-      <description>&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;본 Tutorial은 교재 &lt;code&gt;시작하세요 텐서플로 2.0 프로그래밍&lt;/code&gt;의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.&lt;/li&gt;
-&lt;li&gt;강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/tensorflow2.0/book.jpg&#34; alt=&#34;&#34;&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;tutorial&#34;&gt;Tutorial&lt;/h2&gt;
-&lt;p&gt;이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/python/tensorflow2.0/googlecolab/&#34;&gt;Google Colab Tensorflow 2.0 Installation&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/python/tensorflow2.0/ch3_3_1_random_signoid/&#34;&gt;Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/python/tensorflow2.0/ch3_3_2_random_signoid_bias/&#34;&gt;Tensorflow 2.0 Tutorial ch3.3.2 - 난수 생성 및 시그모이드 함수 편향성&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/python/tensorflow2.0/ch3_3_3_network_and/&#34;&gt;Tensorflow 2.0 Tutorial ch3.3.3 - 첫번째 신경망 네트워크 - AND&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/python/tensorflow2.0/ch3_3_4_network_or/&#34;&gt;Tensorflow 2.0 Tutorial ch3.3.4 - 두번째 신경망 네트워크 - OR&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://chloevan.github.io/python/tensorflow2.0/ch3_3_5_network_xor/&#34;&gt;Tensorflow 2.0 Tutorial ch3.3.5 - 세번째 신경망 네트워크 - XOR&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;i-기본개념&#34;&gt;I. 기본개념&lt;/h2&gt;
-&lt;p&gt;선형 회귀(Linear Regression)는 데이터의 경향성을 가장 잘 설명하는 하나의 직선을 예측하는 것입니다. 선형 회귀에서 주로 사용되는 2차원에서의 직선이란 기울기와 y절편을 가지는 좌표평면 위 점들의 집합니다.&lt;/p&gt;
-&lt;p&gt;선형 회귀를 이용하면 수치형 데이터의 경향성을 예측할 수 있습니다.&lt;/p&gt;
-&lt;p&gt;2018년 우리나라의 지역별 인구증가율과 고령인구비율 데이터를 가지고 인구증가율과 고령인구비율 사이에 어떤 경향성이 있는지 선형 회귀로 예측해봅니다.&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
-population_inc &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;0.3&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.78&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1.26&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.03&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1.11&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;15.17&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.24&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.24&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.47&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.77&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.37&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.85&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.41&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.27&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.02&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.76&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;2.66&lt;/span&gt;]
-population_old &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;12.27&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.44&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;11.87&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;18.75&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;17.52&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;9.29&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;16.37&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;19.78&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;19.51&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;12.65&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.74&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;10.72&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;21.94&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;12.83&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;15.51&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;17.14&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.42&lt;/span&gt;]
-
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(population_inc, population_old, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bo&amp;#39;&lt;/span&gt;)
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;xlabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Population Growth Rate&amp;#39;&lt;/span&gt;)
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ylabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Elderly Population Rate&amp;#39;&lt;/span&gt;)
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;show()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/tensorflow2.0/tutorial_04_01/output_2_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;오른쪽 아래에 치우친 하나의 점이 눈에 띄는데, 이것은 극단치(outlier)라고 부르며 일반적인 경향에서 벗어난 사례입니다. 이 극단치는 세종시 데이터인데, 행정수도 이전으로 공무원 등 젊은 인구가 많이 이주해오면서 인구증가율은 높고, 고령인구비율은 낮은 데이터가 만들어진 것 같습니다.&lt;/p&gt;
-&lt;p&gt;이러한 극단치는 제거하는 것이 일반적인 경향을 파악하기 위해서는 좋습니다.&lt;/p&gt;
-&lt;p&gt;극단치를 제거하는 코드는 아래와 같습니다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
-population_inc &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;0.3&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.78&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1.26&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.03&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1.11&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;15.17&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.24&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.24&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.47&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.77&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.37&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.85&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.41&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.27&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.02&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.76&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;2.66&lt;/span&gt;]
-population_old &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;12.27&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.44&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;11.87&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;18.75&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;17.52&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;9.29&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;16.37&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;19.78&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;19.51&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;12.65&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.74&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;10.72&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;21.94&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;12.83&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;15.51&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;17.14&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.42&lt;/span&gt;]
-
-population_inc &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; population_inc[:&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; population_inc[&lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;:]
-population_old &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; population_old[:&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; population_old[&lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;:]
-
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(population_inc, population_old, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bo&amp;#39;&lt;/span&gt;)
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;xlabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Population Growth Rate&amp;#39;&lt;/span&gt;)
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ylabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Elderly Population Rate&amp;#39;&lt;/span&gt;)
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;show()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/tensorflow2.0/tutorial_04_01/output_4_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
-&lt;h2 id=&#34;ii-회귀-공식-이해&#34;&gt;II. 회귀 공식 이해&lt;/h2&gt;
-&lt;p&gt;이제 선형 회귀선을 그려봅니다. 데이터의 경향성을 가장 잘 설명하는 하나의 직선과 각 데이터의 차이를 잔차(&lt;code&gt;residual&lt;/code&gt;)라고 합니다. 이런 잔차의 제곱을 최소화하는 알고리즘을 최소제곱법(&lt;code&gt;Least Square Method&lt;/code&gt;)라고 부릅니다.&lt;/p&gt;
-&lt;p&gt;최소제곱법으로 직선 &lt;code&gt;y = ax + b&lt;/code&gt;의 a(기울기)와 b(y절편)을 구할 수 있습니다. 중간의 유도과정을 생략하면 공식은 아래와 &lt;code&gt;a&lt;/code&gt;, &lt;code&gt;b&lt;/code&gt;는 아래와 같습니다.&lt;/p&gt;
-&lt;p&gt;$$ a = \frac{\sum_{i=1}^{n}\left (y_{i} - \bar{y} \right )\times\left (1 \right )}{\sum_{i=1}^{n}\left (x_{i} - \bar{x}\right )^{2}} $$&lt;/p&gt;
-&lt;p&gt;$$ b = \bar{y} - a\bar{x} $$&lt;/p&gt;
-&lt;p&gt;여기서, $x_{i}$, $y_{i}$는 각 데이터 값이고, $\bar{x}$, $\bar{y}$는 데이터의 평균을 의미합니다. 다음 코드는 최소제곱법으로 &lt;code&gt;a&lt;/code&gt;와 &lt;code&gt;b&lt;/code&gt;를 직접 계산해서 회귀선을 구합니다.&lt;/p&gt;
-&lt;h3 id=&#34;1-코드-실습&#34;&gt;(1) 코드 실습&lt;/h3&gt;
-&lt;p&gt;이제 코드 실습을 진행해봅니다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; np
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
-
-X &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;0.3&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.78&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1.26&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.03&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1.11&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.24&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.24&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.47&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.77&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.37&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.85&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.41&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.27&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.02&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.76&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;2.66&lt;/span&gt;]
-Y &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;12.27&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.44&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;11.87&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;18.75&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;17.52&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;16.37&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;19.78&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;19.51&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;12.65&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.74&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;10.72&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;21.94&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;12.83&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;15.51&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;17.14&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.42&lt;/span&gt;]
-
-&lt;span style=&#34;color:#75715e&#34;&gt;# X, Y의 평균을 구합니다. &lt;/span&gt;
-x_bar &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sum(X) &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; len(X)
-y_bar &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sum(Y) &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; len(Y)
-
-&lt;span style=&#34;color:#75715e&#34;&gt;# 최소제곱법으로 a, b를 구합니다. &lt;/span&gt;
-a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sum([(y &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; y_bar) &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; (x &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; x_bar) &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; y, x &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; list(zip(Y, X))])
-a &lt;span style=&#34;color:#f92672&#34;&gt;/=&lt;/span&gt; sum([(x &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; x_bar) &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; x &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; X])
-b &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; y_bar &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; x_bar
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;a:&amp;#39;&lt;/span&gt;, a , &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;b:&amp;#39;&lt;/span&gt;, b)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;a: -0.355834147915461 b: 15.669317743971302
-&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 그래프를 그리기 위해 회귀선의 x, y 데이터를 구합니다. &lt;/span&gt;
-line_x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;arange(min(X), max(X), &lt;span style=&#34;color:#ae81ff&#34;&gt;0.01&lt;/span&gt;)
-line_y &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; line_x &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; b
-
-&lt;span style=&#34;color:#75715e&#34;&gt;# 붉은색 실선으로 회귀선을 그립니다.&lt;/span&gt;
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(line_x, line_y, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;r-&amp;#39;&lt;/span&gt;)
-
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(X, Y, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bo&amp;#39;&lt;/span&gt;)
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;xlabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Population Growth Rate (%)&amp;#39;&lt;/span&gt;)
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ylabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Elderly Growth Rate (%)&amp;#39;&lt;/span&gt;)
-
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;show()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/tensorflow2.0/tutorial_04_01/output_8_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
-&lt;h3 id=&#34;2-코드-설명&#34;&gt;(2) 코드 설명&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# X, Y의 평균을 구합니다. &lt;/span&gt;
-x_bar &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sum(X) &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; len(X)
-y_bar &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sum(Y) &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; len(Y)
-
-&lt;span style=&#34;color:#75715e&#34;&gt;# 최소제곱법으로 a, b를 구합니다. &lt;/span&gt;
-a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sum([(y &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; y_bar) &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; (x &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; x_bar) &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; y, x &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; list(zip(Y, X))])
-a &lt;span style=&#34;color:#f92672&#34;&gt;/=&lt;/span&gt; sum([(x &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; x_bar) &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; x &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; X])
-b &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; y_bar &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; x_bar
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
-&lt;li&gt;리스트의 총합을 &lt;code&gt;sum()&lt;/code&gt;으로 구하고 리스트의 원소 개수를 &lt;code&gt;len()&lt;/code&gt;으로 구한 다음 평균을 구합니다.&lt;/li&gt;
-&lt;li&gt;최소제곱법으로 &lt;code&gt;a&lt;/code&gt;, &lt;code&gt;b&lt;/code&gt;를 구하는 부분에서 두 개 이상의 리스트를 하나로 묶는 &lt;code&gt;list(zip(list_1, list_2)&lt;/code&gt; 기법을 사용했습니다.&lt;/li&gt;
-&lt;li&gt;참고로 &lt;code&gt;/=&lt;/code&gt;는 복합 대입 연산자로써, &lt;code&gt;a = a / sum([(x - x_bar) ** 2 for x in X])&lt;/code&gt; 을 의미합니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;추가적으로, &lt;code&gt;zip&lt;/code&gt;에 대한 추가적인 이해를 돕기 위해 아래 소스코드를 실행하기를 바랍니다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;numbers &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;]
-letters &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;a&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;c&amp;#39;&lt;/span&gt;]
-zipped &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; zip(numbers, letters)
-zipped
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;&amp;lt;zip at 0x7f5d38875048&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;list(zipped)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[(1, &#39;a&#39;), (2, &#39;b&#39;), (3, &#39;c&#39;)]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;그래프를 그리기 위한 회귀선 &lt;code&gt;x&lt;/code&gt;, &lt;code&gt;y&lt;/code&gt; 데이터는 아래와 같습니다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 그래프를 그리기 위해 회귀선의 x, y 데이터를 구합니다. &lt;/span&gt;
-line_x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;arange(min(X), max(X), &lt;span style=&#34;color:#ae81ff&#34;&gt;0.01&lt;/span&gt;)
-line_y &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; line_x &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; b
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;이렇게 구한 회귀선에서 데이터의 경향을 알 수 있습니다. X값이 증가할수록 Y값은 감소합니다. 이러한 관계를 &lt;code&gt;음의 상관관계에 있다고 합니다.&lt;/code&gt;&lt;/p&gt;
-&lt;h2 id=&#34;iii-텐서플로를-활용한-회귀선-구하기&#34;&gt;III. 텐서플로를 활용한 회귀선 구하기&lt;/h2&gt;
-&lt;p&gt;수식을 적용하지 않고 텐서플로를 구해봅니다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 4.4 텐서플로를 이용해서 회귀선 구하기&lt;/span&gt;
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; tensorflow &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; tf
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; np
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; random
-X &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;0.3&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.78&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1.26&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.03&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1.11&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.24&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.24&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.47&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.77&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.37&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.85&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.41&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.27&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.02&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.76&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;2.66&lt;/span&gt;]
-Y &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;12.27&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.44&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;11.87&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;18.75&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;17.52&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;16.37&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;19.78&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;19.51&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;12.65&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.74&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;10.72&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;21.94&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;12.83&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;15.51&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;17.14&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;14.42&lt;/span&gt;]
-
-&lt;span style=&#34;color:#75715e&#34;&gt;# a와 b를 랜덤한 값으로 초기화합니다.&lt;/span&gt;
-a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; tf&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Variable(random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;random())
-b &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; tf&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Variable(random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;random())
-
-&lt;span style=&#34;color:#75715e&#34;&gt;# 잔차의 제곱의 평균을 반환하는 함수입니다. &lt;/span&gt;
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;compute_loss&lt;/span&gt;(): 
-  y_pred &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; X &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; b
-  loss &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; tf&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;reduce_mean((Y &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; y_pred) &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;)
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; loss
-
-optimizer &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; tf&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;optimizers&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Adam(lr&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.07&lt;/span&gt;)
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; range(&lt;span style=&#34;color:#ae81ff&#34;&gt;1000&lt;/span&gt;): 
-  &lt;span style=&#34;color:#75715e&#34;&gt;# 잔차의 제곱의 평균을 최소화(minimize) 합니다. &lt;/span&gt;
-  optimizer&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;minimize(compute_loss, var_list&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;[a,b])
-
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;99&lt;/span&gt;:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(i, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;a:&amp;#39;&lt;/span&gt;, a&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;numpy(), &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;b:&amp;#39;&lt;/span&gt;, b&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;numpy(), &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;loss:&amp;#39;&lt;/span&gt;, compute_loss()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;numpy())
-
-line_x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;arange(min(X), max(X), &lt;span style=&#34;color:#ae81ff&#34;&gt;0.01&lt;/span&gt;)
-line_y &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; line_x &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; b
-
-&lt;span style=&#34;color:#75715e&#34;&gt;# 그래프를 그립니다. &lt;/span&gt;
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(line_x, line_y, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;r-&amp;#39;&lt;/span&gt;)
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(X, Y, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bo&amp;#39;&lt;/span&gt;)
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;xlabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Population Growth Rate (%)&amp;#39;&lt;/span&gt;)
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ylabel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Elderly Growth Rate (%)&amp;#39;&lt;/span&gt;)
-plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;show()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;99 a: 0.122943394 b: 6.6775966 loss: 90.444305
-199 a: -0.115708604 b: 11.171787 loss: 29.961662
-299 a: -0.25565353 b: 13.792711 loss: 13.294286
-399 a: -0.32145542 b: 15.025314 loss: 10.194582
-499 a: -0.34617883 b: 15.488448 loss: 9.813442
-599 a: -0.35362422 b: 15.627921 loss: 9.782514
-699 a: -0.35542518 b: 15.661658 loss: 9.780862
-799 a: -0.35577333 b: 15.668183 loss: 9.780805
-899 a: -0.35582697 b: 15.669186 loss: 9.780804
-999 a: -0.35583326 b: 15.669302 loss: 9.780804
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/tensorflow2.0/tutorial_04_01/output_14_1.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;기대출력인 &lt;code&gt;Y&lt;/code&gt;에서 실제출력인 &lt;code&gt;y_pred&lt;/code&gt;를 빼는데, 이를 잔차라고 부릅니다. 이 잔차의 제곱을 모두 더해서 평균을 낸 값을 &lt;code&gt;loss&lt;/code&gt;로 반환합니다.&lt;sup id=&#34;fnref:2&#34;&gt;&lt;a href=&#34;#fn:2&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;optimizer &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; tf&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;optimizers&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Adam(lr&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0.07&lt;/span&gt;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;optimizer&lt;/code&gt; (최적화 함수)는 미분 계산 및, 가중치 업데이트를 자동으로 진행해주는 편리한 도구입니다.&lt;/p&gt;
-&lt;p&gt;이 부분에 대한 설명은 교재를 참조하시기를 바랍니다. &lt;code&gt;Adam Optimizer&lt;/code&gt;의 학습률은 보통 0.1 ~ 0.0001 사이의 값을 사용합니다.&lt;/p&gt;
-&lt;p&gt;학습률을 정하는 방법은 하이퍼파라미터 기법으로 많이 사용되는데, 머신러닝 강의를 기억하시는 분은 &lt;code&gt;Grid Search Vs. Random Search&lt;/code&gt;에 차이점에 대해 대략적으로 배웠을 겁니다. 그 부분을 기억하시기를 바랍니다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; range(&lt;span style=&#34;color:#ae81ff&#34;&gt;1000&lt;/span&gt;): 
-  &lt;span style=&#34;color:#75715e&#34;&gt;# 잔차의 제곱의 평균을 최소화(minimize) 합니다. &lt;/span&gt;
-  optimizer&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;minimize(compute_loss, var_list&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;[a,b])
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;1000번의 학습을 거쳐 &lt;code&gt;a&lt;/code&gt;와 &lt;code&gt;b&lt;/code&gt;는 잔차의 제곱의 평균을 최소화하는 적절한 값에 도달합니다.&lt;/p&gt;
-&lt;h2 id=&#34;vi-연습-파일&#34;&gt;VI. 연습 파일&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://colab.research.google.com/github/chloevan/deeplearningAI/blob/master/tensorflow2.0/ch4_1_linear_regression.ipynb&#34;&gt;구글 Colab에서 직접 연습해보자&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;v-reference&#34;&gt;V. Reference&lt;/h2&gt;
-&lt;p&gt;김환희. (2020). 시작하세요! 텐서플로 2.0 프로그래밍: 기초 이론부터 실전 예제까지 한번에 끝내는 머신러닝, 딥러닝 핵심 가이드. 서울: 위키북스.&lt;/p&gt;
-&lt;section class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
-&lt;hr&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn:1&#34; role=&#34;doc-endnote&#34;&gt;
-&lt;p&gt;통계청, e-지방지표 중 인구 부분 (&lt;a href=&#34;http://kosis.kr/visual/eRegionJipyo/themaJipyo/eRegionJipyoThemaJipyoView.do&#34;&gt;http://kosis.kr/visual/eRegionJipyo/themaJipyo/eRegionJipyoThemaJipyoView.do&lt;/a&gt;) &lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li id=&#34;fn:2&#34; role=&#34;doc-endnote&#34;&gt;
-&lt;p&gt;왜 제곱할까요? 잔차를 이해한다면 어려운 것은 아닙니다만 잔차의 경우 음수와 양수 모두가 나올 수 있는데, 이를 모두 더하면 0이 됩니다. 따라서, 절대값을 취하거나 제곱해서 더한후 제곱근을 취하는 방법을 사용합니다. &lt;a href=&#34;#fnref:2&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/section&gt;
-</description>
+      <description>공지  본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다. 강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+ Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.</description>
     </item>
     
   </channel>

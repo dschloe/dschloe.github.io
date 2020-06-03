@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>filter on Data Science | ChloEvan</title>
@@ -7,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Fri, 03 Apr 2020 22:15:47 +0900</lastBuildDate>
     
-        <atom:link href="https://chloevan.github.io/tags/filter/rss.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://chloevan.github.io/tags/filter/rss.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -16,124 +17,9 @@
       <pubDate>Fri, 03 Apr 2020 22:15:47 +0900</pubDate>
       
       <guid>https://chloevan.github.io/python/pandas/filter/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://chloevan.github.io/img/python_edu/02_datatransformation/pandas_logo.png#center&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
-&lt;p&gt;필터링은 특정 조건식을 만족하는 행을 따로 추출하는 개념이다. 특정 행의 값에 조건식 &lt;code&gt;True/False&lt;/code&gt;을 판별하여 값을 추출하는 방법이다. 이 때, 비교 연산자 또는 조건식 &lt;code&gt;(&amp;gt;, &amp;lt;, ==, ...)&lt;/code&gt;을 적용하면 행을 추출할 수 있다.&lt;/p&gt;
-&lt;p&gt;우선 데이터부터 확인한다. 아래 소스코드를 복사 붙여넣기 하면 데이터를 확인할 수 있다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
-
-url &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://github.com/chloevan/datasets/raw/master/entertainment/movie_ticket_sales.xlsx&amp;#39;&lt;/span&gt;
-sales &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_excel(url)
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(sales&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head())
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;          theater_name                  movie_title ticket_type  \
-0     Sumdance Cinemas                Harry Plotter      senior   
-1  The Empirical House  10 Things I Hate About Unix       child   
-2  The Empirical House         The Seaborn Identity       adult   
-3     Sumdance Cinemas  10 Things I Hate About Unix       adult   
-4  The Empirical House                Mamma Median!      senior   
-
-   ticket_quantity  
-0                4  
-1                2  
-2                4  
-3                2  
-4                2  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id=&#34;step-1-accessing-a-single-column&#34;&gt;Step 1. Accessing a Single Column&lt;/h2&gt;
-&lt;p&gt;우선 조건식을 적용하기 전, Column에 접근해야 가능하다. 여러 방법이 있지만, 아래와 같이 접근해본다.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;data[&#39;name_of_column&#39;]
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;여기에서는 &lt;code&gt;ticket_type&lt;/code&gt; Column에 접근해본다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(sales[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ticket_type&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head())
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;0    senior
-1     child
-2     adult
-3     adult
-4    senior
-Name: ticket_type, dtype: object
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;위 값을 통해서 &lt;code&gt;senior&lt;/code&gt;, &lt;code&gt;child&lt;/code&gt;, &lt;code&gt;adult&lt;/code&gt;, &amp;hellip;, 순으로 된 것을 확인 할 수 있다.&lt;/p&gt;
-&lt;p&gt;여기에서 비교연산자를 통해 참/거짓을 판별해야 한다. 만약에, &amp;lsquo;senior&#39;만 가져오도록 한다면, &lt;code&gt;child&lt;/code&gt; &amp;amp; &lt;code&gt;adult&lt;/code&gt; 값은 &lt;code&gt;False&lt;/code&gt;로 반환이 될 것이다. 확인해보자.&lt;/p&gt;
-&lt;h2 id=&#34;step-2-comparing-operators&#34;&gt;Step 2. Comparing Operators&lt;/h2&gt;
-&lt;p&gt;주로 사용되는 비교연산자는 아래와 같다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;==&lt;/code&gt; (equal to)&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;!=&lt;/code&gt; (not equal to)&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;&amp;lt;&lt;/code&gt;  (less than)&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;&amp;gt;&lt;/code&gt;  (greater than)&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;&amp;lt;=&lt;/code&gt; (less than or equal to)&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;&amp;gt;=&lt;/code&gt; (greator or equal to)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;code&gt;isin()&lt;/code&gt; 함수를 적용하면 특정 값을 가진 행들을 따로 추출할 수도 있다. 이 함수를 사용하면, 코드가 좀 더 간결해지도록 작성할 수 있다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;true_false &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sales[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ticket_type&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;senior&amp;#34;&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(true_false&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head())
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;0     True
-1    False
-2    False
-3    False
-4     True
-Name: ticket_type, dtype: bool
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;위 값과 비교해보면 &lt;code&gt;child&lt;/code&gt;, &lt;code&gt;adult&lt;/code&gt;, &lt;code&gt;adult&lt;/code&gt; 값이 모두 &lt;code&gt;False&lt;/code&gt;로 반환된 것을 확인할 수 있다.&lt;/p&gt;
-&lt;h2 id=&#34;step-3-filtering&#34;&gt;Step 3. Filtering&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;Column&lt;/code&gt;에 대한 접근 및 &lt;code&gt;비교연산자&lt;/code&gt;를 통해서, 특정 조건식에 맞는 데이터를 추출해본다. 이 때, 데이터셋을 한번 더 입력하는 번거로움만 거치면 문제가 되지 않는다. 소스코드를 통해 빠르게 구현해보자. 역시나, 크게 어려운 것은 아니다.&lt;/p&gt;
-&lt;p&gt;조건은 &lt;code&gt;ticket_type&lt;/code&gt;에서 &lt;code&gt;senior&lt;/code&gt;에 해당하는 행만 추출해본다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;senior_data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sales[sales[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ticket_type&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;senior&amp;#34;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;reset_index(drop &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True)
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(senior_data&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head())
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;                      theater_name           movie_title ticket_type  \
-0                 Sumdance Cinemas         Harry Plotter      senior   
-1              The Empirical House         Mamma Median!      senior   
-2              The Empirical House         Mamma Median!      senior   
-3                        The Frame         Harry Plotter      senior   
-4  Richie&#39;s Famous Minimax Theatre  The Seaborn Identity      senior   
-
-   ticket_quantity  
-0                4  
-1                2  
-2                2  
-3                2  
-4                2  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id=&#34;step-4-isin-활용&#34;&gt;Step 4. isin() 활용&lt;/h2&gt;
-&lt;p&gt;여기에서 문제가 생겼다. &lt;code&gt;senior&lt;/code&gt;와 함께, &lt;code&gt;adult&lt;/code&gt;의 값도 같이 추출해달라는 요청이 들어왔다. 물론 각각의 데이터를 개별적으로 추출하는 것도 하나의 방법이 될 수 있지만, 소스코드가 길어질 것이 예상이 된다. 물론 실제로도 그렇다. 한번 해보겠다.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;seniors &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sales[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ticket_type&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;senior&amp;#34;&lt;/span&gt;
-adults &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sales[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ticket_type&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;adult&amp;#34;&lt;/span&gt;
-new_data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sales[seniors &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt; adults]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;reset_index(drop &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True)
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(new_data&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head())
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;          theater_name                  movie_title ticket_type  \
-0     Sumdance Cinemas                Harry Plotter      senior   
-1  The Empirical House         The Seaborn Identity       adult   
-2     Sumdance Cinemas  10 Things I Hate About Unix       adult   
-3  The Empirical House                Mamma Median!      senior   
-4     Sumdance Cinemas                Harry Plotter       adult   
-
-   ticket_quantity  
-0                4  
-1                4  
-2                2  
-3                2  
-4                2  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이번에는 &lt;code&gt;isin()&lt;/code&gt;을 활용해보자.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;new_data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sales[sales[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ticket_type&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;isin([&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;senior&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;adult&amp;#39;&lt;/span&gt;])]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;reset_index(drop &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True)
-&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(new_data&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head())
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;          theater_name                  movie_title ticket_type  \
-0     Sumdance Cinemas                Harry Plotter      senior   
-1  The Empirical House         The Seaborn Identity       adult   
-2     Sumdance Cinemas  10 Things I Hate About Unix       adult   
-3  The Empirical House                Mamma Median!      senior   
-4     Sumdance Cinemas                Harry Plotter       adult   
-
-   ticket_quantity  
-0                4  
-1                4  
-2                2  
-3                2  
-4                2  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;결과값은 똑같지만, 코드 1줄이 줄어든 것을 확인할 수 있다. 문제는, 전체 값이 100개 중에서, 30개만 추출할 때를 생각해보자, &lt;code&gt;isin()&lt;/code&gt; 활용하지 않는다면, 반복적인 불필요한 코드만 계속 늘어날 것을 예상할 수 있다.&lt;/p&gt;
-&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
-&lt;p&gt;지금까지, Pandas를 활용한 Filtering의 방법 및 접근에 대해 배웠다. 물론 실무에서는 이것보다도 훨씬 더 복잡한 형태로 작업이 되지만, 기본적인 원리는 똑같다. &lt;code&gt;비교연산자&lt;/code&gt;를 통한 &lt;code&gt;참/거짓&lt;/code&gt;의 활용, 그리고 &lt;code&gt;isin()&lt;/code&gt; 함수의 활용을 통해 &lt;code&gt;Filtering&lt;/code&gt; 작업을 수행하며. 복잡한 문자열에 &lt;code&gt;정규표현식(regular expression)&lt;/code&gt;을 활용하기도 한다. 그러나 마찬가지로, &lt;code&gt;참/거짓&lt;/code&gt;을 활용한 비교연산자를 통한 추출방법임에는 변함이 없기 때문에, 다양하게 연습을 해본다.&lt;/p&gt;
-</description>
+      <description>Overview 필터링은 특정 조건식을 만족하는 행을 따로 추출하는 개념이다. 특정 행의 값에 조건식 True/False을 판별하여 값을 추출하는 방법이다. 이 때, 비교 연산자 또는 조건식 (&amp;gt;, &amp;lt;, ==, ...)을 적용하면 행을 추출할 수 있다.
+우선 데이터부터 확인한다. 아래 소스코드를 복사 붙여넣기 하면 데이터를 확인할 수 있다.
+import pandas as pd url = &amp;#39;https://github.com/chloevan/datasets/raw/master/entertainment/movie_ticket_sales.xlsx&amp;#39; sales = pd.read_excel(url) print(sales.head())  theater_name movie_title ticket_type \ 0 Sumdance Cinemas Harry Plotter senior 1 The Empirical House 10 Things I Hate About Unix child 2 The Empirical House The Seaborn Identity adult 3 Sumdance Cinemas 10 Things I Hate About Unix adult 4 The Empirical House Mamma Median!</description>
     </item>
     
   </channel>
