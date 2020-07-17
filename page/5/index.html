@@ -125,14 +125,48 @@ if (!doNotTrack) {
 	<article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/python/basic/understanding_function_simpledecorator/" rel="bookmark">
-			Python 사용자 정의 함수에 대한 이해 2편 - Simple Decorator
+			<a href="/r/datatransform/dplyr02_select_helper/" rel="bookmark">
+			R - Select Helper Functions
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-06-12T17:20:47&#43;09:00">2020-06-12</time></div>
-<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/intermediate/" rel="category">Intermediate</a>, <a class="meta__link" href="/categories/decorators/" rel="category">Decorators</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-18T08:20:39&#43;09:00">2020-05-18</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-handling/" rel="category">Data Handling</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/dplyr/" rel="category">dplyr</a>, <a class="meta__link" href="/categories/regular-expression/" rel="category">regular expression</a>, <a class="meta__link" href="/categories/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/" rel="category">정규표현식</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 6 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		I. 개요 dplyr 문법에서 select에 대해 다룬다. 보통 select는 열 추출 함수로 소개되고 있다. 그런데, select 함수에는 열 추출을 할 때 도와주는 helper functions가 있는데, 간단하게 소개하고자 한다.
+ starts_with ends_with contains matches num_range one_of  작은 도움이 되었기를 바란다.
+II. 사전 준비  본격적인 실습에 앞서서, 패키지를 로드 한다.  library(dplyr) library(nycflights13)  flights 데이터셋의 변수들을 확인하자.  glimpse(flights) ## Rows: 336,776 ## Columns: 19 ## $ year &lt;int&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, … ## $ month &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, … ## $ day &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, … ## $ dep_time &lt;int&gt; 517, 533, 542, 544, 554, 554, 555, 557, 557, 558, 558,… ## $ sched_dep_time &lt;int&gt; 515, 529, 540, 545, 600, 558, 600, 600, 600, 600, 600,… ## $ dep_delay &lt;dbl&gt; 2, 4, 2, -1, -6, -4, -5, -3, -3, -2, -2, -2, -2, -2, -… ## $ arr_time &lt;int&gt; 830, 850, 923, 1004, 812, 740, 913, 709, 838, 753, 849… ## $ sched_arr_time &lt;int&gt; 819, 830, 850, 1022, 837, 728, 854, 723, 846, 745, 851… ## $ arr_delay &lt;dbl&gt; 11, 20, 33, -18, -25, 12, 19, -14, -8, 8, -2, -3, 7, -… ## $ carrier &lt;chr&gt; &#34;UA&#34;, &#34;UA&#34;, &#34;AA&#34;, &#34;B6&#34;, &#34;DL&#34;, &#34;UA&#34;, &#34;B6&#34;, &#34;EV&#34;, &#34;B6&#34;, … ## $ flight &lt;int&gt; 1545, 1714, 1141, 725, 461, 1696, 507, 5708, 79, 301, … ## $ tailnum &lt;chr&gt; &#34;N14228&#34;, &#34;N24211&#34;, &#34;N619AA&#34;, &#34;N804JB&#34;, &#34;N668DN&#34;, &#34;N39… ## $ origin &lt;chr&gt; &#34;EWR&#34;, &#34;LGA&#34;, &#34;JFK&#34;, &#34;JFK&#34;, &#34;LGA&#34;, &#34;EWR&#34;, &#34;EWR&#34;, &#34;LGA&#34;… ## $ dest &lt;chr&gt; &#34;IAH&#34;, &#34;IAH&#34;, &#34;MIA&#34;, &#34;BQN&#34;, &#34;ATL&#34;, &#34;ORD&#34;, &#34;FLL&#34;, &#34;IAD&#34;… ## $ air_time &lt;dbl&gt; 227, 227, 160, 183, 116, 150, 158, 53, 140, 138, 149, … ## $ distance &lt;dbl&gt; 1400, 1416, 1089, 1576, 762, 719, 1065, 229, 944, 733,… ## $ hour &lt;dbl&gt; 5, 5, 5, 5, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, … ## $ minute &lt;dbl&gt; 15, 29, 40, 45, 0, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 59, … ## $ time_hour &lt;dttm&gt; 2013-01-01 05:00:00, 2013-01-01 05:00:00, 2013-01-01 …  총 19개의 변수들로 구성이 되어 있는 것을 확인 할 수 있다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/r/datatransform/dplyr02_select_helper/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/settings/image_center/" rel="bookmark">
+			Hugo - 이미지 위치 설정
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-16T17:20:30&#43;09:00">2020-05-16</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/settings/" rel="category">Settings</a>, <a class="meta__link" href="/categories/hugo/" rel="category">Hugo</a>
 	</span>
 </div>
 
@@ -149,23 +183,23 @@ Reading time: 2 minutes
 	</div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
-I. 개요  Functions와 Decorators에 관해 나누려고 한다. function는 우리가 생각하는 그 함수가 맞다. decorator도 함수인데, 일종의 확장 개념으로 생각하면 좋다. 지난 시간에 Python 사용자 정의 함수에 대한 이해 1편 - Inner Function를 통해 함수의 기본적인 작동 원리에 대해 배웠다.  II.
+		I. Problem Hugo에서 이미지를 업로드하면 자동적으로 왼쪽(Left) 정렬이 된다. 기본적으로 마크다운 내에서 html 적용은 되지 않는 문제점이 있다.
+ 아래는 기본적인 img 업로드 방식이다.  ![](/img/python/basic_syntax/numpy.png)  위 그림처럼 왼쪽으로 치우친 것을 볼 수 있다. 이럴 경우 어떻게 해결해야 할까? 간단하게 해결 방법을 정리하여 공유한다.  II. CSS 파일 찾기  기본적으로 이미지를 핸들링 하는 것은 CSS 파일에서 해결한다. 문제는 어떤 CSS 파일을 열어야 하는지 처음에는 어려울 것이다. 첫째, 대부분 hugo 개발자들이 테마를 사용하기 때문에 테마에서 css 파일을 찾는다.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/basic/understanding_function_simpledecorator/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/settings/image_center/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/kaggle/chapter_2_9_eda_with_categorical_features/" rel="bookmark">
-			EDA with Housing Price Prediction - Handling Categorical Variables
+			<a href="/gcp/bigquery/02_basics/ch14_cross_join/" rel="bookmark">
+			Ch14 Cross Join
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-06-12T10:30:47&#43;09:00">2020-06-12</time></div>
-<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-visualization/" rel="category">Data Visualization</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/python-basic/" rel="category">Python Basic</a>, <a class="meta__link" href="/categories/categorical-features/" rel="category">Categorical Features</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-15T17:30:30&#43;09:00">2020-05-15</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" rel="category">구글 클라우드</a>, <a class="meta__link" href="/categories/google-cloud/" rel="category">Google Cloud</a>, <a class="meta__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/" rel="category">빅쿼리</a>, <a class="meta__link" href="/categories/bigquery/" rel="category">BigQuery</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
 	</span>
 </div>
 
@@ -173,7 +207,7 @@ I. 개요  Functions와 Decorators에 관해 나누려고 한다. function는 �
 	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
     		
 		
-Reading time: 13 minutes
+Reading time: 4 minutes
 </p>
 
 
@@ -182,54 +216,23 @@ Reading time: 13 minutes
 	</div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		I. 개요  이제 본격적으로 Kaggle 데이터를 활용하여 분석을 진행한다. 데이터는 이미 다운 받은 상태를 전제로 하며, 만약에 데이터가 없다면 이전 포스팅에서 절차를 확인하기 바란다. (미리보기 가능)  캐글 데이터 다운로드 받기 (via Colab)    II. 구글 드라이브 연동  구글 코랩을 시작하면 언제든지 가장 먼저 해야 하는 것은 드라이브 연동이다.  from google.colab import drive # 패키지 불러오기 from os.path import join ROOT = &quot;/content/drive&quot; # 드라이브 기본 경로 print(ROOT) # print content of ROOT (Optional) drive.
+		I. 구글 클라우드 설정 본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.
+ 만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery  위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/kaggle/chapter_2_9_eda_with_categorical_features/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/gcp/bigquery/02_basics/ch14_cross_join/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/kaggle/chapter_2_8_eda_with_continous_features/" rel="bookmark">
-			EDA with Housing Price Prediction - Handling Continuous Variables
+			<a href="/python/basic/numpy_array_creation/" rel="bookmark">
+			Python - NumPy 소개 및 다양한 객체 생성
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-06-11T10:30:47&#43;09:00">2020-06-11</time></div>
-<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/pandas-merge/" rel="category">Pandas Merge</a>, <a class="meta__link" href="/categories/python-basic/" rel="category">Python Basic</a>, <a class="meta__link" href="/categories/numeric-features/" rel="category">Numeric Features</a>
-	</span>
-</div>
-
-<p time class="meta__text">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
-    		
-		
-Reading time: 12 minutes
-</p>
-
-
-
-
-	</div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		I. 개요  이제 본격적으로 Kaggle 데이터를 활용하여 분석을 진행한다. 데이터는 이미 다운 받은 상태를 전제로 하며, 만약에 데이터가 없다면 이전 포스팅에서 절차를 확인하기 바란다. (미리보기 가능)  캐글 데이터 다운로드 받기 (via Colab)    II. 구글 드라이브 연동  구글 코랩을 시작하면 언제든지 가장 먼저 해야 하는 것은 드라이브 연동이다.  from google.colab import drive # 패키지 불러오기 from os.path import join ROOT = &quot;/content/drive&quot; # 드라이브 기본 경로 print(ROOT) # print content of ROOT (Optional) drive.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/kaggle/chapter_2_8_eda_with_continous_features/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/basic/understanding_function_innerfunction/" rel="bookmark">
-			Python 사용자 정의 함수에 대한 이해 1편 - Inner Function
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-06-10T01:15:47&#43;09:00">2020-06-10</time></div>
-<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/intermediate/" rel="category">Intermediate</a>, <a class="meta__link" href="/categories/decorators/" rel="category">Decorators</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-15T16:12:47&#43;09:00">2020-05-15</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/python-basic/" rel="category">Python Basic</a>
 	</span>
 </div>
 
@@ -247,22 +250,22 @@ Reading time: 3 minutes
 	</header>
 	<div class="content list__excerpt post__content clearfix">
 		공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
-I. 개요  Functions와 Decorators에 관해 나누려고 한다. function는 우리가 생각하는 그 함수가 맞다. decorator도 함수인데, 일종의 확장 개념으로 생각하면 좋다.  II. Simple Tutorial  먼저 간단한 함수를 만들자.  def add_one(number): return number + 1 add_one(2) 3   일반적으로 파이썬의 함수들은 단지 입출력에 대한 단순한 내용 보다는 side effects 또한 함의하고 있다.
+I. 개요  NumPy는 C언어로 구성되었으며, 고성능의 수치계산을 위해 나온 패키지이며, Numerical Python의 약자이다. Python을 활용한 데이터 분석을 수행할 때, 그리고 데이터 시각화나 전처리를 수행할 때, NumPy는 매우 자주 사용되기 때문에 한번쯤은 꼭 다듬고 가는 것이 중요하다. 독자의 가독성을 위해 두번에 걸쳐 나눠서 연재하려고 한다.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/basic/understanding_function_innerfunction/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/python/basic/numpy_array_creation/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/kaggle/chapter_2_7_eda_with_discrete_features/" rel="bookmark">
-			EDA with Housing Price Prediction - Handling Discrete Variables
+			<a href="/r/datavisualisation/ch04_modeling_visualisation/" rel="bookmark">
+			ch04 - Modeling Visualisation
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-06-09T22:30:47&#43;09:00">2020-06-09</time></div>
-<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/pandas-merge/" rel="category">Pandas Merge</a>, <a class="meta__link" href="/categories/python-basic/" rel="category">Python Basic</a>, <a class="meta__link" href="/categories/discrete-features/" rel="category">Discrete Features</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-15T11:10:39&#43;09:00">2020-05-15</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-visualisation/" rel="category">Data Visualisation</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/ggplot2/" rel="category">ggplot2</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" rel="category">데이터 시각화</a>
 	</span>
 </div>
 
@@ -270,7 +273,7 @@ I. 개요  Functions와 Decorators에 관해 나누려고 한다. function는 �
 	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
     		
 		
-Reading time: 12 minutes
+Reading time: 5 minutes
 </p>
 
 
@@ -279,150 +282,25 @@ Reading time: 12 minutes
 	</div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		I. 개요  이제 본격적으로 Kaggle 데이터를 활용하여 분석을 진행한다. 데이터는 이미 다운 받은 상태를 전제로 하며, 만약에 데이터가 없다면 이전 포스팅에서 절차를 확인하기 바란다. (미리보기 가능)  캐글 데이터 다운로드 받기 (via Colab)    II. 구글 드라이브 연동  구글 코랩을 시작하면 언제든지 가장 먼저 해야 하는 것은 드라이브 연동이다.  from google.colab import drive # 패키지 불러오기 from os.path import join ROOT = &quot;/content/drive&quot; # 드라이브 기본 경로 print(ROOT) # print content of ROOT (Optional) drive.
+		개요  A picture is worth a thousand words — English Language Adage
+  The simple graph has brought more information to the data analyst’s mind than any other device. — John Tukey
+ 한장의 그림이 수천단어보다 가치가 있다는 영어속담과, 명료한 시각화가 데이터분석가에게 다른 어떤 도구보다 더 많은 정보를 제공한다는 유명한 데이터 과학자의 조언. 핵심은 시각화이다.
+본 장에서는 ggplot2 패키지를 활용한 시각화를 먼저 보여줄 것이다. 먼저 간단하게 ggplot2 패키지에 소개하자면 Grammar of Graphics1의 철학을 담아서 R 생태계에서 유명한 학자 중, Hadley Wickham에 의해 주도적으로 개발되었다.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/kaggle/chapter_2_7_eda_with_discrete_features/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/r/datavisualisation/ch04_modeling_visualisation/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/aws/02_bigdataplatform/step_5_run_hive_script/" rel="bookmark">
-			(AWS Project) BigData with Hadoop 05 - Hive Script 연습 예제
+			<a href="/python/pandas/pandas_lambda_swifter/" rel="bookmark">
+			Python - Pandas 병렬처리
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-06-08T15:13:30&#43;09:00">2020-06-08</time></div>
-<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/amazon-web-service/" rel="category">Amazon Web Service</a>, <a class="meta__link" href="/categories/aws/" rel="category">AWS</a>, <a class="meta__link" href="/categories/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/" rel="category">아마존 웹 서비스</a>
-	</span>
-</div>
-
-<p time class="meta__text">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
-    		
-		
-Reading time: 4 minutes
-</p>
-
-
-
-
-	</div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		I. Getting Started  처음 이 페이지를 방문했다면, 반드시 사전작업을 완료하기를 바란다.  (AWS Project) BigData with Hadoop 02 - 사전작업 (AWS Project) BigData with Hadoop 03 - Amazon EMR Cluster 시작 (AWS Project) BigData with Hadoop 04 - Allow SSH Access    II. What to do now  Hive Script를 제출하는 방법에 대해 준비하였다. 를러스터를 생성할 때 단계를 지정하거나 마스터 노드에 연결하고 로컬 파일 시스템에서 스크립트를 생성하고 명렁어를 사용하여 실행할 수 있다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/aws/02_bigdataplatform/step_5_run_hive_script/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/kaggle/chapter_2_5_eda_with_date/" rel="bookmark">
-			EDA with Housing Price Prediction - Handling Date
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-06-08T11:30:47&#43;09:00">2020-06-08</time></div>
-<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/pandas-merge/" rel="category">Pandas Merge</a>, <a class="meta__link" href="/categories/python-basic/" rel="category">Python Basic</a>
-	</span>
-</div>
-
-<p time class="meta__text">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
-    		
-		
-Reading time: 10 minutes
-</p>
-
-
-
-
-	</div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		I. 개요  이제 본격적으로 Kaggle 데이터를 활용하여 분석을 진행한다. 데이터는 이미 다운 받은 상태를 전제로 하며, 만약에 데이터가 없다면 이전 포스팅에서 절차를 확인하기 바란다. (미리보기 가능)  캐글 데이터 다운로드 받기 (via Colab)    II. 구글 드라이브 연동  구글 코랩을 시작하면 언제든지 가장 먼저 해야 하는 것은 드라이브 연동이다.  from google.colab import drive # 패키지 불러오기  from os.path import join ROOT = &#34;/content/drive&#34; # 드라이브 기본 경로 print(ROOT) # print content of ROOT (Optional) drive.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/kaggle/chapter_2_5_eda_with_date/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/kaggle/chapter_2_4_eda_data_import/" rel="bookmark">
-			EDA with Housing Price Prediction - Data Import
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-06-07T18:30:47&#43;09:00">2020-06-07</time></div>
-<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/pandas-merge/" rel="category">Pandas Merge</a>, <a class="meta__link" href="/categories/python-basic/" rel="category">Python Basic</a>
-	</span>
-</div>
-
-<p time class="meta__text">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
-    		
-		
-Reading time: 7 minutes
-</p>
-
-
-
-
-	</div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		I. 개요  이제 본격적으로 Kaggle 데이터를 활용하여 분석을 진행한다. 데이터는 이미 다운 받은 상태를 전제로 하며, 만약에 데이터가 없다면 이전 포스팅에서 절차를 확인하기 바란다. (미리보기 가능)  캐글 데이터 다운로드 받기 (via Colab)    II. 구글 드라이브 연동  구글 코랩을 시작하면 언제든지 가장 먼저 해야 하는 것은 드라이브 연동이다.  from google.colab import drive # 패키지 불러오기 from os.path import join ROOT = &quot;/content/drive&quot; # 드라이브 기본 경로 print(ROOT) # print content of ROOT (Optional) drive.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/kaggle/chapter_2_4_eda_data_import/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/kaggle/colab_with_drive/" rel="bookmark">
-			캐글 데이터 다운로드 받기 (via Colab)
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-06-07T16:30:47&#43;09:00">2020-06-07</time></div>
-<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/pandas-merge/" rel="category">Pandas Merge</a>, <a class="meta__link" href="/categories/python-basic/" rel="category">Python Basic</a>
-	</span>
-</div>
-
-<p time class="meta__text">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
-    		
-		
-Reading time: 4 minutes
-</p>
-
-
-
-
-	</div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		I. 개요  데이터 시각화와 변환에 대해 짧게 익혔다면 바로 실전 데이터를 활용한다. 이론이 조금 부족하게 느껴질 수 있지만, 모든 것을 다 알려드릴 수는 없다.  결국 공부는 스스로 해야 한다.   이 강의의 목적이 Kaggle 데이터를 활용한 Python 포트폴리오 제작 강의임을 잊지 말자. 이번 시간에는 Kaggle 데이터를 구글 드라이브로 다운로드 받는 방법에 대해 작성하였다.  II. Kaggle KPI 설치  Google Colab에서 Kaggle API를 불러오려면 다음 소스코드를 실행한다.  !
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/kaggle/colab_with_drive/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/aws/02_bigdataplatform/step_4_allow_ssh_access/" rel="bookmark">
-			(AWS Project) BigData with Hadoop 04 - Allow SSH Access
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-06-06T20:13:30&#43;09:00">2020-06-06</time></div>
-<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/amazon-web-service/" rel="category">Amazon Web Service</a>, <a class="meta__link" href="/categories/aws/" rel="category">AWS</a>, <a class="meta__link" href="/categories/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/" rel="category">아마존 웹 서비스</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-13T14:15:47&#43;09:00">2020-05-13</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
 	</span>
 </div>
 
@@ -439,19 +317,605 @@ Reading time: 3 minutes
 	</div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		I. Getting Started  처음 이 페이지를 방문했다면, 반드시 사전작업을 완료하기를 바란다.  (AWS Project) BigData with Hadoop 02 - 사전작업 (AWS Project) BigData with Hadoop 03 - Amazon EMR Cluster 시작    II. What to do now  Client에서 SSH를 통해 클러스터에 접근하는 방법에 대해 다룬다.  (1) Warning  보안 그룹은 클러스터에 대한 인바운드 및 아웃바운드 트래픽을 제어하는 가상 방화벽 역할을 한다. 첫 번째 클러스터를 생성하면 Amazon EMR은 마스터 인스턴스, ElasticMapReduce-master와 연결된 기본 Amazon EMR 관리 Security Group 및 핵심 노드 및 태스크 노드와 연결된 Security Group ElasticMapReduce-slave를 생성한다.
+		공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+지난 포스트에서는 lambda의 기본적인 개념에 대해서 익혔다면, 이제 본격적인 데이터 전처리와 관련된 예제를 올리려고 한다.
+ Python - Lambda and List Comprehension  II. 가상의 데이터셋 만들기  25M 행과 5개의 열로 구성된 가상의 숫자 데이터 프레임을 만들어보자.  import pandas as pd import numpy as np from tabulate import tabulate pd_temp = pd.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/aws/02_bigdataplatform/step_4_allow_ssh_access/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/python/pandas/pandas_lambda_swifter/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/basic/lambda_and_list_comprehension/" rel="bookmark">
+			Python - Lambda and List Comprehension
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-12T17:12:47&#43;09:00">2020-05-12</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/python-basic/" rel="category">Python Basic</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 3 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+I. 개요 Python을 활용한 데이터전처리를 수행할 때, Lambda and List Comprehension 활용하면 매우 handy한 경험을 할 수 있다. 특히, 코드 수행 시, for-loop가 많을 때 유용하다.
+II. Lambda Expression 우선 Lambda의 표현 방법은 아래와 같다.
+lambda 인자 : 표현식 어떻게 사용할 수 있을까요?
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/basic/lambda_and_list_comprehension/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/basic/basic_syntax_list_1/" rel="bookmark">
+			Python Basic Syntax - list(1)
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-12T11:15:47&#43;09:00">2020-05-12</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/python-basic/" rel="category">Python Basic</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 3 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+본 포스트에서는 짧게 list를 만드는 법과, 값을 추가하는 것에 대해 작성합니다.
+I. list 개요 list는 순서는 순서가 있는 집합이며, [] 형태를 가집니다. list는 (integer, float, string, etc) 등으로 구성되는데, 서로 다른 데이터 값이 들어올 수도 있다. 아래 코드를 보자.
+# empty list my_list = [] # 숫자형 list num_list = [1, 2, 3] # 문자형 list chr_list = [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;] 리스트는 또다른 리스트를 포함할 수 도 있다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/basic/basic_syntax_list_1/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/ds-projects/how_to_make_portpolio_2/" rel="bookmark">
+			How To Make a Portpolio (2)
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-12T00:35:28&#43;09:00">2020-05-12</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" rel="category">데이터 싸이언스 프로젝트</a>, <a class="meta__link" href="/categories/data-science-project/" rel="category">Data Science Project</a>, <a class="meta__link" href="/categories/project/" rel="category">Project</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 6 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		들어가면서.. 본격적으로 강의를 시작하면서, 수강생들에게 도움이 되는 글을 작성하고 싶었다. 아쉽지만, 본 포스팅에서 코딩과 관련된 글을 제공되지 않는다. 다만, 필자 역시 블로그를 시작하면서 하나의 포트폴리오를 만들어가는 것처럼, 부족한 나의 강의를 듣는 사람들에게도 도움이 될만한 글을 제공하고 싶었다.
+ 원문: How to Build a Data Science Portfolio
+ 원문을 번역하지만, 기타 필자의 개인적인 의견도 섞어서 개진하였음을 밝힌다.
+데이터 과학분야에 어떻게 취직을 할 수 있을까? 신입의 입장에서, 통계, 기계학습, 프로그래밍, IT 기술, 클라우드 전반에 대해 모두 아는 것은 어렵다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/ds-projects/how_to_make_portpolio_2/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/tensorflow2.0/ch9_5_image_segmentation/" rel="bookmark">
+			Tensorflow 2.0 Tutorial ch9.5 - 이미지 분할
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-11T12:20:30&#43;09:00">2020-05-11</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 9 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+ Google Colab Tensorflow 2.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch9_5_image_segmentation/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/ds-projects/how_to_make_portpolio_1/" rel="bookmark">
+			How To Make a Portpolio (1)
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-11T01:03:28&#43;09:00">2020-05-11</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" rel="category">데이터 싸이언스 프로젝트</a>, <a class="meta__link" href="/categories/data-science-project/" rel="category">Data Science Project</a>, <a class="meta__link" href="/categories/project/" rel="category">Project</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 5 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		들어가면서.. 본격적으로 강의를 시작하면서, 수강생들에게 도움이 되는 글을 작성하고 싶었다. 아쉽지만, 본 포스팅에서 코딩과 관련된 글을 제공되지 않는다. 다만, 필자 역시 블로그를 시작하면서 하나의 포트폴리오를 만들어가는 것처럼, 부족한 나의 강의를 듣는 사람들에게도 도움이 될만한 글을 제공하고 싶었다.
+ 원문: How to Build a Data Science Portfolio
+ 원문을 번역하지만, 기타 필자의 개인적인 의견도 섞어서 개진하였음을 밝힌다.
+데이터 과학분야에 어떻게 취직을 할 수 있을까? 신입의 입장에서, 통계, 기계학습, 프로그래밍, IT 기술, 클라우드 전반에 대해 모두 아는 것은 어렵다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/ds-projects/how_to_make_portpolio_1/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/r/shiny/applications/gcp_shiny/" rel="bookmark">
+			Shiny App Deployment Using GCP
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-10T19:47:18&#43;09:00">2020-05-10</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/shiny/" rel="category">Shiny</a>, <a class="meta__link" href="/categories/deployment/" rel="category">Deployment</a>, <a class="meta__link" href="/categories/corona-shiny-app/" rel="category">Corona Shiny App</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 6 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		I. 개요 Google Data Studio는 놀랍도록 유연한 도구로서 마케팅 대행사 중 Google Analytics를 활용한 업체들은 대부분 항상 사용합니다. 때로는 유연성이 더 필요할 때 R &lsquo;s Shiny 패키지를 사용하여 데이터 시각화 / 대시 보드 앱을 만드는 것이 매우 쉽습니다. 이 옵션을 사용하면 모든 소스의 데이터를 예측 모델링과 함께 사용할 수 있는 장점이 있습니다.
+이 블로그 게시물은 3 부분으로 나누어져 있습니다.
+ 먼저 Google Cloud Virtual Machine (VM)을 설정하고 웹 액세스를 허용하도록 방화벽 규칙을 구성합니다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/r/shiny/applications/gcp_shiny/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/matplotlib/matplotlib_07_polar_chart/" rel="bookmark">
+			matplotlib 07 Polar Chart
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-09T15:15:47&#43;09:00">2020-05-09</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-visualisation/" rel="category">Data Visualisation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/table-chart/" rel="category">Table Chart</a>, <a class="meta__link" href="/categories/matplotlib/" rel="category">Matplotlib</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 3 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+I. Matplotlib &amp; Seaborn (1) 기본 개요 Matplotlib는 파이썬 표준 시각화 도구라고 불리워지며 파이썬 그래프의 기본 토대가 된다고 해도 무방하다. 객체지향 프로그래밍을 지원하므로 세세하게 꾸밀 수 있다.
+Seaborn 그래는 파이썬 시각화 도구의 고급 버전이다. Matplotlib에 비해 비교적 단순한 인터페이스를 제공하기 때문에 초보자도 어렵지 않게 배울 수 있다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/matplotlib/matplotlib_07_polar_chart/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/settings/daily_coding/" rel="bookmark">
+			Github에 Daily 코딩 설정
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-09T10:00:30&#43;09:00">2020-05-09</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/mathjax/" rel="category">MathJax</a>, <a class="meta__link" href="/categories/settings/" rel="category">Settings</a>, <a class="meta__link" href="/categories/github/" rel="category">Github</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 2 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		I. Motivation 오늘은 데이터 분석과 크게 관련이 없는 포스팅을 해보자. 오늘 깃허브에 꾸미려고 하는 것은 아래와 같다.
+주로 깃허브를 올리는 시간은 언제인가? 그저 단순 재미로 포스팅을 해본다.
+II. Prep Work  첫번째, Gist를 클릭하여 활성화를 합니다. (https://gist.github.com/) 두번째, 이제 토큰을 생성하자. 이 때 중요한 것은 rest &amp; gist를 클릭한 뒤 생성을 해야 한다. (https://github.com/settings/tokens/new)   Note에는 토큰 생성 목적을 기재하면 된다. (필자는 Productivity Box)라고 했다. Select Scope에서 rest &amp; gist를 아래 그림과 같이 클릭하자.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/settings/daily_coding/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/gcp/bigquery/02_basics/ch13_inner_join/" rel="bookmark">
+			Ch13 Inner Join
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-08T14:30:30&#43;09:00">2020-05-08</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" rel="category">구글 클라우드</a>, <a class="meta__link" href="/categories/google-cloud/" rel="category">Google Cloud</a>, <a class="meta__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/" rel="category">빅쿼리</a>, <a class="meta__link" href="/categories/bigquery/" rel="category">BigQuery</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 3 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		I. 구글 클라우드 설정 본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.
+ 만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery  위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/gcp/bigquery/02_basics/ch13_inner_join/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/rpa/automate_excel_reporting_with_pandas/" rel="bookmark">
+			Automate Excel Reporting With Pandas
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-08T01:15:47&#43;09:00">2020-05-08</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-visualisation/" rel="category">Data Visualisation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/pivot-table/" rel="category">pivot table</a>, <a class="meta__link" href="/categories/rpa/" rel="category">RPA</a>, <a class="meta__link" href="/categories/%EB%B3%B4%EA%B3%A0%EC%84%9C-%EC%9E%90%EB%8F%99%ED%99%94/" rel="category">보고서 자동화</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 4 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+ 데이터는 코로나 데이터를 활용했다.  I. Overview 일부의 사람들이 R과 Python을 사용하지만, 대부분의 사람들은 엑셀을 사용한다. 피벗테이블은 모든 직장인이 알아야 하는 필수 용어로, 전체 데이터를 빠르게 요약해주는 일종의 skill이다.
+오늘 배울 포스트는 피벗 테이블 작성과 파이썬에서 만들어진 그래프를 엑셀 파일에 포함하여 내보내는 예제를 준비하였다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/rpa/automate_excel_reporting_with_pandas/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/gcp/bigquery/02_basics/ch12_join_explained/" rel="bookmark">
+			Ch12 Join Explained
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-07T14:30:30&#43;09:00">2020-05-07</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" rel="category">구글 클라우드</a>, <a class="meta__link" href="/categories/google-cloud/" rel="category">Google Cloud</a>, <a class="meta__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/" rel="category">빅쿼리</a>, <a class="meta__link" href="/categories/bigquery/" rel="category">BigQuery</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 4 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		1. 구글 클라우드 설정 본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.
+ 만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery  위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/gcp/bigquery/02_basics/ch12_join_explained/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/tensorflow2.0/ch9_4_super_resolution/" rel="bookmark">
+			Tensorflow 2.0 Tutorial ch9.4 - 초해상도
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-07T07:20:30&#43;09:00">2020-05-07</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 12 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+ Google Colab Tensorflow 2.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch9_4_super_resolution/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/r/basics/dataframe/" rel="bookmark">
+			Basic Objects - Dataframe
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-06T11:10:15&#43;09:00">2020-05-06</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/basics/" rel="category">Basics</a>, <a class="meta__link" href="/categories/tutorial/" rel="category">Tutorial</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 3 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		공지 본 Tutorial은 강사에게 강의를 듣는 과거-현재-미래 학생들을 위해 작성하였습니다.
+이 글을 읽어주시는 분들에게 작은 도움이 되기를 바랍니다.
+I. DataFrame의 개요  본 포스트는 프로그래밍과 R을 처음 배우는 사람을 위해 작성하였습니다. 짧게 읽어두시기를 바랍니다. 공부하실 때는 복잡하게 생각하지는 마시기를 바랍니다. 영어의 기본단어 및 문법을 배우듯이 그냥 받아들이시기를 바랍니다.
+ 데이터프레임은 서로 다른 성질의 벡터가 모여 있는 집합이라고 할 수 있다.1
+(1) 데이터프레임 생성 이제 데이터프레임을 만들어보자. 어려운 것은 아니니 쉽게 따라 올 수 있을 것이다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/r/basics/dataframe/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/pandas/pandas_pivot_table/" rel="bookmark">
+			pandas pivot table
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-05-05T14:15:47&#43;09:00">2020-05-05</time></div>
+<div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-visualisation/" rel="category">Data Visualisation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/pivot-table/" rel="category">pivot table</a>, <a class="meta__link" href="/categories/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/" rel="category">피벗 테이블</a>
+	</span>
+</div>
+
+<p time class="meta__text">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg>
+    		
+		
+Reading time: 5 minutes
+</p>
+
+
+
+
+	</div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+ 데이터는 코로나 데이터를 활용했다.  I. Overview 일부의 사람들이 R과 Python을 사용하지만, 대부분의 사람들은 엑셀을 사용한다. 피벗테이블은 모든 직장인이 알아야 하는 필수 용어로, 전체 데이터를 빠르게 요약해주는 일종의 skill이다.
+II. 피벗 테이블 만들기 예제  이제 본격적으로 피벗 테이블을 만들어보자.  (1) 데이터 가져오기 데이터는 코로나 데이터를 활용한다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/pandas/pandas_pivot_table/">Read more…</a>
 	</div>
 </article>
 </main>
 
-<div class="pagination">
-	<a class="pagination__item pagination__item--prev btn" href="/page/4/">«</a>
-	<span class="pagination__item pagination__item--current">5/20</span>
-	<a class="pagination__item pagination__item--next btn" href="/page/6/">»</a>
-</div>
+
+
+
+
+
+  <ul class="pagination">
+    
+    
+    
+    <li class="pagination__item pagination__item--first">
+      <a class="pagination__link pagination__link--first" href="/">
+        ««
+      </a>
+    </li>
+    
+
+    
+    
+    <li class="pagination__item pagination__item--previous">
+      <a href="/page/4/" class="pagination__link pagination__link--previous">
+        «
+      </a>
+    </li>
+    
+  
+    
+    
+    <li class="pagination__item">
+      <a href="/" class="pagination__link">
+        1
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/page/2/" class="pagination__link">
+        2
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/page/3/" class="pagination__link">
+        3
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/page/4/" class="pagination__link">
+        4
+      </a>
+    </li>
+    
+    <li class="pagination__item pagination__item--current">
+      <a href="/page/5/" class="pagination__link">
+        5
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/page/6/" class="pagination__link">
+        6
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/page/7/" class="pagination__link">
+        7
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/page/8/" class="pagination__link">
+        8
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/page/9/" class="pagination__link">
+        9
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/page/10/" class="pagination__link">
+        10
+      </a>
+    </li>
+    
+
+    
+    
+    <li class="pagination__item pagination__item--next">
+      <a href="/page/6/" class="pagination__link pagination__link--next">
+        »
+      </a>
+    </li>
+    
+
+    
+    
+    <li class="pagination__item pagination__item--last">
+      <a class="pagination__link pagination__link--last" href="/page/10/">
+        »»
+      </a>
+    </li>
+    
+
+  </ul>
 
 
 			</div>
