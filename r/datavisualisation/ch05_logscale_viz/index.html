@@ -205,7 +205,12 @@ devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install
 </code></pre></div><ul>
 <li>위 설치하는데 꽤 시간이 걸렸다.</li>
 </ul>
-<h3 id="2-데이터-확인">(2) 데이터 확인</h3>
+<pre><code class="language-{r}" data-lang="{r}">library(lubridate) # 날짜 관련 패키지
+library(forcats)   # 시계열 관련 패키지
+library(tidyr)     # 데이터 핸들링 패키지
+library(ggrepel)   # 시각화 관련 패키지
+library(dviz.supp)
+</code></pre><h3 id="2-데이터-확인">(2) 데이터 확인</h3>
 <ul>
 <li>데이터는 <code>US_Census</code> 데이터를 기반으로 한다.
 <ul>
@@ -214,9 +219,36 @@ devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install
 </li>
 <li>주의: 한글 폰트는 일단 생략했다.</li>
 </ul>
-<!-- raw HTML omitted -->
+<pre><code class="language-{r}" data-lang="{r}">set.seed(3878)
+
+US_census %&gt;% filter(state == &quot;Texas&quot;) %&gt;%
+  select(name, pop2010) %&gt;%
+  extract(name, &quot;county&quot;, regex = &quot;(.+) County&quot;) %&gt;%
+  mutate(popratio = pop2010/median(pop2010)) %&gt;%
+  arrange(desc(popratio)) %&gt;%
+  mutate(index = 1:n(),
+         label = ifelse(index &lt;= 3 | index &gt; n()-3 | runif(n()) &lt; .04, county, &quot;&quot;),
+         label_large = ifelse(index &lt;= 6, county, &quot;&quot;)) -&gt; tx_counties
+
+counties_lin &lt;- ggplot(tx_counties, aes(x = index, y = popratio)) +
+  geom_point(size = 0.5, color = &quot;#0072B2&quot;) +
+  geom_text_repel(aes(label = label_large), point.padding = .4, color = &quot;black&quot;,
+                  min.segment.length = 0, family = &quot;Times New Roman&quot;) +
+  scale_y_continuous(name = &quot;population number / median&quot;) +
+  scale_x_continuous(limits = c(.5, nrow(tx_counties) + .5), expand = c(0, 0),
+                     breaks = NULL, #c(1, 50*(1:5)),
+                     name = &quot;Texas counties, from most to least populous&quot;) +
+  theme_dviz_hgrid(font_family = &quot;Times New Roman&quot;) +
+  theme(axis.line = element_blank(),
+        plot.margin = margin(3, 7, 3, 1.5)) 
+
+ggdraw(counties_lin, clip = &quot;on&quot;) + 
+  draw_text(paste0(&quot;bad&quot;, &quot;  &quot;), x=1, y=1, vjust=1.1, hjust=1, size=14, angle = 0,
+              color=&quot;#d02138&quot;, alpha=1, family = &quot;Times New Roman&quot;, fontface = &quot;plain&quot;) +
+  draw_line(c(1, 1), c(0, 1), size=2.8, color=&quot;#d02138&quot;, alpha=1)
+</code></pre><p><img src="/img/datavisualisation/ch05_logscale_viz_files/figure-html/texas-counties-pop-ratio-lin-1.png" alt=""></p>
 <ul>
-<li></li>
+<li>(작성 중)</li>
 </ul>
 <h2 id="v-reference">V. Reference</h2>
 <p>Grolemund, G., &amp; Wickham, H. (n.d.). R for Data Science. Retrieved from <a href="https://r4ds.had.co.nz/">https://r4ds.had.co.nz/</a></p>
