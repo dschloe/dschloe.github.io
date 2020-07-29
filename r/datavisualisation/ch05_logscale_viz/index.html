@@ -8,7 +8,7 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="ch05 - Log Scale Visualisation" />
-<meta property="og:description" content="공지  본 포스트는 데이터 시각화 교과서 내용의 일부를 요약하였다.   본 포스트를 읽고 가급적 전체 내용 숙지를 위해 구매하는 것을 권유한다.  필자는 Yes24에서 구매했다.    개요  수치형 자료를 Y축으로 놓는 그래프는 언제나 힘들었다. log Scale을 통해 값의 크기를 줄이기는 하지만, Y축을 어떻게 표현하는 것이 좋을지에 대한 고민은 늘 있어왔다.  문제점  log Scale을 적용했을 때와 그렇지 않을 때의 그래프를 비교해본다.  (1) 패키지 불러오기  각각의 패키지를 불러온다." />
+<meta property="og:description" content="공지  본 포스트는 데이터 시각화 교과서 내용의 일부를 요약하였다.   본 포스트를 읽고 가급적 전체 내용 숙지를 위해 구매하는 것을 권유한다.  개요  수치형 자료를 Y축으로 놓는 그래프는 언제나 힘들었다. log Scale을 통해 값의 크기를 줄이기는 하지만, Y축을 어떻게 표현하는 것이 좋을지에 대한 고민은 늘 있어왔다. 시각화 이론 중심의 포스팅이기에 코드 리뷰 및 해석은 생략한다.  문제점  log Scale을 적용했을 때와 그렇지 않을 때의 그래프를 비교해본다.  (1) 패키지 불러오기  각각의 패키지를 불러온다." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chloevan.github.io/r/datavisualisation/ch05_logscale_viz/" />
 <meta property="article:published_time" content="2020-07-29T00:10:39+09:00" />
@@ -16,7 +16,7 @@
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="ch05 - Log Scale Visualisation"/>
-<meta name="twitter:description" content="공지  본 포스트는 데이터 시각화 교과서 내용의 일부를 요약하였다.   본 포스트를 읽고 가급적 전체 내용 숙지를 위해 구매하는 것을 권유한다.  필자는 Yes24에서 구매했다.    개요  수치형 자료를 Y축으로 놓는 그래프는 언제나 힘들었다. log Scale을 통해 값의 크기를 줄이기는 하지만, Y축을 어떻게 표현하는 것이 좋을지에 대한 고민은 늘 있어왔다.  문제점  log Scale을 적용했을 때와 그렇지 않을 때의 그래프를 비교해본다.  (1) 패키지 불러오기  각각의 패키지를 불러온다."/>
+<meta name="twitter:description" content="공지  본 포스트는 데이터 시각화 교과서 내용의 일부를 요약하였다.   본 포스트를 읽고 가급적 전체 내용 숙지를 위해 구매하는 것을 권유한다.  개요  수치형 자료를 Y축으로 놓는 그래프는 언제나 힘들었다. log Scale을 통해 값의 크기를 줄이기는 하지만, Y축을 어떻게 표현하는 것이 좋을지에 대한 고민은 늘 있어왔다. 시각화 이론 중심의 포스팅이기에 코드 리뷰 및 해석은 생략한다.  문제점  log Scale을 적용했을 때와 그렇지 않을 때의 그래프를 비교해본다.  (1) 패키지 불러오기  각각의 패키지를 불러온다."/>
 
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -141,9 +141,18 @@ if (!doNotTrack) {
       <ul>
         <li><a href="#1-패키지-불러오기">(1) 패키지 불러오기</a></li>
         <li><a href="#2-데이터-확인">(2) 데이터 확인</a></li>
+        <li><a href="#3-모호한-시각화">(3) 모호한 시각화</a></li>
       </ul>
     </li>
-    <li><a href="#reference-원서">Reference (원서)</a></li>
+    <li><a href="#로그-스케일-적용">로그 스케일 적용</a>
+      <ul>
+        <li><a href="#1-보정된-시각화">(1) 보정된 시각화</a></li>
+        <li><a href="#2-그래프-해석">(2) 그래프 해석</a></li>
+        <li><a href="#3-제곱근-스케일">(3) 제곱근 스케일</a></li>
+      </ul>
+    </li>
+    <li><a href="#소결론">소결론</a></li>
+    <li><a href="#v-reference-원서">V. Reference (원서)</a></li>
   </ul>
 </nav>
 	</div>
@@ -155,16 +164,13 @@ if (!doNotTrack) {
 </ul>
 <p><img src="http://image.yes24.com/goods/87631760/400x0#center" alt=""></p>
 <ul>
-<li>본 포스트를 읽고 가급적 전체 내용 숙지를 위해 구매하는 것을 권유한다.
-<ul>
-<li>필자는 <a href="http://www.yes24.com/Product/Goods/87631760">Yes24</a>에서 구매했다.</li>
-</ul>
-</li>
+<li>본 포스트를 읽고 가급적 전체 내용 숙지를 위해 구매하는 것을 권유한다.</li>
 </ul>
 <h2 id="개요">개요</h2>
 <ul>
 <li>수치형 자료를 <code>Y</code>축으로 놓는 그래프는 언제나 힘들었다.</li>
 <li><code>log Scale</code>을 통해 값의 크기를 줄이기는 하지만, <code>Y</code>축을 어떻게 표현하는 것이 좋을지에 대한 고민은 늘 있어왔다.</li>
+<li>시각화 이론 중심의 포스팅이기에 코드 리뷰 및 해석은 생략한다.</li>
 </ul>
 <h2 id="문제점">문제점</h2>
 <ul>
@@ -179,7 +185,7 @@ if (!doNotTrack) {
 </ul>
 </li>
 <li>우선, 사전에 설치해야 할 패키지가 존재한다.</li>
-<li>현재 제 개발환경 Spec은 다음과 같다.</li>
+<li>현재 필자 개발환경 Spec은 다음과 같다.</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">sessionInfo</span>()
 R version <span style="color:#ae81ff">4.0.2</span> (<span style="color:#ae81ff">2020-06-22</span>)
@@ -207,13 +213,14 @@ devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install
 devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install_github</span>(<span style="color:#e6db74">&#34;clauswilke/dviz.supp&#34;</span>)
 <span style="color:#a6e22e">library</span>(dviz.supp)
 </code></pre></div><ul>
-<li>위 설치하는데 꽤 시간이 걸렸다.</li>
+<li>위 패키지들을 설치하는데 꽤 시간이 걸렸다.</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(lubridate) <span style="color:#75715e"># 날짜 관련 패키지</span>
 <span style="color:#a6e22e">library</span>(forcats)   <span style="color:#75715e"># 시계열 관련 패키지</span>
 <span style="color:#a6e22e">library</span>(tidyr)     <span style="color:#75715e"># 데이터 핸들링 패키지</span>
 <span style="color:#a6e22e">library</span>(ggrepel)   <span style="color:#75715e"># 시각화 관련 패키지</span>
-<span style="color:#a6e22e">library</span>(dviz.supp)
+<span style="color:#a6e22e">library</span>(dviz.supp) <span style="color:#75715e"># 저자의 개인 Repo 패키지: 교재 있는 데이터 활용 및 그래프를 구현하려면 필수적으로 설치 되어야 함.</span>
+<span style="color:#a6e22e">library</span>(kableExtra) <span style="color:#75715e"># 데이터 출력 Table을 HTML로 변환하기 위한 패키지 </span>
 </code></pre></div><h3 id="2-데이터-확인">(2) 데이터 확인</h3>
 <ul>
 <li>데이터는 <code>US_Census</code> 데이터를 기반으로 한다.
@@ -223,6 +230,9 @@ devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install
 </li>
 <li>주의: 한글 폰트는 일단 생략했다.</li>
 </ul>
+<blockquote>
+<p>소스코드 참조: <a href="https://github.com/clauswilke/dataviz/blob/master/coordinate_systems_axes.Rmd">https://github.com/clauswilke/dataviz/blob/master/coordinate_systems_axes.Rmd</a></p>
+</blockquote>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">3878</span>)
 
 US_census <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">filter</span>(state <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Texas&#34;</span>) <span style="color:#f92672">%&gt;%</span>
@@ -234,27 +244,2147 @@ US_census <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">
          label <span style="color:#f92672">=</span> <span style="color:#a6e22e">ifelse</span>(index <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">|</span> index <span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">n</span>()<span style="color:#ae81ff">-3</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">runif</span>(<span style="color:#a6e22e">n</span>()) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">.04</span>, county, <span style="color:#e6db74">&#34;&#34;</span>),
          label_large <span style="color:#f92672">=</span> <span style="color:#a6e22e">ifelse</span>(index <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">6</span>, county, <span style="color:#e6db74">&#34;&#34;</span>)) <span style="color:#f92672">-&gt;</span> tx_counties
 
+<span style="color:#a6e22e">kable</span>(tx_counties) <span style="color:#f92672">%&gt;%</span>
+  <span style="color:#a6e22e">kable_styling</span>(bootstrap_options <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;striped&#34;</span>, <span style="color:#e6db74">&#34;hover&#34;</span>)) <span style="color:#f92672">%&gt;%</span> 
+  <span style="color:#a6e22e">scroll_box</span>(width <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;500px&#34;</span>, height <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;200px&#34;</span>)
+</code></pre></div><div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; overflow-x: scroll; width:680px; "><table class="table table-striped table-hover" style="margin-left: auto; margin-right: auto;">
+    <thead>
+     <tr>
+      <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> county </th>
+      <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> pop2010 </th>
+      <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> popratio </th>
+      <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> index </th>
+      <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> label </th>
+      <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> label_large </th>
+     </tr>
+    </thead>
+   <tbody>
+     <tr>
+      <td style="text-align:left;"> Harris </td>
+      <td style="text-align:right;"> 4092459 </td>
+      <td style="text-align:right;"> 222.6461564 </td>
+      <td style="text-align:right;"> 1 </td>
+      <td style="text-align:left;"> Harris </td>
+      <td style="text-align:left;"> Harris </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Dallas </td>
+      <td style="text-align:right;"> 2368139 </td>
+      <td style="text-align:right;"> 128.8362439 </td>
+      <td style="text-align:right;"> 2 </td>
+      <td style="text-align:left;"> Dallas </td>
+      <td style="text-align:left;"> Dallas </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Tarrant </td>
+      <td style="text-align:right;"> 1809034 </td>
+      <td style="text-align:right;"> 98.4186932 </td>
+      <td style="text-align:right;"> 3 </td>
+      <td style="text-align:left;"> Tarrant </td>
+      <td style="text-align:left;"> Tarrant </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bexar </td>
+      <td style="text-align:right;"> 1714773 </td>
+      <td style="text-align:right;"> 93.2905174 </td>
+      <td style="text-align:right;"> 4 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;"> Bexar </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Travis </td>
+      <td style="text-align:right;"> 1024266 </td>
+      <td style="text-align:right;"> 55.7241717 </td>
+      <td style="text-align:right;"> 5 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;"> Travis </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> El Paso </td>
+      <td style="text-align:right;"> 800647 </td>
+      <td style="text-align:right;"> 43.5584027 </td>
+      <td style="text-align:right;"> 6 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;"> El Paso </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Collin </td>
+      <td style="text-align:right;"> 782341 </td>
+      <td style="text-align:right;"> 42.5624830 </td>
+      <td style="text-align:right;"> 7 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hidalgo </td>
+      <td style="text-align:right;"> 774769 </td>
+      <td style="text-align:right;"> 42.1505359 </td>
+      <td style="text-align:right;"> 8 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Denton </td>
+      <td style="text-align:right;"> 662614 </td>
+      <td style="text-align:right;"> 36.0488548 </td>
+      <td style="text-align:right;"> 9 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Fort Bend </td>
+      <td style="text-align:right;"> 585375 </td>
+      <td style="text-align:right;"> 31.8467439 </td>
+      <td style="text-align:right;"> 10 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Montgomery </td>
+      <td style="text-align:right;"> 455746 </td>
+      <td style="text-align:right;"> 24.7944073 </td>
+      <td style="text-align:right;"> 11 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Williamson </td>
+      <td style="text-align:right;"> 422679 </td>
+      <td style="text-align:right;"> 22.9954301 </td>
+      <td style="text-align:right;"> 12 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Cameron </td>
+      <td style="text-align:right;"> 406220 </td>
+      <td style="text-align:right;"> 22.0999946 </td>
+      <td style="text-align:right;"> 13 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Nueces </td>
+      <td style="text-align:right;"> 340223 </td>
+      <td style="text-align:right;"> 18.5094935 </td>
+      <td style="text-align:right;"> 14 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Brazoria </td>
+      <td style="text-align:right;"> 313166 </td>
+      <td style="text-align:right;"> 17.0374844 </td>
+      <td style="text-align:right;"> 15 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bell </td>
+      <td style="text-align:right;"> 310235 </td>
+      <td style="text-align:right;"> 16.8780262 </td>
+      <td style="text-align:right;"> 16 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Galveston </td>
+      <td style="text-align:right;"> 291309 </td>
+      <td style="text-align:right;"> 15.8483760 </td>
+      <td style="text-align:right;"> 17 </td>
+      <td style="text-align:left;"> Galveston </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lubbock </td>
+      <td style="text-align:right;"> 278831 </td>
+      <td style="text-align:right;"> 15.1695229 </td>
+      <td style="text-align:right;"> 18 </td>
+      <td style="text-align:left;"> Lubbock </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jefferson </td>
+      <td style="text-align:right;"> 252273 </td>
+      <td style="text-align:right;"> 13.7246613 </td>
+      <td style="text-align:right;"> 19 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Webb </td>
+      <td style="text-align:right;"> 250304 </td>
+      <td style="text-align:right;"> 13.6175399 </td>
+      <td style="text-align:right;"> 20 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> McLennan </td>
+      <td style="text-align:right;"> 234906 </td>
+      <td style="text-align:right;"> 12.7798270 </td>
+      <td style="text-align:right;"> 21 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Smith </td>
+      <td style="text-align:right;"> 209714 </td>
+      <td style="text-align:right;"> 11.4092813 </td>
+      <td style="text-align:right;"> 22 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Brazos </td>
+      <td style="text-align:right;"> 194851 </td>
+      <td style="text-align:right;"> 10.6006746 </td>
+      <td style="text-align:right;"> 23 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hays </td>
+      <td style="text-align:right;"> 157107 </td>
+      <td style="text-align:right;"> 8.5472499 </td>
+      <td style="text-align:right;"> 24 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Johnson </td>
+      <td style="text-align:right;"> 150934 </td>
+      <td style="text-align:right;"> 8.2114140 </td>
+      <td style="text-align:right;"> 25 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Ellis </td>
+      <td style="text-align:right;"> 149610 </td>
+      <td style="text-align:right;"> 8.1393831 </td>
+      <td style="text-align:right;"> 26 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Ector </td>
+      <td style="text-align:right;"> 137130 </td>
+      <td style="text-align:right;"> 7.4604211 </td>
+      <td style="text-align:right;"> 27 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Midland </td>
+      <td style="text-align:right;"> 136872 </td>
+      <td style="text-align:right;"> 7.4463849 </td>
+      <td style="text-align:right;"> 28 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Guadalupe </td>
+      <td style="text-align:right;"> 131533 </td>
+      <td style="text-align:right;"> 7.1559219 </td>
+      <td style="text-align:right;"> 29 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Taylor </td>
+      <td style="text-align:right;"> 131506 </td>
+      <td style="text-align:right;"> 7.1544530 </td>
+      <td style="text-align:right;"> 30 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wichita </td>
+      <td style="text-align:right;"> 131500 </td>
+      <td style="text-align:right;"> 7.1541265 </td>
+      <td style="text-align:right;"> 31 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Gregg </td>
+      <td style="text-align:right;"> 121730 </td>
+      <td style="text-align:right;"> 6.6225994 </td>
+      <td style="text-align:right;"> 32 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Potter </td>
+      <td style="text-align:right;"> 121073 </td>
+      <td style="text-align:right;"> 6.5868560 </td>
+      <td style="text-align:right;"> 33 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Grayson </td>
+      <td style="text-align:right;"> 120877 </td>
+      <td style="text-align:right;"> 6.5761928 </td>
+      <td style="text-align:right;"> 34 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Randall </td>
+      <td style="text-align:right;"> 120725 </td>
+      <td style="text-align:right;"> 6.5679234 </td>
+      <td style="text-align:right;"> 35 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Parker </td>
+      <td style="text-align:right;"> 116927 </td>
+      <td style="text-align:right;"> 6.3612970 </td>
+      <td style="text-align:right;"> 36 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Tom Green </td>
+      <td style="text-align:right;"> 110224 </td>
+      <td style="text-align:right;"> 5.9966270 </td>
+      <td style="text-align:right;"> 37 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Comal </td>
+      <td style="text-align:right;"> 108472 </td>
+      <td style="text-align:right;"> 5.9013111 </td>
+      <td style="text-align:right;"> 38 </td>
+      <td style="text-align:left;"> Comal </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kaufman </td>
+      <td style="text-align:right;"> 103350 </td>
+      <td style="text-align:right;"> 5.6226538 </td>
+      <td style="text-align:right;"> 39 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bowie </td>
+      <td style="text-align:right;"> 92565 </td>
+      <td style="text-align:right;"> 5.0359066 </td>
+      <td style="text-align:right;"> 40 </td>
+      <td style="text-align:left;"> Bowie </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Victoria </td>
+      <td style="text-align:right;"> 86793 </td>
+      <td style="text-align:right;"> 4.7218867 </td>
+      <td style="text-align:right;"> 41 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Angelina </td>
+      <td style="text-align:right;"> 86771 </td>
+      <td style="text-align:right;"> 4.7206898 </td>
+      <td style="text-align:right;"> 42 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hunt </td>
+      <td style="text-align:right;"> 86129 </td>
+      <td style="text-align:right;"> 4.6857625 </td>
+      <td style="text-align:right;"> 43 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Orange </td>
+      <td style="text-align:right;"> 81837 </td>
+      <td style="text-align:right;"> 4.4522605 </td>
+      <td style="text-align:right;"> 44 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Henderson </td>
+      <td style="text-align:right;"> 78532 </td>
+      <td style="text-align:right;"> 4.2724553 </td>
+      <td style="text-align:right;"> 45 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Rockwall </td>
+      <td style="text-align:right;"> 78337 </td>
+      <td style="text-align:right;"> 4.2618465 </td>
+      <td style="text-align:right;"> 46 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Liberty </td>
+      <td style="text-align:right;"> 75643 </td>
+      <td style="text-align:right;"> 4.1152821 </td>
+      <td style="text-align:right;"> 47 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Coryell </td>
+      <td style="text-align:right;"> 75388 </td>
+      <td style="text-align:right;"> 4.1014091 </td>
+      <td style="text-align:right;"> 48 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bastrop </td>
+      <td style="text-align:right;"> 74171 </td>
+      <td style="text-align:right;"> 4.0351994 </td>
+      <td style="text-align:right;"> 49 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Walker </td>
+      <td style="text-align:right;"> 67861 </td>
+      <td style="text-align:right;"> 3.6919101 </td>
+      <td style="text-align:right;"> 50 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Harrison </td>
+      <td style="text-align:right;"> 65631 </td>
+      <td style="text-align:right;"> 3.5705892 </td>
+      <td style="text-align:right;"> 51 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> San Patricio </td>
+      <td style="text-align:right;"> 64804 </td>
+      <td style="text-align:right;"> 3.5255971 </td>
+      <td style="text-align:right;"> 52 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Nacogdoches </td>
+      <td style="text-align:right;"> 64524 </td>
+      <td style="text-align:right;"> 3.5103640 </td>
+      <td style="text-align:right;"> 53 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Starr </td>
+      <td style="text-align:right;"> 60968 </td>
+      <td style="text-align:right;"> 3.3169033 </td>
+      <td style="text-align:right;"> 54 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wise </td>
+      <td style="text-align:right;"> 59127 </td>
+      <td style="text-align:right;"> 3.2167456 </td>
+      <td style="text-align:right;"> 55 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Anderson </td>
+      <td style="text-align:right;"> 58458 </td>
+      <td style="text-align:right;"> 3.1803493 </td>
+      <td style="text-align:right;"> 56 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hardin </td>
+      <td style="text-align:right;"> 54635 </td>
+      <td style="text-align:right;"> 2.9723628 </td>
+      <td style="text-align:right;"> 57 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Maverick </td>
+      <td style="text-align:right;"> 54258 </td>
+      <td style="text-align:right;"> 2.9518525 </td>
+      <td style="text-align:right;"> 58 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Rusk </td>
+      <td style="text-align:right;"> 53330 </td>
+      <td style="text-align:right;"> 2.9013655 </td>
+      <td style="text-align:right;"> 59 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Van Zandt </td>
+      <td style="text-align:right;"> 52579 </td>
+      <td style="text-align:right;"> 2.8605081 </td>
+      <td style="text-align:right;"> 60 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hood </td>
+      <td style="text-align:right;"> 51182 </td>
+      <td style="text-align:right;"> 2.7845057 </td>
+      <td style="text-align:right;"> 61 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Cherokee </td>
+      <td style="text-align:right;"> 50845 </td>
+      <td style="text-align:right;"> 2.7661716 </td>
+      <td style="text-align:right;"> 62 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lamar </td>
+      <td style="text-align:right;"> 49793 </td>
+      <td style="text-align:right;"> 2.7089386 </td>
+      <td style="text-align:right;"> 63 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kerr </td>
+      <td style="text-align:right;"> 49625 </td>
+      <td style="text-align:right;"> 2.6997987 </td>
+      <td style="text-align:right;"> 64 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Val Verde </td>
+      <td style="text-align:right;"> 48879 </td>
+      <td style="text-align:right;"> 2.6592133 </td>
+      <td style="text-align:right;"> 65 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Navarro </td>
+      <td style="text-align:right;"> 47735 </td>
+      <td style="text-align:right;"> 2.5969751 </td>
+      <td style="text-align:right;"> 66 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Medina </td>
+      <td style="text-align:right;"> 46006 </td>
+      <td style="text-align:right;"> 2.5029106 </td>
+      <td style="text-align:right;"> 67 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Polk </td>
+      <td style="text-align:right;"> 45413 </td>
+      <td style="text-align:right;"> 2.4706490 </td>
+      <td style="text-align:right;"> 68 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Atascosa </td>
+      <td style="text-align:right;"> 44911 </td>
+      <td style="text-align:right;"> 2.4433382 </td>
+      <td style="text-align:right;"> 69 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Waller </td>
+      <td style="text-align:right;"> 43205 </td>
+      <td style="text-align:right;"> 2.3505250 </td>
+      <td style="text-align:right;"> 70 </td>
+      <td style="text-align:left;"> Waller </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wilson </td>
+      <td style="text-align:right;"> 42918 </td>
+      <td style="text-align:right;"> 2.3349110 </td>
+      <td style="text-align:right;"> 71 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Burnet </td>
+      <td style="text-align:right;"> 42750 </td>
+      <td style="text-align:right;"> 2.3257712 </td>
+      <td style="text-align:right;"> 72 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wood </td>
+      <td style="text-align:right;"> 41964 </td>
+      <td style="text-align:right;"> 2.2830096 </td>
+      <td style="text-align:right;"> 73 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wharton </td>
+      <td style="text-align:right;"> 41280 </td>
+      <td style="text-align:right;"> 2.2457973 </td>
+      <td style="text-align:right;"> 74 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jim Wells </td>
+      <td style="text-align:right;"> 40838 </td>
+      <td style="text-align:right;"> 2.2217507 </td>
+      <td style="text-align:right;"> 75 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Upshur </td>
+      <td style="text-align:right;"> 39309 </td>
+      <td style="text-align:right;"> 2.1385670 </td>
+      <td style="text-align:right;"> 76 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Cooke </td>
+      <td style="text-align:right;"> 38437 </td>
+      <td style="text-align:right;"> 2.0911267 </td>
+      <td style="text-align:right;"> 77 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Brown </td>
+      <td style="text-align:right;"> 38106 </td>
+      <td style="text-align:right;"> 2.0731190 </td>
+      <td style="text-align:right;"> 78 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Caldwell </td>
+      <td style="text-align:right;"> 38066 </td>
+      <td style="text-align:right;"> 2.0709428 </td>
+      <td style="text-align:right;"> 79 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Erath </td>
+      <td style="text-align:right;"> 37890 </td>
+      <td style="text-align:right;"> 2.0613677 </td>
+      <td style="text-align:right;"> 80 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Matagorda </td>
+      <td style="text-align:right;"> 36702 </td>
+      <td style="text-align:right;"> 1.9967358 </td>
+      <td style="text-align:right;"> 81 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hale </td>
+      <td style="text-align:right;"> 36273 </td>
+      <td style="text-align:right;"> 1.9733964 </td>
+      <td style="text-align:right;"> 82 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jasper </td>
+      <td style="text-align:right;"> 35710 </td>
+      <td style="text-align:right;"> 1.9427670 </td>
+      <td style="text-align:right;"> 83 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hopkins </td>
+      <td style="text-align:right;"> 35161 </td>
+      <td style="text-align:right;"> 1.9128992 </td>
+      <td style="text-align:right;"> 84 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Chambers </td>
+      <td style="text-align:right;"> 35096 </td>
+      <td style="text-align:right;"> 1.9093629 </td>
+      <td style="text-align:right;"> 85 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hill </td>
+      <td style="text-align:right;"> 35089 </td>
+      <td style="text-align:right;"> 1.9089821 </td>
+      <td style="text-align:right;"> 86 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Howard </td>
+      <td style="text-align:right;"> 35012 </td>
+      <td style="text-align:right;"> 1.9047930 </td>
+      <td style="text-align:right;"> 87 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Fannin </td>
+      <td style="text-align:right;"> 33915 </td>
+      <td style="text-align:right;"> 1.8451118 </td>
+      <td style="text-align:right;"> 88 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Washington </td>
+      <td style="text-align:right;"> 33718 </td>
+      <td style="text-align:right;"> 1.8343942 </td>
+      <td style="text-align:right;"> 89 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kendall </td>
+      <td style="text-align:right;"> 33410 </td>
+      <td style="text-align:right;"> 1.8176378 </td>
+      <td style="text-align:right;"> 90 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Titus </td>
+      <td style="text-align:right;"> 32334 </td>
+      <td style="text-align:right;"> 1.7590991 </td>
+      <td style="text-align:right;"> 91 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kleberg </td>
+      <td style="text-align:right;"> 32061 </td>
+      <td style="text-align:right;"> 1.7442468 </td>
+      <td style="text-align:right;"> 92 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bee </td>
+      <td style="text-align:right;"> 31861 </td>
+      <td style="text-align:right;"> 1.7333660 </td>
+      <td style="text-align:right;"> 93 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Cass </td>
+      <td style="text-align:right;"> 30464 </td>
+      <td style="text-align:right;"> 1.6573636 </td>
+      <td style="text-align:right;"> 94 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Austin </td>
+      <td style="text-align:right;"> 28417 </td>
+      <td style="text-align:right;"> 1.5459986 </td>
+      <td style="text-align:right;"> 95 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Palo Pinto </td>
+      <td style="text-align:right;"> 28111 </td>
+      <td style="text-align:right;"> 1.5293510 </td>
+      <td style="text-align:right;"> 96 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Grimes </td>
+      <td style="text-align:right;"> 26604 </td>
+      <td style="text-align:right;"> 1.4473641 </td>
+      <td style="text-align:right;"> 97 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Uvalde </td>
+      <td style="text-align:right;"> 26405 </td>
+      <td style="text-align:right;"> 1.4365377 </td>
+      <td style="text-align:right;"> 98 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> San Jacinto </td>
+      <td style="text-align:right;"> 26384 </td>
+      <td style="text-align:right;"> 1.4353952 </td>
+      <td style="text-align:right;"> 99 </td>
+      <td style="text-align:left;"> San Jacinto </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Shelby </td>
+      <td style="text-align:right;"> 25448 </td>
+      <td style="text-align:right;"> 1.3844731 </td>
+      <td style="text-align:right;"> 100 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Gillespie </td>
+      <td style="text-align:right;"> 24837 </td>
+      <td style="text-align:right;"> 1.3512323 </td>
+      <td style="text-align:right;"> 101 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Milam </td>
+      <td style="text-align:right;"> 24757 </td>
+      <td style="text-align:right;"> 1.3468799 </td>
+      <td style="text-align:right;"> 102 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Fayette </td>
+      <td style="text-align:right;"> 24554 </td>
+      <td style="text-align:right;"> 1.3358359 </td>
+      <td style="text-align:right;"> 103 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Panola </td>
+      <td style="text-align:right;"> 23796 </td>
+      <td style="text-align:right;"> 1.2945977 </td>
+      <td style="text-align:right;"> 104 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Houston </td>
+      <td style="text-align:right;"> 23732 </td>
+      <td style="text-align:right;"> 1.2911158 </td>
+      <td style="text-align:right;"> 105 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Limestone </td>
+      <td style="text-align:right;"> 23384 </td>
+      <td style="text-align:right;"> 1.2721832 </td>
+      <td style="text-align:right;"> 106 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Aransas </td>
+      <td style="text-align:right;"> 23158 </td>
+      <td style="text-align:right;"> 1.2598879 </td>
+      <td style="text-align:right;"> 107 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hockley </td>
+      <td style="text-align:right;"> 22935 </td>
+      <td style="text-align:right;"> 1.2477558 </td>
+      <td style="text-align:right;"> 108 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Gray </td>
+      <td style="text-align:right;"> 22535 </td>
+      <td style="text-align:right;"> 1.2259942 </td>
+      <td style="text-align:right;"> 109 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hutchinson </td>
+      <td style="text-align:right;"> 22150 </td>
+      <td style="text-align:right;"> 1.2050487 </td>
+      <td style="text-align:right;"> 110 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Willacy </td>
+      <td style="text-align:right;"> 22134 </td>
+      <td style="text-align:right;"> 1.2041782 </td>
+      <td style="text-align:right;"> 111 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Moore </td>
+      <td style="text-align:right;"> 21904 </td>
+      <td style="text-align:right;"> 1.1916653 </td>
+      <td style="text-align:right;"> 112 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Tyler </td>
+      <td style="text-align:right;"> 21766 </td>
+      <td style="text-align:right;"> 1.1841576 </td>
+      <td style="text-align:right;"> 113 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Calhoun </td>
+      <td style="text-align:right;"> 21381 </td>
+      <td style="text-align:right;"> 1.1632120 </td>
+      <td style="text-align:right;"> 114 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Colorado </td>
+      <td style="text-align:right;"> 20874 </td>
+      <td style="text-align:right;"> 1.1356292 </td>
+      <td style="text-align:right;"> 115 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bandera </td>
+      <td style="text-align:right;"> 20485 </td>
+      <td style="text-align:right;"> 1.1144660 </td>
+      <td style="text-align:right;"> 116 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jones </td>
+      <td style="text-align:right;"> 20202 </td>
+      <td style="text-align:right;"> 1.0990697 </td>
+      <td style="text-align:right;"> 117 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> DeWitt </td>
+      <td style="text-align:right;"> 20097 </td>
+      <td style="text-align:right;"> 1.0933573 </td>
+      <td style="text-align:right;"> 118 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Freestone </td>
+      <td style="text-align:right;"> 19816 </td>
+      <td style="text-align:right;"> 1.0780697 </td>
+      <td style="text-align:right;"> 119 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Gonzales </td>
+      <td style="text-align:right;"> 19807 </td>
+      <td style="text-align:right;"> 1.0775801 </td>
+      <td style="text-align:right;"> 120 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Montague </td>
+      <td style="text-align:right;"> 19719 </td>
+      <td style="text-align:right;"> 1.0727926 </td>
+      <td style="text-align:right;"> 121 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lampasas </td>
+      <td style="text-align:right;"> 19677 </td>
+      <td style="text-align:right;"> 1.0705076 </td>
+      <td style="text-align:right;"> 122 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Deaf Smith </td>
+      <td style="text-align:right;"> 19372 </td>
+      <td style="text-align:right;"> 1.0539144 </td>
+      <td style="text-align:right;"> 123 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Llano </td>
+      <td style="text-align:right;"> 19301 </td>
+      <td style="text-align:right;"> 1.0500517 </td>
+      <td style="text-align:right;"> 124 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lavaca </td>
+      <td style="text-align:right;"> 19263 </td>
+      <td style="text-align:right;"> 1.0479843 </td>
+      <td style="text-align:right;"> 125 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Eastland </td>
+      <td style="text-align:right;"> 18583 </td>
+      <td style="text-align:right;"> 1.0109896 </td>
+      <td style="text-align:right;"> 126 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Young </td>
+      <td style="text-align:right;"> 18550 </td>
+      <td style="text-align:right;"> 1.0091943 </td>
+      <td style="text-align:right;"> 127 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bosque </td>
+      <td style="text-align:right;"> 18212 </td>
+      <td style="text-align:right;"> 0.9908057 </td>
+      <td style="text-align:right;"> 128 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Falls </td>
+      <td style="text-align:right;"> 17866 </td>
+      <td style="text-align:right;"> 0.9719819 </td>
+      <td style="text-align:right;"> 129 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Gaines </td>
+      <td style="text-align:right;"> 17526 </td>
+      <td style="text-align:right;"> 0.9534846 </td>
+      <td style="text-align:right;"> 130 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Frio </td>
+      <td style="text-align:right;"> 17217 </td>
+      <td style="text-align:right;"> 0.9366737 </td>
+      <td style="text-align:right;"> 131 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Burleson </td>
+      <td style="text-align:right;"> 17187 </td>
+      <td style="text-align:right;"> 0.9350416 </td>
+      <td style="text-align:right;"> 132 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Scurry </td>
+      <td style="text-align:right;"> 16921 </td>
+      <td style="text-align:right;"> 0.9205702 </td>
+      <td style="text-align:right;"> 133 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Leon </td>
+      <td style="text-align:right;"> 16801 </td>
+      <td style="text-align:right;"> 0.9140417 </td>
+      <td style="text-align:right;"> 134 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Robertson </td>
+      <td style="text-align:right;"> 16622 </td>
+      <td style="text-align:right;"> 0.9043034 </td>
+      <td style="text-align:right;"> 135 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lee </td>
+      <td style="text-align:right;"> 16612 </td>
+      <td style="text-align:right;"> 0.9037593 </td>
+      <td style="text-align:right;"> 136 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Pecos </td>
+      <td style="text-align:right;"> 15507 </td>
+      <td style="text-align:right;"> 0.8436429 </td>
+      <td style="text-align:right;"> 137 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Nolan </td>
+      <td style="text-align:right;"> 15216 </td>
+      <td style="text-align:right;"> 0.8278113 </td>
+      <td style="text-align:right;"> 138 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Karnes </td>
+      <td style="text-align:right;"> 14824 </td>
+      <td style="text-align:right;"> 0.8064850 </td>
+      <td style="text-align:right;"> 139 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Andrews </td>
+      <td style="text-align:right;"> 14786 </td>
+      <td style="text-align:right;"> 0.8044176 </td>
+      <td style="text-align:right;"> 140 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Trinity </td>
+      <td style="text-align:right;"> 14585 </td>
+      <td style="text-align:right;"> 0.7934824 </td>
+      <td style="text-align:right;"> 141 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Newton </td>
+      <td style="text-align:right;"> 14445 </td>
+      <td style="text-align:right;"> 0.7858658 </td>
+      <td style="text-align:right;"> 142 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jackson </td>
+      <td style="text-align:right;"> 14075 </td>
+      <td style="text-align:right;"> 0.7657364 </td>
+      <td style="text-align:right;"> 143 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Zapata </td>
+      <td style="text-align:right;"> 14018 </td>
+      <td style="text-align:right;"> 0.7626353 </td>
+      <td style="text-align:right;"> 144 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lamb </td>
+      <td style="text-align:right;"> 13977 </td>
+      <td style="text-align:right;"> 0.7604048 </td>
+      <td style="text-align:right;"> 145 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Comanche </td>
+      <td style="text-align:right;"> 13974 </td>
+      <td style="text-align:right;"> 0.7602416 </td>
+      <td style="text-align:right;"> 146 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Dawson </td>
+      <td style="text-align:right;"> 13833 </td>
+      <td style="text-align:right;"> 0.7525706 </td>
+      <td style="text-align:right;"> 147 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Reeves </td>
+      <td style="text-align:right;"> 13783 </td>
+      <td style="text-align:right;"> 0.7498504 </td>
+      <td style="text-align:right;"> 148 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Madison </td>
+      <td style="text-align:right;"> 13664 </td>
+      <td style="text-align:right;"> 0.7433763 </td>
+      <td style="text-align:right;"> 149 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Callahan </td>
+      <td style="text-align:right;"> 13544 </td>
+      <td style="text-align:right;"> 0.7368478 </td>
+      <td style="text-align:right;"> 150 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wilbarger </td>
+      <td style="text-align:right;"> 13535 </td>
+      <td style="text-align:right;"> 0.7363582 </td>
+      <td style="text-align:right;"> 151 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Morris </td>
+      <td style="text-align:right;"> 12934 </td>
+      <td style="text-align:right;"> 0.7036614 </td>
+      <td style="text-align:right;"> 152 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Red River </td>
+      <td style="text-align:right;"> 12860 </td>
+      <td style="text-align:right;"> 0.6996355 </td>
+      <td style="text-align:right;"> 153 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Terry </td>
+      <td style="text-align:right;"> 12651 </td>
+      <td style="text-align:right;"> 0.6882651 </td>
+      <td style="text-align:right;"> 154 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Camp </td>
+      <td style="text-align:right;"> 12401 </td>
+      <td style="text-align:right;"> 0.6746641 </td>
+      <td style="text-align:right;"> 155 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Duval </td>
+      <td style="text-align:right;"> 11782 </td>
+      <td style="text-align:right;"> 0.6409880 </td>
+      <td style="text-align:right;"> 156 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Zavala </td>
+      <td style="text-align:right;"> 11677 </td>
+      <td style="text-align:right;"> 0.6352756 </td>
+      <td style="text-align:right;"> 157 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Live Oak </td>
+      <td style="text-align:right;"> 11531 </td>
+      <td style="text-align:right;"> 0.6273326 </td>
+      <td style="text-align:right;"> 158 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Rains </td>
+      <td style="text-align:right;"> 10914 </td>
+      <td style="text-align:right;"> 0.5937653 </td>
+      <td style="text-align:right;"> 159 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Sabine </td>
+      <td style="text-align:right;"> 10834 </td>
+      <td style="text-align:right;"> 0.5894130 </td>
+      <td style="text-align:right;"> 160 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Clay </td>
+      <td style="text-align:right;"> 10752 </td>
+      <td style="text-align:right;"> 0.5849519 </td>
+      <td style="text-align:right;"> 161 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Ward </td>
+      <td style="text-align:right;"> 10658 </td>
+      <td style="text-align:right;"> 0.5798379 </td>
+      <td style="text-align:right;"> 162 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Franklin </td>
+      <td style="text-align:right;"> 10605 </td>
+      <td style="text-align:right;"> 0.5769545 </td>
+      <td style="text-align:right;"> 163 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Marion </td>
+      <td style="text-align:right;"> 10546 </td>
+      <td style="text-align:right;"> 0.5737446 </td>
+      <td style="text-align:right;"> 164 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Runnels </td>
+      <td style="text-align:right;"> 10501 </td>
+      <td style="text-align:right;"> 0.5712964 </td>
+      <td style="text-align:right;"> 165 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Blanco </td>
+      <td style="text-align:right;"> 10497 </td>
+      <td style="text-align:right;"> 0.5710788 </td>
+      <td style="text-align:right;"> 166 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Parmer </td>
+      <td style="text-align:right;"> 10269 </td>
+      <td style="text-align:right;"> 0.5586747 </td>
+      <td style="text-align:right;"> 167 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Ochiltree </td>
+      <td style="text-align:right;"> 10223 </td>
+      <td style="text-align:right;"> 0.5561721 </td>
+      <td style="text-align:right;"> 168 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Dimmit </td>
+      <td style="text-align:right;"> 9996 </td>
+      <td style="text-align:right;"> 0.5438224 </td>
+      <td style="text-align:right;"> 169 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Stephens </td>
+      <td style="text-align:right;"> 9630 </td>
+      <td style="text-align:right;"> 0.5239106 </td>
+      <td style="text-align:right;"> 170 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Mitchell </td>
+      <td style="text-align:right;"> 9403 </td>
+      <td style="text-align:right;"> 0.5115609 </td>
+      <td style="text-align:right;"> 171 </td>
+      <td style="text-align:left;"> Mitchell </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Brewster </td>
+      <td style="text-align:right;"> 9232 </td>
+      <td style="text-align:right;"> 0.5022578 </td>
+      <td style="text-align:right;"> 172 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Archer </td>
+      <td style="text-align:right;"> 9054 </td>
+      <td style="text-align:right;"> 0.4925739 </td>
+      <td style="text-align:right;"> 173 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jack </td>
+      <td style="text-align:right;"> 9044 </td>
+      <td style="text-align:right;"> 0.4920298 </td>
+      <td style="text-align:right;"> 174 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Coleman </td>
+      <td style="text-align:right;"> 8895 </td>
+      <td style="text-align:right;"> 0.4839236 </td>
+      <td style="text-align:right;"> 175 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> San Augustine </td>
+      <td style="text-align:right;"> 8865 </td>
+      <td style="text-align:right;"> 0.4822915 </td>
+      <td style="text-align:right;"> 176 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hamilton </td>
+      <td style="text-align:right;"> 8517 </td>
+      <td style="text-align:right;"> 0.4633589 </td>
+      <td style="text-align:right;"> 177 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Somervell </td>
+      <td style="text-align:right;"> 8490 </td>
+      <td style="text-align:right;"> 0.4618900 </td>
+      <td style="text-align:right;"> 178 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> McCulloch </td>
+      <td style="text-align:right;"> 8283 </td>
+      <td style="text-align:right;"> 0.4506284 </td>
+      <td style="text-align:right;"> 179 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Castro </td>
+      <td style="text-align:right;"> 8062 </td>
+      <td style="text-align:right;"> 0.4386051 </td>
+      <td style="text-align:right;"> 180 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Yoakum </td>
+      <td style="text-align:right;"> 7879 </td>
+      <td style="text-align:right;"> 0.4286491 </td>
+      <td style="text-align:right;"> 181 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Swisher </td>
+      <td style="text-align:right;"> 7854 </td>
+      <td style="text-align:right;"> 0.4272890 </td>
+      <td style="text-align:right;"> 182 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Presidio </td>
+      <td style="text-align:right;"> 7818 </td>
+      <td style="text-align:right;"> 0.4253305 </td>
+      <td style="text-align:right;"> 183 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Refugio </td>
+      <td style="text-align:right;"> 7383 </td>
+      <td style="text-align:right;"> 0.4016648 </td>
+      <td style="text-align:right;"> 184 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Brooks </td>
+      <td style="text-align:right;"> 7223 </td>
+      <td style="text-align:right;"> 0.3929601 </td>
+      <td style="text-align:right;"> 185 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Goliad </td>
+      <td style="text-align:right;"> 7210 </td>
+      <td style="text-align:right;"> 0.3922529 </td>
+      <td style="text-align:right;"> 186 </td>
+      <td style="text-align:left;"> Goliad </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bailey </td>
+      <td style="text-align:right;"> 7165 </td>
+      <td style="text-align:right;"> 0.3898047 </td>
+      <td style="text-align:right;"> 187 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Winkler </td>
+      <td style="text-align:right;"> 7110 </td>
+      <td style="text-align:right;"> 0.3868125 </td>
+      <td style="text-align:right;"> 188 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Childress </td>
+      <td style="text-align:right;"> 7041 </td>
+      <td style="text-align:right;"> 0.3830586 </td>
+      <td style="text-align:right;"> 189 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> La Salle </td>
+      <td style="text-align:right;"> 6886 </td>
+      <td style="text-align:right;"> 0.3746260 </td>
+      <td style="text-align:right;"> 190 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Dallam </td>
+      <td style="text-align:right;"> 6703 </td>
+      <td style="text-align:right;"> 0.3646700 </td>
+      <td style="text-align:right;"> 191 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Garza </td>
+      <td style="text-align:right;"> 6461 </td>
+      <td style="text-align:right;"> 0.3515043 </td>
+      <td style="text-align:right;"> 192 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Floyd </td>
+      <td style="text-align:right;"> 6446 </td>
+      <td style="text-align:right;"> 0.3506882 </td>
+      <td style="text-align:right;"> 193 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Carson </td>
+      <td style="text-align:right;"> 6182 </td>
+      <td style="text-align:right;"> 0.3363256 </td>
+      <td style="text-align:right;"> 194 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> San Saba </td>
+      <td style="text-align:right;"> 6131 </td>
+      <td style="text-align:right;"> 0.3335509 </td>
+      <td style="text-align:right;"> 195 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hartley </td>
+      <td style="text-align:right;"> 6062 </td>
+      <td style="text-align:right;"> 0.3297971 </td>
+      <td style="text-align:right;"> 196 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Crosby </td>
+      <td style="text-align:right;"> 6059 </td>
+      <td style="text-align:right;"> 0.3296339 </td>
+      <td style="text-align:right;"> 197 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lynn </td>
+      <td style="text-align:right;"> 5915 </td>
+      <td style="text-align:right;"> 0.3217997 </td>
+      <td style="text-align:right;"> 198 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Haskell </td>
+      <td style="text-align:right;"> 5899 </td>
+      <td style="text-align:right;"> 0.3209292 </td>
+      <td style="text-align:right;"> 199 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hansford </td>
+      <td style="text-align:right;"> 5613 </td>
+      <td style="text-align:right;"> 0.3053697 </td>
+      <td style="text-align:right;"> 200 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wheeler </td>
+      <td style="text-align:right;"> 5410 </td>
+      <td style="text-align:right;"> 0.2943257 </td>
+      <td style="text-align:right;"> 201 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jim Hogg </td>
+      <td style="text-align:right;"> 5300 </td>
+      <td style="text-align:right;"> 0.2883412 </td>
+      <td style="text-align:right;"> 202 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Delta </td>
+      <td style="text-align:right;"> 5231 </td>
+      <td style="text-align:right;"> 0.2845873 </td>
+      <td style="text-align:right;"> 203 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Mills </td>
+      <td style="text-align:right;"> 4936 </td>
+      <td style="text-align:right;"> 0.2685382 </td>
+      <td style="text-align:right;"> 204 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Martin </td>
+      <td style="text-align:right;"> 4799 </td>
+      <td style="text-align:right;"> 0.2610848 </td>
+      <td style="text-align:right;"> 205 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kimble </td>
+      <td style="text-align:right;"> 4607 </td>
+      <td style="text-align:right;"> 0.2506392 </td>
+      <td style="text-align:right;"> 206 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Crane </td>
+      <td style="text-align:right;"> 4375 </td>
+      <td style="text-align:right;"> 0.2380175 </td>
+      <td style="text-align:right;"> 207 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hardeman </td>
+      <td style="text-align:right;"> 4139 </td>
+      <td style="text-align:right;"> 0.2251782 </td>
+      <td style="text-align:right;"> 208 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Sutton </td>
+      <td style="text-align:right;"> 4128 </td>
+      <td style="text-align:right;"> 0.2245797 </td>
+      <td style="text-align:right;"> 209 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Concho </td>
+      <td style="text-align:right;"> 4087 </td>
+      <td style="text-align:right;"> 0.2223492 </td>
+      <td style="text-align:right;"> 210 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Mason </td>
+      <td style="text-align:right;"> 4012 </td>
+      <td style="text-align:right;"> 0.2182689 </td>
+      <td style="text-align:right;"> 211 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Fisher </td>
+      <td style="text-align:right;"> 3974 </td>
+      <td style="text-align:right;"> 0.2162015 </td>
+      <td style="text-align:right;"> 212 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hemphill </td>
+      <td style="text-align:right;"> 3807 </td>
+      <td style="text-align:right;"> 0.2071160 </td>
+      <td style="text-align:right;"> 213 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Baylor </td>
+      <td style="text-align:right;"> 3726 </td>
+      <td style="text-align:right;"> 0.2027093 </td>
+      <td style="text-align:right;"> 214 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Crockett </td>
+      <td style="text-align:right;"> 3719 </td>
+      <td style="text-align:right;"> 0.2023285 </td>
+      <td style="text-align:right;"> 215 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Knox </td>
+      <td style="text-align:right;"> 3719 </td>
+      <td style="text-align:right;"> 0.2023285 </td>
+      <td style="text-align:right;"> 216 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Donley </td>
+      <td style="text-align:right;"> 3677 </td>
+      <td style="text-align:right;"> 0.2000435 </td>
+      <td style="text-align:right;"> 217 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kinney </td>
+      <td style="text-align:right;"> 3598 </td>
+      <td style="text-align:right;"> 0.1957456 </td>
+      <td style="text-align:right;"> 218 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hudspeth </td>
+      <td style="text-align:right;"> 3476 </td>
+      <td style="text-align:right;"> 0.1891083 </td>
+      <td style="text-align:right;"> 219 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Schleicher </td>
+      <td style="text-align:right;"> 3461 </td>
+      <td style="text-align:right;"> 0.1882923 </td>
+      <td style="text-align:right;"> 220 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Shackelford </td>
+      <td style="text-align:right;"> 3378 </td>
+      <td style="text-align:right;"> 0.1837767 </td>
+      <td style="text-align:right;"> 221 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Reagan </td>
+      <td style="text-align:right;"> 3367 </td>
+      <td style="text-align:right;"> 0.1831783 </td>
+      <td style="text-align:right;"> 222 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Upton </td>
+      <td style="text-align:right;"> 3355 </td>
+      <td style="text-align:right;"> 0.1825254 </td>
+      <td style="text-align:right;"> 223 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hall </td>
+      <td style="text-align:right;"> 3353 </td>
+      <td style="text-align:right;"> 0.1824166 </td>
+      <td style="text-align:right;"> 224 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Coke </td>
+      <td style="text-align:right;"> 3320 </td>
+      <td style="text-align:right;"> 0.1806213 </td>
+      <td style="text-align:right;"> 225 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Real </td>
+      <td style="text-align:right;"> 3309 </td>
+      <td style="text-align:right;"> 0.1800228 </td>
+      <td style="text-align:right;"> 226 </td>
+      <td style="text-align:left;"> Real </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lipscomb </td>
+      <td style="text-align:right;"> 3302 </td>
+      <td style="text-align:right;"> 0.1796420 </td>
+      <td style="text-align:right;"> 227 </td>
+      <td style="text-align:left;"> Lipscomb </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Cochran </td>
+      <td style="text-align:right;"> 3127 </td>
+      <td style="text-align:right;"> 0.1701213 </td>
+      <td style="text-align:right;"> 228 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Collingsworth </td>
+      <td style="text-align:right;"> 3057 </td>
+      <td style="text-align:right;"> 0.1663130 </td>
+      <td style="text-align:right;"> 229 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Sherman </td>
+      <td style="text-align:right;"> 3034 </td>
+      <td style="text-align:right;"> 0.1650617 </td>
+      <td style="text-align:right;"> 230 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Dickens </td>
+      <td style="text-align:right;"> 2444 </td>
+      <td style="text-align:right;"> 0.1329634 </td>
+      <td style="text-align:right;"> 231 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Culberson </td>
+      <td style="text-align:right;"> 2398 </td>
+      <td style="text-align:right;"> 0.1304608 </td>
+      <td style="text-align:right;"> 232 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jeff Davis </td>
+      <td style="text-align:right;"> 2342 </td>
+      <td style="text-align:right;"> 0.1274142 </td>
+      <td style="text-align:right;"> 233 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Menard </td>
+      <td style="text-align:right;"> 2242 </td>
+      <td style="text-align:right;"> 0.1219738 </td>
+      <td style="text-align:right;"> 234 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Oldham </td>
+      <td style="text-align:right;"> 2052 </td>
+      <td style="text-align:right;"> 0.1116370 </td>
+      <td style="text-align:right;"> 235 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Edwards </td>
+      <td style="text-align:right;"> 2002 </td>
+      <td style="text-align:right;"> 0.1089168 </td>
+      <td style="text-align:right;"> 236 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Armstrong </td>
+      <td style="text-align:right;"> 1901 </td>
+      <td style="text-align:right;"> 0.1034220 </td>
+      <td style="text-align:right;"> 237 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Throckmorton </td>
+      <td style="text-align:right;"> 1641 </td>
+      <td style="text-align:right;"> 0.0892770 </td>
+      <td style="text-align:right;"> 238 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Briscoe </td>
+      <td style="text-align:right;"> 1637 </td>
+      <td style="text-align:right;"> 0.0890594 </td>
+      <td style="text-align:right;"> 239 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Irion </td>
+      <td style="text-align:right;"> 1599 </td>
+      <td style="text-align:right;"> 0.0869920 </td>
+      <td style="text-align:right;"> 240 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Cottle </td>
+      <td style="text-align:right;"> 1505 </td>
+      <td style="text-align:right;"> 0.0818780 </td>
+      <td style="text-align:right;"> 241 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Stonewall </td>
+      <td style="text-align:right;"> 1490 </td>
+      <td style="text-align:right;"> 0.0810620 </td>
+      <td style="text-align:right;"> 242 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Foard </td>
+      <td style="text-align:right;"> 1336 </td>
+      <td style="text-align:right;"> 0.0726837 </td>
+      <td style="text-align:right;"> 243 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Glasscock </td>
+      <td style="text-align:right;"> 1226 </td>
+      <td style="text-align:right;"> 0.0666993 </td>
+      <td style="text-align:right;"> 244 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Motley </td>
+      <td style="text-align:right;"> 1210 </td>
+      <td style="text-align:right;"> 0.0658288 </td>
+      <td style="text-align:right;"> 245 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Sterling </td>
+      <td style="text-align:right;"> 1143 </td>
+      <td style="text-align:right;"> 0.0621838 </td>
+      <td style="text-align:right;"> 246 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Terrell </td>
+      <td style="text-align:right;"> 984 </td>
+      <td style="text-align:right;"> 0.0535335 </td>
+      <td style="text-align:right;"> 247 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Roberts </td>
+      <td style="text-align:right;"> 929 </td>
+      <td style="text-align:right;"> 0.0505413 </td>
+      <td style="text-align:right;"> 248 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kent </td>
+      <td style="text-align:right;"> 808 </td>
+      <td style="text-align:right;"> 0.0439584 </td>
+      <td style="text-align:right;"> 249 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> McMullen </td>
+      <td style="text-align:right;"> 707 </td>
+      <td style="text-align:right;"> 0.0384636 </td>
+      <td style="text-align:right;"> 250 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Borden </td>
+      <td style="text-align:right;"> 641 </td>
+      <td style="text-align:right;"> 0.0348730 </td>
+      <td style="text-align:right;"> 251 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kenedy </td>
+      <td style="text-align:right;"> 416 </td>
+      <td style="text-align:right;"> 0.0226321 </td>
+      <td style="text-align:right;"> 252 </td>
+      <td style="text-align:left;"> Kenedy </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> King </td>
+      <td style="text-align:right;"> 286 </td>
+      <td style="text-align:right;"> 0.0155595 </td>
+      <td style="text-align:right;"> 253 </td>
+      <td style="text-align:left;"> King </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Loving </td>
+      <td style="text-align:right;"> 82 </td>
+      <td style="text-align:right;"> 0.0044611 </td>
+      <td style="text-align:right;"> 254 </td>
+      <td style="text-align:left;"> Loving </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+   </tbody>
+   </table></div>
+   
+<h3 id="3-모호한-시각화">(3) 모호한 시각화</h3>
+<ul>
+<li>주어진 데이터를 가지고 시각화를 작성한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">temp_font <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;Times New Roman&#34;</span>
+
 counties_lin <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">ggplot</span>(tx_counties, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> index, y <span style="color:#f92672">=</span> popratio)) <span style="color:#f92672">+</span>
   <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;#0072B2&#34;</span>) <span style="color:#f92672">+</span>
   <span style="color:#a6e22e">geom_text_repel</span>(<span style="color:#a6e22e">aes</span>(label <span style="color:#f92672">=</span> label_large), point.padding <span style="color:#f92672">=</span> <span style="color:#ae81ff">.4</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;black&#34;</span>,
-                  min.segment.length <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, family <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Times New Roman&#34;</span>) <span style="color:#f92672">+</span>
+                  min.segment.length <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
   <span style="color:#a6e22e">scale_y_continuous</span>(name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;population number / median&#34;</span>) <span style="color:#f92672">+</span>
   <span style="color:#a6e22e">scale_x_continuous</span>(limits <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">.5</span>, <span style="color:#a6e22e">nrow</span>(tx_counties) <span style="color:#f92672">+</span> <span style="color:#ae81ff">.5</span>), expand <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
                      breaks <span style="color:#f92672">=</span> <span style="color:#66d9ef">NULL</span>, <span style="color:#75715e">#c(1, 50*(1:5)),</span>
                      name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Texas counties, from most to least populous&#34;</span>) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">theme_dviz_hgrid</span>(font_family <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Times New Roman&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">theme_dviz_hgrid</span>(font_family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
   <span style="color:#a6e22e">theme</span>(axis.line <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
         plot.margin <span style="color:#f92672">=</span> <span style="color:#a6e22e">margin</span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1.5</span>)) 
 
 <span style="color:#a6e22e">ggdraw</span>(counties_lin, clip <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;on&#34;</span>) <span style="color:#f92672">+</span> 
   <span style="color:#a6e22e">draw_text</span>(<span style="color:#a6e22e">paste0</span>(<span style="color:#e6db74">&#34;bad&#34;</span>, <span style="color:#e6db74">&#34;  &#34;</span>), x<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, y<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, vjust<span style="color:#f92672">=</span><span style="color:#ae81ff">1.1</span>, hjust<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, size<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>, angle <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>,
-              color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#d02138&#34;</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, family <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Times New Roman&#34;</span>, fontface <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;plain&#34;</span>) <span style="color:#f92672">+</span>
+              color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#d02138&#34;</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, family <span style="color:#f92672">=</span> temp_font, fontface <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;plain&#34;</span>) <span style="color:#f92672">+</span>
   <span style="color:#a6e22e">draw_line</span>(<span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>), size<span style="color:#f92672">=</span><span style="color:#ae81ff">2.8</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#d02138&#34;</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-</code></pre></div><p><img src="/img/datavisualisation/ch05_logscale_viz_files/figure-html/texas-counties-pop-ratio-lin-1.png" alt=""></p>
+</code></pre></div><p><img src="/img/datavisualisation/ch05_logscale_viz_files/figure-html/unnamed-chunk-2-1.png" alt=""></p>
 <ul>
-<li>(작성 중)</li>
+<li>위 그래프는 전형적인 선형 스케일을 옮겨 담은 것이다.
+<ul>
+<li><code>선형(linear)스케일</code>은 대개 데이터를 정확하게 보여주기도 하지만, 독자에게 보다 강한 메시지를 주기 위해서는 비선형 스케일이 더 좋을 때가 있다.</li>
+<li>위 데이터에서 인구 수가 중간값이 카운티와 중간 값에 훨씬 못 미치는 카운티 사이의 인구 차이가 잘 드러나지 않으면, 전달력이 그만큼 떨어진다는 얘기다.</li>
 </ul>
-<h2 id="reference-원서">Reference (원서)</h2>
+</li>
+</ul>
+<h2 id="로그-스케일-적용">로그 스케일 적용</h2>
+<ul>
+<li>로그 변환을 적용한 그래프를 작성한다.</li>
+<li>그래프를 먼저 본 후, 추가적인 이론 설명을 진행한다.</li>
+</ul>
+<h3 id="1-보정된-시각화">(1) 보정된 시각화</h3>
+<ul>
+<li>시각화 코드는 아래와 같다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">ggplot</span>(tx_counties, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> index, y <span style="color:#f92672">=</span> popratio)) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">geom_hline</span>(yintercept <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, linetype <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;grey40&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;#0072B2&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">geom_text_repel</span>(<span style="color:#a6e22e">aes</span>(label <span style="color:#f92672">=</span> label), point.padding <span style="color:#f92672">=</span> <span style="color:#ae81ff">.4</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;black&#34;</span>,
+                  min.segment.length <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">scale_y_log10</span>(breaks <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">.01</span>, <span style="color:#ae81ff">.1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">100</span>),
+                name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;population number / median&#34;</span>,
+                labels <span style="color:#f92672">=</span> label_log10) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">scale_x_continuous</span>(limits <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">.5</span>, <span style="color:#a6e22e">nrow</span>(tx_counties) <span style="color:#f92672">+</span> <span style="color:#ae81ff">.5</span>), expand <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+                     breaks <span style="color:#f92672">=</span> <span style="color:#66d9ef">NULL</span>, <span style="color:#75715e">#c(1, 50*(1:5)),</span>
+                     name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Texas counties, from most to least populous&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">theme_dviz_hgrid</span>(font_family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">theme</span>(axis.line <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
+        plot.margin <span style="color:#f92672">=</span> <span style="color:#a6e22e">margin</span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1.5</span>))
+</code></pre></div><p><img src="/img/datavisualisation/ch05_logscale_viz_files/figure-html/unnamed-chunk-3-1.png" alt=""></p>
+<h3 id="2-그래프-해석">(2) 그래프 해석</h3>
+<ul>
+<li>위 그래프는 비율 값을 로그 스케일로 사용할 때의 예시이다. - 텍사스의 카운티별 인구를 텍사스 전체 인구의 중간 값으로 나눈다고 생각할 때, 이 계산으로 얻은 비율 값은 1보다 크거나 작다.
+<ul>
+<li>다시 말하면, 비율 값이 정확하게 1이면 그 카운티는 텍사즈 주 전체의  중간 값과 똑같다고 볼 수 있다.</li>
+</ul>
+</li>
+<li>대칭 형태의 그래프를 보여주면서, 인구가 많은 지역과 그렇지 못한 지역의 편차를 보여주는 매우 훌륭한 그래프가 완성 되었다.</li>
+<li>지역별로 편차가 심하게 큰 데이터에는 로그스케일 변환 그래프가 유용할 수 있다.</li>
+<li>해리스의 카운티는 4,092,459명이지만, 가장 적은 카운티는 82명일 수도 있다.</li>
+<li>이러한 경우에 로그 스케일은 매우 적정할 수 있다.</li>
+</ul>
+<h3 id="3-제곱근-스케일">(3) 제곱근 스케일</h3>
+<ul>
+<li>만약 특정지역의 인구수가 0명으로 기록되었다면 어떻게 할까?</li>
+<li>0은 로그 스케일에 표시할 수 없기 때문에, 이럴 경우 제곱근 스케일을 사용한다.</li>
+<li>그러나, 다루기가 쉽지 않다.
+<ul>
+<li>이 부분은 교재 또는 추후에 별도로 포스팅 하는 것으로 남겨둔다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="소결론">소결론</h2>
+<ul>
+<li>시각화를 그릴 때, 표준점수로 환산해서 그래프를 작성한 적은 몇번 있다.
+<ul>
+<li>막대 그래프를 사용했지만, 거리감까지 드는 그래프는 아니었다.</li>
+<li>위 그래프는 line + point의 조합으로 나타냈다는 데 의의가 있다.</li>
+</ul>
+</li>
+<li>선형 스케일, 로그 스케일, 그리고 제곱근 스케일의 차이점이 있음을 알게 되었다.</li>
+</ul>
+<blockquote>
+<p>자세한 건 교재를 구매하자.</p>
+</blockquote>
+<h2 id="v-reference-원서">V. Reference (원서)</h2>
 <p>Wilke, C. (2019). Fundamentals of Data Visualization. Retrieved July 28, 2020, from <a href="https://serialmentor.com/dataviz/">https://serialmentor.com/dataviz/</a></p>
 
 		</div>
