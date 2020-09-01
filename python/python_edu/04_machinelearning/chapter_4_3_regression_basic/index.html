@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>머신러닝 지도학습 - 선형회귀 - Data Science | ChloEvan</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+		<meta property="og:title" content="머신러닝 지도학습 - 선형회귀" />
+<meta property="og:description" content="I. 개요  머신러닝으로서 회귀 모형에 대해 숙지한다. 회귀 모형의 기본적인 개념과 평가 지표에 대해 숙지한다.  II. 회귀 모형 개요  회귀(Regression)은 통계 이론 중 가장 기본이다. 회귀의 기원은 영국의 통계학자 갈톤(Galton)이 수행한 연구에서 유래한다.   부모와 자식 간의 키의 상관관계를 분석하였는데, 키가 작은 가정과 키가 큰 가정을 살펴본 결과, 무한정 작아지지도 않고, 무한정 커지지 않아 일정한 평균으로 회귀하려는 자연적 법칙을 발견했다는 것이 기원이다.  (1) 회귀식의 개요  회귀는 1차 방정식이다." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chloevan.github.io/python/python_edu/04_machinelearning/chapter_4_3_regression_basic/" />
+<meta property="article:published_time" content="2020-09-02T00:00:05+09:00" />
+<meta property="article:modified_time" content="2020-09-02T00:00:05+09:00" />
+
+		<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="머신러닝 지도학습 - 선형회귀"/>
+<meta name="twitter:description" content="I. 개요  머신러닝으로서 회귀 모형에 대해 숙지한다. 회귀 모형의 기본적인 개념과 평가 지표에 대해 숙지한다.  II. 회귀 모형 개요  회귀(Regression)은 통계 이론 중 가장 기본이다. 회귀의 기원은 영국의 통계학자 갈톤(Galton)이 수행한 연구에서 유래한다.   부모와 자식 간의 키의 상관관계를 분석하였는데, 키가 작은 가정과 키가 큰 가정을 살펴본 결과, 무한정 작아지지도 않고, 무한정 커지지 않아 일정한 평균으로 회귀하려는 자연적 법칙을 발견했다는 것이 기원이다.  (1) 회귀식의 개요  회귀는 1차 방정식이다."/>
+
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo">
+		<a class="logo__link" href="/" title="Data Science | ChloEvan" rel="home">
+			<div class="logo__item logo__text">
+					<div class="logo__title">Data Science | ChloEvan</div>
+					<div class="logo__tagline">Love your beloved one forever</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/aws/">
+				
+				<span class="menu__text">AWS</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/ds-projects/">
+				
+				<span class="menu__text">DS-Projects</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/gcp/">
+				
+				<span class="menu__text">GCP</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/kaggle/">
+				
+				<span class="menu__text">Kaggle</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/python/">
+				
+				<span class="menu__text">Python</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/r/">
+				
+				<span class="menu__text">R</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/sdgs/">
+				
+				<span class="menu__text">SDGs</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/settings/">
+				
+				<span class="menu__text">settings</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About ChloEvan</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">머신러닝 지도학습 - 선형회귀</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-09-02T00:00:05&#43;09:00">2020-09-02</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="category">머신러닝</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#i-개요">I. 개요</a></li>
+    <li><a href="#ii-회귀-모형-개요">II. 회귀 모형 개요</a>
+      <ul>
+        <li><a href="#1-회귀식의-개요">(1) 회귀식의 개요</a></li>
+        <li><a href="#2-상관관계-분석">(2) 상관관계 분석</a></li>
+        <li><a href="#3-sklearn-회귀모형">(3) Sklearn 회귀모형</a></li>
+        <li><a href="#4-회귀-평가-지표">(4) 회귀 평가 지표</a></li>
+      </ul>
+    </li>
+    <li><a href="#iii-실습">III. 실습</a>
+      <ul>
+        <li><a href="#1-데이터셋-분리">(1) 데이터셋 분리</a></li>
+        <li><a href="#2-회귀-모형-만들기">(2) 회귀 모형 만들기</a></li>
+        <li><a href="#3-모형-예측">(3) 모형 예측</a></li>
+        <li><a href="#4-회귀-계수">(4) 회귀 계수</a></li>
+        <li><a href="#5-모형-평가">(5) 모형 평가</a></li>
+      </ul>
+    </li>
+    <li><a href="#iv-결론">IV. 결론</a></li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="i-개요">I. 개요</h2>
+<ul>
+<li>머신러닝으로서 회귀 모형에 대해 숙지한다.</li>
+<li>회귀 모형의 기본적인 개념과 평가 지표에 대해 숙지한다.</li>
+</ul>
+<h2 id="ii-회귀-모형-개요">II. 회귀 모형 개요</h2>
+<ul>
+<li>회귀(Regression)은 통계 이론 중 가장 기본이다.</li>
+<li>회귀의 기원은 영국의 통계학자 갈톤(Galton)이 수행한 연구에서 유래한다.</li>
+</ul>
+<p><img src="https://miro.medium.com/max/624/1*A6lmiVPlGM-Y4A6exdf17Q.png" alt=""></p>
+<ul>
+<li>부모와 자식 간의 키의 상관관계를 분석하였는데, 키가 작은 가정과 키가 큰 가정을 살펴본 결과, 무한정 작아지지도 않고, 무한정 커지지 않아 일정한 평균으로 회귀하려는 자연적 법칙을 발견했다는 것이 기원이다.</li>
+</ul>
+<h3 id="1-회귀식의-개요">(1) 회귀식의 개요</h3>
+<ul>
+<li>회귀는 1차 방정식이다.
+<ul>
+<li>지역, 방의 면적, 크기 등 여러 개의 독립변수에 따라 아파트 가격이라는 종속변수가 어떠한 관계를 나타내는지를 예측하고 모델링하는 것</li>
+<li>즉, 수치를 예측할 때 사용한다.</li>
+</ul>
+</li>
+</ul>
+<p>$$ Y = W_{1}\times W_{1} + W_{2}\times W_{2} + W_{3}\times W_{3} + \cdot \cdot \cdot + W_{n}\times W_{n}  $$</p>
+<ul>
+<li>위 회귀식을 간단히 설명하면 다음과 같다.
+<ul>
+<li>Y = 종속변수가 되며, 본 데이터에서는 <code>SalePrice</code>에 해당된다.</li>
+<li>$X_{1}$, $X_{2}$, $X_{3}$, $\cdot\cdot\cdot$, $X_{n}$은 지역, 방의 면적, 크기 등의 독립변수를 의미한다.</li>
+<li>$W_{1}$, $W_{2}$, $W_{3}$, $\cdot\cdot\cdot$, $W_{n}$은 회귀의 계수 등을 의미한다.</li>
+<li>즉, 최적의 회귀 계수를 찾아가는 것이 회귀모형의 핵심이다.</li>
+</ul>
+</li>
+<li>간단한 예제를 통해 확인해보자.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">from</span> sklearn.datasets <span style="color:#f92672">import</span> load_boston
+
+boston_raw <span style="color:#f92672">=</span> load_boston()
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sklearn_to_df</span>(sklearn_dataset):
+    df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(sklearn_dataset<span style="color:#f92672">.</span>data, columns<span style="color:#f92672">=</span>sklearn_dataset<span style="color:#f92672">.</span>feature_names)
+    df[<span style="color:#e6db74">&#39;target&#39;</span>] <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>Series(sklearn_dataset<span style="color:#f92672">.</span>target)
+    <span style="color:#66d9ef">return</span> df
+
+df_boston <span style="color:#f92672">=</span> sklearn_to_df(boston_raw)
+df_boston<span style="color:#f92672">.</span>shape
+</code></pre></div><pre><code>(506, 14)
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_boston
+</code></pre></div><style>
+    #customers {
+      font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+    }
+  
+    #customers td,
+    #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+  
+    #customers tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  
+    #customers tr:hover {
+      background-color: #ddd;
+    }
+    #customers th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: rgb(175, 107, 76);
+      color: white;
+    }
+  </style>
+  
+  <div style="width:100%; height:400px; overflow:auto">
+    <table border="1" id="customers">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>CRIM</th>
+          <th>ZN</th>
+          <th>INDUS</th>
+          <th>CHAS</th>
+          <th>NOX</th>
+          <th>RM</th>
+          <th>AGE</th>
+          <th>DIS</th>
+          <th>RAD</th>
+          <th>TAX</th>
+          <th>PTRATIO</th>
+          <th>B</th>
+          <th>LSTAT</th>
+          <th>target</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>0</th>
+          <td>0.00632</td>
+          <td>18.0</td>
+          <td>2.31</td>
+          <td>0.0</td>
+          <td>0.538</td>
+          <td>6.575</td>
+          <td>65.2</td>
+          <td>4.0900</td>
+          <td>1.0</td>
+          <td>296.0</td>
+          <td>15.3</td>
+          <td>396.90</td>
+          <td>4.98</td>
+          <td>24.0</td>
+        </tr>
+        <tr>
+          <th>1</th>
+          <td>0.02731</td>
+          <td>0.0</td>
+          <td>7.07</td>
+          <td>0.0</td>
+          <td>0.469</td>
+          <td>6.421</td>
+          <td>78.9</td>
+          <td>4.9671</td>
+          <td>2.0</td>
+          <td>242.0</td>
+          <td>17.8</td>
+          <td>396.90</td>
+          <td>9.14</td>
+          <td>21.6</td>
+        </tr>
+        <tr>
+          <th>2</th>
+          <td>0.02729</td>
+          <td>0.0</td>
+          <td>7.07</td>
+          <td>0.0</td>
+          <td>0.469</td>
+          <td>7.185</td>
+          <td>61.1</td>
+          <td>4.9671</td>
+          <td>2.0</td>
+          <td>242.0</td>
+          <td>17.8</td>
+          <td>392.83</td>
+          <td>4.03</td>
+          <td>34.7</td>
+        </tr>
+        <tr>
+          <th>3</th>
+          <td>0.03237</td>
+          <td>0.0</td>
+          <td>2.18</td>
+          <td>0.0</td>
+          <td>0.458</td>
+          <td>6.998</td>
+          <td>45.8</td>
+          <td>6.0622</td>
+          <td>3.0</td>
+          <td>222.0</td>
+          <td>18.7</td>
+          <td>394.63</td>
+          <td>2.94</td>
+          <td>33.4</td>
+        </tr>
+        <tr>
+          <th>4</th>
+          <td>0.06905</td>
+          <td>0.0</td>
+          <td>2.18</td>
+          <td>0.0</td>
+          <td>0.458</td>
+          <td>7.147</td>
+          <td>54.2</td>
+          <td>6.0622</td>
+          <td>3.0</td>
+          <td>222.0</td>
+          <td>18.7</td>
+          <td>396.90</td>
+          <td>5.33</td>
+          <td>36.2</td>
+        </tr>
+        <tr>
+          <th>...</th>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+        </tr>
+        <tr>
+          <th>501</th>
+          <td>0.06263</td>
+          <td>0.0</td>
+          <td>11.93</td>
+          <td>0.0</td>
+          <td>0.573</td>
+          <td>6.593</td>
+          <td>69.1</td>
+          <td>2.4786</td>
+          <td>1.0</td>
+          <td>273.0</td>
+          <td>21.0</td>
+          <td>391.99</td>
+          <td>9.67</td>
+          <td>22.4</td>
+        </tr>
+        <tr>
+          <th>502</th>
+          <td>0.04527</td>
+          <td>0.0</td>
+          <td>11.93</td>
+          <td>0.0</td>
+          <td>0.573</td>
+          <td>6.120</td>
+          <td>76.7</td>
+          <td>2.2875</td>
+          <td>1.0</td>
+          <td>273.0</td>
+          <td>21.0</td>
+          <td>396.90</td>
+          <td>9.08</td>
+          <td>20.6</td>
+        </tr>
+        <tr>
+          <th>503</th>
+          <td>0.06076</td>
+          <td>0.0</td>
+          <td>11.93</td>
+          <td>0.0</td>
+          <td>0.573</td>
+          <td>6.976</td>
+          <td>91.0</td>
+          <td>2.1675</td>
+          <td>1.0</td>
+          <td>273.0</td>
+          <td>21.0</td>
+          <td>396.90</td>
+          <td>5.64</td>
+          <td>23.9</td>
+        </tr>
+        <tr>
+          <th>504</th>
+          <td>0.10959</td>
+          <td>0.0</td>
+          <td>11.93</td>
+          <td>0.0</td>
+          <td>0.573</td>
+          <td>6.794</td>
+          <td>89.3</td>
+          <td>2.3889</td>
+          <td>1.0</td>
+          <td>273.0</td>
+          <td>21.0</td>
+          <td>393.45</td>
+          <td>6.48</td>
+          <td>22.0</td>
+        </tr>
+        <tr>
+          <th>505</th>
+          <td>0.04741</td>
+          <td>0.0</td>
+          <td>11.93</td>
+          <td>0.0</td>
+          <td>0.573</td>
+          <td>6.030</td>
+          <td>80.8</td>
+          <td>2.5050</td>
+          <td>1.0</td>
+          <td>273.0</td>
+          <td>21.0</td>
+          <td>396.90</td>
+          <td>7.88</td>
+          <td>11.9</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>506 rows × 14 columns</p>
+    </div>
+<ul>
+<li>각 데이터 변수에 대한 설명서를 제공하고 있다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(boston_raw<span style="color:#f92672">.</span>DESCR)
+</code></pre></div><pre><code>.. _boston_dataset:
+
+Boston house prices dataset
+---------------------------
+
+**Data Set Characteristics:**  
+
+    :Number of Instances: 506 
+
+    :Number of Attributes: 13 numeric/categorical predictive. Median Value (attribute 14) is usually the target.
+
+    :Attribute Information (in order):
+        - CRIM     per capita crime rate by town
+        - ZN       proportion of residential land zoned for lots over 25,000 sq.ft.
+        - INDUS    proportion of non-retail business acres per town
+        - CHAS     Charles River dummy variable (= 1 if tract bounds river; 0 otherwise)
+        - NOX      nitric oxides concentration (parts per 10 million)
+        - RM       average number of rooms per dwelling
+        - AGE      proportion of owner-occupied units built prior to 1940
+        - DIS      weighted distances to five Boston employment centres
+        - RAD      index of accessibility to radial highways
+        - TAX      full-value property-tax rate per $10,000
+        - PTRATIO  pupil-teacher ratio by town
+        - B        1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town
+        - LSTAT    % lower status of the population
+        - MEDV     Median value of owner-occupied homes in $1000's
+
+    :Missing Attribute Values: None
+
+    :Creator: Harrison, D. and Rubinfeld, D.L.
+
+This is a copy of UCI ML housing dataset.
+https://archive.ics.uci.edu/ml/machine-learning-databases/housing/
+
+
+This dataset was taken from the StatLib library which is maintained at Carnegie Mellon University.
+
+The Boston house-price data of Harrison, D. and Rubinfeld, D.L. 'Hedonic
+prices and the demand for clean air', J. Environ. Economics &amp; Management,
+vol.5, 81-102, 1978.   Used in Belsley, Kuh &amp; Welsch, 'Regression diagnostics
+...', Wiley, 1980.   N.B. Various transformations are used in the table on
+pages 244-261 of the latter.
+
+The Boston house-price data has been used in many machine learning papers that address regression
+problems.   
+     
+.. topic:: References
+
+   - Belsley, Kuh &amp; Welsch, 'Regression diagnostics: Identifying Influential Data and Sources of Collinearity', Wiley, 1980. 244-261.
+   - Quinlan,R. (1993). Combining Instance-Based and Model-Based Learning. In Proceedings on the Tenth International Conference of Machine Learning, 236-243, University of Massachusetts, Amherst. Morgan Kaufmann.
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_boston <span style="color:#f92672">=</span> df_boston<span style="color:#f92672">.</span>rename({<span style="color:#e6db74">&#34;target&#34;</span>: <span style="color:#e6db74">&#34;MEDV&#34;</span>}, axis<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;columns&#39;</span>)
+</code></pre></div><ul>
+<li>간단하게 시각화를 진행한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+df_boston<span style="color:#f92672">.</span>plot(kind <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;scatter&#34;</span>, x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;LSTAT&#34;</span>, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MEDV&#34;</span>, alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.2</span>, figsize <span style="color:#f92672">=</span> (<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">7</span>))
+</code></pre></div><pre><code>*c* argument looks like a single numeric RGB or RGBA sequence, which should be avoided as value-mapping will have precedence in case its length matches with *x* &amp; *y*.  Please use the *color* keyword-argument or provide a 2-D array with a single row if you intend to specify the same RGB or RGBA value for all points.
+
+
+
+
+
+&lt;matplotlib.axes._subplots.AxesSubplot at 0x7ff882047978&gt;
+</code></pre>
+<p><img src="/img/python_edu/04_machineLearning/Chapter_4_3_Regression_Basic/output_25_2.png" alt="png"></p>
+<ul>
+<li><code>MEDV</code>는 평균 값을 의미하며, 우리가 예측하려는 데이터와 같다.</li>
+<li>그런데, 데이터는 이렇게 변수 2개로 설명되는 일이 드물다.</li>
+<li>위 데이터에서 <code>cmap()</code>을 <code>AGE</code> 변수를 추가하여 색상의 변동을 확인해보자.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_boston<span style="color:#f92672">.</span>plot(kind <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;scatter&#34;</span>, 
+               x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;LSTAT&#34;</span>, 
+               y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MEDV&#34;</span>, 
+               alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.2</span>, 
+               label <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Build Years&#39;</span>, 
+               s <span style="color:#f92672">=</span> df_boston[<span style="color:#e6db74">&#39;DIS&#39;</span>] <span style="color:#f92672">*</span> <span style="color:#ae81ff">50</span>, 
+               c <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;AGE&#34;</span>, 
+               figsize <span style="color:#f92672">=</span> (<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">7</span>),
+               cmap <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>get_cmap(<span style="color:#e6db74">&#39;jet&#39;</span>), colorbar <span style="color:#f92672">=</span> True)
+plt<span style="color:#f92672">.</span>legend()
+</code></pre></div><pre><code>&lt;matplotlib.legend.Legend at 0x7ff881b3c4e0&gt;
+</code></pre>
+<p><img src="/img/python_edu/04_machineLearning/Chapter_4_3_Regression_Basic/output_27_1.png" alt="png"></p>
+<ul>
+<li>이제 위 그래프를 해석해보자.
+<ul>
+<li><code>(하위층) LSTAT</code> 이 증가할 수록 <code>MEDV</code>은 작아지는 뚜렷한 경향성이 있다.</li>
+<li>인수 <code>s</code>는 <code>(직업센터) DIS</code> 거리를 나타낸다. 즉, <code>five Boston employment centres</code>와의 거리가 멀수록 상대적으로 <code>MEDV</code>의 값이 커지는 것을 확인할 수 있었다.</li>
+<li>인수 <code>c</code>는 색상을 나타내는데, <code>AGE</code>는 1940년 이전에 건축된 주택의 비율을 의미하기 때문에, 색깔이 빨갛게 될 수록 건물이 오래되었다는 뜻이다.</li>
+</ul>
+</li>
+<li>종합하면, <code>MEDV</code>가 높게 형성 되려면, <code>LSTAT</code>는 비율은 낮아야 하고, <code>DIS</code>와의 거리는 상대적으로 멀어야 하고, <code>AGE</code>는 가급적 낮아야 한다.</li>
+<li>위 결론의 내용은 어찌보면 당연한 얘기인 것처럼 보이지만, 시각적으로 증명하는 것이 쉬운 것은 아니다.</li>
+</ul>
+<h3 id="2-상관관계-분석">(2) 상관관계 분석</h3>
+<ul>
+<li>이러한 수치형 데이터를 다룰 때에는 보통 상관계수를 구하는데, 엄밀히 말하면 피어슨의 상관관계 계수(Pearson Product-Moment Correlation Coefficient)를 포함하고 있는 정방 행렬이다.</li>
+<li>상관관계 계수의 범위는 -1~1 이다.
+<ul>
+<li>r = 1이면, 두 특성이 완벽한 양의 상관관계를 가진다.</li>
+<li>r = 0이면, 두 특성에는 아무런 상관관계가 없다.</li>
+<li>r = -1이면, 두 특성에는 완벽한 음의 상관관계를 가진다.</li>
+</ul>
+</li>
+<li>이러한 상관계수를 뽑아내는 것은 seaborn 패키지를 활용하면 보다 쉽게 추출할 수 있다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
+cols <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;LSTAT&#39;</span>, <span style="color:#e6db74">&#39;DIS&#39;</span>, <span style="color:#e6db74">&#39;AGE&#39;</span>, <span style="color:#e6db74">&#39;RM&#39;</span>, <span style="color:#e6db74">&#39;MEDV&#39;</span>]
+cm <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>corrcoef(df_boston[cols]<span style="color:#f92672">.</span>values<span style="color:#f92672">.</span>T)
+sns<span style="color:#f92672">.</span>set(font_scale <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.5</span>, rc<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#39;figure.figsize&#39;</span>:(<span style="color:#ae81ff">11.7</span>,<span style="color:#ae81ff">8.27</span>)})
+hm <span style="color:#f92672">=</span> sns<span style="color:#f92672">.</span>heatmap(cm, 
+                 cbar <span style="color:#f92672">=</span> True, 
+                 annot <span style="color:#f92672">=</span> True, 
+                 square <span style="color:#f92672">=</span> True, 
+                 fmt <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;.2f&#39;</span>, 
+                 annot_kws <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;size&#39;</span>:<span style="color:#ae81ff">15</span>}, 
+                 yticklabels<span style="color:#f92672">=</span>cols, 
+                 xticklabels<span style="color:#f92672">=</span>cols)
+plt<span style="color:#f92672">.</span>tight_layout()
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/img/python_edu/04_machineLearning/Chapter_4_3_Regression_Basic/output_30_0.png" alt="png"></p>
+<ul>
+<li>위 결과값이 무엇을 의미할까?</li>
+<li>만약 <code>MEDV</code>를 제외한 4개의 변수 중 2개의 변수만 추출해야 한다면, 상관성이 높은 <code>LSTAT</code>와 <code>RM</code>의 변수를 선택하는 것이 좋다.</li>
+</ul>
+<h3 id="3-sklearn-회귀모형">(3) Sklearn 회귀모형</h3>
+<ul>
+<li><code>LinearRegression</code> 클래스
+<ul>
+<li><code>LinearRegression</code> 클래스는 예측값과 실제 값의 RSS(Residual Sum of Squares)를 최소화해 <code>OLS(Ordinary Least Squares)</code> 추정 방식으로 구현한 클래스다.</li>
+</ul>
+</li>
+<li>입력 파라미터
+<ul>
+<li>fit_intercept: intercept(절편) 값을 계산할 것인지 말지를 지정한다.</li>
+<li>normalize: 만약 <code>True</code>이면, 입력 데이터 세트를 정규화 한다.</li>
+</ul>
+</li>
+<li>속성
+<ul>
+<li>coef_: <code>fit()</code> 메서드를 수행했을 때, 회귀 계수가 배열 형태로 저장하는 속성.</li>
+</ul>
+</li>
+<li>회귀 모형 시에는 다중공선성(<code>Multi-collinearity</code>) 문제가 발생할 수 있다.</li>
+</ul>
+<h3 id="4-회귀-평가-지표">(4) 회귀 평가 지표</h3>
+<ul>
+<li>회귀 평가 지표는 일반적인 통계모형의 적합성 평가, 결정계수 등과 다르다.</li>
+<li>머신러닝에서는 예측 지표가 우선이다.
+<ul>
+<li>실제 값과 회귀 예측값의 차이 값을 기반으로 한 지표가 중심이다.</li>
+<li>회귀의 성능을 평가하는 지표는 다음과 같다.</li>
+</ul>
+</li>
+<li>MAE(Mean Absolute Error): 실제 값과 예측값의 차이를 절대값으로 변환해 평균</li>
+<li>MSE(Mean Squared Error): 실제 값과 예측값의 차이를 제곱해 평균</li>
+<li>RMSE(Root Mean Squared Error): <code>MSE</code>값은 오류의 제곱을 구하며, 실제 오류 평균보다 더 커지는 특성이 있어서 <code>MSE</code>에 <code>Root</code>를 쒸움</li>
+<li>$R^2$는 분산 기반으로 예측 성능을 평가 하고, 실제 값의 분산대비 예측값의 분산 비율을 지표로 하기 때문에, 1에 가까울수록 예측 정확도가 높다.</li>
+<li><code>sklearn.metrics</code>에는 <code>MAE</code>, <code>MSE</code>, $R^2$가 있다, <code>RMSE</code>는 존재하지 않기 때문에 <code>MSE</code>에 <code>Root</code>를 씌워준다.</li>
+</ul>
+<h2 id="iii-실습">III. 실습</h2>
+<ul>
+<li>이제 훈련 및 테스트데이터를 만들어 예측 모형을 만들어본다.</li>
+</ul>
+<h3 id="1-데이터셋-분리">(1) 데이터셋 분리</h3>
+<ul>
+<li>훈련 및 테스트 데이터를 분리한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.model_selection <span style="color:#f92672">import</span> train_test_split
+<span style="color:#f92672">from</span> sklearn.linear_model <span style="color:#f92672">import</span> LinearRegression
+<span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> mean_squared_error, r2_score
+
+<span style="color:#75715e"># 종속변수 및 독립변수 데이터 셋으로 분리</span>
+y_target <span style="color:#f92672">=</span> df_boston[<span style="color:#e6db74">&#39;MEDV&#39;</span>]
+X_data <span style="color:#f92672">=</span> df_boston<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;MEDV&#39;</span>], axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>False)
+
+X_train, X_test, y_train, y_test <span style="color:#f92672">=</span> train_test_split(X_data, y_target, test_size<span style="color:#f92672">=</span><span style="color:#ae81ff">0.3</span>, random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+X_train<span style="color:#f92672">.</span>shape, X_test<span style="color:#f92672">.</span>shape, y_train<span style="color:#f92672">.</span>shape, y_test<span style="color:#f92672">.</span>shape
+</code></pre></div><pre><code>((354, 13), (152, 13), (354,), (152,))
+</code></pre>
+<ul>
+<li>마지막 줄 <code>shape</code>를 습관적으로 해주는 것이 좋다.
+<ul>
+<li>데이터의 행과 열이 일치하는지 확인한다.</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-회귀-모형-만들기">(2) 회귀 모형 만들기</h3>
+<ul>
+<li>이제 모형을 만들어본다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">my_1st_lr <span style="color:#f92672">=</span> LinearRegression()
+my_1st_lr<span style="color:#f92672">.</span>fit(X_train, y_train)
+</code></pre></div><pre><code>LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None, normalize=False)
+</code></pre>
+<h3 id="3-모형-예측">(3) 모형 예측</h3>
+<ul>
+<li><code>predict()</code> 함수를 활용해서 <code>X_test</code>를 실행한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">y_preds <span style="color:#f92672">=</span> my_1st_lr<span style="color:#f92672">.</span>predict(X_test)
+y_preds[<span style="color:#ae81ff">0</span>:<span style="color:#ae81ff">5</span>]
+</code></pre></div><pre><code>array([32.3914647 , 27.94401279, 17.83762764, 21.66941388, 18.93639614])
+</code></pre>
+<ul>
+<li><code>0:5</code> 예측값에 대한 결과가 나온다.</li>
+</ul>
+<h3 id="4-회귀-계수">(4) 회귀 계수</h3>
+<ul>
+<li>이번에는 절편 및 회귀 계수값을 구해본다.</li>
+<li>이 회귀 계수는 각 변수에 대한 회귀 계수를 의미한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;절편:&#34;</span>, my_1st_lr<span style="color:#f92672">.</span>intercept_)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;회귀 계수:&#39;</span>, np<span style="color:#f92672">.</span>round(my_1st_lr<span style="color:#f92672">.</span>coef_, <span style="color:#ae81ff">1</span>))
+</code></pre></div><pre><code>절편: 46.39649387182328
+회귀 계수: [ -0.1   0.1   0.1   2.4 -21.5   2.8   0.   -1.5   0.3  -0.   -1.    0.
+  -0.6]
+</code></pre>
+<ul>
+<li>이번에는 회귀 계수가 큰 값 순으로 정렬한다. 이 때, 각 변수를 매칭 시켜서 중요 요인을 확인해본다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">coef_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>Series(data<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>round(my_1st_lr<span style="color:#f92672">.</span>coef_, <span style="color:#ae81ff">1</span>), index <span style="color:#f92672">=</span> X_data<span style="color:#f92672">.</span>columns)
+coef_df<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)
+</code></pre></div><pre><code>RM          2.8
+CHAS        2.4
+RAD         0.3
+INDUS       0.1
+ZN          0.1
+B           0.0
+TAX        -0.0
+AGE         0.0
+CRIM       -0.1
+LSTAT      -0.6
+PTRATIO    -1.0
+DIS        -1.5
+NOX       -21.5
+dtype: float64
+</code></pre>
+<ul>
+<li>위 결과에서 보는 것처럼, <code>RM</code>과 <code>NOX</code>에서 회귀 계수 값이 가장 큰 것으로 나타났으며, 이는 <code>MEDV</code> 가격 형성에 매우 중요한 요소임을 확인할 수 있다.</li>
+</ul>
+<h3 id="5-모형-평가">(5) 모형 평가</h3>
+<ul>
+<li>회귀 모형에 대한 평가를 진행해본다.</li>
+<li><code>RMSE</code>는 없기 때문에, 새로 만들어야 한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">mse <span style="color:#f92672">=</span> mean_squared_error(y_test, y_preds)
+rmse <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>sqrt(mse)
+r2_points <span style="color:#f92672">=</span> r2_score(y_test, y_preds)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;RMSE:&#34;</span>, rmse)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;R^2:&#34;</span>, r2_points)
+</code></pre></div><pre><code>RMSE: 4.4532374371981245
+R^2: 0.7836295385076315
+</code></pre>
+<h2 id="iv-결론">IV. 결론</h2>
+<ul>
+<li>지금까지 진행 한 것은 회귀모형에 대한 이해를 위한 것이며, 실제로는 위와 같이 선형 회귀 모형 1개만을 만들지 않는다.
+<ul>
+<li>특히 회귀 계수는 선형 회귀에만 나오는 개념이며, 나무모형, SVM은 또 다르다.</li>
+<li>그럼 각각 일일이 다 공부하는 게 의미가 있는 것인가?</li>
+<li>모든 통계 모형을 한꺼번에 다 공부하는 것은 <code>지양</code>한다.
+<ul>
+<li>시간이 해결해준다. 그리고, 최신 논문을 늘 챙긴다.</li>
+</ul>
+</li>
+<li>이제 나무 모형으로 넘어간다. 현재 나오는 최신 알고리즘은 나무 모형에 기반하기 때문이다.</li>
+</ul>
+</li>
+<li>이 때, 우리가 기억해야 하는 것은 모형의 평가다.
+<ul>
+<li>예측에서 중요한 것은 예측값과 실제값의 오차를 줄이는 것. 이것만 기억하자.</li>
+</ul>
+</li>
+</ul>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="tag">머신러닝</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/python/" rel="tag">Python</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/machine-learning/" rel="tag">Machine Learning</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="ChloeEvan avatar" src="/img/couple.jpg" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name">About ChloeEvan</span>
+	</div>
+	<div class="authorbox__description">
+		ChloEvan is just one who are loving Chloe &amp; Evan and analyzing Data things. ChloeEvan&rsquo;s dream is to make the world better through loving Chloe &amp; Evan and working with Data
+	</div>
+</div>
+
+
+<section class="comments">
+	<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-chloevan-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH..." value="" name="q" aria-label="SEARCH...">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://chloevan.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/python/python_edu/04_machinelearning/chapter_4_3_regression_basic/">머신러닝 지도학습 - 선형회귀</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/python_edu/04_machinelearning/chapter_4_2_ml_intro/">입문자를 위한 머신러닝 개요</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/python_edu/competition/samsungcard20/samsung_card_track_2_1/">삼성카드 대회 Track-2 데이터 고려 사항 (1)</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/python_edu/02_datatransformation/chapter_4_6_datatransformation/">DataFrame의 변수 추가 및 삭제</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/python_edu/07_deeplearning/deep_learning_lstm/">LSTM을 활용한 주식가격 예측</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/amazon-web-service/">Amazon Web Service</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws/">AWS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">bar chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-data-transformation/">Basic Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basics/">Basics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blog/">Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bupar/">bupaR</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/categorical-features/">Categorical Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/class/">Class</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/colab/">Colab </a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conditional-statements/">Conditional Statements</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/corona-shiny-app/">Corona Shiny App</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dacon/">dacon</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-handling/">Data Handling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-science-project/">Data Science Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-structures/">Data Structures</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualization/">Data Visualization</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decorators/">Decorators</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deployment/">Deployment</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development/">Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development-settings/">Development Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/discrete-features/">Discrete Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/function/">function</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ggplot2/">ggplot2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github/">Github</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/global-development/">Global Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-colab/">Google Colab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gradient-boosting-machine/">Gradient Boosting Machine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hexo/">Hexo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/histogram/">Histogram</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/intermediate/">Intermediate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iteration/">iteration</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle/">Kaggle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">line grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lollipop/">lollipop</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lstm/">LSTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mask-r-cnn/">Mask R-CNN</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/merging-data/">Merging Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/missing-values/">Missing Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/new-packages/">New Packages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/numeric-features/">Numeric Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/object-detection/">Object Detection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/optimizer/">Optimizer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas-merge/">Pandas Merge</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pivot-table/">pivot table</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pls-sem/">PLS SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/project/">Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-basic/">Python Basic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-project/">Python Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/">R 마크다운</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/recommendation/">Recommendation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regular-expression/">regular expression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rpa/">RPA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow/">Tensorflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0/">Tensorflow 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0-tutorial/">Tensorflow 2.0 Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tutorial/">Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/">구글 클라우드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/">구조방정식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/">국제개발</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/">기초통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/">논문통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/">데이터 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">데이터 시각화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">데이터 싸이언스 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/">막대 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">머신러닝 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B3%B4%EA%B3%A0%EC%84%9C-%EC%9E%90%EB%8F%99%ED%99%94/">보고서 자동화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/">빅쿼리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/">선 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/">아마존 웹 서비스</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/">정규표현식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천 시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%BA%90%EA%B8%80/">캐글</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/">텐서플로 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/">텐서플로 2.0 튜토리얼</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/">텐서플로우</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/">프로세스 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/">피벗 테이블</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/amazon-web-service/" title="Amazon Web Service">Amazon Web Service</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/append/" title="append">append</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/auto-encoder/" title="Auto Encoder">Auto Encoder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85/" title="AWS 회원가입">AWS 회원가입</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="bar chart">bar chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-structures/" title="Basic Data Structures">Basic Data Structures</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-transformation/" title="Basic Data Transformation">Basic Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basics/" title="Basics">Basics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery with Python">BigQuery with Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery with R">BigQuery with R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blog/" title="Blog">Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bupar/" title="bupaR">bupaR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/categorical-features/" title="Categorical Features">Categorical Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/class/" title="Class">Class</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/clustering/" title="Clustering">Clustering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/colab-with-kaggle/" title="Colab with Kaggle">Colab with Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-expressions/" title="Conditional Expressions">Conditional Expressions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-statements/" title="Conditional Statements">Conditional Statements</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cross-join/" title="Cross Join">Cross Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dashboard/" title="Dashboard">Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-handling/" title="Data Handling">Data Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-types/" title="Data Types">Data Types</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualization/" title="Data Visualization">Data Visualization</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dataframe/" title="DataFrame">DataFrame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decision-tree/" title="Decision Tree">Decision Tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decorators/" title="Decorators">Decorators</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deployment/" title="Deployment">Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="Development">Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development-settings/" title="Development Settings">Development Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary/" title="Dictionary">Dictionary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/discrete-features/" title="Discrete Features">Discrete Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="dplyr">dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/eda/" title="EDA">EDA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/emr/" title="EMR">EMR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enumerate/" title="enumerate">enumerate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exploratory-data-analysis/" title="Exploratory Data Analysis">Exploratory Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/extend/" title="extend">extend</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="filter">filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/for-loop/" title="for-loop">for-loop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geospatial-analysis/" title="Geospatial Analysis">Geospatial Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gghistostats/" title="gghistostats">gghistostats</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ggplot2/" title="ggplot2">ggplot2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github/" title="Github">Github</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/global-development/" title="Global Development">Global Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="GRU 레이어">GRU 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="gt">gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gtsummary/" title="gtsummary">gtsummary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hadoop/" title="Hadoop">Hadoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hexo/" title="Hexo">Hexo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/histogram/" title="Histogram">Histogram</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-segmentation/" title="Image Segmentation">Image Segmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-settings/" title="Image Settings">Image Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/insert/" title="insert">insert</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/intermediate/" title="Intermediate">Intermediate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interview/" title="Interview">Interview</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iteration/" title="iteration">iteration</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="iterrows">iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/join/" title="JOIN">JOIN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle/" title="Kaggle">Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lambda/" title="lambda">lambda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="leaflet">leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="line grpah">line grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/list/" title="list">list</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="lists">lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists-and-tuples/" title="Lists and Tuples">Lists and Tuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lollipop/" title="lollipop">lollipop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m5-forecasting/" title="M5 Forecasting">M5 Forecasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mask-r-cnn/" title="Mask R-CNN">Mask R-CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathematical-functions/" title="Mathematical Functions">Mathematical Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-%EC%84%A4%EC%A0%95/" title="Mathjax 설정">Mathjax 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiprocessing/" title="multiprocessing">multiprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/new-packages/" title="New Packages">New Packages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numeric-features/" title="Numeric Features">Numeric Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numpy/" title="NumPy">NumPy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/object-detection/" title="Object Detection">Object Detection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outer-join/" title="Outer Join">Outer Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outliers/" title="Outliers">Outliers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-merge/" title="Pandas Merge">Pandas Merge</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pd.concat/" title="pd.concat">pd.concat</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pins/" title="pins">pins</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pivot-table/" title="pivot table">pivot table</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="plotly">plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pls-sem/" title="PLS SEM">PLS SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/polar-chart/" title="Polar Chart">Polar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/productive-box/" title="productive-box">productive-box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-basic/" title="Python Basic">Python Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-excel/" title="Python Excel">Python Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-numpy-broadcasting/" title="Python NumPy Broadcasting">Python NumPy Broadcasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-project/" title="Python Project">Python Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="Python 포트폴리오">Python 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="R 포트폴리오">R 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recommendation/" title="Recommendation">Recommendation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regular-expression/" title="regular expression">regular expression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rpa/" title="RPA">RPA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-app-%EB%B0%B0%ED%8F%AC/" title="Shiny App 배포">Shiny App 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="shinydashboard">shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="sort_values">sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/super-resolution/" title="Super Resolution">Super Resolution</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/swifter/" title="swifter">swifter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow/" title="Tensorflow">Tensorflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0/" title="Tensorflow 2.0">Tensorflow 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0-tutorial/" title="Tensorflow 2.0 Tutorial">Tensorflow 2.0 Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tutorial/" title="Tutorial">Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/types-of-functions/" title="Types of Functions">Types of Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="vcrs">vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B2%BD%EC%A7%84%EB%8C%80%ED%9A%8C/" title="경진대회">경진대회</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/" title="구조방정식">구조방정식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/" title="국제개발">국제개발</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%8D%EC%A0%95-%EB%B6%80%EC%A0%95-%EA%B0%90%EC%84%B1%EB%B6%84%EC%84%9D/" title="긍정, 부정 감성분석">긍정, 부정 감성분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C/" title="깃허브">깃허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="깃허브 환경설정">깃허브 환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/" title="논문통계">논문통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="데이터 싸이언스 프로젝트">데이터 싸이언스 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="데이터 전처리">데이터 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%94%A5%EB%9F%AC%EB%8B%9D/" title="딥러닝">딥러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/" title="막대 그래프">막대 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" title="머신러닝">머신러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="머신러닝 프로젝트">머신러닝 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%AA%A8%EB%8D%B8%EB%A7%81-%EC%8B%9C%EA%B0%81%ED%99%94/" title="모델링 시각화">모델링 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B0%98%EC%98%81%EC%A0%81-%EC%A7%80%ED%91%9C/" title="반영적 지표">반영적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B3%B4%EC%8A%A4%ED%84%B4-%EC%A3%BC%ED%83%9D-%EA%B0%80%EA%B2%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%B8%ED%8A%B8/" title="보스턴 주택 가격 데이터세트">보스턴 주택 가격 데이터세트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B6%84%EB%A5%98/" title="분류">분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" title="빅쿼리">빅쿼리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-r/" title="빅쿼리 R">빅쿼리 R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%EA%B8%B0%EB%B3%B8/" title="빅쿼리 기본">빅쿼리 기본</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%ED%8C%8C%EC%9D%B4%EC%8D%AC/" title="빅쿼리 파이썬">빅쿼리 파이썬</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%B0%EC%A0%90%EB%8F%84/" title="산점도">산점도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%BC%EC%84%B1%EC%B9%B4%EB%93%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EA%B3%B5%EB%AA%A8%EC%A0%84/" title="삼성카드 데이터분석 공모전">삼성카드 데이터분석 공모전</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%83%A4%EC%9D%B4%EB%8B%88-%EC%95%B1-%EB%B0%B0%ED%8F%AC/" title="샤이니 앱 배포">샤이니 앱 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" title="선 그래프">선 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/" title="선형회귀">선형회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%88%9C%ED%99%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="순환 신경망">순환 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" title="시각화 문법">시각화 문법</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" title="시그노이드">시그노이드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%A0%EA%B2%BD-%EC%8A%A4%ED%83%80%EC%9D%BC-%EC%A0%84%EC%9D%B4/" title="신경 스타일 전이">신경 스타일 전이</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/" title="아마존 웹 서비스">아마존 웹 서비스</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%98%A4%ED%86%A0%EC%9D%B8%EC%BD%94%EB%8D%94/" title="오토인코더">오토인코더</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B6%84%ED%95%A0/" title="이미지 분할">이미지 분할</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%84%A4%EC%A0%95/" title="이미지 설정">이미지 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" title="이항분류">이항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%84%EB%B2%A0%EB%94%A9-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="임베딩 레이어">임베딩 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%83%9D%EC%84%B1/" title="자연어 생성">자연어 생성</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/" title="전이 학습">전이 학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/" title="정규표현식">정규표현식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/" title="지도학습">지도학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B4%88%ED%95%B4%EC%83%81%EB%8F%84/" title="초해상도">초해상도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천 시스템">추천 시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천시스템">추천시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B8%A1%EC%A0%95%EC%B2%99%EB%8F%84/" title="측정척도">측정척도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BA%90%EA%B8%80/" title="캐글">캐글</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BB%A8%EB%B3%BC%EB%A3%A8%EC%85%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="컨볼루션 신경망">컨볼루션 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="코로나 대시보드">코로나 대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%8B%A4%EB%A3%A8%EA%B8%B0/" title="테이블 다루기">테이블 다루기</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" title="텐서플로 2.0">텐서플로 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" title="텐서플로 2.0 튜토리얼">텐서플로 2.0 튜토리얼</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-%ED%97%88%EB%B8%8C/" title="텐서플로 허브">텐서플로 허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/" title="텐서플로우">텐서플로우</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%97%91%EC%85%80/" title="판다스 엑셀">판다스 엑셀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" title="판다스 자료구조">판다스 자료구조</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="포트폴리오">포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="프로세스 마이닝">프로세스 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/" title="프로세스 분석">프로세스 분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/" title="피벗 테이블">피벗 테이블</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80-%ED%8F%B0%ED%8A%B8-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0/" title="한글 폰트 오류 해결">한글 폰트 오류 해결</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%98%95%EC%84%B1%EC%A0%81-%EC%A7%80%ED%91%9C/" title="형성적 지표">형성적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="환경설정">환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9A%8C%EA%B7%80%EB%AA%A8%ED%98%95/" title="회귀모형">회귀모형</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9C%B4%EA%B3%A0/" title="휴고">휴고</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9E%88%EC%8A%A4%ED%86%A0%EA%B7%B8%EB%9E%A8/" title="히스토그램">히스토그램</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2020 ChloEvan.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>
