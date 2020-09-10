@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
 <head>
-	<meta name="generator" content="Hugo 0.74.3" />
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Data Science | DSChloe</title>
+	<title>주택 가격 예측 - 결측치 채우기 실전 - Data Science | DSChloe</title>
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
-	<meta name="description" content="DSChloe&#39;s Personal blog about Data Things">
-		<meta property="og:title" content="Data Science | DSChloe" />
-<meta property="og:description" content="DSChloe&#39;s Personal blog about Data Things" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://dschloe.github.io/" />
-<meta property="og:updated_time" content="2020-09-09T21:00:47+09:00" />
+	<meta name="description" content="">
+		<meta property="og:title" content="주택 가격 예측 - 결측치 채우기 실전" />
+<meta property="og:description" content="개요  주택가격을 예측하는 데 필요한 Kaggle 데이터를 불러와서 빅쿼리에 저장하는 실습 진행 데이터를 불러와서 LightGBM를 활용하여 머신러닝을 만든다.  I. 사전 준비작업  Kaggle API 설치 후 데이터를 Kaggle에서 직접 가져오는 것을 구현한다.  (1) Kaggle API 설치  구글 코랩에서 API를 불러오려면 다음 소스코드를 실행한다.  !pip install kaggle Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.6) Requirement already satisfied: certifi in /usr/local/lib/python3.6/dist-packages (from kaggle) (2020.6.20) Requirement already satisfied: six&gt;=1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dschloe.github.io/python/python_edu/04_machinelearning/chapter_4_4_house_price_prediction_feature_engineering1/" />
+<meta property="article:published_time" content="2020-07-16T18:00:47+09:00" />
+<meta property="article:modified_time" content="2020-07-16T18:00:47+09:00" />
 
 		<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Data Science | DSChloe"/>
-<meta name="twitter:description" content="DSChloe&#39;s Personal blog about Data Things"/>
+<meta name="twitter:title" content="주택 가격 예측 - 결측치 채우기 실전"/>
+<meta name="twitter:description" content="개요  주택가격을 예측하는 데 필요한 Kaggle 데이터를 불러와서 빅쿼리에 저장하는 실습 진행 데이터를 불러와서 LightGBM를 활용하여 머신러닝을 만든다.  I. 사전 준비작업  Kaggle API 설치 후 데이터를 Kaggle에서 직접 가져오는 것을 구현한다.  (1) Kaggle API 설치  구글 코랩에서 API를 불러오려면 다음 소스코드를 실행한다.  !pip install kaggle Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.6) Requirement already satisfied: certifi in /usr/local/lib/python3.6/dist-packages (from kaggle) (2020.6.20) Requirement already satisfied: six&gt;=1."/>
 
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
-	<link rel="alternate" type="application/rss+xml" href="/rss.xml" title="Data Science | DSChloe">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
@@ -128,556 +127,537 @@ if (!doNotTrack) {
 		<div class="wrapper flex">
 			<div class="primary">
 			
-<main class="main list" role="main">
-	<article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/ch3_3_3_network_and/" rel="bookmark">
-			Tensorflow 2.0 Tutorial ch3.3.3 - 첫번째 신경망 네트워크, AND
-			</a>
-		</h3>
-		<div class="list__meta meta">
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">주택 가격 예측 - 결측치 채우기 실전</h1>
+			<div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-11T11:20:30&#43;09:00">2020-04-11</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-07-16T18:00:47&#43;09:00">2020-07-16</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="category">머신러닝</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>
 	</span>
 </div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지  본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다. 강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#개요">개요</a></li>
+    <li><a href="#i-사전-준비작업">I. 사전 준비작업</a>
+      <ul>
+        <li><a href="#1-kaggle-api-설치">(1) Kaggle API 설치</a></li>
+        <li><a href="#2-kaggle-token-다운로드">(2) Kaggle Token 다운로드</a></li>
+        <li><a href="#3-kaggle-데이터-불러오기">(3) Kaggle 데이터 불러오기</a></li>
+        <li><a href="#4-데이터-불러오기">(4) 데이터 불러오기</a></li>
+      </ul>
+    </li>
+    <li><a href="#ii-데이터-싸이언스의-전반적인-흐름-리뷰">II. 데이터 싸이언스의 전반적인 흐름 리뷰</a></li>
+    <li><a href="#iii-feature-engineering">III. Feature Engineering</a>
+      <ul>
+        <li><a href="#1-데이터-합치기">(1) 데이터 합치기</a></li>
+        <li><a href="#2-결측치-데이터-확인">(2) 결측치 데이터 확인</a></li>
+        <li><a href="#3-결측치-데이터-보간">(3) 결측치 데이터 보간</a></li>
+      </ul>
+    </li>
+    <li><a href="#iv-결론">IV. 결론</a></li>
+  </ul>
+</nav>
 	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch3_3_3_network_and/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/r/shiny/project_05/" rel="bookmark">
-			Corona Shiny Project 5 - Chart with DateInput
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-11T10:15:39&#43;09:00">2020-04-11</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/shiny/" rel="category">Shiny</a>, <a class="meta__link" href="/categories/corona-shiny-app/" rel="category">Corona Shiny App</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
-이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
-I. Shiny Tutorial 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard shiny tutorial 07 - flexdashboard shiny tutorial 08 - HTML, CSS 적용  II.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/r/shiny/project_05/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/ch3_3_2_random_signoid_bias/" rel="bookmark">
-			Tensorflow 2.0 Tutorial ch3.3.2 - 난수 생성 및 시그모이드 함수 편향성
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-10T10:20:30&#43;09:00">2020-04-10</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지  본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다. 강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch3_3_2_random_signoid_bias/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/r/shiny/project_04/" rel="bookmark">
-			Corona Shiny Project 4 - Visusalization (Map Chart)
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-09T10:10:39&#43;09:00">2020-04-09</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/shiny/" rel="category">Shiny</a>, <a class="meta__link" href="/categories/corona-shiny-app/" rel="category">Corona Shiny App</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
-이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
-I. Shiny Tutorial 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard shiny tutorial 07 - flexdashboard shiny tutorial 08 - HTML, CSS 적용  II.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/r/shiny/project_04/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/ch3_3_1_random_signoid/" rel="bookmark">
-			Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-08T11:20:30&#43;09:00">2020-04-08</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지  본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다. 강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  I. 퍼셉트론의 한계 극복 AI는 과거부터 존재하였지만, 여러가지 한계로 인해 연구의 흥망성쇠가 계속적으로 있어왔다. 퍼셉트론의 한계를 지적하는 데 사용됐던, AND, OR, XOR 연산을 할 수 있는 신경망 네트워크를 직접 만들어보자.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch3_3_1_random_signoid/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/r/shiny/project_03/" rel="bookmark">
-			Corona Shiny Project 3 - Visusalization (Bubble Chart)
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-08T10:10:39&#43;09:00">2020-04-08</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/shiny/" rel="category">Shiny</a>, <a class="meta__link" href="/categories/corona-shiny-app/" rel="category">Corona Shiny App</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
-이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
-I. Shiny Tutorial 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard shiny tutorial 07 - flexdashboard shiny tutorial 08 - HTML, CSS 적용  II.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/r/shiny/project_03/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/r/shiny/project_02/" rel="bookmark">
-			Corona Shiny Project 2 - Visusalization (Time Series)
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-07T10:10:39&#43;09:00">2020-04-07</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/shiny/" rel="category">Shiny</a>, <a class="meta__link" href="/categories/corona-shiny-app/" rel="category">Corona Shiny App</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
-이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
-I. Shiny Tutorial 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard shiny tutorial 07 - flexdashboard shiny tutorial 08 - HTML, CSS 적용  II.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/r/shiny/project_02/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/r/shiny/project_01/" rel="bookmark">
-			Corona Shiny Project I - Get Data
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-06T09:10:39&#43;09:00">2020-04-06</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/shiny/" rel="category">Shiny</a>, <a class="meta__link" href="/categories/corona-shiny-app/" rel="category">Corona Shiny App</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
-이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
-I. Shiny Tutorial 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard shiny tutorial 07 - flexdashboard shiny tutorial 08 - HTML, CSS 적용  II.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/r/shiny/project_01/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/r/shiny/tutorial_08/" rel="bookmark">
-			shiny tutorial 08 - HTML, CSS 적용
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-05T11:30:39&#43;09:00">2020-04-05</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/shiny/" rel="category">Shiny</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
-이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
-I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard shiny tutorial 07 - flexdashboard  II.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/r/shiny/tutorial_08/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/settings/settings02_vscode2jupyter/" rel="bookmark">
-			Connecting Jupyter Notebook to VS Code
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-05T00:30:47&#43;09:00">2020-04-05</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		I. 개요 VS Code에 Jupyter Notebook을 연동해본다. 강사는 R &amp; Python을 연동해서 작업할 일이 많다. 특히 블로그를 쓰다보면 더욱 그러한 일이 많은데, IDE가 많으면 많을수록 무언가 복잡스러워 보일 때가 많다. 이 때 좀 더 효율적으로 일하고자 하는 마음에 VS Code에 Jupyter Notebook을 추가 및 연동하는 작업을 진행해본다.
-II. Installation 내용의 간결화를 위해, VS Code 및 Jupyter Notebook 설치 방법은 본 포스트에서는 생략한다.
- VS Code 설치방법: https://code.visualstudio.com/download Jupyter Notebook 설치 방법: https://jupyter.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/settings/settings02_vscode2jupyter/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/googlecolab/" rel="bookmark">
-			Google Colab Tensorflow 2.0 Installation
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-04T11:03:30&#43;09:00">2020-04-04</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		I. 공지 이번 포스트부터 강사의 과거-기존-미래 수강생들이 보다 효율적으로 공부할 수 있도록 구글코랩에서 진행하는 텐서플로 2.0 Tutorial을 준비한다.
-II. 개요 GPU를 활용하여, 딥러닝을 연습하고 공부하고 싶지만, 쉽지많은 않다. 구글 코랩의 존재는 예전부터 알고 있었지만, 마땅히 정리를 하지 못하던 찰나에, 이제 본격적으로 강의 준비를 하며 2020년은 구글 코랩과 함께 하기로 결정하였다. 특히 텐서플로 Tutorial을 준비하면서 개인적으로 많이 성장하기를 바라며..
-III. Why Tensorflow 2.0? 비즈니스적으로 접근을 해보자. 앱의 경우, 2007년쯤 IOS가 출시된 이후, 경쟁자로 Andorid가 등장했다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/googlecolab/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/filter/" rel="bookmark">
-			Pandas Filtering
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-03T22:15:47&#43;09:00">2020-04-03</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" rel="category">데이터 전처리</a>, <a class="meta__link" href="/categories/pandas/" rel="category">Pandas</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		Overview 필터링은 특정 조건식을 만족하는 행을 따로 추출하는 개념이다. 특정 행의 값에 조건식 True/False을 판별하여 값을 추출하는 방법이다. 이 때, 비교 연산자 또는 조건식 (&gt;, &lt;, ==, ...)을 적용하면 행을 추출할 수 있다.
-우선 데이터부터 확인한다. 아래 소스코드를 복사 붙여넣기 하면 데이터를 확인할 수 있다.
-import pandas as pd url = &#39;https://github.com/chloevan/datasets/raw/master/entertainment/movie_ticket_sales.xlsx&#39; sales = pd.read_excel(url) print(sales.head())  theater_name movie_title ticket_type \ 0 Sumdance Cinemas Harry Plotter senior 1 The Empirical House 10 Things I Hate About Unix child 2 The Empirical House The Seaborn Identity adult 3 Sumdance Cinemas 10 Things I Hate About Unix adult 4 The Empirical House Mamma Median!
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/filter/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/sort_values/" rel="bookmark">
-			Pandas sort_values()
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-03T20:15:47&#43;09:00">2020-04-03</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" rel="category">데이터 전처리</a>, <a class="meta__link" href="/categories/pandas/" rel="category">Pandas</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		I. Overview sort_values() 함수는 일종의 데이터의 정렬과 연관이 있다. 어려운 내용은 아니기 때문에 빠르게 소스 코드 구현 및 확인 하도록 한다.
-II. Sample Tutorial 엑셀로 된 ticket_sales 데이터에서 ticket_quantity가 가장 많이 팔린 영화 Top3를 구하는 소스코드를 구해본다.
-import pandas as pd url = &#39;https://github.com/chloevan/datasets/raw/master/entertainment/movie_ticket_sales.xlsx&#39; sales = pd.read_excel(url) print(sales.head())  theater_name movie_title ticket_type \ 0 Sumdance Cinemas Harry Plotter senior 1 The Empirical House 10 Things I Hate About Unix child 2 The Empirical House The Seaborn Identity adult 3 Sumdance Cinemas 10 Things I Hate About Unix adult 4 The Empirical House Mamma Median!
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/sort_values/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/r/shiny/tutorial_07/" rel="bookmark">
-			shiny tutorial 07 - flexdashboard package
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-02T21:10:39&#43;09:00">2020-04-02</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/shiny/" rel="category">Shiny</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
-이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
-I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard  II.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/r/shiny/tutorial_07/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/r/shiny/tutorial_06/" rel="bookmark">
-			shiny tutorial 06 - shinydashboard package
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-01T17:10:39&#43;09:00">2020-04-01</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/shiny/" rel="category">Shiny</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
-이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
-I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps  II.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/r/shiny/tutorial_06/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/r/shiny/tutorial_05/" rel="bookmark">
-			shiny tutorial 05 - Sharing Apps
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-03-31T01:10:39&#43;09:00">2020-03-31</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/shiny/" rel="category">Shiny</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
-이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
-I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts  II. Shiny Deployment의 개요 이 영역은 웹개발자에게는 매우 쉬운 영역일 수도 있다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/r/shiny/tutorial_05/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/pandas_with_excel/" rel="bookmark">
-			Pandas With Excel
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-03-30T11:15:47&#43;09:00">2020-03-30</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" rel="category">데이터 전처리</a>, <a class="meta__link" href="/categories/pandas/" rel="category">Pandas</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		I. Overview 이번 포스트는 기존의 엑셀 사용자를 위해 준비했다. 엑셀에 익숙한 사람들에게 파이썬을 분석 용도로 사용하고자 하는 분들에게는 작은 도움이 되기를 바란다.
-II. 데이터 입출력 판다스는 다양한 형태의 외부 파일을 읽을 수 있다. CSV, MS Excel, SQL, HDF5 Format과 같은 파일 포맷을 읽을 수 있다. 파일 포맷(File Format)에 따른 데이터 입출력 도구에 관한 자료를 요약하면 다음과 같다.
-   파일 포맷 How to Read? How to Write?     CSV read_csv to_csv   MS Excel read_excel to_excel   SQL read_sql to_sql    그 외에 HTML, JSON, SAS 포맷과 같은 파일을 읽어오는 다양한 방법에 대해서는 Pandas 공식문서(PDF 다운로드)를 참조하기를 바란다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/pandas_with_excel/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/r/shiny/tutorial_04/" rel="bookmark">
-			shiny tutorial 04 - Layouts
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-03-29T23:50:39&#43;09:00">2020-03-29</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/shiny/" rel="category">Shiny</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
-이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
-I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content  II. Layouts의 개요 이번 시간에는 Shiny Layouts 개요에 대한 간략적인 소개를 하려고 한다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/r/shiny/tutorial_04/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/r/shiny/tutorial_03/" rel="bookmark">
-			shiny tutorial 03 - HTML content
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-03-27T23:50:39&#43;09:00">2020-03-27</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/shiny/" rel="category">Shiny</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
-이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
-I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure  II. HTML Content 개요 이번 시간에는 HTML Content 개요에 대한 간략적인 소개를 하려고 한다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/r/shiny/tutorial_03/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/apply/" rel="bookmark">
-			Pandas Lambda Apply 함수 활용
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-03-23T20:10:47&#43;09:00">2020-03-23</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" rel="category">데이터 전처리</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		I. Iterrows, Itertuples 복습 이번 포스팅은 For-loop의 대안에 관한 함수 apply에 관한 내용이다. 본 포스트를 보고 학습하시기 전에 Pandas Iterrows 함수 활용과 Pandas Itertuples 함수 활용에서 학습 하기를 바란다.
-지난시간과 마찬가지로 데이터는 동일한 것을 쓰도록 한다.
-import pandas as pd import io import requests import pprint url = &#39;https://raw.githubusercontent.com/chloevan/datasets/master/sports/baseball_stats.csv&#39; url=requests.get(url).content baseball_stats = pd.read_csv(io.StringIO(url.decode(&#39;utf-8&#39;))) pprint.pprint(baseball_stats.head())  Team League Year RS RA W OBP SLG BA Playoffs RankSeason \ 0 ARI NL 2012 734 688 81 0.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/apply/">Read more…</a>
-	</div>
-</article>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="개요">개요</h2>
+<ul>
+<li>주택가격을 예측하는 데 필요한 Kaggle 데이터를 불러와서 빅쿼리에 저장하는 실습 진행</li>
+<li>데이터를 불러와서 <code>LightGBM</code>를 활용하여 머신러닝을 만든다.</li>
+</ul>
+<h2 id="i-사전-준비작업">I. 사전 준비작업</h2>
+<ul>
+<li><code>Kaggle API</code> 설치 후 데이터를 <code>Kaggle</code>에서 직접 가져오는 것을 구현한다.</li>
+</ul>
+<h3 id="1-kaggle-api-설치">(1) Kaggle API 설치</h3>
+<ul>
+<li>구글 코랩에서 <code>API</code>를 불러오려면 다음 소스코드를 실행한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>pip install kaggle
+</code></pre></div><pre><code>Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.6)
+Requirement already satisfied: certifi in /usr/local/lib/python3.6/dist-packages (from kaggle) (2020.6.20)
+Requirement already satisfied: six&gt;=1.10 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.15.0)
+Requirement already satisfied: python-dateutil in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.8.1)
+Requirement already satisfied: urllib3&lt;1.25,&gt;=1.21.1 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.24.3)
+Requirement already satisfied: python-slugify in /usr/local/lib/python3.6/dist-packages (from kaggle) (4.0.1)
+Requirement already satisfied: tqdm in /usr/local/lib/python3.6/dist-packages (from kaggle) (4.41.1)
+Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.23.0)
+Requirement already satisfied: text-unidecode&gt;=1.3 in /usr/local/lib/python3.6/dist-packages (from python-slugify-&gt;kaggle) (1.3)
+Requirement already satisfied: idna&lt;3,&gt;=2.5 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;kaggle) (2.10)
+Requirement already satisfied: chardet&lt;4,&gt;=3.0.2 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;kaggle) (3.0.4)
+</code></pre>
+<h3 id="2-kaggle-token-다운로드">(2) Kaggle Token 다운로드</h3>
+<ul>
+<li>Kaggle에서 API Token을 다운로드 받는다.</li>
+<li>[Kaggle]-[My Account]-[API]-[Create New API Token]을 누르면 <code>kaggle.json</code> 파일이 다운로드 된다.</li>
+<li>이 파일을 바탕화면에 옮긴 뒤, 아래 코드를 실행 시킨다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> files
+uploaded <span style="color:#f92672">=</span> files<span style="color:#f92672">.</span>upload()
+<span style="color:#66d9ef">for</span> fn <span style="color:#f92672">in</span> uploaded<span style="color:#f92672">.</span>keys():
+  <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;uploaded file &#34;{name}&#34; with length {length} bytes&#39;</span><span style="color:#f92672">.</span>format(
+      name<span style="color:#f92672">=</span>fn, length<span style="color:#f92672">=</span>len(uploaded[fn])))
+  
+<span style="color:#75715e"># kaggle.json을 아래 폴더로 옮긴 뒤, file을 사용할 수 있도록 권한을 부여한다. </span>
+<span style="color:#960050;background-color:#1e0010">!</span>mkdir <span style="color:#f92672">-</span>p <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span> <span style="color:#f92672">&amp;&amp;</span> mv kaggle<span style="color:#f92672">.</span>json <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span> <span style="color:#f92672">&amp;&amp;</span> chmod <span style="color:#ae81ff">600</span> <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span>kaggle<span style="color:#f92672">.</span>json
+</code></pre></div><p><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+Upload widget is only available when the cell has been executed in the
+current browser session. Please rerun this cell to enable.
+<!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<pre><code>Saving kaggle.json to kaggle.json
+uploaded file &quot;kaggle.json&quot; with length 64 bytes
+</code></pre>
+<ul>
+<li>실제 <code>kaggle.json</code> 파일이 업로드 되었다는 뜻이다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ls <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>ha <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span>kaggle<span style="color:#f92672">.</span>json
+</code></pre></div><pre><code>/root/.kaggle/kaggle.json
+</code></pre>
+<h3 id="3-kaggle-데이터-불러오기">(3) Kaggle 데이터 불러오기</h3>
+<ul>
+<li><code>Kaggle</code> 대회 리스트를 불러온다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>kaggle competitions list
+</code></pre></div><pre><code>Warning: Looks like you're using an outdated API Version, please consider updating (server 1.5.6 / client 1.5.4)
+ref                                            deadline             category            reward  teamCount  userHasEntered  
+---------------------------------------------  -------------------  ---------------  ---------  ---------  --------------  
+contradictory-my-dear-watson                   2030-07-01 23:59:00  Getting Started     Prizes        253           False  
+gan-getting-started                            2030-07-01 23:59:00  Getting Started     Prizes         88           False  
+tpu-getting-started                            2030-06-03 23:59:00  Getting Started  Knowledge        369           False  
+digit-recognizer                               2030-01-01 00:00:00  Getting Started  Knowledge       2556           False  
+titanic                                        2030-01-01 00:00:00  Getting Started  Knowledge      19017            True  
+house-prices-advanced-regression-techniques    2030-01-01 00:00:00  Getting Started  Knowledge       4933            True  
+connectx                                       2030-01-01 00:00:00  Getting Started  Knowledge        609           False  
+nlp-getting-started                            2030-01-01 00:00:00  Getting Started  Knowledge       1451            True  
+competitive-data-science-predict-future-sales  2020-12-31 23:59:00  Playground           Kudos       8621            True  
+hashcode-drone-delivery                        2020-12-14 23:59:00  Playground       Knowledge          6           False  
+lish-moa                                       2020-11-30 23:59:00  Research           $30,000        826           False  
+conways-reverse-game-of-life-2020              2020-11-30 23:59:00  Playground            Swag         49           False  
+lyft-motion-prediction-autonomous-vehicles     2020-11-25 23:59:00  Featured           $30,000        341           False  
+rsna-str-pulmonary-embolism-detection          2020-10-26 23:59:00  Featured           $30,000          2           False  
+osic-pulmonary-fibrosis-progression            2020-10-06 23:59:00  Featured           $55,000       1577           False  
+landmark-recognition-2020                      2020-09-29 23:59:00  Research           $25,000        582           False  
+halite                                         2020-09-15 23:59:00  Featured              Swag       1128           False  
+birdsong-recognition                           2020-09-15 23:59:00  Research           $25,000       1318           False  
+global-wheat-detection                         2020-08-19 01:59:00  Research           $15,000       2245           False  
+landmark-retrieval-2020                        2020-08-17 23:59:00  Research           $25,000        541           False  
+</code></pre>
+<ul>
+<li>여기에서 참여하기 원하는 대회의 데이터셋을 불러오면 된다.</li>
+<li>이번 <code>basic</code>강의에서는 <code>house-prices-advanced-regression-techniques</code> 데이터를 활용한 데이터 가공과 시각화를 연습할 것이기 때문에 아래와 같이 코드를 실행하여 데이터를 불러온다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>kaggle competitions download <span style="color:#f92672">-</span>c house<span style="color:#f92672">-</span>prices<span style="color:#f92672">-</span>advanced<span style="color:#f92672">-</span>regression<span style="color:#f92672">-</span>techniques
+</code></pre></div><pre><code>Warning: Looks like you're using an outdated API Version, please consider updating (server 1.5.6 / client 1.5.4)
+Downloading sample_submission.csv to /content
+  0% 0.00/31.2k [00:00&lt;?, ?B/s]
+100% 31.2k/31.2k [00:00&lt;00:00, 12.4MB/s]
+Downloading test.csv to /content
+  0% 0.00/441k [00:00&lt;?, ?B/s]
+100% 441k/441k [00:00&lt;00:00, 58.0MB/s]
+Downloading data_description.txt to /content
+  0% 0.00/13.1k [00:00&lt;?, ?B/s]
+100% 13.1k/13.1k [00:00&lt;00:00, 11.6MB/s]
+Downloading train.csv to /content
+  0% 0.00/450k [00:00&lt;?, ?B/s]
+100% 450k/450k [00:00&lt;00:00, 61.3MB/s]
+</code></pre>
+<ul>
+<li>실제 데이터가 잘 다운로드 받게 되었는지 확인한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>ls
+</code></pre></div><pre><code>data_description.txt  sample_data  sample_submission.csv  test.csv  train.csv
+</code></pre>
+<h3 id="4-데이터-불러오기">(4) 데이터 불러오기</h3>
+<ul>
+<li><code>pandas</code> 모듈을 활용해서 데이터를 확인해본다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+train <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;train.csv&#39;</span>)
+test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;test.csv&#39;</span>)
+
+<span style="color:#75715e"># Id Column 저장</span>
+train_ID <span style="color:#f92672">=</span> train[<span style="color:#e6db74">&#39;Id&#39;</span>]
+test_ID <span style="color:#f92672">=</span> test[<span style="color:#e6db74">&#39;Id&#39;</span>]
+
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Id 컬럼 삭제 전 Train 데이터 size : {} &#34;</span><span style="color:#f92672">.</span>format(train<span style="color:#f92672">.</span>shape))
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Id 컬럼 삭제 전 Test 데이터 size : {} &#34;</span><span style="color:#f92672">.</span>format(test<span style="color:#f92672">.</span>shape))
+
+<span style="color:#75715e"># Id 삭제</span>
+train<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#34;Id&#34;</span>, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, inplace <span style="color:#f92672">=</span> True)
+test<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#34;Id&#34;</span>, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, inplace <span style="color:#f92672">=</span> True)
+
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Id 컬럼 삭제 후 Train 데이터 size : {} &#34;</span><span style="color:#f92672">.</span>format(train<span style="color:#f92672">.</span>shape))
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Id 컬럼 삭제 후 Test 데이터 size : {} &#34;</span><span style="color:#f92672">.</span>format(test<span style="color:#f92672">.</span>shape))
+</code></pre></div><pre><code>Id 컬럼 삭제 전 Train 데이터 size : (1460, 81) 
+Id 컬럼 삭제 전 Test 데이터 size : (1459, 80) 
+Id 컬럼 삭제 후 Train 데이터 size : (1460, 80) 
+Id 컬럼 삭제 후 Test 데이터 size : (1459, 79) 
+</code></pre>
+<ul>
+<li>변수명이 삭제된 것을 확인한다.</li>
+</ul>
+<h2 id="ii-데이터-싸이언스의-전반적인-흐름-리뷰">II. 데이터 싸이언스의 전반적인 흐름 리뷰</h2>
+<ul>
+<li>
+<p>전반적인 흐름은 보통 다음과 같이 이루어진다.</p>
+<ul>
+<li>문제정의</li>
+<li>데이터 수집</li>
+<li>데이터 EDA (기초 통계 및 시각화)</li>
+<li><code>Feature Preprocessing</code></li>
+<li><code>Feature Engineering</code></li>
+<li>모델링</li>
+<li>모형 평가</li>
+<li>모형 배포 및 보고서</li>
+</ul>
+</li>
+<li>
+<p>데이터 시각화는 다음 페이지에 연재했기 때문에 참고한다.</p>
+<ul>
+<li><a href="https://dschloe.github.io/kaggle/">https://dschloe.github.io/kaggle/</a></li>
+</ul>
+</li>
+<li>
+<p>Feature Preprocessing에 관련된 추가 자료는 다음을 참조하자.</p>
+<ul>
+<li><a href="http://scikit-learn.org/stable/modules/preprocessing.html">Preprocessing in Sklearn</a></li>
+<li><a href="http://sebastianraschka.com/Articles/2014_about_feature_scaling.html">Feature Scaling and the effect of standardization for machine learning algorithms</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="iii-feature-engineering">III. Feature Engineering</h2>
+<ul>
+<li>도메인 지식을 활용하여 특징(<code>Feature</code>)을 만들어내는 과정</li>
+<li>머신러닝 모델을 위한 <code>Column</code> 생성하거나 또는 선택하는 작업 의미</li>
+<li><code>Feature Engineering</code>은 모델 성능에 즉각적으로 영향을 미치기 때문에 <code>ML</code>응용에 있어서 굉장히 중요한 단계이며, 전문성과 시간과 비용이 많이 듬</li>
+<li>리뷰하는 차원에서 말하면, Feature Preprocessing관한 일반적인 내용은 다음과 같다.
+<ul>
+<li>수치형: <code>Scaling</code>, <code>Outliers</code>, <code>Rank</code>, <code>np.log(1+x) and np.sqrt(1+x)</code></li>
+<li>범주형: <code>Label Encoding</code> for tree based models, <code>One-hot encoding</code> for non-tree-based models</li>
+<li>날짜: <code>주기성(=Periodicity)</code>, <code>Time Since</code>, <code>날짜간의 차이</code></li>
+<li>위도 &amp; 경도: <code>places</code>, <code>centers</code>, <code>statistics</code></li>
+</ul>
+</li>
+<li><code>Feature Engineering</code>은 결국 <code>Feature</code>를 컨트롤 및 추출하는 것으로 정의할 수 있다.
+<ul>
+<li>수치형 데이터: Binarization, Log Transformation, Scaling, Normalization, Regularization</li>
+<li>텍스트 데이터: Bag of X, Stopwords, Tokenization, Tf-IDF Transformation, Regularization</li>
+<li>범주형 데이터: One-hot encoding, Dummy Encoding, Effect Coding</li>
+<li>차원축소(PCA)</li>
+</ul>
+</li>
+<li>그러나, 결측치를 채우는 것도 <code>Feature Engineering</code>에 포함되며, 이 때 <code>Target</code>에 따른 <code>mean encoding</code>도 포함하게 된다. 특히, <code>mean encoding</code>은 분류모형을 다룰 때 다시 설명하도록 한다.</li>
+</ul>
+<h3 id="1-데이터-합치기">(1) 데이터 합치기</h3>
+<ul>
+<li>데이터를 합치는데, <code>target</code> 데이터를 별도 변수로 저장한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ntrain <span style="color:#f92672">=</span> train<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>] <span style="color:#75715e"># 행 개수 저장</span>
+ntest <span style="color:#f92672">=</span> test<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>] <span style="color:#75715e"># 행 개수 저장</span>
+
+y_train <span style="color:#f92672">=</span> train<span style="color:#f92672">.</span>SalePrice<span style="color:#f92672">.</span>values <span style="color:#75715e"># y_train 추출</span>
+
+house_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>concat((train, test))<span style="color:#f92672">.</span>reset_index(drop <span style="color:#f92672">=</span> True)
+house_df<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;SalePrice&#39;</span>], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;전체 데이터 Size : {}&#34;</span><span style="color:#f92672">.</span>format(house_df<span style="color:#f92672">.</span>shape))
+</code></pre></div><pre><code>전체 데이터 Size : (2919, 79)
+</code></pre>
+<h3 id="2-결측치-데이터-확인">(2) 결측치 데이터 확인</h3>
+<ul>
+<li>결측치 check 함수를 만든다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_na</span>(data):
+  isnull_na <span style="color:#f92672">=</span> (data<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> len(data)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>
+  data_na <span style="color:#f92672">=</span> isnull_na<span style="color:#f92672">.</span>drop(isnull_na[isnull_na <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>index)<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)
+  missing_data <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74">&#39;Missing Ratio&#39;</span> :data_na, 
+                               <span style="color:#e6db74">&#39;Data Type&#39;</span>: data<span style="color:#f92672">.</span>dtypes[data_na<span style="color:#f92672">.</span>index]})
+  <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;결측치 데이터 컬럼과 건수:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, missing_data)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 건수:
+               Missing Ratio Data Type
+PoolQC            99.657417    object
+MiscFeature       96.402878    object
+Alley             93.216855    object
+Fence             80.438506    object
+FireplaceQu       48.646797    object
+LotFrontage       16.649538   float64
+GarageFinish       5.447071    object
+GarageYrBlt        5.447071   float64
+GarageQual         5.447071    object
+GarageCond         5.447071    object
+GarageType         5.378554    object
+BsmtExposure       2.809181    object
+BsmtCond           2.809181    object
+BsmtQual           2.774923    object
+BsmtFinType2       2.740665    object
+BsmtFinType1       2.706406    object
+MasVnrType         0.822199    object
+MasVnrArea         0.787941   float64
+MSZoning           0.137033    object
+BsmtFullBath       0.068517   float64
+BsmtHalfBath       0.068517   float64
+Utilities          0.068517    object
+Functional         0.068517    object
+Exterior2nd        0.034258    object
+Exterior1st        0.034258    object
+SaleType           0.034258    object
+BsmtFinSF1         0.034258   float64
+BsmtFinSF2         0.034258   float64
+BsmtUnfSF          0.034258   float64
+Electrical         0.034258    object
+KitchenQual        0.034258    object
+GarageCars         0.034258   float64
+GarageArea         0.034258   float64
+TotalBsmtSF        0.034258   float64
+</code></pre>
+<h3 id="3-결측치-데이터-보간">(3) 결측치 데이터 보간</h3>
+<ul>
+<li>위 데이터에 순차적으로 처리하도록 한다.</li>
+<li>몇몇 분들은 <code>PoolQC</code>, <code>MiscFeature</code>와 같은 <code>Feature</code>는 삭제하기도 한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">var_lists <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;PoolQC&#39;</span>, <span style="color:#e6db74">&#39;MiscFeature&#39;</span>, <span style="color:#e6db74">&#39;Alley&#39;</span>, <span style="color:#e6db74">&#39;Fence&#39;</span>, <span style="color:#e6db74">&#39;FireplaceQu&#39;</span>]
+<span style="color:#66d9ef">for</span> fea <span style="color:#f92672">in</span> var_lists:
+  house_df[fea] <span style="color:#f92672">=</span> house_df[fea]<span style="color:#f92672">.</span>fillna(<span style="color:#e6db74">&#39;None&#39;</span>)
+
+check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 건수:
+               Missing Ratio Data Type
+LotFrontage       16.649538   float64
+GarageQual         5.447071    object
+GarageFinish       5.447071    object
+GarageYrBlt        5.447071   float64
+GarageCond         5.447071    object
+GarageType         5.378554    object
+BsmtExposure       2.809181    object
+BsmtCond           2.809181    object
+BsmtQual           2.774923    object
+BsmtFinType2       2.740665    object
+BsmtFinType1       2.706406    object
+MasVnrType         0.822199    object
+MasVnrArea         0.787941   float64
+MSZoning           0.137033    object
+BsmtFullBath       0.068517   float64
+Functional         0.068517    object
+Utilities          0.068517    object
+BsmtHalfBath       0.068517   float64
+Exterior2nd        0.034258    object
+Exterior1st        0.034258    object
+SaleType           0.034258    object
+BsmtFinSF1         0.034258   float64
+BsmtFinSF2         0.034258   float64
+TotalBsmtSF        0.034258   float64
+Electrical         0.034258    object
+KitchenQual        0.034258    object
+GarageCars         0.034258   float64
+GarageArea         0.034258   float64
+BsmtUnfSF          0.034258   float64
+</code></pre>
+<ul>
+<li><code>LotFrontage</code>의 데이터 <code>type</code>은 <code>float64</code>이기 때문에 <code>median</code>으로 처리하도록 한다.</li>
+<li>이 때 <code>Neighborhood</code>에 따른 <code>median</code>으로 지정하는 코드를 작성한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">house_df[<span style="color:#e6db74">&#39;LotFrontage&#39;</span>] <span style="color:#f92672">=</span> house_df<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;Neighborhood&#39;</span>)[<span style="color:#e6db74">&#39;LotFrontage&#39;</span>]<span style="color:#f92672">.</span>transform(<span style="color:#66d9ef">lambda</span> x: x<span style="color:#f92672">.</span>fillna(x<span style="color:#f92672">.</span>median()))
+check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 건수:
+               Missing Ratio Data Type
+GarageQual         5.447071    object
+GarageFinish       5.447071    object
+GarageYrBlt        5.447071   float64
+GarageCond         5.447071    object
+GarageType         5.378554    object
+BsmtCond           2.809181    object
+BsmtExposure       2.809181    object
+BsmtQual           2.774923    object
+BsmtFinType2       2.740665    object
+BsmtFinType1       2.706406    object
+MasVnrType         0.822199    object
+MasVnrArea         0.787941   float64
+MSZoning           0.137033    object
+BsmtFullBath       0.068517   float64
+BsmtHalfBath       0.068517   float64
+Functional         0.068517    object
+Utilities          0.068517    object
+Exterior1st        0.034258    object
+Exterior2nd        0.034258    object
+SaleType           0.034258    object
+BsmtFinSF1         0.034258   float64
+BsmtFinSF2         0.034258   float64
+TotalBsmtSF        0.034258   float64
+Electrical         0.034258    object
+KitchenQual        0.034258    object
+GarageCars         0.034258   float64
+GarageArea         0.034258   float64
+BsmtUnfSF          0.034258   float64
+</code></pre>
+<ul>
+<li><code>GarageQual</code>, <code>GarageFinish</code>, <code>GarageCond</code>, <code>GarageType</code>의 데이터는 <code>object</code>이므로 모두 <code>None</code>으로 처리한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">for</span> fea <span style="color:#f92672">in</span> (<span style="color:#e6db74">&#39;GarageQual&#39;</span>, <span style="color:#e6db74">&#39;GarageFinish&#39;</span>, <span style="color:#e6db74">&#39;GarageCond&#39;</span>, <span style="color:#e6db74">&#39;GarageType&#39;</span>):
+  house_df[fea] <span style="color:#f92672">=</span> house_df[fea]<span style="color:#f92672">.</span>fillna(<span style="color:#e6db74">&#39;None&#39;</span>)
+
+check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 건수:
+               Missing Ratio Data Type
+GarageYrBlt        5.447071   float64
+BsmtCond           2.809181    object
+BsmtExposure       2.809181    object
+BsmtQual           2.774923    object
+BsmtFinType2       2.740665    object
+BsmtFinType1       2.706406    object
+MasVnrType         0.822199    object
+MasVnrArea         0.787941   float64
+MSZoning           0.137033    object
+BsmtFullBath       0.068517   float64
+BsmtHalfBath       0.068517   float64
+Functional         0.068517    object
+Utilities          0.068517    object
+TotalBsmtSF        0.034258   float64
+BsmtUnfSF          0.034258   float64
+BsmtFinSF2         0.034258   float64
+GarageArea         0.034258   float64
+BsmtFinSF1         0.034258   float64
+Electrical         0.034258    object
+KitchenQual        0.034258    object
+GarageCars         0.034258   float64
+Exterior2nd        0.034258    object
+Exterior1st        0.034258    object
+SaleType           0.034258    object
+</code></pre>
+<ul>
+<li><code>BsmtCond</code>, <code>BsmtExposure</code>, <code>BsmtQual</code>, <code>BsmtFinType2</code>, <code>BsmtFinType1</code>, <code>MasVnrType</code>는 범주형 데이터이므로 모두 <code>None</code>으로 처리한다.</li>
+<li><code>GarageYrBlt</code>, <code>MasVnrArea</code>, <code>BsmtFullBath</code>, <code>BsmtHalfBath</code>, <code>TotalBsmtSF</code>, <code>BsmtUnfSF</code>, <code>BsmtFinSF2</code>, <code>GarageArea</code>, <code>BsmtFinSF1</code>는 모두 숫자형 데이터이므로 모두 0으로 처리한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">for</span> fea <span style="color:#f92672">in</span> (<span style="color:#e6db74">&#39;BsmtCond&#39;</span>, <span style="color:#e6db74">&#39;BsmtExposure&#39;</span>, <span style="color:#e6db74">&#39;BsmtQual&#39;</span>, <span style="color:#e6db74">&#39;BsmtFinType2&#39;</span>, <span style="color:#e6db74">&#39;BsmtFinType1&#39;</span>, <span style="color:#e6db74">&#39;MasVnrType&#39;</span>):
+  house_df[fea] <span style="color:#f92672">=</span> house_df[fea]<span style="color:#f92672">.</span>fillna(<span style="color:#e6db74">&#39;None&#39;</span>)
+
+<span style="color:#66d9ef">for</span> fea <span style="color:#f92672">in</span> (<span style="color:#e6db74">&#39;GarageYrBlt&#39;</span>, <span style="color:#e6db74">&#39;MasVnrArea&#39;</span>, <span style="color:#e6db74">&#39;BsmtFullBath&#39;</span>, <span style="color:#e6db74">&#39;BsmtHalfBath&#39;</span>, <span style="color:#e6db74">&#39;TotalBsmtSF&#39;</span>, <span style="color:#e6db74">&#39;BsmtUnfSF&#39;</span>, <span style="color:#e6db74">&#39;BsmtFinSF2&#39;</span>, <span style="color:#e6db74">&#39;GarageArea&#39;</span>, <span style="color:#e6db74">&#39;BsmtFinSF1&#39;</span>, <span style="color:#e6db74">&#39;GarageCars&#39;</span>):
+  house_df[fea] <span style="color:#f92672">=</span> house_df[fea]<span style="color:#f92672">.</span>fillna(<span style="color:#ae81ff">0</span>)
+
+check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 건수:
+              Missing Ratio Data Type
+MSZoning          0.137033    object
+Functional        0.068517    object
+Utilities         0.068517    object
+SaleType          0.034258    object
+KitchenQual       0.034258    object
+Electrical        0.034258    object
+Exterior2nd       0.034258    object
+Exterior1st       0.034258    object
+</code></pre>
+<ul>
+<li>우선 <code>Utilities</code> 데이터는 <code>AllPub</code> 한개의 값만 있기 때문에 삭제한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">house_df <span style="color:#f92672">=</span> house_df<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;Utilities&#39;</span>], axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 건수:
+              Missing Ratio Data Type
+MSZoning          0.137033    object
+Functional        0.068517    object
+SaleType          0.034258    object
+KitchenQual       0.034258    object
+Electrical        0.034258    object
+Exterior2nd       0.034258    object
+Exterior1st       0.034258    object
+</code></pre>
+<ul>
+<li><code>MSZoning</code> 내 각 데이터의 빈도수를 확인해본다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">house_df[<span style="color:#e6db74">&#39;MSZoning&#39;</span>]<span style="color:#f92672">.</span>value_counts()
+</code></pre></div><pre><code>RL         2265
+RM          460
+FV          139
+RH           26
+C (all)      25
+Name: MSZoning, dtype: int64
+</code></pre>
+<ul>
+<li>위와 같이 <code>RL</code>의 빈도수가 매우 많기 때문에 <code>RL</code>, 즉 최빈값을 대체해서 넣도록 한다.</li>
+<li>나머지 결측치의 데이터를 위와 같이 대체해서 넣도록 한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">for</span> fea <span style="color:#f92672">in</span> (<span style="color:#e6db74">&#39;MSZoning&#39;</span>, <span style="color:#e6db74">&#39;Functional&#39;</span>, <span style="color:#e6db74">&#39;SaleType&#39;</span>, <span style="color:#e6db74">&#39;KitchenQual&#39;</span>, <span style="color:#e6db74">&#39;Electrical&#39;</span>, <span style="color:#e6db74">&#39;Exterior2nd&#39;</span>, <span style="color:#e6db74">&#39;Exterior1st&#39;</span>):
+  house_df[fea] <span style="color:#f92672">=</span> house_df[fea]<span style="color:#f92672">.</span>fillna(house_df[fea]<span style="color:#f92672">.</span>mode()[<span style="color:#ae81ff">0</span>])
+
+check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 건수:
+ Empty DataFrame
+Columns: [Missing Ratio, Data Type]
+Index: []
+</code></pre>
+<h2 id="iv-결론">IV. 결론</h2>
+<ul>
+<li><code>Feature Engineering</code>의 이론적인 개념을 배웠다.
+<ul>
+<li>실제 각각에 대해서 깊이 배우고자 한다면, <a href="https://www.repath.in/gallery/feature_engineering_for_machine_learning.pdf">Feature Engineering</a> 교재를 읽으시는 것을 추천한다.</li>
+</ul>
+</li>
+<li><code>결측치</code>를 채우는 방법에 대해서 배웠다</li>
+<li>그러나, 아직 여정이 더 남아 있다.</li>
+</ul>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="tag">머신러닝</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/python/" rel="tag">Python</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/machine-learning/" rel="tag">Machine Learning</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
 </main>
 
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name">About DSChloe</span>
+	</div>
+	<div class="authorbox__description">
+		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.
+	</div>
+</div>
 
 
-
-
-
-  <ul class="pagination">
-
+<section class="comments">
+	<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
     
     
-    <li class="pagination__item pagination__item--first">
-      <a class="pagination__link pagination__link--first" href="/">
-        ««
-      </a>
-    </li>
     
-
-    
-    
-    <li class="pagination__item pagination__item--previous">
-      <a href="/page/10/" class="pagination__link pagination__link--previous">
-        «
-      </a>
-    </li>
-    
-
-    
-    
-    <li class="pagination__item">
-      <a href="/" class="pagination__link">
-        1
-      </a>
-    </li>
-    
-    <li class="pagination__item">
-      <a href="/page/2/" class="pagination__link">
-        2
-      </a>
-    </li>
-    
-    <li class="pagination__item">
-      <a href="/page/3/" class="pagination__link">
-        3
-      </a>
-    </li>
-    
-    <li class="pagination__item">
-      <a href="/page/4/" class="pagination__link">
-        4
-      </a>
-    </li>
-    
-    <li class="pagination__item">
-      <a href="/page/5/" class="pagination__link">
-        5
-      </a>
-    </li>
-    
-    <li class="pagination__item">
-      <a href="/page/6/" class="pagination__link">
-        6
-      </a>
-    </li>
-    
-    <li class="pagination__item">
-      <a href="/page/7/" class="pagination__link">
-        7
-      </a>
-    </li>
-    
-    <li class="pagination__item">
-      <a href="/page/8/" class="pagination__link">
-        8
-      </a>
-    </li>
-    
-    <li class="pagination__item">
-      <a href="/page/9/" class="pagination__link">
-        9
-      </a>
-    </li>
-    
-    <li class="pagination__item">
-      <a href="/page/10/" class="pagination__link">
-        10
-      </a>
-    </li>
-    
-    <li class="pagination__item pagination__item--current">
-      <a href="/page/11/" class="pagination__link">
-        11
-      </a>
-    </li>
-    
-    <li class="pagination__item">
-      <a href="/page/12/" class="pagination__link">
-        12
-      </a>
-    </li>
-    
-
-    
-    
-    <li class="pagination__item pagination__item--next">
-      <a href="/page/12/" class="pagination__link pagination__link--next">
-        »
-      </a>
-    </li>
-    
-
-    
-    
-    <li class="pagination__item pagination__item--last">
-      <a class="pagination__link pagination__link--last" href="/page/12/">
-        »»
-      </a>
-    </li>
-    
-
-  </ul>
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-chloevan-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
 
 
 			</div>
@@ -1315,6 +1295,36 @@ import pandas as pd import io import requests import pprint url = &#39;https://r
 	</div>
 <script async defer src="/js/menu.js"></script>
 <script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
 
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
 </body>
 </html>
