@@ -148,8 +148,18 @@ if (!doNotTrack) {
     <li><a href="#git-commit의-의미"><code>git commit</code>의 의미</a>
       <ul>
         <li><a href="#git-commit후의-수정"><code>git commit</code>후의 수정</a></li>
+        <li><a href="#파일-수정">파일 수정</a></li>
       </ul>
     </li>
+    <li><a href="#git-commit-취소"><code>git commit</code> 취소</a>
+      <ul>
+        <li><a href="#방법-1-stage로-돌려보내기">방법 1. stage로 돌려보내기</a></li>
+        <li><a href="#방법-2-unstage로-돌려보내기">방법 2. unstage로 돌려보내기</a></li>
+        <li><a href="#방법-3-unstage로-돌려보내고-워킹-디렉터리에서-삭제">방법 3. unstage로 돌려보내고 워킹 디렉터리에서 삭제</a></li>
+      </ul>
+    </li>
+    <li><a href="#요약">요약</a></li>
+    <li><a href="#reference">Reference</a></li>
   </ul>
 </nav>
 	</div>
@@ -239,9 +249,102 @@ Your branch is ahead of <span style="color:#e6db74">&#39;origin/main&#39;</span>
 nothing to commit, working tree clean
 </code></pre></div><ul>
 <li>이 상태가 되면 <code>git push</code>를 하면 된다.</li>
-<li>그런데, <code>git push</code> 이후에 수정할 것이 생겼다고 가정해보자.
-(계속)</li>
 </ul>
+<h3 id="파일-수정">파일 수정</h3>
+<ul>
+<li>그런데, <code>git push</code> 이후에 수정할 것이 생겼다고 가정해보자.</li>
+<li>파일을 수정하면 <code>modified</code> 상태로 돌아가게 된다.
+<ul>
+<li>그런데, 수정하는 과정에서 파일을 잘못 수정할 수도 있다.</li>
+</ul>
+</li>
+<li>깃을 이용하면 수정한 파일을 커밋 전 마지막내용으로 쉽게 되돌릴 수 있다. 즉 이전 커밋으로 되돌리는 명령어는 다음과 같다.</li>
+<li>다만, 이 때에는 커밋 이후에 작업한 수정 내역은 모두 삭제가 된다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git checkout -- 수정파일 이름
+</code></pre></div><ul>
+<li>수정한 파일은 다시 등록해야 한다.
+<ul>
+<li>반복되는 내용이기에 생략한다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git add 수정파일이름
+$ git status
+$ git commit -m <span style="color:#e6db74">&#34;00 file updated&#34;</span>
+</code></pre></div><h2 id="git-commit-취소"><code>git commit</code> 취소</h2>
+<ul>
+<li>이번에는 파일 수정이 아니라, 커밋을 취소하는 방법이다.</li>
+<li>그런데, 이 때에도 주의해야 하는 것은 취소한 해당파일들을 <code>stage</code>로 보낼 것인지, 아니면 <code>unstage</code>로 보낼 것인지를 결정해야 한다.</li>
+<li>시나리오는 다음과 같다.</li>
+<li>새로운 test.py을 만들어 1차 커밋을 한 뒤, 파일을 재 수정하여 2차 커밋을 진행한 상태이다. (물론, <code>git add</code> 포함)</li>
+</ul>
+<h3 id="방법-1-stage로-돌려보내기">방법 1. stage로 돌려보내기</h3>
+<ul>
+<li><code>commit</code>취소 후, 해당 파일들은 <code>staged</code> 상태로 워킹 디렉터리에 보존하는 방법이다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git reset --soft HEAD^
+$ git status
+On branch main
+Your branch is ahead of <span style="color:#e6db74">&#39;origin/main&#39;</span> by <span style="color:#ae81ff">1</span> commit.
+  <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git push&#34;</span> to publish your local commits<span style="color:#f92672">)</span>
+
+Changes to be committed:
+  <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git restore --staged &lt;file&gt;...&#34;</span> to unstage<span style="color:#f92672">)</span>
+        modified:   test.py
+</code></pre></div><ul>
+<li>여전히 <code>modified</code>  된 상태이며 여전히 <code>워킹 디렉터리</code> 상태에 있음을 확인할 수 있다.</li>
+<li>이 때에는 <code>git add</code>만 해준다.</li>
+</ul>
+<h3 id="방법-2-unstage로-돌려보내기">방법 2. unstage로 돌려보내기</h3>
+<ul>
+<li>방법1과 동일하지만 종착지가 다른 경우이다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git reset --mixed HEAD^
+$ git reset HEAD^
+$ git reset HEAD~2 // 마지막 2개의 commit을 취소
+</code></pre></div><ul>
+<li>필자는 git reset &ndash;mixed HEAD^를 사용했다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git reset --mixed HEAD^
+Unstaged changes after reset:
+M       kaggle/test.py
+$ git status
+On branch main
+Your branch is ahead of <span style="color:#e6db74">&#39;origin/main&#39;</span> by <span style="color:#ae81ff">1</span> commit.
+  <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git push&#34;</span> to publish your local commits<span style="color:#f92672">)</span>
+
+Changes not staged <span style="color:#66d9ef">for</span> commit:
+  <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span style="color:#f92672">)</span>
+  <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git restore &lt;file&gt;...&#34;</span> to discard changes in working directory<span style="color:#f92672">)</span>
+        modified:   test.py
+
+no changes added to commit <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git add&#34;</span> and/or <span style="color:#e6db74">&#34;git commit -a&#34;</span><span style="color:#f92672">)</span>
+</code></pre></div><ul>
+<li>첫번째 했을 때와 조금 다른 결과값을 나오는데, 아직까지는 현재는 <code>modified</code> 이고 워킹 디렉터리에 보존되는 것을 확인할 수 있다.</li>
+</ul>
+<h3 id="방법-3-unstage로-돌려보내고-워킹-디렉터리에서-삭제">방법 3. unstage로 돌려보내고 워킹 디렉터리에서 삭제</h3>
+<ul>
+<li>방법1과 방법2는 파일들을 삭제하지는 않지만, 다음 명령어를 이용하면 워킹 디렉터리에서 삭제하는 것이다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git reset --hard HEAD^
+On branch main
+Your branch is ahead of <span style="color:#e6db74">&#39;origin/main&#39;</span> by <span style="color:#ae81ff">1</span> commit.
+  <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git push&#34;</span> to publish your local commits<span style="color:#f92672">)</span>
+
+nothing to commit, working tree clean
+</code></pre></div><ul>
+<li>이 때에는 <code>modified</code> 상태가 없다.</li>
+<li>또한, 기존에 작업했던 소스코드들이 아예 사라지는 것을 확인할 수 있다.</li>
+</ul>
+<h2 id="요약">요약</h2>
+<ul>
+<li>기본편과 마찬가지로 <code>staged</code>와 <code>unstaged</code>의 개념은 여전히 중요하다.</li>
+<li><code>git commit</code>취소하는 방법은 크게 3가지가 있지만, 방법 3을 사용하게 되면 기존 코드가 삭제되는 경향이 있으니 주의한다.</li>
+</ul>
+<h2 id="reference">Reference</h2>
+<p>이호진(2020). Git 교과서. 서울: 길벗. Retreieved from <a href="https://thebook.io/080212/">https://thebook.io/080212/</a>
+Git 도구 - Reset 명확히 알고 가기, <a href="https://git-scm.com/book/ko/v2/Git-%EB%8F%84%EA%B5%AC-Reset-%EB%AA%85%ED%99%95%ED%9E%88-%EC%95%8C%EA%B3%A0-%EA%B0%80%EA%B8%B0#r_git_reset">https://git-scm.com/book/ko/v2/Git-%EB%8F%84%EA%B5%AC-Reset-%EB%AA%85%ED%99%95%ED%9E%88-%EC%95%8C%EA%B3%A0-%EA%B0%80%EA%B8%B0#r_git_reset</a></p>
 
 		</div>
 		<footer class="post__footer">
