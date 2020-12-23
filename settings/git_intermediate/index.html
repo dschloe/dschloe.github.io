@@ -144,6 +144,12 @@ if (!doNotTrack) {
   <ul>
     <li><a href="#개요">개요</a></li>
     <li><a href="#파일-등록-취소">파일 등록 취소</a></li>
+    <li><a href="#파일-이름-변경">파일 이름 변경</a></li>
+    <li><a href="#git-commit의-의미"><code>git commit</code>의 의미</a>
+      <ul>
+        <li><a href="#git-commit후의-수정"><code>git commit</code>후의 수정</a></li>
+      </ul>
+    </li>
   </ul>
 </nav>
 	</div>
@@ -166,12 +172,76 @@ rm <span style="color:#e6db74">&#39;main.py&#39;</span>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git status 
 On branch master
-No commits yet
+Changes to be committed:
+    <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span style="color:#f92672">)</span>
+        deleted: main.py
 Untracked files:
     <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span style="color:#f92672">)</span>
-    main.py
+        main.py &lt;-- 스테이지 삭제
 nothing added to commit but untracked files present <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git add&#34;</span> to track<span style="color:#f92672">)</span>
-</code></pre></div><p>(계)속</p>
+</code></pre></div><ul>
+<li>사실 이 때 부터가 조금 중요하다.</li>
+<li><code>deleted: main.py</code>의 뜻은 삭제 또는 변화된 것으로 간주하기 때문에, 이 때에는 리셋 후 정리하라는 명령어이다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git reset HEAD main.py ---&gt; 리셋 시도
+</code></pre></div><ul>
+<li>그리고 다시 <code>status</code> 명령어를 실행하면 정상적으로 커밋이 정리가 된다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git status --&gt; 상태 확인
+On branch master
+nothing to commit, working tree clean
+</code></pre></div><h2 id="파일-이름-변경">파일 이름 변경</h2>
+<ul>
+<li>파일 이름 변경시에는 <code>git mv old_file_name new_file_name</code>와 같이 작업하면 된다.
+<ul>
+<li>단, 이 때 주의해야 하는 것은 파일의 경로다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git mv folder/main.py folder/test.py
+</code></pre></div><ul>
+<li>이와 같은 형태로 수정을 해줘야 한다.</li>
+<li>만약, <code>fatal: not under version control, source=folder/main.py, destination=folder/test.py</code>와 같은 에러가 발생을 한다면, 이 때는 새로 추가된 파일을 <code>git add</code>를 하지 않은 <code>untracked</code> 상태인 것을 재 확인한다.</li>
+</ul>
+<h2 id="git-commit의-의미"><code>git commit</code>의 의미</h2>
+<ul>
+<li><code>commit</code>은 크게 <code>HEAD</code>와 스테이지를 결합하여 새로운 객체를 만드는 것과 유사하다. 즉, 변경된 파일의 차이를 깃 저장소에 기록하는 것을 말한다.</li>
+<li>그런데, 변경된 파일을 구별하려면 별도의 메시지를 같이 작성해야 하는데, 이를 커밋 메시지라고 해야 한다.</li>
+<li>조금 더 쉽게 설명하면 아래와 같다.
+<ul>
+<li>제안서 작업을 하기 위해 워드파일을 만들 때, 다음과 같이 저장하는 경우가 종종 있다.</li>
+<li>예) 제안서_1201.docx, 제안서_1202.docx</li>
+<li>두 문서 사이에는 당연히 차이가 발생한다.</li>
+</ul>
+</li>
+<li>이 때 문서명과 서로 다름을 표시해주는 역할을 해주는 것이 메시지라고 보면 된다.
+<ul>
+<li>따라서, 커밋 메시지는 반드시 작성해야 한다.</li>
+</ul>
+</li>
+<li>이제 커밋 메시지를 남긴다.
+<ul>
+<li>커밋 메시지에 대한 내용은 다음 URL에서 확인해보자.</li>
+<li><a href="https://dschloe.github.io/settings/github_settings/#iii-%EC%98%AC%EB%B0%94%EB%A5%B4%EA%B2%8C-%EC%BB%A4%EB%B0%8B%ED%95%98%EA%B8%B0">올바르게 커밋하기</a></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git commit -m <span style="color:#e6db74">&#34;message&#34;</span>
+</code></pre></div><h3 id="git-commit후의-수정"><code>git commit</code>후의 수정</h3>
+<ul>
+<li><code>git commit</code>이 실행한 뒤에는 <code>git status</code>를 실행해보면 다음과 같다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git status
+On branch main
+Your branch is ahead of <span style="color:#e6db74">&#39;origin/main&#39;</span> by <span style="color:#ae81ff">1</span> commit.
+  <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git push&#34;</span> to publish your local commits<span style="color:#f92672">)</span>
+
+nothing to commit, working tree clean
+</code></pre></div><ul>
+<li>이 상태가 되면 <code>git push</code>를 하면 된다.</li>
+<li>그런데, <code>git push</code> 이후에 수정할 것이 생겼다고 가정해보자.
+(계속)</li>
+</ul>
 
 		</div>
 		<footer class="post__footer">
