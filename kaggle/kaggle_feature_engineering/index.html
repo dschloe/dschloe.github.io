@@ -8,7 +8,8 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="Kaggle Feature Engineering - House Price" />
-<meta property="og:description" content="공지  현재 책 출판 준비 중입니다. 요약본으로 짧게 정리하여 올립니다. 구체적인 설명은 생략합니다.  Kaggle API !pip install kaggle Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.10) Requirement already satisfied: six&gt;=1.10 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.15.0) Requirement already satisfied: tqdm in /usr/local/lib/python3.6/dist-packages (from kaggle) (4.41.1) Requirement already satisfied: certifi in /usr/local/lib/python3.6/dist-packages (from kaggle) (2020.12.5) Requirement already satisfied: python-dateutil in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.8.1) Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from kaggle) (2." />
+<meta property="og:description" content="공지  현재 책 출판 준비 중입니다. 구체적인 설명은 책이 출판된 이후에 요약해서 올리도록 합니다.  Kaggle API Kaggle API를 활용한 데이터를 수집하는 예제는 Feature Engineering with Housing Price Prediction - Numerical Features 에서도 확인할 수 있기 때문에 생략 합니다.
+데이터 다운로드 및 불러오기  데이터를 불러옵니다.  import pandas as pd train = pd.read_csv(&#39;train.csv&#39;) test = pd.read_csv(&#39;test.csv&#39;) print(&#39;Data Loading is done!&#39;) Data Loading is done!  데이터 둘러보기  총 변수의 개수를 확인합니다." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://dschloe.github.io/kaggle/kaggle_feature_engineering/" />
 <meta property="article:published_time" content="2021-01-28T09:30:47+09:00" />
@@ -16,7 +17,8 @@
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Kaggle Feature Engineering - House Price"/>
-<meta name="twitter:description" content="공지  현재 책 출판 준비 중입니다. 요약본으로 짧게 정리하여 올립니다. 구체적인 설명은 생략합니다.  Kaggle API !pip install kaggle Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.10) Requirement already satisfied: six&gt;=1.10 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.15.0) Requirement already satisfied: tqdm in /usr/local/lib/python3.6/dist-packages (from kaggle) (4.41.1) Requirement already satisfied: certifi in /usr/local/lib/python3.6/dist-packages (from kaggle) (2020.12.5) Requirement already satisfied: python-dateutil in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.8.1) Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from kaggle) (2."/>
+<meta name="twitter:description" content="공지  현재 책 출판 준비 중입니다. 구체적인 설명은 책이 출판된 이후에 요약해서 올리도록 합니다.  Kaggle API Kaggle API를 활용한 데이터를 수집하는 예제는 Feature Engineering with Housing Price Prediction - Numerical Features 에서도 확인할 수 있기 때문에 생략 합니다.
+데이터 다운로드 및 불러오기  데이터를 불러옵니다.  import pandas as pd train = pd.read_csv(&#39;train.csv&#39;) test = pd.read_csv(&#39;test.csv&#39;) print(&#39;Data Loading is done!&#39;) Data Loading is done!  데이터 둘러보기  총 변수의 개수를 확인합니다."/>
 
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -170,83 +172,14 @@ if (!doNotTrack) {
 			<h2 id="공지">공지</h2>
 <ul>
 <li>현재 책 출판 준비 중입니다.</li>
-<li>요약본으로 짧게 정리하여 올립니다.</li>
-<li>구체적인 설명은 생략합니다.</li>
+<li>구체적인 설명은 책이 출판된 이후에 요약해서 올리도록 합니다.</li>
 </ul>
 <h2 id="kaggle-api">Kaggle API</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>pip install kaggle
-</code></pre></div><pre><code>Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.10)
-Requirement already satisfied: six&gt;=1.10 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.15.0)
-Requirement already satisfied: tqdm in /usr/local/lib/python3.6/dist-packages (from kaggle) (4.41.1)
-Requirement already satisfied: certifi in /usr/local/lib/python3.6/dist-packages (from kaggle) (2020.12.5)
-Requirement already satisfied: python-dateutil in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.8.1)
-Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.23.0)
-Requirement already satisfied: python-slugify in /usr/local/lib/python3.6/dist-packages (from kaggle) (4.0.1)
-Requirement already satisfied: urllib3 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.24.3)
-Requirement already satisfied: chardet&lt;4,&gt;=3.0.2 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;kaggle) (3.0.4)
-Requirement already satisfied: idna&lt;3,&gt;=2.5 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;kaggle) (2.10)
-Requirement already satisfied: text-unidecode&gt;=1.3 in /usr/local/lib/python3.6/dist-packages (from python-slugify-&gt;kaggle) (1.3)
-</code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> files
-
-uploaded <span style="color:#f92672">=</span> files<span style="color:#f92672">.</span>upload()
-
-<span style="color:#66d9ef">for</span> fn <span style="color:#f92672">in</span> uploaded<span style="color:#f92672">.</span>keys():
-  <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;User uploaded file &#34;{name}&#34; with length {length} bytes&#39;</span><span style="color:#f92672">.</span>format(
-      name<span style="color:#f92672">=</span>fn, length<span style="color:#f92672">=</span>len(uploaded[fn])))
-  
-<span style="color:#75715e"># Then move kaggle.json into the folder where the API expects to find it.</span>
-<span style="color:#960050;background-color:#1e0010">!</span>mkdir <span style="color:#f92672">-</span>p <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span> <span style="color:#f92672">&amp;&amp;</span> mv kaggle<span style="color:#f92672">.</span>json <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span> <span style="color:#f92672">&amp;&amp;</span> chmod <span style="color:#ae81ff">600</span> <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span>kaggle<span style="color:#f92672">.</span>json
-</code></pre></div><p><!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-Upload widget is only available when the cell has been executed in the
-current browser session. Please rerun this cell to enable.
-<!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<pre><code>Saving kaggle.json to kaggle.json
-User uploaded file &quot;kaggle.json&quot; with length 64 bytes
-</code></pre>
+<p>Kaggle API를 활용한 데이터를 수집하는 예제는 <a href="https://dschloe.github.io/kaggle/chapter_4_4_house_price_prediction_feature_engineering3/">Feature Engineering with Housing Price Prediction - Numerical Features</a> 에서도 확인할 수 있기 때문에 생략 합니다.</p>
 <h2 id="데이터-다운로드-및-불러오기">데이터 다운로드 및 불러오기</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>kaggle competitions list
-</code></pre></div><pre><code>Warning: Looks like you're using an outdated API Version, please consider updating (server 1.5.10 / client 1.5.4)
-ref                                            deadline             category            reward  teamCount  userHasEntered  
----------------------------------------------  -------------------  ---------------  ---------  ---------  --------------  
-contradictory-my-dear-watson                   2030-07-01 23:59:00  Getting Started     Prizes        102           False  
-gan-getting-started                            2030-07-01 23:59:00  Getting Started     Prizes        204           False  
-tpu-getting-started                            2030-06-03 23:59:00  Getting Started  Knowledge        426           False  
-digit-recognizer                               2030-01-01 00:00:00  Getting Started  Knowledge       2884           False  
-titanic                                        2030-01-01 00:00:00  Getting Started  Knowledge      22641            True  
-house-prices-advanced-regression-techniques    2030-01-01 00:00:00  Getting Started  Knowledge       6053            True  
-connectx                                       2030-01-01 00:00:00  Getting Started  Knowledge        533           False  
-nlp-getting-started                            2030-01-01 00:00:00  Getting Started  Knowledge       1587            True  
-competitive-data-science-predict-future-sales  2022-12-31 23:59:00  Playground           Kudos      10225            True  
-hungry-geese                                   2021-07-26 23:59:00  Playground          Prizes         56           False  
-hpa-single-cell-image-classification           2021-04-27 23:59:00  Featured           $25,000          6           False  
-vinbigdata-chest-xray-abnormalities-detection  2021-03-30 23:59:00  Featured           $50,000        417           False  
-hubmap-kidney-segmentation                     2021-03-25 23:59:00  Research           $60,000        918           False  
-ranzcr-clip-catheter-line-classification       2021-03-15 23:59:00  Featured           $50,000        617           False  
-jane-street-market-prediction                  2021-02-22 23:59:00  Featured          $100,000       3182           False  
-cassava-leaf-disease-classification            2021-02-18 23:59:00  Research           $18,000       3189            True  
-rfcx-species-audio-detection                   2021-02-17 23:59:00  Research           $15,000        958           False  
-acea-water-prediction                          2021-02-17 23:59:00  Analytics          $25,000          0           False  
-rock-paper-scissors                            2021-02-01 23:59:00  Playground          Prizes       1609           False  
-santa-2020                                     2021-02-01 23:59:00  Featured            Prizes        781           False  
-</code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>kaggle competitions download <span style="color:#f92672">-</span>c house<span style="color:#f92672">-</span>prices<span style="color:#f92672">-</span>advanced<span style="color:#f92672">-</span>regression<span style="color:#f92672">-</span>techniques
-</code></pre></div><pre><code>Warning: Looks like you're using an outdated API Version, please consider updating (server 1.5.10 / client 1.5.4)
-Downloading data_description.txt to /content
-  0% 0.00/13.1k [00:00&lt;?, ?B/s]
-100% 13.1k/13.1k [00:00&lt;00:00, 26.1MB/s]
-Downloading test.csv to /content
-  0% 0.00/441k [00:00&lt;?, ?B/s]
-100% 441k/441k [00:00&lt;00:00, 60.2MB/s]
-Downloading train.csv to /content
-  0% 0.00/450k [00:00&lt;?, ?B/s]
-100% 450k/450k [00:00&lt;00:00, 61.6MB/s]
-Downloading sample_submission.csv to /content
-  0% 0.00/31.2k [00:00&lt;?, ?B/s]
-100% 31.2k/31.2k [00:00&lt;00:00, 59.9MB/s]
-</code></pre>
+<ul>
+<li>데이터를 불러옵니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd 
 train <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;train.csv&#39;</span>)
 test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;test.csv&#39;</span>)
@@ -254,13 +187,22 @@ test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>
 </code></pre></div><pre><code>Data Loading is done!
 </code></pre>
 <h2 id="데이터-둘러보기">데이터 둘러보기</h2>
+<ul>
+<li>총 변수의 개수를 확인합니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;The shape of Train Data is:&#34;</span>, train<span style="color:#f92672">.</span>shape)
 <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;The shape of Test Data is:&#34;</span>, test<span style="color:#f92672">.</span>shape)
 </code></pre></div><pre><code>The shape of Train Data is: (1460, 81)
 The shape of Test Data is: (1459, 80)
 </code></pre>
 <h2 id="feature-engineering">Feature Engineering</h2>
+<ul>
+<li>Feature Engineering은 크게 데이터를 가공 하고, 또한 변환하는 가정을 동반합니다.</li>
+</ul>
 <h3 id="이상치-제거">이상치 제거</h3>
+<ul>
+<li>이상치를 제거하는 코드입니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train<span style="color:#f92672">.</span>drop(train[(train[<span style="color:#e6db74">&#39;OverallQual&#39;</span>]<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">4</span>) <span style="color:#f92672">&amp;</span> (train[<span style="color:#e6db74">&#39;SalePrice&#39;</span>]<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">200000</span>)]<span style="color:#f92672">.</span>index, inplace<span style="color:#f92672">=</span>True)
 train<span style="color:#f92672">.</span>drop(train[(train[<span style="color:#e6db74">&#39;OverallCond&#39;</span>]<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">4</span>) <span style="color:#f92672">&amp;</span> (train[<span style="color:#e6db74">&#39;SalePrice&#39;</span>]<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">200000</span>)]<span style="color:#f92672">.</span>index, inplace<span style="color:#f92672">=</span>True)
 train<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92672">=</span>True, inplace<span style="color:#f92672">=</span>True)
@@ -268,6 +210,10 @@ train<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92
 </code></pre></div><pre><code>(1458, 81)
 </code></pre>
 <h3 id="종속변수의-로그-변환">종속변수의 로그 변환</h3>
+<ul>
+<li>주택 가격처럼 가격의 차이가 큰 경우에는 로그 변환으로 변경하는 것이 중요합니다.</li>
+<li>로그 변환 하기전의 시각화 입니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
 <span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
 <span style="color:#f92672">from</span> scipy.stats <span style="color:#f92672">import</span> norm
@@ -290,7 +236,10 @@ fig<span style="color:#f92672">.</span>show()
 </code></pre></div><pre><code>The value of mu before log transformation is: 180761.24142661178
 The value of sigma before log transformation is: 79270.93617295024
 </code></pre>
-<p><img src="../../static/img/kaggle/housing_price/kaggle_feature_engineering/output_15_1.png" alt="png"></p>
+<p><img src="/img/kaggle/housing_price/kaggle_feature_engineering/output_15_1.png" alt="png"></p>
+<ul>
+<li>로그 변환 후의 시각화 입니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np 
 
 train[<span style="color:#e6db74">&#34;SalePrice&#34;</span>] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>log1p(train[<span style="color:#e6db74">&#34;SalePrice&#34;</span>])
@@ -313,8 +262,11 @@ fig<span style="color:#f92672">.</span>show()
 </code></pre></div><pre><code>The value of mu before log transformation is: 12.0233397799989
 The value of sigma before log transformation is: 0.3989191793099824
 </code></pre>
-<p><img src="../../static/img/kaggle/housing_price/kaggle_feature_engineering/output_16_1.png" alt="png"></p>
+<p><img src="/img/kaggle/housing_price/kaggle_feature_engineering/output_16_1.png" alt="png"></p>
 <h3 id="데이터-id-값-제거">데이터 ID 값 제거</h3>
+<ul>
+<li>ID 변수는 머신러닝 모형의 입력변수로 넣지 않습니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_ID <span style="color:#f92672">=</span> train[<span style="color:#e6db74">&#39;Id&#39;</span>]
 test_ID <span style="color:#f92672">=</span> test[<span style="color:#e6db74">&#39;Id&#39;</span>]
 train<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;Id&#39;</span>], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
@@ -323,17 +275,26 @@ train<span style="color:#f92672">.</span>shape, test<span style="color:#f92672">
 </code></pre></div><pre><code>((1458, 80), (1459, 79))
 </code></pre>
 <h3 id="y값-추출">Y값 추출</h3>
+<ul>
+<li>y값은 별도로 추출합니다. test 데이터에는 없기 때문에, 추출하여 별도로 저장합니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">y <span style="color:#f92672">=</span> train[[<span style="color:#e6db74">&#39;SalePrice&#39;</span>]]<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92672">=</span>True)
 train <span style="color:#f92672">=</span> train<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;SalePrice&#39;</span>, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
 train<span style="color:#f92672">.</span>shape, test<span style="color:#f92672">.</span>shape
 </code></pre></div><pre><code>((1458, 79), (1459, 79))
 </code></pre>
 <h3 id="데이터-합치기">데이터 합치기</h3>
+<ul>
+<li>변수의 갯수가 똑같다면, 데이터를 합칠 수 있습니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">all_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>concat([train, test])<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92672">=</span>True)
 all_df<span style="color:#f92672">.</span>shape
 </code></pre></div><pre><code>(2917, 79)
 </code></pre>
 <h3 id="결측치-확인">결측치 확인</h3>
+<ul>
+<li>결측치를 체크하는 함수를 정의 합니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_na</span>(data, head_num <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>):
   isnull_na <span style="color:#f92672">=</span> (data<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> len(data)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>
   data_na <span style="color:#f92672">=</span> isnull_na<span style="color:#f92672">.</span>drop(isnull_na[isnull_na <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>index)<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)
@@ -366,6 +327,9 @@ MSZoning           0.137127    object
 BsmtFullBath       0.068564   float64
 </code></pre>
 <h3 id="결측치-제거">결측치 제거</h3>
+<ul>
+<li>결측치의 비율이 많은 변수들은 제거합니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">all_df<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;PoolQC&#39;</span>, <span style="color:#e6db74">&#39;MiscFeature&#39;</span>, <span style="color:#e6db74">&#39;Alley&#39;</span>, <span style="color:#e6db74">&#39;Fence&#39;</span>, <span style="color:#e6db74">&#39;FireplaceQu&#39;</span>, <span style="color:#e6db74">&#39;LotFrontage&#39;</span>], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
 check_na(all_df)
 </code></pre></div><pre><code>결측치 데이터 컬럼과 건수:
@@ -378,6 +342,9 @@ GarageType         5.382242    object
 BsmtCond           2.811107    object
 </code></pre>
 <h3 id="결측치-채우기">결측치 채우기</h3>
+<ul>
+<li>이제 결측치를 채우도록 합니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(all_df[<span style="color:#e6db74">&#39;BsmtCond&#39;</span>]<span style="color:#f92672">.</span>value_counts())
 <span style="color:#66d9ef">print</span>()
 <span style="color:#66d9ef">print</span>(all_df[<span style="color:#e6db74">&#39;BsmtCond&#39;</span>]<span style="color:#f92672">.</span>mode()[<span style="color:#ae81ff">0</span>])
@@ -437,6 +404,9 @@ Columns: [Missing Ratio, Data Type]
 Index: []
 </code></pre>
 <h3 id="왜도skewnewss-처리하기">왜도(Skewnewss) 처리하기</h3>
+<ul>
+<li>왜도 값을 추출하여 수치 데이터의 대칭성을 확인합니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> scipy.stats <span style="color:#f92672">import</span> skew
 
 <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">find_skew</span>(x):
@@ -494,6 +464,9 @@ ax<span style="color:#f92672">.</span>set(xlabel<span style="color:#f92672">=</s
 ax<span style="color:#f92672">.</span>set(title<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Numeric Distribution of Features Before Box-Cox Transformation&#34;</span>)
 sns<span style="color:#f92672">.</span>despine(trim<span style="color:#f92672">=</span>True, left<span style="color:#f92672">=</span>True)
 </code></pre></div><p><img src="/img/kaggle/housing_price/kaggle_feature_engineering/output_33_0.png" alt="png"></p>
+<ul>
+<li>Box-Cox 변환을 시도합니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> scipy.special <span style="color:#f92672">import</span> boxcox1p
 <span style="color:#f92672">from</span> scipy.stats <span style="color:#f92672">import</span> boxcox_normmax
 
@@ -541,6 +514,9 @@ ax<span style="color:#f92672">.</span>set(title<span style="color:#f92672">=</sp
 sns<span style="color:#f92672">.</span>despine(trim<span style="color:#f92672">=</span>True, left<span style="color:#f92672">=</span>True)
 </code></pre></div><p><img src="/img/kaggle/housing_price/kaggle_feature_engineering/output_35_0.png" alt="png"></p>
 <h3 id="도출-변수">도출 변수</h3>
+<ul>
+<li>도출 변수를 만든 후, 참조한 변수는 삭제하도록 합니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">all_df[<span style="color:#e6db74">&#39;TotalSF&#39;</span>] <span style="color:#f92672">=</span> all_df[<span style="color:#e6db74">&#39;TotalBsmtSF&#39;</span>] <span style="color:#f92672">+</span> all_df[<span style="color:#e6db74">&#39;1stFlrSF&#39;</span>] <span style="color:#f92672">+</span> all_df[<span style="color:#e6db74">&#39;2ndFlrSF&#39;</span>]
 all_df <span style="color:#f92672">=</span> all_df<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;TotalBsmtSF&#39;</span>, <span style="color:#e6db74">&#39;1stFlrSF&#39;</span>, <span style="color:#e6db74">&#39;2ndFlrSF&#39;</span>], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
 <span style="color:#66d9ef">print</span>(all_df<span style="color:#f92672">.</span>shape)
@@ -621,6 +597,9 @@ all_df <span style="color:#f92672">=</span> all_df<span style="color:#f92672">.<
 </code></pre></div><pre><code>(2917, 62)
 </code></pre>
 <h3 id="더미-변수">더미 변수</h3>
+<ul>
+<li>Count 기반의 데이터를 가지고 더미 변수를 만드는 과정을 진행합니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">all_df[<span style="color:#e6db74">&#39;PoolArea&#39;</span>]<span style="color:#f92672">.</span>value_counts()
 </code></pre></div><pre><code>0.000000    2904
 4.721829       1
@@ -662,6 +641,9 @@ all_df[<span style="color:#e6db74">&#39;Fireplaces&#39;</span>]<span style="colo
 Name: Fireplaces, dtype: int64
 </code></pre>
 <h3 id="라벨-인코딩-vs-원핫-인코딩">라벨 인코딩 vs 원핫 인코딩</h3>
+<ul>
+<li>자세한 설명은 <a href="https://dschloe.github.io/kaggle/chapter_4_4_house_price_prediction_feature_engineering3/#5-label-encoding-vs-one-hot-encoding">Label Encoding vs One-Hot Encoding</a>를 참조 하시기를 바랍니다.</li>
+</ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.preprocessing <span style="color:#f92672">import</span> LabelEncoder
 <span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
 
