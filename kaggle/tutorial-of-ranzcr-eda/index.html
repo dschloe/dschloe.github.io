@@ -8,7 +8,7 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="Tutorial of Ranzcr EDA" />
-<meta property="og:description" content="Overview  (2021 Feb 10. 정리중) 코드 조금 수정하여 재 업로드 예정입니다.  캐글 노트북 원본을 보고 싶다면, 다음 Tutorial of RANZCR EDA에서 확인 하십시요.    Intro  Thanks to RANZCR/resnext50_32x4d starter [training]  Please visit here and upvote    import os import pandas as pd from matplotlib import pyplot as plt import seaborn as sns Check File Size  Check Each Size of Dataset Folder in this competition  train_records = 4." />
+<meta property="og:description" content="Competition  https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification  Intro  Thanks to RANZCR/resnext50_32x4d starter [training]  Please visit here and upvote    import os import pandas as pd from matplotlib import pyplot as plt import seaborn as sns Check File Size  Check Each Size of Dataset Folder in this competition  train_records = 4.5GB test_tfrecords = 0.5MB train (image data) = 6.5GB test (image data) = 0.8MB    import os def get_folder_size(file_directory): # file_list = os." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://dschloe.github.io/kaggle/tutorial-of-ranzcr-eda/" />
 <meta property="article:published_time" content="2021-02-10T18:30:47+09:00" />
@@ -16,7 +16,7 @@
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Tutorial of Ranzcr EDA"/>
-<meta name="twitter:description" content="Overview  (2021 Feb 10. 정리중) 코드 조금 수정하여 재 업로드 예정입니다.  캐글 노트북 원본을 보고 싶다면, 다음 Tutorial of RANZCR EDA에서 확인 하십시요.    Intro  Thanks to RANZCR/resnext50_32x4d starter [training]  Please visit here and upvote    import os import pandas as pd from matplotlib import pyplot as plt import seaborn as sns Check File Size  Check Each Size of Dataset Folder in this competition  train_records = 4."/>
+<meta name="twitter:description" content="Competition  https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification  Intro  Thanks to RANZCR/resnext50_32x4d starter [training]  Please visit here and upvote    import os import pandas as pd from matplotlib import pyplot as plt import seaborn as sns Check File Size  Check Each Size of Dataset Folder in this competition  train_records = 4.5GB test_tfrecords = 0.5MB train (image data) = 6.5GB test (image data) = 0.8MB    import os def get_folder_size(file_directory): # file_list = os."/>
 
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -142,6 +142,8 @@ if (!doNotTrack) {
 	<div class="toc__menu">
 		<nav id="TableOfContents">
   <ul>
+    <li><a href="#competition">Competition</a></li>
+    <li><a href="#intro">Intro</a></li>
     <li><a href="#check-file-size">Check File Size</a></li>
     <li><a href="#check-train-file">Check train file</a></li>
     <li><a href="#definitions-of-variables">Definitions of Variables</a>
@@ -165,16 +167,11 @@ if (!doNotTrack) {
 	</div>
 </div>
 <div class="content post__content clearfix">
-			<h1 id="overview">Overview</h1>
+			<h2 id="competition">Competition</h2>
 <ul>
-<li>(2021 Feb 10. 정리중)</li>
-<li>코드 조금 수정하여 재 업로드 예정입니다.
-<ul>
-<li>캐글 노트북 원본을 보고 싶다면, 다음 <a href="https://www.kaggle.com/j2hoon85/tutorial-of-ranzcr-eda">Tutorial of RANZCR EDA</a>에서 확인 하십시요.</li>
+<li><a href="https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification">https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification</a></li>
 </ul>
-</li>
-</ul>
-<h1 id="intro">Intro</h1>
+<h2 id="intro">Intro</h2>
 <ul>
 <li>Thanks to <a href="https://www.kaggle.com/yasufuminakama/ranzcr-resnext50-32x4d-starter-training">RANZCR/resnext50_32x4d starter [training]</a>
 <ul>
@@ -212,7 +209,13 @@ if (!doNotTrack) {
   
 base_dir <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;../input/ranzcr-clip-catheter-line-classification&#39;</span>
 get_folder_size(base_dir)
-</code></pre></div><h2 id="check-train-file">Check train file</h2>
+</code></pre></div><pre><code>../input/ranzcr-clip-catheter-line-classification/test is 805 MB
+../input/ranzcr-clip-catheter-line-classification/test_tfrecords is 555 MB
+../input/ranzcr-clip-catheter-line-classification/train_tfrecords is 4563 MB
+../input/ranzcr-clip-catheter-line-classification/train is 6592 MB
+../input/ranzcr-clip-catheter-line-classification is 12524 MB
+</code></pre>
+<h2 id="check-train-file">Check train file</h2>
 <ul>
 <li>Let&rsquo;s descirbe train</li>
 </ul>
@@ -220,7 +223,254 @@ get_folder_size(base_dir)
 test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;../input/ranzcr-clip-catheter-line-classification/sample_submission.csv&#39;</span>, index_col <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>)
 display(train<span style="color:#f92672">.</span>head())
 display(test<span style="color:#f92672">.</span>head())
-</code></pre></div><h2 id="definitions-of-variables">Definitions of Variables</h2>
+</code></pre></div><style>
+    #customers {
+      font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+    }
+
+    #customers td,
+    #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    #customers tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    #customers tr:hover {
+      background-color: #ddd;
+    }
+    #customers th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: rgb(175, 107, 76);
+      color: white;
+    }
+  </style>
+  <div style="width:100%; height:400px; overflow:auto">
+    <table border="1" id="customers">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ETT - Abnormal</th>
+      <th>ETT - Borderline</th>
+      <th>ETT - Normal</th>
+      <th>NGT - Abnormal</th>
+      <th>NGT - Borderline</th>
+      <th>NGT - Incompletely Imaged</th>
+      <th>NGT - Normal</th>
+      <th>CVC - Abnormal</th>
+      <th>CVC - Borderline</th>
+      <th>CVC - Normal</th>
+      <th>Swan Ganz Catheter Present</th>
+      <th>PatientID</th>
+    </tr>
+    <tr>
+      <th>StudyInstanceUID</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1.2.826.0.1.3680043.8.498.26697628953273228189375557799582420561</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>ec89415d1</td>
+    </tr>
+    <tr>
+      <th>1.2.826.0.1.3680043.8.498.46302891597398758759818628675365157729</th>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>bf4c6da3c</td>
+    </tr>
+    <tr>
+      <th>1.2.826.0.1.3680043.8.498.23819260719748494858948050424870692577</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>3fc1c97e5</td>
+    </tr>
+    <tr>
+      <th>1.2.826.0.1.3680043.8.498.68286643202323212801283518367144358744</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>c31019814</td>
+    </tr>
+    <tr>
+      <th>1.2.826.0.1.3680043.8.498.10050203009225938259119000528814762175</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>207685cd1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+  <div style="width:100%; height:400px; overflow:auto">
+    <table border="1" id="customers">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ETT - Abnormal</th>
+      <th>ETT - Borderline</th>
+      <th>ETT - Normal</th>
+      <th>NGT - Abnormal</th>
+      <th>NGT - Borderline</th>
+      <th>NGT - Incompletely Imaged</th>
+      <th>NGT - Normal</th>
+      <th>CVC - Abnormal</th>
+      <th>CVC - Borderline</th>
+      <th>CVC - Normal</th>
+      <th>Swan Ganz Catheter Present</th>
+    </tr>
+    <tr>
+      <th>StudyInstanceUID</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1.2.826.0.1.3680043.8.498.46923145579096002617106567297135160932</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1.2.826.0.1.3680043.8.498.84006870182611080091824109767561564887</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1.2.826.0.1.3680043.8.498.12219033294413119947515494720687541672</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1.2.826.0.1.3680043.8.498.84994474380235968109906845540706092671</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1.2.826.0.1.3680043.8.498.35798987793805669662572108881745201372</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h2 id="definitions-of-variables">Definitions of Variables</h2>
 <ul>
 <li>What&rsquo;s inside data?
 <ul>
@@ -240,6 +490,7 @@ display(test<span style="color:#f92672">.</span>head())
 </ul>
 </li>
 </ul>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
 <h3 id="data-distribution-of-each-variable">Data Distribution of Each Variable</h3>
 <ul>
 <li>why two calculations are different?
@@ -255,8 +506,88 @@ display(test<span style="color:#f92672">.</span>head())
 
 var_cal_tmp <span style="color:#f92672">=</span> train<span style="color:#f92672">.</span>iloc[:, :<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>sum()
 <span style="color:#66d9ef">print</span>(var_cal_tmp)
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train<span style="color:#f92672">.</span>iloc[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>to_frame()<span style="color:#f92672">.</span>T
-</code></pre></div><h3 id="quick-visualization">Quick Visualization</h3>
+</code></pre></div><pre><code>Total Rows of Train Data is 30083
+Total Count of Each Variable in Train Data is 50619
+ETT - Abnormal                   79
+ETT - Borderline               1138
+ETT - Normal                   7240
+NGT - Abnormal                  279
+NGT - Borderline                529
+NGT - Incompletely Imaged      2748
+NGT - Normal                   4797
+CVC - Abnormal                 3195
+CVC - Borderline               8460
+CVC - Normal                  21324
+Swan Ganz Catheter Present      830
+dtype: int64
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train<span style="color:#f92672">.</span>iloc[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>to_frame()<span style="color:#f92672">.</span>T
+</code></pre></div><style>
+    #customers {
+      font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+    }
+
+    #customers td,
+    #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    #customers tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    #customers tr:hover {
+      background-color: #ddd;
+    }
+    #customers th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: rgb(175, 107, 76);
+      color: white;
+    }
+  </style>
+  <div style="width:100%; height:400px; overflow:auto">
+    <table border="1" id="customers">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ETT - Abnormal</th>
+      <th>ETT - Borderline</th>
+      <th>ETT - Normal</th>
+      <th>NGT - Abnormal</th>
+      <th>NGT - Borderline</th>
+      <th>NGT - Incompletely Imaged</th>
+      <th>NGT - Normal</th>
+      <th>CVC - Abnormal</th>
+      <th>CVC - Borderline</th>
+      <th>CVC - Normal</th>
+      <th>Swan Ganz Catheter Present</th>
+      <th>PatientID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1.2.826.0.1.3680043.8.498.46302891597398758759818628675365157729</th>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>bf4c6da3c</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="quick-visualization">Quick Visualization</h3>
 <ul>
 <li>In general, CVC outnumbered other group.</li>
 </ul>
@@ -266,13 +597,19 @@ ax<span style="color:#f92672">.</span>tick_params(axis<span style="color:#f92672
 ax<span style="color:#f92672">.</span>tick_params(axis<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;y&#34;</span>, labelsize<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
 ax<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#34;Number of Images&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span>)
 ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#34;Distribution of Labels&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span>)
-</code></pre></div><ul>
+</code></pre></div><pre><code>Text(0.5, 1.0, 'Distribution of Labels')
+</code></pre>
+<p><img src="/img/kaggle/tutorial-of-ranzcr-eda/output_12_1.png" alt="png"></p>
+<ul>
 <li>The number of Patients are smaller than total data.</li>
 <li>It means some patients are frequently checked, depending upon patients</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Number of Unique Patients: &#34;</span>, train[<span style="color:#e6db74">&#34;PatientID&#34;</span>]<span style="color:#f92672">.</span>unique()<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>])
 <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Number of Total Data: &#34;</span>, len(train[<span style="color:#e6db74">&#34;PatientID&#34;</span>]))
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">tmp <span style="color:#f92672">=</span> train[<span style="color:#e6db74">&#39;PatientID&#39;</span>]<span style="color:#f92672">.</span>value_counts()
+</code></pre></div><pre><code>Number of Unique Patients:  3255
+Number of Total Data:  30083
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">tmp <span style="color:#f92672">=</span> train[<span style="color:#e6db74">&#39;PatientID&#39;</span>]<span style="color:#f92672">.</span>value_counts()
 <span style="color:#66d9ef">print</span>(tmp)
 fig, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">24</span>, <span style="color:#ae81ff">6</span>))
 sns<span style="color:#f92672">.</span>countplot(x <span style="color:#f92672">=</span> tmp<span style="color:#f92672">.</span>values, ax<span style="color:#f92672">=</span>ax)
@@ -280,7 +617,27 @@ ax<span style="color:#f92672">.</span>tick_params(axis<span style="color:#f92672
 ax<span style="color:#f92672">.</span>tick_params(axis<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;y&#34;</span>, labelsize<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
 ax<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#34;Number of Images&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span>)
 ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#34;Distribution of Labels&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span>)
-</code></pre></div><ul>
+</code></pre></div><pre><code>05029c63a    172
+55073fece    167
+26da0d5ad    148
+8849382d0    130
+34242119f    110
+            ... 
+ad32e88e0      1
+7755053cb      1
+2d5a5f0d0      1
+1951dc11c      1
+22e8f333f      1
+Name: PatientID, Length: 3255, dtype: int64
+
+
+
+
+
+Text(0.5, 1.0, 'Distribution of Labels')
+</code></pre>
+<p><img src="/img/kaggle/tutorial-of-ranzcr-eda/output_15_2.png" alt="png"></p>
+<ul>
 <li>Now, we need to see the distribution of data in each variable.</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">target_cols <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;ETT - Abnormal&#39;</span>, <span style="color:#e6db74">&#39;ETT - Borderline&#39;</span>, <span style="color:#e6db74">&#39;ETT - Normal&#39;</span>, <span style="color:#e6db74">&#39;NGT - Abnormal&#39;</span>, 
@@ -305,7 +662,20 @@ fig, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</s
 
 fig<span style="color:#f92672">.</span>tight_layout()
 fig<span style="color:#f92672">.</span>subplots_adjust(top<span style="color:#f92672">=</span><span style="color:#ae81ff">0.95</span>)
-</code></pre></div><ul>
+</code></pre></div><pre><code>0 ETT - Abnormal
+1 ETT - Borderline
+2 ETT - Normal
+3 NGT - Abnormal
+4 NGT - Borderline
+5 NGT - Incompletely Imaged
+6 NGT - Normal
+7 CVC - Abnormal
+8 CVC - Borderline
+9 CVC - Normal
+10 Swan Ganz Catheter Present
+</code></pre>
+<p><img src="/img/kaggle/tutorial-of-ranzcr-eda/output_17_1.png" alt="png"></p>
+<ul>
 <li>How to interpret the graph?
 <ul>
 <li>CVC group is the top most amongst groups</li>
@@ -331,22 +701,41 @@ fig<span style="color:#f92672">.</span>subplots_adjust(top<span style="color:#f9
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> IPython.display <span style="color:#f92672">import</span> YouTubeVideo
 YouTubeVideo(<span style="color:#e6db74">&#39;FtJr7i7ENMY&#39;</span>)
-</code></pre></div><h3 id="nasogastric-tube">Nasogastric Tube</h3>
+</code></pre></div>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/FtJr7i7ENMY" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<h3 id="nasogastric-tube">Nasogastric Tube</h3>
 <ul>
 <li>It&rsquo;s so called NTT in this dataset.</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">YouTubeVideo(<span style="color:#e6db74">&#39;Abf3Gd6AaZQ&#39;</span>)
-</code></pre></div><h3 id="central-venous-catheter">Central venous catheter</h3>
+</code></pre></div>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/Abf3Gd6AaZQ" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<h3 id="central-venous-catheter">Central venous catheter</h3>
 <ul>
 <li>It&rsquo;s so called CVC in this dataset.</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">YouTubeVideo(<span style="color:#e6db74">&#39;mTBrCMn86cU&#39;</span>)
-</code></pre></div><h3 id="swan-ganz-catheter-present">Swan Ganz Catheter Present</h3>
+</code></pre></div>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/mTBrCMn86cU" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<h3 id="swan-ganz-catheter-present">Swan Ganz Catheter Present</h3>
 <ul>
 <li>It&rsquo;s Swan Ganz Catheter Present</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">YouTubeVideo(<span style="color:#e6db74">&#39;YkN30T6ig30&#39;</span>)
-</code></pre></div><p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+</code></pre></div>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/YkN30T6ig30" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
 <h2 id="check-train-annotation-file">Check train annotation file</h2>
 <ul>
 <li>What&rsquo;s Inside train_annotations file?
@@ -357,8 +746,109 @@ YouTubeVideo(<span style="color:#e6db74">&#39;FtJr7i7ENMY&#39;</span>)
 <li>Let&rsquo;s look at data</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">annot <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;../input/ranzcr-clip-catheter-line-classification/train_annotations.csv&#34;</span>)
-annot<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">30</span>)
-</code></pre></div><h2 id="visualization-of-x-rays-image">Visualization of X-rays image</h2>
+annot<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">10</span>)
+</code></pre></div><style>
+    #customers {
+      font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+    }
+
+    #customers td,
+    #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    #customers tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    #customers tr:hover {
+      background-color: #ddd;
+    }
+    #customers th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: rgb(175, 107, 76);
+      color: white;
+    }
+  </style>
+  <div style="width:100%; height:400px; overflow:auto">
+    <table border="1" id="customers">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>StudyInstanceUID</th>
+      <th>label</th>
+      <th>data</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1.2.826.0.1.3680043.8.498.12616281126973421762...</td>
+      <td>CVC - Normal</td>
+      <td>[[1487, 1279], [1477, 1168], [1472, 1052], [14...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.2.826.0.1.3680043.8.498.12616281126973421762...</td>
+      <td>CVC - Normal</td>
+      <td>[[1328, 7], [1347, 101], [1383, 193], [1400, 2...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.2.826.0.1.3680043.8.498.72921907356394389969...</td>
+      <td>CVC - Borderline</td>
+      <td>[[801, 1207], [812, 1112], [823, 1023], [842, ...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1.2.826.0.1.3680043.8.498.11697104485452001927...</td>
+      <td>CVC - Normal</td>
+      <td>[[1366, 961], [1411, 861], [1453, 751], [1508,...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1.2.826.0.1.3680043.8.498.87704688663091069148...</td>
+      <td>NGT - Normal</td>
+      <td>[[1862, 14], [1845, 293], [1801, 869], [1716, ...</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>1.2.826.0.1.3680043.8.498.87704688663091069148...</td>
+      <td>CVC - Normal</td>
+      <td>[[906, 604], [1103, 578], [1242, 607], [1459, ...</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>1.2.826.0.1.3680043.8.498.87704688663091069148...</td>
+      <td>ETT - Normal</td>
+      <td>[[1781, 804], [1801, 666], [1791, 496], [1798,...</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>1.2.826.0.1.3680043.8.498.53113362093090654004...</td>
+      <td>CVC - Normal</td>
+      <td>[[1152, 938], [1193, 856], [1265, 795], [1362,...</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>1.2.826.0.1.3680043.8.498.83331936392921199432...</td>
+      <td>NGT - Normal</td>
+      <td>[[1903, 73], [1934, 768], [1917, 1061], [1866,...</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>1.2.826.0.1.3680043.8.498.83331936392921199432...</td>
+      <td>CVC - Normal</td>
+      <td>[[92, 1857], [163, 1936], [251, 1917], [282, 1...</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h2 id="visualization-of-x-rays-image">Visualization of X-rays image</h2>
 <ul>
 <li>combined train + train_annotations, let&rsquo;s draw sample image</li>
 </ul>
@@ -375,7 +865,8 @@ annot<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">30</sp
 
 base_dir <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;../input/ranzcr-clip-catheter-line-classification/train/&#39;</span>
 train_base_chest_plot(<span style="color:#ae81ff">1</span>, base_dir)
-</code></pre></div><ul>
+</code></pre></div><p><img src="/img/kaggle/tutorial-of-ranzcr-eda/output_31_0.png" alt="png"></p>
+<ul>
 <li>But, what we need is to draw tube. Thus, we need to use column &lsquo;data&rsquo; in this plot. Let&rsquo;s do this.</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> ast 
@@ -396,7 +887,10 @@ base_dir <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;.
 train_base_tube_plot(<span style="color:#ae81ff">1</span>, base_dir)
 train_base_tube_plot(<span style="color:#ae81ff">2</span>, base_dir)
 train_base_tube_plot(<span style="color:#ae81ff">25</span>, base_dir)
-</code></pre></div><ul>
+</code></pre></div><p><img src="/img/kaggle/tutorial-of-ranzcr-eda/output_33_0.png" alt="png"></p>
+<p><img src="/img/kaggle/tutorial-of-ranzcr-eda/output_33_1.png" alt="png"></p>
+<p><img src="/img/kaggle/tutorial-of-ranzcr-eda/output_33_2.png" alt="png"></p>
+<ul>
 <li>Well, still difficult to figure out what the difference between normal and abnormal is. So, Droped to draw more.</li>
 </ul>
 
