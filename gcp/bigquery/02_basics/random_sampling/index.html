@@ -203,7 +203,8 @@ temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</s
 <ul>
 <li>Hashing 방식과 Modulo 연산자를 활용하여 training &amp; validation을 분리한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">client <span style="color:#f92672">=</span> bigquery<span style="color:#f92672">.</span>Client(project<span style="color:#f92672">=</span>your_project_id)
+temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
 </span><span style="color:#e6db74">SELECT
 </span><span style="color:#e6db74">  date, 
 </span><span style="color:#e6db74">  airline, 
@@ -214,11 +215,20 @@ temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</s
 </span><span style="color:#e6db74">FROM 
 </span><span style="color:#e6db74">  `bigquery-samples.airline_ontime_data.flights`
 </span><span style="color:#e6db74">WHERE
-</span><span style="color:#e6db74">  MOD(ABS(FRAM_FINGERPRINT(date)), 10) == 9
+</span><span style="color:#e6db74">  MOD(ABS(FARM_FINGERPRINT(date)), 10) IN (9)
 </span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
 
-<span style="color:#66d9ef">print</span>(tabulate(temp, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;keys&#39;</span>, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;psql&#39;</span>))
-</code></pre></div><h2 id="v-reference">V. Reference</h2>
+
+<span style="color:#66d9ef">print</span>(temp<span style="color:#f92672">.</span>head())
+</code></pre></div><pre><code>         date airline  ... arrival_airport  arrival_delay
+0  2006-08-17      KH  ...             KOA           -4.0
+1  2006-08-14      KH  ...             KOA           -7.0
+2  2006-08-11      KH  ...             KOA            0.0
+3  2006-08-27      KH  ...             KOA            4.0
+4  2007-11-15      KH  ...             KOA           -9.0
+
+[5 rows x 6 columns]
+</code></pre><h2 id="v-reference">V. Reference</h2>
 <ul>
 <li><a href="https://www.coursera.org/learn/mlops-fundamentals/home/welcome">https://www.coursera.org/learn/mlops-fundamentals/home/welcome</a></li>
 </ul>
