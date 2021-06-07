@@ -1,0 +1,3273 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>ch05 - Log Scale Visualisation - Data Science | DSChloe</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+		<meta property="og:title" content="ch05 - Log Scale Visualisation" />
+<meta property="og:description" content="공지  본 포스트는 데이터 시각화 교과서 내용의 일부를 요약하였다.   본 포스트를 읽고 가급적 전체 내용 숙지를 위해 구매하는 것을 권유한다.  개요  수치형 자료를 Y축으로 놓는 그래프는 언제나 힘들었다. log Scale을 통해 값의 크기를 줄이기는 하지만, Y축을 어떻게 표현하는 것이 좋을지에 대한 고민은 늘 있어왔다. 시각화 이론 중심의 포스팅이기에 코드 리뷰 및 해석은 생략한다.  문제점  log Scale을 적용했을 때와 그렇지 않을 때의 그래프를 비교해본다.  (1) 패키지 불러오기  각각의 패키지를 불러온다." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dschloe.github.io/r/datavisualisation/ch05_logscale_viz/" />
+<meta property="article:published_time" content="2020-07-29T00:10:39+09:00" />
+<meta property="article:modified_time" content="2020-07-29T00:10:39+09:00" />
+
+		<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ch05 - Log Scale Visualisation"/>
+<meta name="twitter:description" content="공지  본 포스트는 데이터 시각화 교과서 내용의 일부를 요약하였다.   본 포스트를 읽고 가급적 전체 내용 숙지를 위해 구매하는 것을 권유한다.  개요  수치형 자료를 Y축으로 놓는 그래프는 언제나 힘들었다. log Scale을 통해 값의 크기를 줄이기는 하지만, Y축을 어떻게 표현하는 것이 좋을지에 대한 고민은 늘 있어왔다. 시각화 이론 중심의 포스팅이기에 코드 리뷰 및 해석은 생략한다.  문제점  log Scale을 적용했을 때와 그렇지 않을 때의 그래프를 비교해본다.  (1) 패키지 불러오기  각각의 패키지를 불러온다."/>
+
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo">
+		<a class="logo__link" href="/" title="Data Science | DSChloe" rel="home">
+			<div class="logo__item logo__text">
+					<div class="logo__title">Data Science | DSChloe</div>
+					<div class="logo__tagline">Love your beloved one forever</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/aws/">
+				
+				<span class="menu__text">AWS</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/ds-projects/">
+				
+				<span class="menu__text">DS-Projects</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/gcp/">
+				
+				<span class="menu__text">GCP</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/kaggle/">
+				
+				<span class="menu__text">Kaggle</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/mlops/">
+				
+				<span class="menu__text">MLOps</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/python/">
+				
+				<span class="menu__text">Python</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/r/">
+				
+				<span class="menu__text">R</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/settings/">
+				
+				<span class="menu__text">settings</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About DSChloe</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">ch05 - Log Scale Visualisation</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-07-29T00:10:39&#43;09:00">2020-07-29</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-visualisation/" rel="category">Data Visualisation</a>, <a class="meta__link" href="/categories/r/" rel="category">R</a>, <a class="meta__link" href="/categories/ggplot2/" rel="category">ggplot2</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" rel="category">데이터 시각화</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#공지">공지</a></li>
+    <li><a href="#개요">개요</a></li>
+    <li><a href="#문제점">문제점</a>
+      <ul>
+        <li><a href="#1-패키지-불러오기">(1) 패키지 불러오기</a></li>
+        <li><a href="#2-데이터-확인">(2) 데이터 확인</a></li>
+        <li><a href="#3-모호한-시각화">(3) 모호한 시각화</a></li>
+      </ul>
+    </li>
+    <li><a href="#로그-스케일-적용">로그 스케일 적용</a>
+      <ul>
+        <li><a href="#1-보정된-시각화">(1) 보정된 시각화</a></li>
+        <li><a href="#2-그래프-해석">(2) 그래프 해석</a></li>
+        <li><a href="#3-제곱근-스케일">(3) 제곱근 스케일</a></li>
+      </ul>
+    </li>
+    <li><a href="#소결론">소결론</a></li>
+    <li><a href="#v-reference-원서">V. Reference (원서)</a></li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="공지">공지</h2>
+<ul>
+<li>본 포스트는 <a href="http://www.yes24.com/Product/Goods/87631760">데이터 시각화 교과서</a> 내용의 일부를 요약하였다.</li>
+</ul>
+<p><img src="http://image.yes24.com/goods/87631760/400x0#center" alt=""></p>
+<ul>
+<li>본 포스트를 읽고 가급적 전체 내용 숙지를 위해 구매하는 것을 권유한다.</li>
+</ul>
+<h2 id="개요">개요</h2>
+<ul>
+<li>수치형 자료를 <code>Y</code>축으로 놓는 그래프는 언제나 힘들었다.</li>
+<li><code>log Scale</code>을 통해 값의 크기를 줄이기는 하지만, <code>Y</code>축을 어떻게 표현하는 것이 좋을지에 대한 고민은 늘 있어왔다.</li>
+<li>시각화 이론 중심의 포스팅이기에 코드 리뷰 및 해석은 생략한다.</li>
+</ul>
+<h2 id="문제점">문제점</h2>
+<ul>
+<li><code>log Scale</code>을 적용했을 때와 그렇지 않을 때의 그래프를 비교해본다.</li>
+</ul>
+<h3 id="1-패키지-불러오기">(1) 패키지 불러오기</h3>
+<ul>
+<li>각각의 패키지를 불러온다.</li>
+<li>이 때, 데이터는 <code>dviz.supp</code> 저자인 <code>Claus O. Wilke</code>의 <code>Github Repo</code>에서 가져와야 한다.
+<ul>
+<li>경고: 이 부분이 초급자 분들에게는 쉽지가 않다.</li>
+</ul>
+</li>
+<li>우선, 사전에 설치해야 할 패키지가 존재한다.</li>
+<li>현재 필자 개발환경 Spec은 다음과 같다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">sessionInfo</span>()
+R version <span style="color:#ae81ff">4.0.2</span> (<span style="color:#ae81ff">2020-06-22</span>)
+Platform<span style="color:#f92672">:</span> x86_64<span style="color:#f92672">-</span>apple<span style="color:#f92672">-</span><span style="color:#a6e22e">darwin17.0 </span>(<span style="color:#ae81ff">64</span><span style="color:#f92672">-</span>bit)
+Running under<span style="color:#f92672">:</span> macOS Catalina <span style="color:#ae81ff">10.15.6</span>
+</code></pre></div><ul>
+<li>아래는 추가적으로 설치한 파일이다.
+<ul>
+<li>깃허브 Issues에서 좀 더 구체적으로 확인하는 것을 추천한다.</li>
+<li>참조: <a href="https://github.com/clauswilke/dviz.supp/issues/2">installation instructions? #2</a></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">install.packages</span>(<span style="color:#e6db74">&#34;devtools&#34;</span>)
+
+devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install_github</span>(<span style="color:#e6db74">&#34;wilkelab/cowplot&#34;</span>)
+<span style="color:#a6e22e">library</span>(cowplot)
+
+<span style="color:#a6e22e">install.packages</span>(<span style="color:#e6db74">&#34;colorspace&#34;</span>)
+<span style="color:#a6e22e">library</span>(colorspace)
+
+devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install_github</span>(<span style="color:#e6db74">&#34;clauswilke/colorblindr&#34;</span>)
+<span style="color:#a6e22e">library</span>(colorblindr)
+
+devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install_github</span>(<span style="color:#e6db74">&#34;clauswilke/dviz.supp&#34;</span>)
+<span style="color:#a6e22e">library</span>(dviz.supp)
+</code></pre></div><ul>
+<li>위 패키지들을 설치하는데 꽤 시간이 걸렸다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(lubridate) <span style="color:#75715e"># 날짜 관련 패키지</span>
+<span style="color:#a6e22e">library</span>(forcats)   <span style="color:#75715e"># 시계열 관련 패키지</span>
+<span style="color:#a6e22e">library</span>(tidyr)     <span style="color:#75715e"># 데이터 핸들링 패키지</span>
+<span style="color:#a6e22e">library</span>(ggrepel)   <span style="color:#75715e"># 시각화 관련 패키지</span>
+<span style="color:#a6e22e">library</span>(dviz.supp) <span style="color:#75715e"># 저자의 개인 Repo 패키지: 교재 있는 데이터 활용 및 그래프를 구현하려면 필수적으로 설치 되어야 함.</span>
+<span style="color:#a6e22e">library</span>(kableExtra) <span style="color:#75715e"># 데이터 출력 Table을 HTML로 변환하기 위한 패키지 </span>
+</code></pre></div><h3 id="2-데이터-확인">(2) 데이터 확인</h3>
+<ul>
+<li>데이터는 <code>US_Census</code> 데이터를 기반으로 한다.
+<ul>
+<li>자료 출처: 2010년도 미국 10개년 인구조사</li>
+</ul>
+</li>
+<li>주의: 한글 폰트는 일단 생략했다.</li>
+</ul>
+<blockquote>
+<p>소스코드 참조: <a href="https://github.com/clauswilke/dataviz/blob/master/coordinate_systems_axes.Rmd">https://github.com/clauswilke/dataviz/blob/master/coordinate_systems_axes.Rmd</a></p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">3878</span>)
+
+US_census <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">filter</span>(state <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Texas&#34;</span>) <span style="color:#f92672">%&gt;%</span>
+  <span style="color:#a6e22e">select</span>(name, pop2010) <span style="color:#f92672">%&gt;%</span>
+  <span style="color:#a6e22e">extract</span>(name, <span style="color:#e6db74">&#34;county&#34;</span>, regex <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;(.+) County&#34;</span>) <span style="color:#f92672">%&gt;%</span>
+  <span style="color:#a6e22e">mutate</span>(popratio <span style="color:#f92672">=</span> pop2010<span style="color:#f92672">/</span><span style="color:#a6e22e">median</span>(pop2010)) <span style="color:#f92672">%&gt;%</span>
+  <span style="color:#a6e22e">arrange</span>(<span style="color:#a6e22e">desc</span>(popratio)) <span style="color:#f92672">%&gt;%</span>
+  <span style="color:#a6e22e">mutate</span>(index <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#a6e22e">n</span>(),
+         label <span style="color:#f92672">=</span> <span style="color:#a6e22e">ifelse</span>(index <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">|</span> index <span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">n</span>()<span style="color:#ae81ff">-3</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">runif</span>(<span style="color:#a6e22e">n</span>()) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">.04</span>, county, <span style="color:#e6db74">&#34;&#34;</span>),
+         label_large <span style="color:#f92672">=</span> <span style="color:#a6e22e">ifelse</span>(index <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">6</span>, county, <span style="color:#e6db74">&#34;&#34;</span>)) <span style="color:#f92672">-&gt;</span> tx_counties
+
+<span style="color:#a6e22e">kable</span>(tx_counties) <span style="color:#f92672">%&gt;%</span>
+  <span style="color:#a6e22e">kable_styling</span>(bootstrap_options <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;striped&#34;</span>, <span style="color:#e6db74">&#34;hover&#34;</span>)) <span style="color:#f92672">%&gt;%</span> 
+  <span style="color:#a6e22e">scroll_box</span>(width <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;500px&#34;</span>, height <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;200px&#34;</span>)
+</code></pre></div><div style="border: 1px solid #ddd; margin-bottom: 20px; padding: 0px; overflow-y: scroll; height:200px; overflow-x: scroll; width:100%; overflow:auto;">
+  <table class="table table-striped table-hover" style="margin-left: auto; margin-right: auto;"> 
+    <thead>
+     <tr>
+      <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> county </th>
+      <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> pop2010 </th>
+      <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> popratio </th>
+      <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> index </th>
+      <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> label </th>
+      <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> label_large </th>
+     </tr>
+    </thead>
+   <tbody>
+     <tr>
+      <td style="text-align:left;"> Harris </td>
+      <td style="text-align:right;"> 4092459 </td>
+      <td style="text-align:right;"> 222.6461564 </td>
+      <td style="text-align:right;"> 1 </td>
+      <td style="text-align:left;"> Harris </td>
+      <td style="text-align:left;"> Harris </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Dallas </td>
+      <td style="text-align:right;"> 2368139 </td>
+      <td style="text-align:right;"> 128.8362439 </td>
+      <td style="text-align:right;"> 2 </td>
+      <td style="text-align:left;"> Dallas </td>
+      <td style="text-align:left;"> Dallas </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Tarrant </td>
+      <td style="text-align:right;"> 1809034 </td>
+      <td style="text-align:right;"> 98.4186932 </td>
+      <td style="text-align:right;"> 3 </td>
+      <td style="text-align:left;"> Tarrant </td>
+      <td style="text-align:left;"> Tarrant </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bexar </td>
+      <td style="text-align:right;"> 1714773 </td>
+      <td style="text-align:right;"> 93.2905174 </td>
+      <td style="text-align:right;"> 4 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;"> Bexar </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Travis </td>
+      <td style="text-align:right;"> 1024266 </td>
+      <td style="text-align:right;"> 55.7241717 </td>
+      <td style="text-align:right;"> 5 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;"> Travis </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> El Paso </td>
+      <td style="text-align:right;"> 800647 </td>
+      <td style="text-align:right;"> 43.5584027 </td>
+      <td style="text-align:right;"> 6 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;"> El Paso </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Collin </td>
+      <td style="text-align:right;"> 782341 </td>
+      <td style="text-align:right;"> 42.5624830 </td>
+      <td style="text-align:right;"> 7 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hidalgo </td>
+      <td style="text-align:right;"> 774769 </td>
+      <td style="text-align:right;"> 42.1505359 </td>
+      <td style="text-align:right;"> 8 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Denton </td>
+      <td style="text-align:right;"> 662614 </td>
+      <td style="text-align:right;"> 36.0488548 </td>
+      <td style="text-align:right;"> 9 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Fort Bend </td>
+      <td style="text-align:right;"> 585375 </td>
+      <td style="text-align:right;"> 31.8467439 </td>
+      <td style="text-align:right;"> 10 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Montgomery </td>
+      <td style="text-align:right;"> 455746 </td>
+      <td style="text-align:right;"> 24.7944073 </td>
+      <td style="text-align:right;"> 11 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Williamson </td>
+      <td style="text-align:right;"> 422679 </td>
+      <td style="text-align:right;"> 22.9954301 </td>
+      <td style="text-align:right;"> 12 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Cameron </td>
+      <td style="text-align:right;"> 406220 </td>
+      <td style="text-align:right;"> 22.0999946 </td>
+      <td style="text-align:right;"> 13 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Nueces </td>
+      <td style="text-align:right;"> 340223 </td>
+      <td style="text-align:right;"> 18.5094935 </td>
+      <td style="text-align:right;"> 14 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Brazoria </td>
+      <td style="text-align:right;"> 313166 </td>
+      <td style="text-align:right;"> 17.0374844 </td>
+      <td style="text-align:right;"> 15 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bell </td>
+      <td style="text-align:right;"> 310235 </td>
+      <td style="text-align:right;"> 16.8780262 </td>
+      <td style="text-align:right;"> 16 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Galveston </td>
+      <td style="text-align:right;"> 291309 </td>
+      <td style="text-align:right;"> 15.8483760 </td>
+      <td style="text-align:right;"> 17 </td>
+      <td style="text-align:left;"> Galveston </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lubbock </td>
+      <td style="text-align:right;"> 278831 </td>
+      <td style="text-align:right;"> 15.1695229 </td>
+      <td style="text-align:right;"> 18 </td>
+      <td style="text-align:left;"> Lubbock </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jefferson </td>
+      <td style="text-align:right;"> 252273 </td>
+      <td style="text-align:right;"> 13.7246613 </td>
+      <td style="text-align:right;"> 19 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Webb </td>
+      <td style="text-align:right;"> 250304 </td>
+      <td style="text-align:right;"> 13.6175399 </td>
+      <td style="text-align:right;"> 20 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> McLennan </td>
+      <td style="text-align:right;"> 234906 </td>
+      <td style="text-align:right;"> 12.7798270 </td>
+      <td style="text-align:right;"> 21 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Smith </td>
+      <td style="text-align:right;"> 209714 </td>
+      <td style="text-align:right;"> 11.4092813 </td>
+      <td style="text-align:right;"> 22 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Brazos </td>
+      <td style="text-align:right;"> 194851 </td>
+      <td style="text-align:right;"> 10.6006746 </td>
+      <td style="text-align:right;"> 23 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hays </td>
+      <td style="text-align:right;"> 157107 </td>
+      <td style="text-align:right;"> 8.5472499 </td>
+      <td style="text-align:right;"> 24 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Johnson </td>
+      <td style="text-align:right;"> 150934 </td>
+      <td style="text-align:right;"> 8.2114140 </td>
+      <td style="text-align:right;"> 25 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Ellis </td>
+      <td style="text-align:right;"> 149610 </td>
+      <td style="text-align:right;"> 8.1393831 </td>
+      <td style="text-align:right;"> 26 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Ector </td>
+      <td style="text-align:right;"> 137130 </td>
+      <td style="text-align:right;"> 7.4604211 </td>
+      <td style="text-align:right;"> 27 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Midland </td>
+      <td style="text-align:right;"> 136872 </td>
+      <td style="text-align:right;"> 7.4463849 </td>
+      <td style="text-align:right;"> 28 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Guadalupe </td>
+      <td style="text-align:right;"> 131533 </td>
+      <td style="text-align:right;"> 7.1559219 </td>
+      <td style="text-align:right;"> 29 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Taylor </td>
+      <td style="text-align:right;"> 131506 </td>
+      <td style="text-align:right;"> 7.1544530 </td>
+      <td style="text-align:right;"> 30 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wichita </td>
+      <td style="text-align:right;"> 131500 </td>
+      <td style="text-align:right;"> 7.1541265 </td>
+      <td style="text-align:right;"> 31 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Gregg </td>
+      <td style="text-align:right;"> 121730 </td>
+      <td style="text-align:right;"> 6.6225994 </td>
+      <td style="text-align:right;"> 32 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Potter </td>
+      <td style="text-align:right;"> 121073 </td>
+      <td style="text-align:right;"> 6.5868560 </td>
+      <td style="text-align:right;"> 33 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Grayson </td>
+      <td style="text-align:right;"> 120877 </td>
+      <td style="text-align:right;"> 6.5761928 </td>
+      <td style="text-align:right;"> 34 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Randall </td>
+      <td style="text-align:right;"> 120725 </td>
+      <td style="text-align:right;"> 6.5679234 </td>
+      <td style="text-align:right;"> 35 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Parker </td>
+      <td style="text-align:right;"> 116927 </td>
+      <td style="text-align:right;"> 6.3612970 </td>
+      <td style="text-align:right;"> 36 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Tom Green </td>
+      <td style="text-align:right;"> 110224 </td>
+      <td style="text-align:right;"> 5.9966270 </td>
+      <td style="text-align:right;"> 37 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Comal </td>
+      <td style="text-align:right;"> 108472 </td>
+      <td style="text-align:right;"> 5.9013111 </td>
+      <td style="text-align:right;"> 38 </td>
+      <td style="text-align:left;"> Comal </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kaufman </td>
+      <td style="text-align:right;"> 103350 </td>
+      <td style="text-align:right;"> 5.6226538 </td>
+      <td style="text-align:right;"> 39 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bowie </td>
+      <td style="text-align:right;"> 92565 </td>
+      <td style="text-align:right;"> 5.0359066 </td>
+      <td style="text-align:right;"> 40 </td>
+      <td style="text-align:left;"> Bowie </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Victoria </td>
+      <td style="text-align:right;"> 86793 </td>
+      <td style="text-align:right;"> 4.7218867 </td>
+      <td style="text-align:right;"> 41 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Angelina </td>
+      <td style="text-align:right;"> 86771 </td>
+      <td style="text-align:right;"> 4.7206898 </td>
+      <td style="text-align:right;"> 42 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hunt </td>
+      <td style="text-align:right;"> 86129 </td>
+      <td style="text-align:right;"> 4.6857625 </td>
+      <td style="text-align:right;"> 43 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Orange </td>
+      <td style="text-align:right;"> 81837 </td>
+      <td style="text-align:right;"> 4.4522605 </td>
+      <td style="text-align:right;"> 44 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Henderson </td>
+      <td style="text-align:right;"> 78532 </td>
+      <td style="text-align:right;"> 4.2724553 </td>
+      <td style="text-align:right;"> 45 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Rockwall </td>
+      <td style="text-align:right;"> 78337 </td>
+      <td style="text-align:right;"> 4.2618465 </td>
+      <td style="text-align:right;"> 46 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Liberty </td>
+      <td style="text-align:right;"> 75643 </td>
+      <td style="text-align:right;"> 4.1152821 </td>
+      <td style="text-align:right;"> 47 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Coryell </td>
+      <td style="text-align:right;"> 75388 </td>
+      <td style="text-align:right;"> 4.1014091 </td>
+      <td style="text-align:right;"> 48 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bastrop </td>
+      <td style="text-align:right;"> 74171 </td>
+      <td style="text-align:right;"> 4.0351994 </td>
+      <td style="text-align:right;"> 49 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Walker </td>
+      <td style="text-align:right;"> 67861 </td>
+      <td style="text-align:right;"> 3.6919101 </td>
+      <td style="text-align:right;"> 50 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Harrison </td>
+      <td style="text-align:right;"> 65631 </td>
+      <td style="text-align:right;"> 3.5705892 </td>
+      <td style="text-align:right;"> 51 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> San Patricio </td>
+      <td style="text-align:right;"> 64804 </td>
+      <td style="text-align:right;"> 3.5255971 </td>
+      <td style="text-align:right;"> 52 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Nacogdoches </td>
+      <td style="text-align:right;"> 64524 </td>
+      <td style="text-align:right;"> 3.5103640 </td>
+      <td style="text-align:right;"> 53 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Starr </td>
+      <td style="text-align:right;"> 60968 </td>
+      <td style="text-align:right;"> 3.3169033 </td>
+      <td style="text-align:right;"> 54 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wise </td>
+      <td style="text-align:right;"> 59127 </td>
+      <td style="text-align:right;"> 3.2167456 </td>
+      <td style="text-align:right;"> 55 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Anderson </td>
+      <td style="text-align:right;"> 58458 </td>
+      <td style="text-align:right;"> 3.1803493 </td>
+      <td style="text-align:right;"> 56 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hardin </td>
+      <td style="text-align:right;"> 54635 </td>
+      <td style="text-align:right;"> 2.9723628 </td>
+      <td style="text-align:right;"> 57 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Maverick </td>
+      <td style="text-align:right;"> 54258 </td>
+      <td style="text-align:right;"> 2.9518525 </td>
+      <td style="text-align:right;"> 58 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Rusk </td>
+      <td style="text-align:right;"> 53330 </td>
+      <td style="text-align:right;"> 2.9013655 </td>
+      <td style="text-align:right;"> 59 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Van Zandt </td>
+      <td style="text-align:right;"> 52579 </td>
+      <td style="text-align:right;"> 2.8605081 </td>
+      <td style="text-align:right;"> 60 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hood </td>
+      <td style="text-align:right;"> 51182 </td>
+      <td style="text-align:right;"> 2.7845057 </td>
+      <td style="text-align:right;"> 61 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Cherokee </td>
+      <td style="text-align:right;"> 50845 </td>
+      <td style="text-align:right;"> 2.7661716 </td>
+      <td style="text-align:right;"> 62 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lamar </td>
+      <td style="text-align:right;"> 49793 </td>
+      <td style="text-align:right;"> 2.7089386 </td>
+      <td style="text-align:right;"> 63 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kerr </td>
+      <td style="text-align:right;"> 49625 </td>
+      <td style="text-align:right;"> 2.6997987 </td>
+      <td style="text-align:right;"> 64 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Val Verde </td>
+      <td style="text-align:right;"> 48879 </td>
+      <td style="text-align:right;"> 2.6592133 </td>
+      <td style="text-align:right;"> 65 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Navarro </td>
+      <td style="text-align:right;"> 47735 </td>
+      <td style="text-align:right;"> 2.5969751 </td>
+      <td style="text-align:right;"> 66 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Medina </td>
+      <td style="text-align:right;"> 46006 </td>
+      <td style="text-align:right;"> 2.5029106 </td>
+      <td style="text-align:right;"> 67 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Polk </td>
+      <td style="text-align:right;"> 45413 </td>
+      <td style="text-align:right;"> 2.4706490 </td>
+      <td style="text-align:right;"> 68 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Atascosa </td>
+      <td style="text-align:right;"> 44911 </td>
+      <td style="text-align:right;"> 2.4433382 </td>
+      <td style="text-align:right;"> 69 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Waller </td>
+      <td style="text-align:right;"> 43205 </td>
+      <td style="text-align:right;"> 2.3505250 </td>
+      <td style="text-align:right;"> 70 </td>
+      <td style="text-align:left;"> Waller </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wilson </td>
+      <td style="text-align:right;"> 42918 </td>
+      <td style="text-align:right;"> 2.3349110 </td>
+      <td style="text-align:right;"> 71 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Burnet </td>
+      <td style="text-align:right;"> 42750 </td>
+      <td style="text-align:right;"> 2.3257712 </td>
+      <td style="text-align:right;"> 72 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wood </td>
+      <td style="text-align:right;"> 41964 </td>
+      <td style="text-align:right;"> 2.2830096 </td>
+      <td style="text-align:right;"> 73 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wharton </td>
+      <td style="text-align:right;"> 41280 </td>
+      <td style="text-align:right;"> 2.2457973 </td>
+      <td style="text-align:right;"> 74 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jim Wells </td>
+      <td style="text-align:right;"> 40838 </td>
+      <td style="text-align:right;"> 2.2217507 </td>
+      <td style="text-align:right;"> 75 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Upshur </td>
+      <td style="text-align:right;"> 39309 </td>
+      <td style="text-align:right;"> 2.1385670 </td>
+      <td style="text-align:right;"> 76 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Cooke </td>
+      <td style="text-align:right;"> 38437 </td>
+      <td style="text-align:right;"> 2.0911267 </td>
+      <td style="text-align:right;"> 77 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Brown </td>
+      <td style="text-align:right;"> 38106 </td>
+      <td style="text-align:right;"> 2.0731190 </td>
+      <td style="text-align:right;"> 78 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Caldwell </td>
+      <td style="text-align:right;"> 38066 </td>
+      <td style="text-align:right;"> 2.0709428 </td>
+      <td style="text-align:right;"> 79 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Erath </td>
+      <td style="text-align:right;"> 37890 </td>
+      <td style="text-align:right;"> 2.0613677 </td>
+      <td style="text-align:right;"> 80 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Matagorda </td>
+      <td style="text-align:right;"> 36702 </td>
+      <td style="text-align:right;"> 1.9967358 </td>
+      <td style="text-align:right;"> 81 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hale </td>
+      <td style="text-align:right;"> 36273 </td>
+      <td style="text-align:right;"> 1.9733964 </td>
+      <td style="text-align:right;"> 82 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jasper </td>
+      <td style="text-align:right;"> 35710 </td>
+      <td style="text-align:right;"> 1.9427670 </td>
+      <td style="text-align:right;"> 83 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hopkins </td>
+      <td style="text-align:right;"> 35161 </td>
+      <td style="text-align:right;"> 1.9128992 </td>
+      <td style="text-align:right;"> 84 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Chambers </td>
+      <td style="text-align:right;"> 35096 </td>
+      <td style="text-align:right;"> 1.9093629 </td>
+      <td style="text-align:right;"> 85 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hill </td>
+      <td style="text-align:right;"> 35089 </td>
+      <td style="text-align:right;"> 1.9089821 </td>
+      <td style="text-align:right;"> 86 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Howard </td>
+      <td style="text-align:right;"> 35012 </td>
+      <td style="text-align:right;"> 1.9047930 </td>
+      <td style="text-align:right;"> 87 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Fannin </td>
+      <td style="text-align:right;"> 33915 </td>
+      <td style="text-align:right;"> 1.8451118 </td>
+      <td style="text-align:right;"> 88 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Washington </td>
+      <td style="text-align:right;"> 33718 </td>
+      <td style="text-align:right;"> 1.8343942 </td>
+      <td style="text-align:right;"> 89 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kendall </td>
+      <td style="text-align:right;"> 33410 </td>
+      <td style="text-align:right;"> 1.8176378 </td>
+      <td style="text-align:right;"> 90 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Titus </td>
+      <td style="text-align:right;"> 32334 </td>
+      <td style="text-align:right;"> 1.7590991 </td>
+      <td style="text-align:right;"> 91 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kleberg </td>
+      <td style="text-align:right;"> 32061 </td>
+      <td style="text-align:right;"> 1.7442468 </td>
+      <td style="text-align:right;"> 92 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bee </td>
+      <td style="text-align:right;"> 31861 </td>
+      <td style="text-align:right;"> 1.7333660 </td>
+      <td style="text-align:right;"> 93 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Cass </td>
+      <td style="text-align:right;"> 30464 </td>
+      <td style="text-align:right;"> 1.6573636 </td>
+      <td style="text-align:right;"> 94 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Austin </td>
+      <td style="text-align:right;"> 28417 </td>
+      <td style="text-align:right;"> 1.5459986 </td>
+      <td style="text-align:right;"> 95 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Palo Pinto </td>
+      <td style="text-align:right;"> 28111 </td>
+      <td style="text-align:right;"> 1.5293510 </td>
+      <td style="text-align:right;"> 96 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Grimes </td>
+      <td style="text-align:right;"> 26604 </td>
+      <td style="text-align:right;"> 1.4473641 </td>
+      <td style="text-align:right;"> 97 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Uvalde </td>
+      <td style="text-align:right;"> 26405 </td>
+      <td style="text-align:right;"> 1.4365377 </td>
+      <td style="text-align:right;"> 98 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> San Jacinto </td>
+      <td style="text-align:right;"> 26384 </td>
+      <td style="text-align:right;"> 1.4353952 </td>
+      <td style="text-align:right;"> 99 </td>
+      <td style="text-align:left;"> San Jacinto </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Shelby </td>
+      <td style="text-align:right;"> 25448 </td>
+      <td style="text-align:right;"> 1.3844731 </td>
+      <td style="text-align:right;"> 100 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Gillespie </td>
+      <td style="text-align:right;"> 24837 </td>
+      <td style="text-align:right;"> 1.3512323 </td>
+      <td style="text-align:right;"> 101 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Milam </td>
+      <td style="text-align:right;"> 24757 </td>
+      <td style="text-align:right;"> 1.3468799 </td>
+      <td style="text-align:right;"> 102 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Fayette </td>
+      <td style="text-align:right;"> 24554 </td>
+      <td style="text-align:right;"> 1.3358359 </td>
+      <td style="text-align:right;"> 103 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Panola </td>
+      <td style="text-align:right;"> 23796 </td>
+      <td style="text-align:right;"> 1.2945977 </td>
+      <td style="text-align:right;"> 104 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Houston </td>
+      <td style="text-align:right;"> 23732 </td>
+      <td style="text-align:right;"> 1.2911158 </td>
+      <td style="text-align:right;"> 105 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Limestone </td>
+      <td style="text-align:right;"> 23384 </td>
+      <td style="text-align:right;"> 1.2721832 </td>
+      <td style="text-align:right;"> 106 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Aransas </td>
+      <td style="text-align:right;"> 23158 </td>
+      <td style="text-align:right;"> 1.2598879 </td>
+      <td style="text-align:right;"> 107 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hockley </td>
+      <td style="text-align:right;"> 22935 </td>
+      <td style="text-align:right;"> 1.2477558 </td>
+      <td style="text-align:right;"> 108 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Gray </td>
+      <td style="text-align:right;"> 22535 </td>
+      <td style="text-align:right;"> 1.2259942 </td>
+      <td style="text-align:right;"> 109 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hutchinson </td>
+      <td style="text-align:right;"> 22150 </td>
+      <td style="text-align:right;"> 1.2050487 </td>
+      <td style="text-align:right;"> 110 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Willacy </td>
+      <td style="text-align:right;"> 22134 </td>
+      <td style="text-align:right;"> 1.2041782 </td>
+      <td style="text-align:right;"> 111 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Moore </td>
+      <td style="text-align:right;"> 21904 </td>
+      <td style="text-align:right;"> 1.1916653 </td>
+      <td style="text-align:right;"> 112 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Tyler </td>
+      <td style="text-align:right;"> 21766 </td>
+      <td style="text-align:right;"> 1.1841576 </td>
+      <td style="text-align:right;"> 113 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Calhoun </td>
+      <td style="text-align:right;"> 21381 </td>
+      <td style="text-align:right;"> 1.1632120 </td>
+      <td style="text-align:right;"> 114 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Colorado </td>
+      <td style="text-align:right;"> 20874 </td>
+      <td style="text-align:right;"> 1.1356292 </td>
+      <td style="text-align:right;"> 115 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bandera </td>
+      <td style="text-align:right;"> 20485 </td>
+      <td style="text-align:right;"> 1.1144660 </td>
+      <td style="text-align:right;"> 116 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jones </td>
+      <td style="text-align:right;"> 20202 </td>
+      <td style="text-align:right;"> 1.0990697 </td>
+      <td style="text-align:right;"> 117 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> DeWitt </td>
+      <td style="text-align:right;"> 20097 </td>
+      <td style="text-align:right;"> 1.0933573 </td>
+      <td style="text-align:right;"> 118 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Freestone </td>
+      <td style="text-align:right;"> 19816 </td>
+      <td style="text-align:right;"> 1.0780697 </td>
+      <td style="text-align:right;"> 119 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Gonzales </td>
+      <td style="text-align:right;"> 19807 </td>
+      <td style="text-align:right;"> 1.0775801 </td>
+      <td style="text-align:right;"> 120 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Montague </td>
+      <td style="text-align:right;"> 19719 </td>
+      <td style="text-align:right;"> 1.0727926 </td>
+      <td style="text-align:right;"> 121 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lampasas </td>
+      <td style="text-align:right;"> 19677 </td>
+      <td style="text-align:right;"> 1.0705076 </td>
+      <td style="text-align:right;"> 122 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Deaf Smith </td>
+      <td style="text-align:right;"> 19372 </td>
+      <td style="text-align:right;"> 1.0539144 </td>
+      <td style="text-align:right;"> 123 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Llano </td>
+      <td style="text-align:right;"> 19301 </td>
+      <td style="text-align:right;"> 1.0500517 </td>
+      <td style="text-align:right;"> 124 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lavaca </td>
+      <td style="text-align:right;"> 19263 </td>
+      <td style="text-align:right;"> 1.0479843 </td>
+      <td style="text-align:right;"> 125 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Eastland </td>
+      <td style="text-align:right;"> 18583 </td>
+      <td style="text-align:right;"> 1.0109896 </td>
+      <td style="text-align:right;"> 126 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Young </td>
+      <td style="text-align:right;"> 18550 </td>
+      <td style="text-align:right;"> 1.0091943 </td>
+      <td style="text-align:right;"> 127 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bosque </td>
+      <td style="text-align:right;"> 18212 </td>
+      <td style="text-align:right;"> 0.9908057 </td>
+      <td style="text-align:right;"> 128 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Falls </td>
+      <td style="text-align:right;"> 17866 </td>
+      <td style="text-align:right;"> 0.9719819 </td>
+      <td style="text-align:right;"> 129 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Gaines </td>
+      <td style="text-align:right;"> 17526 </td>
+      <td style="text-align:right;"> 0.9534846 </td>
+      <td style="text-align:right;"> 130 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Frio </td>
+      <td style="text-align:right;"> 17217 </td>
+      <td style="text-align:right;"> 0.9366737 </td>
+      <td style="text-align:right;"> 131 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Burleson </td>
+      <td style="text-align:right;"> 17187 </td>
+      <td style="text-align:right;"> 0.9350416 </td>
+      <td style="text-align:right;"> 132 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Scurry </td>
+      <td style="text-align:right;"> 16921 </td>
+      <td style="text-align:right;"> 0.9205702 </td>
+      <td style="text-align:right;"> 133 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Leon </td>
+      <td style="text-align:right;"> 16801 </td>
+      <td style="text-align:right;"> 0.9140417 </td>
+      <td style="text-align:right;"> 134 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Robertson </td>
+      <td style="text-align:right;"> 16622 </td>
+      <td style="text-align:right;"> 0.9043034 </td>
+      <td style="text-align:right;"> 135 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lee </td>
+      <td style="text-align:right;"> 16612 </td>
+      <td style="text-align:right;"> 0.9037593 </td>
+      <td style="text-align:right;"> 136 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Pecos </td>
+      <td style="text-align:right;"> 15507 </td>
+      <td style="text-align:right;"> 0.8436429 </td>
+      <td style="text-align:right;"> 137 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Nolan </td>
+      <td style="text-align:right;"> 15216 </td>
+      <td style="text-align:right;"> 0.8278113 </td>
+      <td style="text-align:right;"> 138 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Karnes </td>
+      <td style="text-align:right;"> 14824 </td>
+      <td style="text-align:right;"> 0.8064850 </td>
+      <td style="text-align:right;"> 139 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Andrews </td>
+      <td style="text-align:right;"> 14786 </td>
+      <td style="text-align:right;"> 0.8044176 </td>
+      <td style="text-align:right;"> 140 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Trinity </td>
+      <td style="text-align:right;"> 14585 </td>
+      <td style="text-align:right;"> 0.7934824 </td>
+      <td style="text-align:right;"> 141 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Newton </td>
+      <td style="text-align:right;"> 14445 </td>
+      <td style="text-align:right;"> 0.7858658 </td>
+      <td style="text-align:right;"> 142 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jackson </td>
+      <td style="text-align:right;"> 14075 </td>
+      <td style="text-align:right;"> 0.7657364 </td>
+      <td style="text-align:right;"> 143 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Zapata </td>
+      <td style="text-align:right;"> 14018 </td>
+      <td style="text-align:right;"> 0.7626353 </td>
+      <td style="text-align:right;"> 144 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lamb </td>
+      <td style="text-align:right;"> 13977 </td>
+      <td style="text-align:right;"> 0.7604048 </td>
+      <td style="text-align:right;"> 145 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Comanche </td>
+      <td style="text-align:right;"> 13974 </td>
+      <td style="text-align:right;"> 0.7602416 </td>
+      <td style="text-align:right;"> 146 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Dawson </td>
+      <td style="text-align:right;"> 13833 </td>
+      <td style="text-align:right;"> 0.7525706 </td>
+      <td style="text-align:right;"> 147 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Reeves </td>
+      <td style="text-align:right;"> 13783 </td>
+      <td style="text-align:right;"> 0.7498504 </td>
+      <td style="text-align:right;"> 148 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Madison </td>
+      <td style="text-align:right;"> 13664 </td>
+      <td style="text-align:right;"> 0.7433763 </td>
+      <td style="text-align:right;"> 149 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Callahan </td>
+      <td style="text-align:right;"> 13544 </td>
+      <td style="text-align:right;"> 0.7368478 </td>
+      <td style="text-align:right;"> 150 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wilbarger </td>
+      <td style="text-align:right;"> 13535 </td>
+      <td style="text-align:right;"> 0.7363582 </td>
+      <td style="text-align:right;"> 151 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Morris </td>
+      <td style="text-align:right;"> 12934 </td>
+      <td style="text-align:right;"> 0.7036614 </td>
+      <td style="text-align:right;"> 152 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Red River </td>
+      <td style="text-align:right;"> 12860 </td>
+      <td style="text-align:right;"> 0.6996355 </td>
+      <td style="text-align:right;"> 153 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Terry </td>
+      <td style="text-align:right;"> 12651 </td>
+      <td style="text-align:right;"> 0.6882651 </td>
+      <td style="text-align:right;"> 154 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Camp </td>
+      <td style="text-align:right;"> 12401 </td>
+      <td style="text-align:right;"> 0.6746641 </td>
+      <td style="text-align:right;"> 155 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Duval </td>
+      <td style="text-align:right;"> 11782 </td>
+      <td style="text-align:right;"> 0.6409880 </td>
+      <td style="text-align:right;"> 156 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Zavala </td>
+      <td style="text-align:right;"> 11677 </td>
+      <td style="text-align:right;"> 0.6352756 </td>
+      <td style="text-align:right;"> 157 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Live Oak </td>
+      <td style="text-align:right;"> 11531 </td>
+      <td style="text-align:right;"> 0.6273326 </td>
+      <td style="text-align:right;"> 158 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Rains </td>
+      <td style="text-align:right;"> 10914 </td>
+      <td style="text-align:right;"> 0.5937653 </td>
+      <td style="text-align:right;"> 159 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Sabine </td>
+      <td style="text-align:right;"> 10834 </td>
+      <td style="text-align:right;"> 0.5894130 </td>
+      <td style="text-align:right;"> 160 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Clay </td>
+      <td style="text-align:right;"> 10752 </td>
+      <td style="text-align:right;"> 0.5849519 </td>
+      <td style="text-align:right;"> 161 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Ward </td>
+      <td style="text-align:right;"> 10658 </td>
+      <td style="text-align:right;"> 0.5798379 </td>
+      <td style="text-align:right;"> 162 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Franklin </td>
+      <td style="text-align:right;"> 10605 </td>
+      <td style="text-align:right;"> 0.5769545 </td>
+      <td style="text-align:right;"> 163 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Marion </td>
+      <td style="text-align:right;"> 10546 </td>
+      <td style="text-align:right;"> 0.5737446 </td>
+      <td style="text-align:right;"> 164 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Runnels </td>
+      <td style="text-align:right;"> 10501 </td>
+      <td style="text-align:right;"> 0.5712964 </td>
+      <td style="text-align:right;"> 165 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Blanco </td>
+      <td style="text-align:right;"> 10497 </td>
+      <td style="text-align:right;"> 0.5710788 </td>
+      <td style="text-align:right;"> 166 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Parmer </td>
+      <td style="text-align:right;"> 10269 </td>
+      <td style="text-align:right;"> 0.5586747 </td>
+      <td style="text-align:right;"> 167 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Ochiltree </td>
+      <td style="text-align:right;"> 10223 </td>
+      <td style="text-align:right;"> 0.5561721 </td>
+      <td style="text-align:right;"> 168 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Dimmit </td>
+      <td style="text-align:right;"> 9996 </td>
+      <td style="text-align:right;"> 0.5438224 </td>
+      <td style="text-align:right;"> 169 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Stephens </td>
+      <td style="text-align:right;"> 9630 </td>
+      <td style="text-align:right;"> 0.5239106 </td>
+      <td style="text-align:right;"> 170 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Mitchell </td>
+      <td style="text-align:right;"> 9403 </td>
+      <td style="text-align:right;"> 0.5115609 </td>
+      <td style="text-align:right;"> 171 </td>
+      <td style="text-align:left;"> Mitchell </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Brewster </td>
+      <td style="text-align:right;"> 9232 </td>
+      <td style="text-align:right;"> 0.5022578 </td>
+      <td style="text-align:right;"> 172 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Archer </td>
+      <td style="text-align:right;"> 9054 </td>
+      <td style="text-align:right;"> 0.4925739 </td>
+      <td style="text-align:right;"> 173 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jack </td>
+      <td style="text-align:right;"> 9044 </td>
+      <td style="text-align:right;"> 0.4920298 </td>
+      <td style="text-align:right;"> 174 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Coleman </td>
+      <td style="text-align:right;"> 8895 </td>
+      <td style="text-align:right;"> 0.4839236 </td>
+      <td style="text-align:right;"> 175 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> San Augustine </td>
+      <td style="text-align:right;"> 8865 </td>
+      <td style="text-align:right;"> 0.4822915 </td>
+      <td style="text-align:right;"> 176 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hamilton </td>
+      <td style="text-align:right;"> 8517 </td>
+      <td style="text-align:right;"> 0.4633589 </td>
+      <td style="text-align:right;"> 177 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Somervell </td>
+      <td style="text-align:right;"> 8490 </td>
+      <td style="text-align:right;"> 0.4618900 </td>
+      <td style="text-align:right;"> 178 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> McCulloch </td>
+      <td style="text-align:right;"> 8283 </td>
+      <td style="text-align:right;"> 0.4506284 </td>
+      <td style="text-align:right;"> 179 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Castro </td>
+      <td style="text-align:right;"> 8062 </td>
+      <td style="text-align:right;"> 0.4386051 </td>
+      <td style="text-align:right;"> 180 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Yoakum </td>
+      <td style="text-align:right;"> 7879 </td>
+      <td style="text-align:right;"> 0.4286491 </td>
+      <td style="text-align:right;"> 181 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Swisher </td>
+      <td style="text-align:right;"> 7854 </td>
+      <td style="text-align:right;"> 0.4272890 </td>
+      <td style="text-align:right;"> 182 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Presidio </td>
+      <td style="text-align:right;"> 7818 </td>
+      <td style="text-align:right;"> 0.4253305 </td>
+      <td style="text-align:right;"> 183 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Refugio </td>
+      <td style="text-align:right;"> 7383 </td>
+      <td style="text-align:right;"> 0.4016648 </td>
+      <td style="text-align:right;"> 184 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Brooks </td>
+      <td style="text-align:right;"> 7223 </td>
+      <td style="text-align:right;"> 0.3929601 </td>
+      <td style="text-align:right;"> 185 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Goliad </td>
+      <td style="text-align:right;"> 7210 </td>
+      <td style="text-align:right;"> 0.3922529 </td>
+      <td style="text-align:right;"> 186 </td>
+      <td style="text-align:left;"> Goliad </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Bailey </td>
+      <td style="text-align:right;"> 7165 </td>
+      <td style="text-align:right;"> 0.3898047 </td>
+      <td style="text-align:right;"> 187 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Winkler </td>
+      <td style="text-align:right;"> 7110 </td>
+      <td style="text-align:right;"> 0.3868125 </td>
+      <td style="text-align:right;"> 188 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Childress </td>
+      <td style="text-align:right;"> 7041 </td>
+      <td style="text-align:right;"> 0.3830586 </td>
+      <td style="text-align:right;"> 189 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> La Salle </td>
+      <td style="text-align:right;"> 6886 </td>
+      <td style="text-align:right;"> 0.3746260 </td>
+      <td style="text-align:right;"> 190 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Dallam </td>
+      <td style="text-align:right;"> 6703 </td>
+      <td style="text-align:right;"> 0.3646700 </td>
+      <td style="text-align:right;"> 191 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Garza </td>
+      <td style="text-align:right;"> 6461 </td>
+      <td style="text-align:right;"> 0.3515043 </td>
+      <td style="text-align:right;"> 192 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Floyd </td>
+      <td style="text-align:right;"> 6446 </td>
+      <td style="text-align:right;"> 0.3506882 </td>
+      <td style="text-align:right;"> 193 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Carson </td>
+      <td style="text-align:right;"> 6182 </td>
+      <td style="text-align:right;"> 0.3363256 </td>
+      <td style="text-align:right;"> 194 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> San Saba </td>
+      <td style="text-align:right;"> 6131 </td>
+      <td style="text-align:right;"> 0.3335509 </td>
+      <td style="text-align:right;"> 195 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hartley </td>
+      <td style="text-align:right;"> 6062 </td>
+      <td style="text-align:right;"> 0.3297971 </td>
+      <td style="text-align:right;"> 196 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Crosby </td>
+      <td style="text-align:right;"> 6059 </td>
+      <td style="text-align:right;"> 0.3296339 </td>
+      <td style="text-align:right;"> 197 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lynn </td>
+      <td style="text-align:right;"> 5915 </td>
+      <td style="text-align:right;"> 0.3217997 </td>
+      <td style="text-align:right;"> 198 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Haskell </td>
+      <td style="text-align:right;"> 5899 </td>
+      <td style="text-align:right;"> 0.3209292 </td>
+      <td style="text-align:right;"> 199 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hansford </td>
+      <td style="text-align:right;"> 5613 </td>
+      <td style="text-align:right;"> 0.3053697 </td>
+      <td style="text-align:right;"> 200 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Wheeler </td>
+      <td style="text-align:right;"> 5410 </td>
+      <td style="text-align:right;"> 0.2943257 </td>
+      <td style="text-align:right;"> 201 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jim Hogg </td>
+      <td style="text-align:right;"> 5300 </td>
+      <td style="text-align:right;"> 0.2883412 </td>
+      <td style="text-align:right;"> 202 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Delta </td>
+      <td style="text-align:right;"> 5231 </td>
+      <td style="text-align:right;"> 0.2845873 </td>
+      <td style="text-align:right;"> 203 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Mills </td>
+      <td style="text-align:right;"> 4936 </td>
+      <td style="text-align:right;"> 0.2685382 </td>
+      <td style="text-align:right;"> 204 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Martin </td>
+      <td style="text-align:right;"> 4799 </td>
+      <td style="text-align:right;"> 0.2610848 </td>
+      <td style="text-align:right;"> 205 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kimble </td>
+      <td style="text-align:right;"> 4607 </td>
+      <td style="text-align:right;"> 0.2506392 </td>
+      <td style="text-align:right;"> 206 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Crane </td>
+      <td style="text-align:right;"> 4375 </td>
+      <td style="text-align:right;"> 0.2380175 </td>
+      <td style="text-align:right;"> 207 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hardeman </td>
+      <td style="text-align:right;"> 4139 </td>
+      <td style="text-align:right;"> 0.2251782 </td>
+      <td style="text-align:right;"> 208 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Sutton </td>
+      <td style="text-align:right;"> 4128 </td>
+      <td style="text-align:right;"> 0.2245797 </td>
+      <td style="text-align:right;"> 209 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Concho </td>
+      <td style="text-align:right;"> 4087 </td>
+      <td style="text-align:right;"> 0.2223492 </td>
+      <td style="text-align:right;"> 210 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Mason </td>
+      <td style="text-align:right;"> 4012 </td>
+      <td style="text-align:right;"> 0.2182689 </td>
+      <td style="text-align:right;"> 211 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Fisher </td>
+      <td style="text-align:right;"> 3974 </td>
+      <td style="text-align:right;"> 0.2162015 </td>
+      <td style="text-align:right;"> 212 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hemphill </td>
+      <td style="text-align:right;"> 3807 </td>
+      <td style="text-align:right;"> 0.2071160 </td>
+      <td style="text-align:right;"> 213 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Baylor </td>
+      <td style="text-align:right;"> 3726 </td>
+      <td style="text-align:right;"> 0.2027093 </td>
+      <td style="text-align:right;"> 214 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Crockett </td>
+      <td style="text-align:right;"> 3719 </td>
+      <td style="text-align:right;"> 0.2023285 </td>
+      <td style="text-align:right;"> 215 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Knox </td>
+      <td style="text-align:right;"> 3719 </td>
+      <td style="text-align:right;"> 0.2023285 </td>
+      <td style="text-align:right;"> 216 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Donley </td>
+      <td style="text-align:right;"> 3677 </td>
+      <td style="text-align:right;"> 0.2000435 </td>
+      <td style="text-align:right;"> 217 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kinney </td>
+      <td style="text-align:right;"> 3598 </td>
+      <td style="text-align:right;"> 0.1957456 </td>
+      <td style="text-align:right;"> 218 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hudspeth </td>
+      <td style="text-align:right;"> 3476 </td>
+      <td style="text-align:right;"> 0.1891083 </td>
+      <td style="text-align:right;"> 219 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Schleicher </td>
+      <td style="text-align:right;"> 3461 </td>
+      <td style="text-align:right;"> 0.1882923 </td>
+      <td style="text-align:right;"> 220 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Shackelford </td>
+      <td style="text-align:right;"> 3378 </td>
+      <td style="text-align:right;"> 0.1837767 </td>
+      <td style="text-align:right;"> 221 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Reagan </td>
+      <td style="text-align:right;"> 3367 </td>
+      <td style="text-align:right;"> 0.1831783 </td>
+      <td style="text-align:right;"> 222 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Upton </td>
+      <td style="text-align:right;"> 3355 </td>
+      <td style="text-align:right;"> 0.1825254 </td>
+      <td style="text-align:right;"> 223 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Hall </td>
+      <td style="text-align:right;"> 3353 </td>
+      <td style="text-align:right;"> 0.1824166 </td>
+      <td style="text-align:right;"> 224 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Coke </td>
+      <td style="text-align:right;"> 3320 </td>
+      <td style="text-align:right;"> 0.1806213 </td>
+      <td style="text-align:right;"> 225 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Real </td>
+      <td style="text-align:right;"> 3309 </td>
+      <td style="text-align:right;"> 0.1800228 </td>
+      <td style="text-align:right;"> 226 </td>
+      <td style="text-align:left;"> Real </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Lipscomb </td>
+      <td style="text-align:right;"> 3302 </td>
+      <td style="text-align:right;"> 0.1796420 </td>
+      <td style="text-align:right;"> 227 </td>
+      <td style="text-align:left;"> Lipscomb </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Cochran </td>
+      <td style="text-align:right;"> 3127 </td>
+      <td style="text-align:right;"> 0.1701213 </td>
+      <td style="text-align:right;"> 228 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Collingsworth </td>
+      <td style="text-align:right;"> 3057 </td>
+      <td style="text-align:right;"> 0.1663130 </td>
+      <td style="text-align:right;"> 229 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Sherman </td>
+      <td style="text-align:right;"> 3034 </td>
+      <td style="text-align:right;"> 0.1650617 </td>
+      <td style="text-align:right;"> 230 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Dickens </td>
+      <td style="text-align:right;"> 2444 </td>
+      <td style="text-align:right;"> 0.1329634 </td>
+      <td style="text-align:right;"> 231 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Culberson </td>
+      <td style="text-align:right;"> 2398 </td>
+      <td style="text-align:right;"> 0.1304608 </td>
+      <td style="text-align:right;"> 232 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Jeff Davis </td>
+      <td style="text-align:right;"> 2342 </td>
+      <td style="text-align:right;"> 0.1274142 </td>
+      <td style="text-align:right;"> 233 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Menard </td>
+      <td style="text-align:right;"> 2242 </td>
+      <td style="text-align:right;"> 0.1219738 </td>
+      <td style="text-align:right;"> 234 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Oldham </td>
+      <td style="text-align:right;"> 2052 </td>
+      <td style="text-align:right;"> 0.1116370 </td>
+      <td style="text-align:right;"> 235 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Edwards </td>
+      <td style="text-align:right;"> 2002 </td>
+      <td style="text-align:right;"> 0.1089168 </td>
+      <td style="text-align:right;"> 236 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Armstrong </td>
+      <td style="text-align:right;"> 1901 </td>
+      <td style="text-align:right;"> 0.1034220 </td>
+      <td style="text-align:right;"> 237 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Throckmorton </td>
+      <td style="text-align:right;"> 1641 </td>
+      <td style="text-align:right;"> 0.0892770 </td>
+      <td style="text-align:right;"> 238 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Briscoe </td>
+      <td style="text-align:right;"> 1637 </td>
+      <td style="text-align:right;"> 0.0890594 </td>
+      <td style="text-align:right;"> 239 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Irion </td>
+      <td style="text-align:right;"> 1599 </td>
+      <td style="text-align:right;"> 0.0869920 </td>
+      <td style="text-align:right;"> 240 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Cottle </td>
+      <td style="text-align:right;"> 1505 </td>
+      <td style="text-align:right;"> 0.0818780 </td>
+      <td style="text-align:right;"> 241 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Stonewall </td>
+      <td style="text-align:right;"> 1490 </td>
+      <td style="text-align:right;"> 0.0810620 </td>
+      <td style="text-align:right;"> 242 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Foard </td>
+      <td style="text-align:right;"> 1336 </td>
+      <td style="text-align:right;"> 0.0726837 </td>
+      <td style="text-align:right;"> 243 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Glasscock </td>
+      <td style="text-align:right;"> 1226 </td>
+      <td style="text-align:right;"> 0.0666993 </td>
+      <td style="text-align:right;"> 244 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Motley </td>
+      <td style="text-align:right;"> 1210 </td>
+      <td style="text-align:right;"> 0.0658288 </td>
+      <td style="text-align:right;"> 245 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Sterling </td>
+      <td style="text-align:right;"> 1143 </td>
+      <td style="text-align:right;"> 0.0621838 </td>
+      <td style="text-align:right;"> 246 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Terrell </td>
+      <td style="text-align:right;"> 984 </td>
+      <td style="text-align:right;"> 0.0535335 </td>
+      <td style="text-align:right;"> 247 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Roberts </td>
+      <td style="text-align:right;"> 929 </td>
+      <td style="text-align:right;"> 0.0505413 </td>
+      <td style="text-align:right;"> 248 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kent </td>
+      <td style="text-align:right;"> 808 </td>
+      <td style="text-align:right;"> 0.0439584 </td>
+      <td style="text-align:right;"> 249 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> McMullen </td>
+      <td style="text-align:right;"> 707 </td>
+      <td style="text-align:right;"> 0.0384636 </td>
+      <td style="text-align:right;"> 250 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Borden </td>
+      <td style="text-align:right;"> 641 </td>
+      <td style="text-align:right;"> 0.0348730 </td>
+      <td style="text-align:right;"> 251 </td>
+      <td style="text-align:left;">  </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Kenedy </td>
+      <td style="text-align:right;"> 416 </td>
+      <td style="text-align:right;"> 0.0226321 </td>
+      <td style="text-align:right;"> 252 </td>
+      <td style="text-align:left;"> Kenedy </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> King </td>
+      <td style="text-align:right;"> 286 </td>
+      <td style="text-align:right;"> 0.0155595 </td>
+      <td style="text-align:right;"> 253 </td>
+      <td style="text-align:left;"> King </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+     <tr>
+      <td style="text-align:left;"> Loving </td>
+      <td style="text-align:right;"> 82 </td>
+      <td style="text-align:right;"> 0.0044611 </td>
+      <td style="text-align:right;"> 254 </td>
+      <td style="text-align:left;"> Loving </td>
+      <td style="text-align:left;">  </td>
+     </tr>
+   </tbody>
+   </table></div>
+   
+<h3 id="3-모호한-시각화">(3) 모호한 시각화</h3>
+<ul>
+<li>주어진 데이터를 가지고 시각화를 작성한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">temp_font <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;Times New Roman&#34;</span>
+
+counties_lin <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">ggplot</span>(tx_counties, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> index, y <span style="color:#f92672">=</span> popratio)) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;#0072B2&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">geom_text_repel</span>(<span style="color:#a6e22e">aes</span>(label <span style="color:#f92672">=</span> label_large), point.padding <span style="color:#f92672">=</span> <span style="color:#ae81ff">.4</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;black&#34;</span>,
+                  min.segment.length <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">scale_y_continuous</span>(name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;population number / median&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">scale_x_continuous</span>(limits <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">.5</span>, <span style="color:#a6e22e">nrow</span>(tx_counties) <span style="color:#f92672">+</span> <span style="color:#ae81ff">.5</span>), expand <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+                     breaks <span style="color:#f92672">=</span> <span style="color:#66d9ef">NULL</span>, <span style="color:#75715e">#c(1, 50*(1:5)),</span>
+                     name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Texas counties, from most to least populous&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">theme_dviz_hgrid</span>(font_family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">theme</span>(axis.line <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
+        plot.margin <span style="color:#f92672">=</span> <span style="color:#a6e22e">margin</span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1.5</span>)) 
+
+<span style="color:#a6e22e">ggdraw</span>(counties_lin, clip <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;on&#34;</span>) <span style="color:#f92672">+</span> 
+  <span style="color:#a6e22e">draw_text</span>(<span style="color:#a6e22e">paste0</span>(<span style="color:#e6db74">&#34;bad&#34;</span>, <span style="color:#e6db74">&#34;  &#34;</span>), x<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, y<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, vjust<span style="color:#f92672">=</span><span style="color:#ae81ff">1.1</span>, hjust<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, size<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>, angle <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>,
+              color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#d02138&#34;</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, family <span style="color:#f92672">=</span> temp_font, fontface <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;plain&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">draw_line</span>(<span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>), size<span style="color:#f92672">=</span><span style="color:#ae81ff">2.8</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#d02138&#34;</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</code></pre></div><p><img src="/img/datavisualisation/ch05_logscale_viz_files/figure-html/unnamed-chunk-2-1.png" alt=""></p>
+<ul>
+<li>위 그래프는 전형적인 선형 스케일을 옮겨 담은 것이다.
+<ul>
+<li><code>선형(linear)스케일</code>은 대개 데이터를 정확하게 보여주기도 하지만, 독자에게 보다 강한 메시지를 주기 위해서는 비선형 스케일이 더 좋을 때가 있다.</li>
+<li>위 데이터에서 인구 수가 중간값이 카운티와 중간 값에 훨씬 못 미치는 카운티 사이의 인구 차이가 잘 드러나지 않으면, 전달력이 그만큼 떨어진다는 얘기다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="로그-스케일-적용">로그 스케일 적용</h2>
+<ul>
+<li>로그 변환을 적용한 그래프를 작성한다.</li>
+<li>그래프를 먼저 본 후, 추가적인 이론 설명을 진행한다.</li>
+</ul>
+<h3 id="1-보정된-시각화">(1) 보정된 시각화</h3>
+<ul>
+<li>시각화 코드는 아래와 같다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">ggplot</span>(tx_counties, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> index, y <span style="color:#f92672">=</span> popratio)) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">geom_hline</span>(yintercept <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, linetype <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;grey40&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;#0072B2&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">geom_text_repel</span>(<span style="color:#a6e22e">aes</span>(label <span style="color:#f92672">=</span> label), point.padding <span style="color:#f92672">=</span> <span style="color:#ae81ff">.4</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;black&#34;</span>,
+                  min.segment.length <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">scale_y_log10</span>(breaks <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">.01</span>, <span style="color:#ae81ff">.1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">100</span>),
+                name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;population number / median&#34;</span>,
+                labels <span style="color:#f92672">=</span> label_log10) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">scale_x_continuous</span>(limits <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">.5</span>, <span style="color:#a6e22e">nrow</span>(tx_counties) <span style="color:#f92672">+</span> <span style="color:#ae81ff">.5</span>), expand <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+                     breaks <span style="color:#f92672">=</span> <span style="color:#66d9ef">NULL</span>, <span style="color:#75715e">#c(1, 50*(1:5)),</span>
+                     name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Texas counties, from most to least populous&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">theme_dviz_hgrid</span>(font_family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">theme</span>(axis.line <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
+        plot.margin <span style="color:#f92672">=</span> <span style="color:#a6e22e">margin</span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1.5</span>))
+</code></pre></div><p><img src="/img/datavisualisation/ch05_logscale_viz_files/figure-html/unnamed-chunk-3-1.png" alt=""></p>
+<h3 id="2-그래프-해석">(2) 그래프 해석</h3>
+<ul>
+<li>위 그래프는 비율 값을 로그 스케일로 사용할 때의 예시이다. - 텍사스의 카운티별 인구를 텍사스 전체 인구의 중간 값으로 나눈다고 생각할 때, 이 계산으로 얻은 비율 값은 1보다 크거나 작다.
+<ul>
+<li>다시 말하면, 비율 값이 정확하게 1이면 그 카운티는 텍사즈 주 전체의  중간 값과 똑같다고 볼 수 있다.</li>
+</ul>
+</li>
+<li>대칭 형태의 그래프를 보여주면서, 인구가 많은 지역과 그렇지 못한 지역의 편차를 보여주는 매우 훌륭한 그래프가 완성 되었다.</li>
+<li>지역별로 편차가 심하게 큰 데이터에는 로그스케일 변환 그래프가 유용할 수 있다.</li>
+<li>해리스의 카운티는 4,092,459명이지만, 가장 적은 카운티는 82명일 수도 있다.</li>
+<li>이러한 경우에 로그 스케일은 매우 적정할 수 있다.</li>
+</ul>
+<h3 id="3-제곱근-스케일">(3) 제곱근 스케일</h3>
+<ul>
+<li>만약 특정지역의 인구수가 0명으로 기록되었다면 어떻게 할까?</li>
+<li>0은 로그 스케일에 표시할 수 없기 때문에, 이럴 경우 제곱근 스케일을 사용한다.</li>
+<li>그러나, 다루기가 쉽지 않다.
+<ul>
+<li>이 부분은 교재 또는 추후에 별도로 포스팅 하는 것으로 남겨둔다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="소결론">소결론</h2>
+<ul>
+<li>시각화를 그릴 때, 표준점수로 환산해서 그래프를 작성한 적은 몇번 있다.
+<ul>
+<li>막대 그래프를 사용했지만, 거리감까지 드는 그래프는 아니었다.</li>
+<li>위 그래프는 line + point의 조합으로 나타냈다는 데 의의가 있다.</li>
+</ul>
+</li>
+<li>선형 스케일, 로그 스케일, 그리고 제곱근 스케일의 차이점이 있음을 알게 되었다.</li>
+</ul>
+<blockquote>
+<p>자세한 건 교재를 구매하자.</p>
+</blockquote>
+<h2 id="v-reference-원서">V. Reference (원서)</h2>
+<p>Wilke, C. (2019). Fundamentals of Data Visualization. Retrieved July 28, 2020, from <a href="https://serialmentor.com/dataviz/">https://serialmentor.com/dataviz/</a></p>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/data-visualisation/" rel="tag">Data Visualisation</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/r/" rel="tag">R</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/ggplot2/" rel="tag">ggplot2</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" rel="tag">데이터 시각화</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" rel="tag">시각화 문법</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name"></span>
+	</div>
+	<div class="authorbox__description">
+		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.
+	</div>
+</div>
+
+
+<section class="comments">
+	<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-chloevan-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH…" value="" name="q" aria-label="SEARCH…">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://dschloe.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/settings/postgresql_install/">Postgre SQL Installation on MacOS M1</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/pandas/dictionary_replace/">Pandas 속도 비교 - with or without Dictionary</a></li>
+			<li class="widget__item"><a class="widget__link" href="/mlops/wandb/install/">[MLOps] Weight &amp; Biases 소개 및 사용 방법</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/pandas/loc_replace_2/">Pandas 속도 비교 - loc vs replace(2)</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/pandas/loc_replace/">Pandas 속도 비교 - loc vs replace</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/acea/">ACEA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/amazon-web-service/">Amazon Web Service</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/astype/">astype</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws/">AWS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">bar chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-data-transformation/">Basic Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basics/">Basics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-machine-learning/">BigQuery with Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-python/">BigQuery with Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blog/">Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bupar/">bupaR</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/categorical-features/">Categorical Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/class/">Class</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/cloud-build/">Cloud Build</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/colab/">Colab </a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conditional-statements/">Conditional Statements</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/corona-shiny-app/">Corona Shiny App</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dacon/">dacon</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-handling/">Data Handling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-science-project/">Data Science Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-structures/">Data Structures</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualization/">Data Visualization</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decorators/">Decorators</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deployment/">Deployment</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/design/">Design</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development/">Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development-settings/">Development Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dictionary/">Dictionary</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/discrete-features/">Discrete Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/docker/">Docker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/encoding/">Encoding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/feature-engineering/">Feature Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-i/o/">File I/O</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/function/">function</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ggplot2/">ggplot2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/git/">Git</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github/">Github</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/global-development/">Global Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-colab/">Google Colab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gradient-boosting-machine/">Gradient Boosting Machine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hexo/">Hexo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/histogram/">Histogram</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/installation/">Installation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/intermediate/">Intermediate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iteration/">iteration</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/jupyter-notebook/">Jupyter Notebook</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle/">Kaggle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle-api/">Kaggle API</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/konlp/">KoNLP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">line grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/linux/">Linux</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lollipop/">lollipop</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lstm/">LSTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/m1/">M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/macos-m1/">MacOS M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mask-r-cnn/">Mask R-CNN</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/merging-data/">Merging Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/missing-values/">Missing Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/neural-network/">Neural Network</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/new-packages/">New Packages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nonparametric/">Nonparametric</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/numeric-features/">Numeric Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/object-detection/">Object Detection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oce/">OCE</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/optimizer/">Optimizer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas-merge/">Pandas Merge</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pivot-table/">pivot table</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pls-sem/">PLS-SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/postgre-sql/">Postgre SQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/project/">Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/py-openaq/">py-openaq</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pydataset/">PyDataset</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-basic/">Python Basic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-project/">Python Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/">R 마크다운</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ranzcr/">Ranzcr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/recommendation/">Recommendation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regular-expression/">regular expression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rpa/">RPA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rtweet/">rtweet</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/seaborn/">Seaborn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow/">Tensorflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0/">Tensorflow 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0-tutorial/">Tensorflow 2.0 Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tutorial/">Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/">객체지향 프로그래밍</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/">구글 클라우드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/">구조방정식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/">국제개발</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/">기초통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/">논문통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/">데이터 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">데이터 시각화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">데이터 싸이언스 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/">막대 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">머신러닝 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B3%B4%EA%B3%A0%EC%84%9C-%EC%9E%90%EB%8F%99%ED%99%94/">보고서 자동화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/">빅쿼리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%82%B0%EC%A0%90%EB%8F%84/">산점도</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/">선 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/">시간 측정</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/">아마존 웹 서비스</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/">정규표현식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천 시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%BA%90%EA%B8%80/">캐글</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/">텍스트 마이닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/">텍스트 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/">텐서플로 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/">텐서플로 2.0 튜토리얼</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/">텐서플로우</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/">프로세스 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/">피벗 테이블</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/">환경설정</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/acea/" title="ACEA">ACEA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/amazon-web-service/" title="Amazon Web Service">Amazon Web Service</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/append/" title="append">append</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/astype/" title="astype">astype</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/auto-encoder/" title="Auto Encoder">Auto Encoder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85/" title="AWS 회원가입">AWS 회원가입</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="bar chart">bar chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-structures/" title="Basic Data Structures">Basic Data Structures</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-transformation/" title="Basic Data Transformation">Basic Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basics/" title="Basics">Basics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-machine-learning/" title="BigQuery with Machine Learning">BigQuery with Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery with Python">BigQuery with Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery with R">BigQuery with R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blog/" title="Blog">Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bupar/" title="bupaR">bupaR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/categorical-features/" title="Categorical Features">Categorical Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/class/" title="Class">Class</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cloud-build/" title="Cloud Build">Cloud Build</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/clustering/" title="Clustering">Clustering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/colab-with-kaggle/" title="Colab with Kaggle">Colab with Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-expressions/" title="Conditional Expressions">Conditional Expressions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-statements/" title="Conditional Statements">Conditional Statements</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cross-join/" title="Cross Join">Cross Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dashboard/" title="Dashboard">Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-handling/" title="Data Handling">Data Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-types/" title="Data Types">Data Types</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualization/" title="Data Visualization">Data Visualization</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dataframe/" title="DataFrame">DataFrame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decision-tree/" title="Decision Tree">Decision Tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decorators/" title="Decorators">Decorators</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deployment/" title="Deployment">Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/design/" title="Design">Design</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="Development">Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development-settings/" title="Development Settings">Development Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary/" title="Dictionary">Dictionary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/discrete-features/" title="Discrete Features">Discrete Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/disk.frame/" title="disk.frame">disk.frame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/docker/" title="Docker">Docker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="dplyr">dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/eda/" title="EDA">EDA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/emr/" title="EMR">EMR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/encoding/" title="Encoding">Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enumerate/" title="enumerate">enumerate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exploratory-data-analysis/" title="Exploratory Data Analysis">Exploratory Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/extend/" title="extend">extend</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/feature-engineering/" title="Feature Engineering">Feature Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-i/o/" title="File I/O">File I/O</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="filter">filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/for-loop/" title="for-loop">for-loop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geospatial-analysis/" title="Geospatial Analysis">Geospatial Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gghistostats/" title="gghistostats">gghistostats</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ggplot2/" title="ggplot2">ggplot2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/git/" title="Git">Git</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github/" title="Github">Github</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/global-development/" title="Global Development">Global Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="GRU 레이어">GRU 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="gt">gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gtsummary/" title="gtsummary">gtsummary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hadoop/" title="Hadoop">Hadoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heatmap/" title="Heatmap">Heatmap</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hexo/" title="Hexo">Hexo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/histogram/" title="Histogram">Histogram</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-segmentation/" title="Image Segmentation">Image Segmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-settings/" title="Image Settings">Image Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/insert/" title="insert">insert</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/installation/" title="Installation">Installation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/intermediate/" title="Intermediate">Intermediate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interview/" title="Interview">Interview</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iteration/" title="iteration">iteration</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="iterrows">iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/join/" title="JOIN">JOIN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle/" title="Kaggle">Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle-api/" title="Kaggle API">Kaggle API</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/konlp/" title="KoNLP">KoNLP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/label-encoding/" title="Label Encoding">Label Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lambda/" title="lambda">lambda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="leaflet">leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="line grpah">line grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linux/" title="Linux">Linux</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/list/" title="list">list</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="lists">lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists-and-tuples/" title="Lists and Tuples">Lists and Tuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lollipop/" title="lollipop">lollipop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m1/" title="M1">M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m5-forecasting/" title="M5 Forecasting">M5 Forecasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/macos-m1/" title="MacOS M1">MacOS M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mask-r-cnn/" title="Mask R-CNN">Mask R-CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathematical-functions/" title="Mathematical Functions">Mathematical Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-%EC%84%A4%EC%A0%95/" title="Mathjax 설정">Mathjax 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiprocessing/" title="multiprocessing">multiprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/neural-network/" title="Neural Network">Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/new-packages/" title="New Packages">New Packages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nonparametric/" title="Nonparametric">Nonparametric</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numeric-features/" title="Numeric Features">Numeric Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numpy/" title="NumPy">NumPy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/object-detection/" title="Object Detection">Object Detection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oce/" title="OCE">OCE</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/one-hot-encoding/" title="One-Hot Encoding">One-Hot Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outer-join/" title="Outer Join">Outer Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outliers/" title="Outliers">Outliers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-merge/" title="Pandas Merge">Pandas Merge</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pd.concat/" title="pd.concat">pd.concat</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pins/" title="pins">pins</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pivot-table/" title="pivot table">pivot table</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="plotly">plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pls-sem/" title="PLS-SEM">PLS-SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/polar-chart/" title="Polar Chart">Polar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/postgre-sql/" title="Postgre SQL">Postgre SQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/probability/" title="Probability">Probability</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/productive-box/" title="productive-box">productive-box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/py-openaq/" title="py-openaq">py-openaq</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pycaret/" title="PyCaret">PyCaret</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pydataset/" title="PyDataset">PyDataset</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-basic/" title="Python Basic">Python Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-excel/" title="Python Excel">Python Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-numpy-broadcasting/" title="Python NumPy Broadcasting">Python NumPy Broadcasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-project/" title="Python Project">Python Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="Python 포트폴리오">Python 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-basic/" title="R Basic">R Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EA%B8%B0%EC%B4%88%EB%AC%B8/" title="R 기초문">R 기초문</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="R 포트폴리오">R 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ranzcr/" title="Ranzcr">Ranzcr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recommendation/" title="Recommendation">Recommendation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regular-expression/" title="regular expression">regular expression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rpa/" title="RPA">RPA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rstudio/" title="RStudio">RStudio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rtweet/" title="rtweet">rtweet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/seaborn/" title="Seaborn">Seaborn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-app-%EB%B0%B0%ED%8F%AC/" title="Shiny App 배포">Shiny App 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="shinydashboard">shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="sort_values">sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/super-resolution/" title="Super Resolution">Super Resolution</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/swifter/" title="swifter">swifter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow/" title="Tensorflow">Tensorflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0/" title="Tensorflow 2.0">Tensorflow 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0-tutorial/" title="Tensorflow 2.0 Tutorial">Tensorflow 2.0 Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text/" title="Text">Text</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tutorial/" title="Tutorial">Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/types-of-functions/" title="Types of Functions">Types of Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="vcrs">vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/" title="객체지향 프로그래밍">객체지향 프로그래밍</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B2%BD%EC%A7%84%EB%8C%80%ED%9A%8C/" title="경진대회">경진대회</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/" title="구조방정식">구조방정식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/" title="국제개발">국제개발</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%8D%EC%A0%95-%EB%B6%80%EC%A0%95-%EA%B0%90%EC%84%B1%EB%B6%84%EC%84%9D/" title="긍정, 부정 감성분석">긍정, 부정 감성분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C/" title="깃허브">깃허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="깃허브 환경설정">깃허브 환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/" title="논문통계">논문통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="데이터 싸이언스 프로젝트">데이터 싸이언스 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="데이터 전처리">데이터 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%94%A5%EB%9F%AC%EB%8B%9D/" title="딥러닝">딥러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/" title="막대 그래프">막대 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" title="머신러닝">머신러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="머신러닝 프로젝트">머신러닝 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%AA%A8%EB%8D%B8%EB%A7%81-%EC%8B%9C%EA%B0%81%ED%99%94/" title="모델링 시각화">모델링 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B0%98%EC%98%81%EC%A0%81-%EC%A7%80%ED%91%9C/" title="반영적 지표">반영적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B3%B4%EC%8A%A4%ED%84%B4-%EC%A3%BC%ED%83%9D-%EA%B0%80%EA%B2%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%B8%ED%8A%B8/" title="보스턴 주택 가격 데이터세트">보스턴 주택 가격 데이터세트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B6%84%EB%A5%98/" title="분류">분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" title="빅쿼리">빅쿼리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-r/" title="빅쿼리 R">빅쿼리 R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%EA%B8%B0%EB%B3%B8/" title="빅쿼리 기본">빅쿼리 기본</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%ED%8C%8C%EC%9D%B4%EC%8D%AC/" title="빅쿼리 파이썬">빅쿼리 파이썬</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%B0%EC%A0%90%EB%8F%84/" title="산점도">산점도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%BC%EC%84%B1%EC%B9%B4%EB%93%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EA%B3%B5%EB%AA%A8%EC%A0%84/" title="삼성카드 데이터분석 공모전">삼성카드 데이터분석 공모전</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%83%A4%EC%9D%B4%EB%8B%88-%EC%95%B1-%EB%B0%B0%ED%8F%AC/" title="샤이니 앱 배포">샤이니 앱 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" title="선 그래프">선 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/" title="선형회귀">선형회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%88%9C%ED%99%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="순환 신경망">순환 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" title="시각화 문법">시각화 문법</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/" title="시간 측정">시간 측정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" title="시그노이드">시그노이드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%A0%EA%B2%BD-%EC%8A%A4%ED%83%80%EC%9D%BC-%EC%A0%84%EC%9D%B4/" title="신경 스타일 전이">신경 스타일 전이</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/" title="아마존 웹 서비스">아마존 웹 서비스</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%98%A4%ED%86%A0%EC%9D%B8%EC%BD%94%EB%8D%94/" title="오토인코더">오토인코더</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B6%84%ED%95%A0/" title="이미지 분할">이미지 분할</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%84%A4%EC%A0%95/" title="이미지 설정">이미지 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" title="이항분류">이항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%84%EB%B2%A0%EB%94%A9-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="임베딩 레이어">임베딩 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%83%9D%EC%84%B1/" title="자연어 생성">자연어 생성</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/" title="전이 학습">전이 학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/" title="정규표현식">정규표현식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/" title="지도학습">지도학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B4%88%ED%95%B4%EC%83%81%EB%8F%84/" title="초해상도">초해상도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천 시스템">추천 시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천시스템">추천시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B8%A1%EC%A0%95%EC%B2%99%EB%8F%84/" title="측정척도">측정척도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BA%90%EA%B8%80/" title="캐글">캐글</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BB%A8%EB%B3%BC%EB%A3%A8%EC%85%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="컨볼루션 신경망">컨볼루션 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="코로나 대시보드">코로나 대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%8B%A4%EB%A3%A8%EA%B8%B0/" title="테이블 다루기">테이블 다루기</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="텍스트 마이닝">텍스트 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="텍스트 전처리">텍스트 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" title="텐서플로 2.0">텐서플로 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" title="텐서플로 2.0 튜토리얼">텐서플로 2.0 튜토리얼</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-%ED%97%88%EB%B8%8C/" title="텐서플로 허브">텐서플로 허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/" title="텐서플로우">텐서플로우</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%97%91%EC%85%80/" title="판다스 엑셀">판다스 엑셀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" title="판다스 자료구조">판다스 자료구조</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="포트폴리오">포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="프로세스 마이닝">프로세스 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/" title="프로세스 분석">프로세스 분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/" title="피벗 테이블">피벗 테이블</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80-%ED%8F%B0%ED%8A%B8-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0/" title="한글 폰트 오류 해결">한글 폰트 오류 해결</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%98%95%EC%84%B1%EC%A0%81-%EC%A7%80%ED%91%9C/" title="형성적 지표">형성적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="환경설정">환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9A%8C%EA%B7%80%EB%AA%A8%ED%98%95/" title="회귀모형">회귀모형</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9C%B4%EA%B3%A0/" title="휴고">휴고</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9E%88%EC%8A%A4%ED%86%A0%EA%B7%B8%EB%9E%A8/" title="히스토그램">히스토그램</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2021 DSChloe.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,2548 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>머신러닝 알고리즘 - LightGbm - Data Science | DSChloe</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+		<meta property="og:title" content="머신러닝 알고리즘 - LightGbm" />
+<meta property="og:description" content="개요  주택가격을 예측하는 데 필요한 Kaggle 데이터를 불러와서 빅쿼리에 저장하는 실습 진행 데이터를 불러와서 LightGBM를 활용하여 머신러닝을 만든다.  I. 사전 준비작업  Kaggle API 설치 및 연동해서 GCP에 데이터를 적재하는 것까지 진행한다.  (1) Kaggle API 설치  구글 코랩에서 API를 불러오려면 다음 소스코드를 실행한다.  !pip install kaggle Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.6) Requirement already satisfied: six&gt;=1.10 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.12.0) Requirement already satisfied: requests in /usr/local/lib/python3." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dschloe.github.io/python/python_edu/04_machinelearning/chapter_4_3_lightgbm/" />
+<meta property="article:published_time" content="2020-07-16T23:00:47+09:00" />
+<meta property="article:modified_time" content="2020-07-16T23:00:47+09:00" />
+
+		<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="머신러닝 알고리즘 - LightGbm"/>
+<meta name="twitter:description" content="개요  주택가격을 예측하는 데 필요한 Kaggle 데이터를 불러와서 빅쿼리에 저장하는 실습 진행 데이터를 불러와서 LightGBM를 활용하여 머신러닝을 만든다.  I. 사전 준비작업  Kaggle API 설치 및 연동해서 GCP에 데이터를 적재하는 것까지 진행한다.  (1) Kaggle API 설치  구글 코랩에서 API를 불러오려면 다음 소스코드를 실행한다.  !pip install kaggle Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.6) Requirement already satisfied: six&gt;=1.10 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.12.0) Requirement already satisfied: requests in /usr/local/lib/python3."/>
+
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo">
+		<a class="logo__link" href="/" title="Data Science | DSChloe" rel="home">
+			<div class="logo__item logo__text">
+					<div class="logo__title">Data Science | DSChloe</div>
+					<div class="logo__tagline">Love your beloved one forever</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/aws/">
+				
+				<span class="menu__text">AWS</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/ds-projects/">
+				
+				<span class="menu__text">DS-Projects</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/gcp/">
+				
+				<span class="menu__text">GCP</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/kaggle/">
+				
+				<span class="menu__text">Kaggle</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/mlops/">
+				
+				<span class="menu__text">MLOps</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/python/">
+				
+				<span class="menu__text">Python</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/r/">
+				
+				<span class="menu__text">R</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/settings/">
+				
+				<span class="menu__text">settings</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About DSChloe</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">머신러닝 알고리즘 - LightGbm</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-07-16T23:00:47&#43;09:00">2020-07-16</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="category">머신러닝</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#개요">개요</a></li>
+    <li><a href="#i-사전-준비작업">I. 사전 준비작업</a>
+      <ul>
+        <li><a href="#1-kaggle-api-설치">(1) Kaggle API 설치</a></li>
+        <li><a href="#2-kaggle-token-다운로드">(2) Kaggle Token 다운로드</a></li>
+        <li><a href="#3-kaggle-데이터-불러오기">(3) Kaggle 데이터 불러오기</a></li>
+        <li><a href="#4-bigquery에-데이터-적재">(4) BigQuery에 데이터 적재</a></li>
+      </ul>
+    </li>
+    <li><a href="#ii-데이터-피처공학">II. 데이터 피처공학</a>
+      <ul>
+        <li><a href="#1-주요-패키지-불러오기">(1) 주요 패키지 불러오기</a></li>
+        <li><a href="#2-데이터-불러오기">(2) 데이터 불러오기</a></li>
+        <li><a href="#3-결측-데이터-확인">(3) 결측 데이터 확인</a></li>
+        <li><a href="#4-주요-함수-정의">(4) 주요 함수 정의</a></li>
+        <li><a href="#5-전체-면적-데이터-추가">(5) 전체 면적 데이터 추가</a></li>
+        <li><a href="#6-타겟변수-로그변환">(6) 타겟변수 로그변환</a></li>
+        <li><a href="#7-결측치-데이터-보간">(7) 결측치 데이터 보간</a></li>
+        <li><a href="#8-변수-삭제">(8) 변수 삭제</a></li>
+        <li><a href="#9-이상치-제거">(9) 이상치 제거</a></li>
+        <li><a href="#10-재범주화">(10) 재범주화</a></li>
+        <li><a href="#11-범주형-데이터-다루기">(11) 범주형 데이터 다루기</a></li>
+      </ul>
+    </li>
+    <li><a href="#iii-머신러닝-모형-개발">III. 머신러닝 모형 개발</a>
+      <ul>
+        <li><a href="#1-종속변수-처리">(1) 종속변수 처리</a></li>
+        <li><a href="#2-데이터셋-분리">(2) 데이터셋 분리</a></li>
+        <li><a href="#3-lightgbm-파라미터-정의">(3) LightGBM 파라미터 정의</a></li>
+        <li><a href="#4-모델-정의">(4) 모델 정의</a></li>
+        <li><a href="#5-모델-학습">(5) 모델 학습</a></li>
+        <li><a href="#6-모델-평가">(6) 모델 평가</a></li>
+        <li><a href="#7-결과-제출">(7) 결과 제출</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="개요">개요</h2>
+<ul>
+<li>주택가격을 예측하는 데 필요한 Kaggle 데이터를 불러와서 빅쿼리에 저장하는 실습 진행</li>
+<li>데이터를 불러와서 <code>LightGBM</code>를 활용하여 머신러닝을 만든다.</li>
+</ul>
+<h2 id="i-사전-준비작업">I. 사전 준비작업</h2>
+<ul>
+<li><code>Kaggle API</code> 설치 및 연동해서 <code>GCP</code>에 데이터를 적재하는 것까지 진행한다.</li>
+</ul>
+<h3 id="1-kaggle-api-설치">(1) Kaggle API 설치</h3>
+<ul>
+<li>구글 코랩에서 <code>API</code>를 불러오려면 다음 소스코드를 실행한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>pip install kaggle
+</code></pre></div><pre><code>Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.6)
+Requirement already satisfied: six&gt;=1.10 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.12.0)
+Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.23.0)
+Requirement already satisfied: certifi in /usr/local/lib/python3.6/dist-packages (from kaggle) (2020.6.20)
+Requirement already satisfied: tqdm in /usr/local/lib/python3.6/dist-packages (from kaggle) (4.41.1)
+Requirement already satisfied: python-dateutil in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.8.1)
+Requirement already satisfied: python-slugify in /usr/local/lib/python3.6/dist-packages (from kaggle) (4.0.1)
+Requirement already satisfied: urllib3&lt;1.25,&gt;=1.21.1 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.24.3)
+Requirement already satisfied: chardet&lt;4,&gt;=3.0.2 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;kaggle) (3.0.4)
+Requirement already satisfied: idna&lt;3,&gt;=2.5 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;kaggle) (2.10)
+Requirement already satisfied: text-unidecode&gt;=1.3 in /usr/local/lib/python3.6/dist-packages (from python-slugify-&gt;kaggle) (1.3)
+</code></pre>
+<h3 id="2-kaggle-token-다운로드">(2) Kaggle Token 다운로드</h3>
+<ul>
+<li>Kaggle에서 API Token을 다운로드 받는다.</li>
+<li>[Kaggle]-[My Account]-[API]-[Create New API Token]을 누르면 <code>kaggle.json</code> 파일이 다운로드 된다.</li>
+<li>이 파일을 바탕화면에 옮긴 뒤, 아래 코드를 실행 시킨다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> files
+uploaded <span style="color:#f92672">=</span> files<span style="color:#f92672">.</span>upload()
+<span style="color:#66d9ef">for</span> fn <span style="color:#f92672">in</span> uploaded<span style="color:#f92672">.</span>keys():
+  <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;uploaded file &#34;{name}&#34; with length {length} bytes&#39;</span><span style="color:#f92672">.</span>format(
+      name<span style="color:#f92672">=</span>fn, length<span style="color:#f92672">=</span>len(uploaded[fn])))
+  
+<span style="color:#75715e"># kaggle.json을 아래 폴더로 옮긴 뒤, file을 사용할 수 있도록 권한을 부여한다. </span>
+<span style="color:#960050;background-color:#1e0010">!</span>mkdir <span style="color:#f92672">-</span>p <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span> <span style="color:#f92672">&amp;&amp;</span> mv kaggle<span style="color:#f92672">.</span>json <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span> <span style="color:#f92672">&amp;&amp;</span> chmod <span style="color:#ae81ff">600</span> <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span>kaggle<span style="color:#f92672">.</span>json
+</code></pre></div><ul>
+<li>실제 <code>kaggle.json</code> 파일이 업로드 되었다는 뜻이다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ls <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>ha <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span>kaggle<span style="color:#f92672">.</span>json
+</code></pre></div><pre><code>/root/.kaggle/kaggle.json
+</code></pre>
+<h3 id="3-kaggle-데이터-불러오기">(3) Kaggle 데이터 불러오기</h3>
+<ul>
+<li><code>Kaggle</code> 대회 리스트를 불러온다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>kaggle competitions list
+</code></pre></div><pre><code>Warning: Looks like you're using an outdated API Version, please consider updating (server 1.5.6 / client 1.5.4)
+ref                                            deadline             category            reward  teamCount  userHasEntered  
+---------------------------------------------  -------------------  ---------------  ---------  ---------  --------------  
+tpu-getting-started                            2030-06-03 23:59:00  Getting Started      Kudos        186           False  
+digit-recognizer                               2030-01-01 00:00:00  Getting Started  Knowledge       2963           False  
+titanic                                        2030-01-01 00:00:00  Getting Started  Knowledge      22419            True  
+house-prices-advanced-regression-techniques    2030-01-01 00:00:00  Getting Started  Knowledge       5051            True  
+connectx                                       2030-01-01 00:00:00  Getting Started  Knowledge        710           False  
+nlp-getting-started                            2030-01-01 00:00:00  Getting Started      Kudos       1498            True  
+competitive-data-science-predict-future-sales  2020-12-31 23:59:00  Playground           Kudos       7808           False  
+osic-pulmonary-fibrosis-progression            2020-10-06 23:59:00  Featured           $55,000        248           False  
+halite                                         2020-09-15 23:59:00  Featured              Swag        691           False  
+birdsong-recognition                           2020-09-15 23:59:00  Research           $25,000        396           False  
+landmark-retrieval-2020                        2020-08-17 23:59:00  Research           $25,000        165           False  
+siim-isic-melanoma-classification              2020-08-17 23:59:00  Featured           $30,000       2180           False  
+global-wheat-detection                         2020-08-04 23:59:00  Research           $15,000       1788           False  
+open-images-object-detection-rvc-2020          2020-07-31 16:00:00  Playground       Knowledge         58           False  
+open-images-instance-segmentation-rvc-2020     2020-07-31 16:00:00  Playground       Knowledge         12           False  
+hashcode-photo-slideshow                       2020-07-27 23:59:00  Playground       Knowledge         59           False  
+prostate-cancer-grade-assessment               2020-07-22 23:59:00  Featured           $25,000        920           False  
+alaska2-image-steganalysis                     2020-07-20 23:59:00  Research           $25,000       1046           False  
+m5-forecasting-accuracy                        2020-06-30 23:59:00  Featured           $50,000       5558            True  
+m5-forecasting-uncertainty                     2020-06-30 23:59:00  Featured           $50,000        909           False  
+</code></pre>
+<ul>
+<li>여기에서 참여하기 원하는 대회의 데이터셋을 불러오면 된다.</li>
+<li>이번 <code>basic</code>강의에서는 <code>house-prices-advanced-regression-techniques</code> 데이터를 활용한 데이터 가공과 시각화를 연습할 것이기 때문에 아래와 같이 코드를 실행하여 데이터를 불러온다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>kaggle competitions download <span style="color:#f92672">-</span>c house<span style="color:#f92672">-</span>prices<span style="color:#f92672">-</span>advanced<span style="color:#f92672">-</span>regression<span style="color:#f92672">-</span>techniques
+</code></pre></div><pre><code>Warning: Looks like you're using an outdated API Version, please consider updating (server 1.5.6 / client 1.5.4)
+Downloading train.csv to /content
+  0% 0.00/450k [00:00&lt;?, ?B/s]
+100% 450k/450k [00:00&lt;00:00, 68.5MB/s]
+Downloading data_description.txt to /content
+  0% 0.00/13.1k [00:00&lt;?, ?B/s]
+100% 13.1k/13.1k [00:00&lt;00:00, 12.9MB/s]
+Downloading test.csv to /content
+  0% 0.00/441k [00:00&lt;?, ?B/s]
+100% 441k/441k [00:00&lt;00:00, 61.7MB/s]
+Downloading sample_submission.csv to /content
+  0% 0.00/31.2k [00:00&lt;?, ?B/s]
+100% 31.2k/31.2k [00:00&lt;00:00, 31.8MB/s]
+</code></pre>
+<ul>
+<li>실제 데이터가 잘 다운로드 받게 되었는지 확인한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>ls
+</code></pre></div><pre><code>data_description.txt  sample_data  sample_submission.csv  test.csv  train.csv
+</code></pre>
+<h3 id="4-bigquery에-데이터-적재">(4) BigQuery에 데이터 적재</h3>
+<ul>
+<li><code>sample_submission.csv</code>, <code>test.csv</code>, <code>train.csv</code> 데이터를 불러와서 빅쿼리에 적재를 한다.</li>
+<li>로컬에서 빅쿼리로 데이터를 Load하는 방법에는 여러가지가 있다.
+<ul>
+<li><code>Local</code>에서 직접 올리기 (단, 10MB 이하)</li>
+<li><code>Google Stroage</code> 활용</li>
+<li><code>Pandas</code> 활용</li>
+</ul>
+</li>
+<li><code>Google Stroage</code>를 활용하려면 클라우드 수업으로 진행되기 때문에, <code>Pandas</code>패키지를 활용한다.
+<ul>
+<li><code>to_gbq</code>라는 함수를 사용하는데, 이를 위해서는 보통 <code>pandas-gbq package</code>패키지를 별도로 설치를 해야한다.</li>
+<li>다행히도, 구글 <code>Colab</code>에서는 위 패키지는 별도로 설치할 필요가 없다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">from</span> pandas.io <span style="color:#f92672">import</span> gbq
+
+<span style="color:#75715e"># import sample_submission file</span>
+sample_submission <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;sample_submission.csv&#39;</span>)
+
+<span style="color:#75715e"># Connect to Google Cloud API and Upload DataFrame</span>
+sample_submission<span style="color:#f92672">.</span>to_gbq(destination_table<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;house_price.sample_submission&#39;</span>, 
+                  project_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;your_project_id&#39;</span>, 
+                  if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># import train file </span>
+train <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;train.csv&#39;</span>)
+</code></pre></div><ul>
+<li><code>column</code>명을 확인해본다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(train<span style="color:#f92672">.</span>columns)
+</code></pre></div><pre><code>Index(['Id', 'MSSubClass', 'MSZoning', 'LotFrontage', 'LotArea', 'Street',
+       'Alley', 'LotShape', 'LandContour', 'Utilities', 'LotConfig',
+       'LandSlope', 'Neighborhood', 'Condition1', 'Condition2', 'BldgType',
+       'HouseStyle', 'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd',
+       'RoofStyle', 'RoofMatl', 'Exterior1st', 'Exterior2nd', 'MasVnrType',
+       'MasVnrArea', 'ExterQual', 'ExterCond', 'Foundation', 'BsmtQual',
+       'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinSF1',
+       'BsmtFinType2', 'BsmtFinSF2', 'BsmtUnfSF', 'TotalBsmtSF', 'Heating',
+       'HeatingQC', 'CentralAir', 'Electrical', '1stFlrSF', '2ndFlrSF',
+       'LowQualFinSF', 'GrLivArea', 'BsmtFullBath', 'BsmtHalfBath', 'FullBath',
+       'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr', 'KitchenQual',
+       'TotRmsAbvGrd', 'Functional', 'Fireplaces', 'FireplaceQu', 'GarageType',
+       'GarageYrBlt', 'GarageFinish', 'GarageCars', 'GarageArea', 'GarageQual',
+       'GarageCond', 'PavedDrive', 'WoodDeckSF', 'OpenPorchSF',
+       'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'PoolQC',
+       'Fence', 'MiscFeature', 'MiscVal', 'MoSold', 'YrSold', 'SaleType',
+       'SaleCondition', 'SalePrice'],
+      dtype='object')
+</code></pre>
+<ul>
+<li>빅쿼리에 데이터를 <code>Loading</code> 할 때는 첫번째 글짜가 숫자가 오면 안되기 때문에, column 명을 수정한다.
+<ul>
+<li>이 때, 각 숫자 앞에 <code>my</code>만 추가한다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">colnames_dict <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;1stFlrSF&#34;</span>: <span style="color:#e6db74">&#34;my1stFlrSF&#34;</span>, <span style="color:#e6db74">&#34;2ndFlrSF&#34;</span>: <span style="color:#e6db74">&#34;my2ndFlrSF&#34;</span>, <span style="color:#e6db74">&#34;3SsnPorch&#34;</span>: <span style="color:#e6db74">&#34;my3SsnPorch&#34;</span>}
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Connect to Google Cloud API and Upload DataFrame</span>
+train <span style="color:#f92672">=</span> train<span style="color:#f92672">.</span>rename(columns<span style="color:#f92672">=</span>colnames_dict)
+train<span style="color:#f92672">.</span>to_gbq(destination_table<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;house_price.train&#39;</span>, 
+                  project_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;your_project_id&#39;</span>, 
+                  if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>)
+</code></pre></div><pre><code>1it [00:06,  6.25s/it]
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Connect to Google Cloud API and Upload DataFrame</span>
+test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;test.csv&#39;</span>)
+test <span style="color:#f92672">=</span> test<span style="color:#f92672">.</span>rename(columns<span style="color:#f92672">=</span>colnames_dict)
+test<span style="color:#f92672">.</span>to_gbq(destination_table<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;house_price.test&#39;</span>, 
+            project_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;your_project_id&#39;</span>, 
+            if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>)
+</code></pre></div><pre><code>1it [00:03,  3.25s/it]
+</code></pre>
+<ul>
+<li>실제 데이터가 들어갔는지 빅쿼리에서 확인한다.</li>
+</ul>
+<h2 id="ii-데이터-피처공학">II. 데이터 피처공학</h2>
+<ul>
+<li>사이킷런 패키지는 기본적으로 결측치를 허용하지 않기 때문에, 반드시 확인 후, 처리해야 한다.</li>
+<li>이번에는 <code>BigQuery</code>를 통해 데이터를 불러온다.</li>
+<li>주요 데이터 추출을 위한 피처공학에 대해 배워본다.</li>
+</ul>
+<h3 id="1-주요-패키지-불러오기">(1) 주요 패키지 불러오기</h3>
+<ul>
+<li>이제 주요 패키지를 불러온다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> math
+<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+<span style="color:#f92672">%</span>matplotlib inline
+<span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
+<span style="color:#f92672">from</span> scipy.stats <span style="color:#f92672">import</span> norm
+<span style="color:#f92672">import</span> lightgbm <span style="color:#f92672">as</span> lgb
+<span style="color:#f92672">from</span> sklearn.model_selection <span style="color:#f92672">import</span> train_test_split
+<span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> mean_squared_log_error
+<span style="color:#f92672">from</span> sklearn <span style="color:#f92672">import</span> preprocessing
+<span style="color:#f92672">from</span> sklearn.preprocessing <span style="color:#f92672">import</span> StandardScaler
+<span style="color:#f92672">from</span> sklearn.model_selection <span style="color:#f92672">import</span> cross_val_score, cross_val_predict
+</code></pre></div><h3 id="2-데이터-불러오기">(2) 데이터 불러오기</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> auth
+auth<span style="color:#f92672">.</span>authenticate_user()
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Authenticated&#39;</span>)
+</code></pre></div><pre><code>Authenticated
+</code></pre>
+<ul>
+<li>먼저 훈련 데이터를 불러온다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.cloud <span style="color:#f92672">import</span> bigquery
+<span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+
+project_id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;your_project_id&#39;</span>
+client <span style="color:#f92672">=</span> bigquery<span style="color:#f92672">.</span>Client(project<span style="color:#f92672">=</span>project_id)
+
+df_train <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span><span style="color:#e6db74">  SELECT 
+</span><span style="color:#e6db74">      * 
+</span><span style="color:#e6db74">  FROM `your_project_id.house_price.train`
+</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+
+df_train<span style="color:#f92672">.</span>shape
+</code></pre></div><pre><code>(1460, 81)
+</code></pre>
+<ul>
+<li>그 다음은 테스트 데이터를 불러온다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_test <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span><span style="color:#e6db74">  SELECT 
+</span><span style="color:#e6db74">      * 
+</span><span style="color:#e6db74">  FROM `your_project_id.house_price.test`
+</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+
+df_test<span style="color:#f92672">.</span>shape
+</code></pre></div><pre><code>(1459, 80)
+</code></pre>
+<ul>
+<li>아래 코드는 출력 시, 전체 <code>Column</code>에 대해 확인할 수 있음</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">pd<span style="color:#f92672">.</span>options<span style="color:#f92672">.</span>display<span style="color:#f92672">.</span>max_columns <span style="color:#f92672">=</span> None 
+<span style="color:#75715e"># df_train.describe()</span>
+</code></pre></div><h3 id="3-결측-데이터-확인">(3) 결측 데이터 확인</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># data set의 Percent 구하는 함수를 짜보자. </span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_fill_na</span>(data):
+  new_df <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>copy()
+  new_df_na <span style="color:#f92672">=</span> (new_df<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> len(new_df)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>
+  new_df_na<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92672">=</span>True)
+  new_df_na <span style="color:#f92672">=</span> new_df_na<span style="color:#f92672">.</span>drop(new_df_na[new_df_na <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>index)<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)
+  <span style="color:#66d9ef">return</span> new_df_na
+
+check_fill_na(df_train)
+</code></pre></div><pre><code>PoolQC          99.520548
+MiscFeature     96.301370
+Alley           93.767123
+Fence           80.753425
+FireplaceQu     47.260274
+LotFrontage     17.739726
+GarageYrBlt      5.547945
+GarageType       5.547945
+GarageFinish     5.547945
+GarageQual       5.547945
+GarageCond       5.547945
+BsmtFinType2     2.602740
+BsmtExposure     2.602740
+BsmtFinType1     2.534247
+BsmtCond         2.534247
+BsmtQual         2.534247
+MasVnrArea       0.547945
+MasVnrType       0.547945
+Electrical       0.068493
+dtype: float64
+</code></pre>
+<h3 id="4-주요-함수-정의">(4) 주요 함수 정의</h3>
+<ul>
+<li>수치형과 범주형 데이터 결측치의 보간에 관한 함수를 정의한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fill_missing</span>(df, cols, val):
+    <span style="color:#e6db74">&#34;&#34;&#34; val 입력값을 넣는다. &#34;&#34;&#34;</span>
+    <span style="color:#66d9ef">for</span> col <span style="color:#f92672">in</span> cols:
+        df[col] <span style="color:#f92672">=</span> df[col]<span style="color:#f92672">.</span>fillna(val)
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fill_missing_with_mode</span>(df, cols):
+    <span style="color:#e6db74">&#34;&#34;&#34; 최대 빈도수를 넣는다. &#34;&#34;&#34;</span>
+    <span style="color:#66d9ef">for</span> col <span style="color:#f92672">in</span> cols:
+        df[col] <span style="color:#f92672">=</span> df[col]<span style="color:#f92672">.</span>fillna(df[col]<span style="color:#f92672">.</span>mode()[<span style="color:#ae81ff">0</span>])
+        
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">addlogs</span>(res, cols):
+    <span style="color:#e6db74">&#34;&#34;&#34; 로그 변환 &#34;&#34;&#34;</span>
+    m <span style="color:#f92672">=</span> res<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]
+    <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> cols:
+        res <span style="color:#f92672">=</span> res<span style="color:#f92672">.</span>assign(newcol<span style="color:#f92672">=</span>pd<span style="color:#f92672">.</span>Series(np<span style="color:#f92672">.</span>log(<span style="color:#ae81ff">1.01</span><span style="color:#f92672">+</span>res[c]))<span style="color:#f92672">.</span>values)   
+        res<span style="color:#f92672">.</span>columns<span style="color:#f92672">.</span>values[m] <span style="color:#f92672">=</span> c <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;_log&#39;</span>
+        m <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+    <span style="color:#66d9ef">return</span> res
+</code></pre></div><ul>
+<li>1층, 2층, 3층의 면적을 합친 <code>전체 total</code>을 구해본다.</li>
+</ul>
+<h3 id="5-전체-면적-데이터-추가">(5) 전체 면적 데이터 추가</h3>
+<ul>
+<li>가정의 전체 면적을 더해서 추가 변수를 만든다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_train[<span style="color:#e6db74">&#39;TotalSF&#39;</span>] <span style="color:#f92672">=</span> df_train[<span style="color:#e6db74">&#39;TotalBsmtSF&#39;</span>] <span style="color:#f92672">+</span> df_train[<span style="color:#e6db74">&#39;my1stFlrSF&#39;</span>] <span style="color:#f92672">+</span> df_train[<span style="color:#e6db74">&#39;my2ndFlrSF&#39;</span>]
+</code></pre></div><ul>
+<li>전체 수치형 데이터에 <code>log transformation</code>을 해준다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">loglist <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;LotFrontage&#39;</span>,<span style="color:#e6db74">&#39;LotArea&#39;</span>,<span style="color:#e6db74">&#39;MasVnrArea&#39;</span>,<span style="color:#e6db74">&#39;BsmtFinSF1&#39;</span>,<span style="color:#e6db74">&#39;BsmtFinSF2&#39;</span>,<span style="color:#e6db74">&#39;BsmtUnfSF&#39;</span>,
+            <span style="color:#e6db74">&#39;TotalBsmtSF&#39;</span>,<span style="color:#e6db74">&#39;my1stFlrSF&#39;</span>,<span style="color:#e6db74">&#39;my2ndFlrSF&#39;</span>,<span style="color:#e6db74">&#39;LowQualFinSF&#39;</span>,<span style="color:#e6db74">&#39;GrLivArea&#39;</span>,
+            <span style="color:#e6db74">&#39;BsmtFullBath&#39;</span>,<span style="color:#e6db74">&#39;BsmtHalfBath&#39;</span>,<span style="color:#e6db74">&#39;FullBath&#39;</span>,<span style="color:#e6db74">&#39;HalfBath&#39;</span>,<span style="color:#e6db74">&#39;BedroomAbvGr&#39;</span>,<span style="color:#e6db74">&#39;KitchenAbvGr&#39;</span>,
+            <span style="color:#e6db74">&#39;TotRmsAbvGrd&#39;</span>,<span style="color:#e6db74">&#39;Fireplaces&#39;</span>,<span style="color:#e6db74">&#39;GarageCars&#39;</span>,<span style="color:#e6db74">&#39;GarageArea&#39;</span>,<span style="color:#e6db74">&#39;WoodDeckSF&#39;</span>,<span style="color:#e6db74">&#39;OpenPorchSF&#39;</span>,
+            <span style="color:#e6db74">&#39;EnclosedPorch&#39;</span>,<span style="color:#e6db74">&#39;my3SsnPorch&#39;</span>,<span style="color:#e6db74">&#39;ScreenPorch&#39;</span>,<span style="color:#e6db74">&#39;PoolArea&#39;</span>,<span style="color:#e6db74">&#39;MiscVal&#39;</span>,<span style="color:#e6db74">&#39;YearRemodAdd&#39;</span>,<span style="color:#e6db74">&#39;TotalSF&#39;</span>]
+
+df_train <span style="color:#f92672">=</span> addlogs(df_train, loglist)
+</code></pre></div><h3 id="6-타겟변수-로그변환">(6) 타겟변수 로그변환</h3>
+<ul>
+<li>데이터가 작기 때문에, 모형의 안정성을 위해 로그변환을 해준다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_train[<span style="color:#e6db74">&#34;SalePrice&#34;</span>] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>log1p(df_train[<span style="color:#e6db74">&#34;SalePrice&#34;</span>])
+</code></pre></div><h3 id="7-결측치-데이터-보간">(7) 결측치 데이터 보간</h3>
+<ul>
+<li>결측치 데이터를 보간한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 우선, 결측치가 있는 것 중, 범주형 데이터는 &#34;None&#34;으로 확인</span>
+fill_missing(df_train, [<span style="color:#e6db74">&#34;PoolQC&#34;</span>, <span style="color:#e6db74">&#34;MiscFeature&#34;</span>, <span style="color:#e6db74">&#34;Alley&#34;</span>, <span style="color:#e6db74">&#34;Fence&#34;</span>, <span style="color:#e6db74">&#34;FireplaceQu&#34;</span>, 
+                        <span style="color:#e6db74">&#34;GarageType&#34;</span>, <span style="color:#e6db74">&#34;GarageFinish&#34;</span>, <span style="color:#e6db74">&#34;GarageQual&#34;</span>, <span style="color:#e6db74">&#34;GarageCond&#34;</span>,
+                       <span style="color:#e6db74">&#39;BsmtQual&#39;</span>, <span style="color:#e6db74">&#39;BsmtCond&#39;</span>, <span style="color:#e6db74">&#39;BsmtExposure&#39;</span>, <span style="color:#e6db74">&#39;BsmtFinType1&#39;</span>, <span style="color:#e6db74">&#39;BsmtFinType2&#39;</span>,
+                       <span style="color:#e6db74">&#34;MasVnrType&#34;</span>, <span style="color:#e6db74">&#34;MSSubClass&#34;</span>], <span style="color:#e6db74">&#34;None&#34;</span>) 
+
+<span style="color:#75715e"># 수치형 데이터는 0으로 보간</span>
+fill_missing(df_train, [<span style="color:#e6db74">&#34;GarageYrBlt&#34;</span>, <span style="color:#e6db74">&#34;GarageArea&#34;</span>, <span style="color:#e6db74">&#34;GarageCars&#34;</span>,
+                       <span style="color:#e6db74">&#39;BsmtFinSF1&#39;</span>, <span style="color:#e6db74">&#39;BsmtFinSF2&#39;</span>, <span style="color:#e6db74">&#39;BsmtUnfSF&#39;</span>,<span style="color:#e6db74">&#39;TotalBsmtSF&#39;</span>, <span style="color:#e6db74">&#39;BsmtFullBath&#39;</span>, <span style="color:#e6db74">&#39;BsmtHalfBath&#39;</span>,
+                       <span style="color:#e6db74">&#34;MasVnrArea&#34;</span>], <span style="color:#ae81ff">0</span>)
+<span style="color:#75715e"># 그 중, 일부는 빈도수로 채워 넣는다.  </span>
+fill_missing_with_mode(df_train, [<span style="color:#e6db74">&#34;MSZoning&#34;</span>, <span style="color:#e6db74">&#34;KitchenQual&#34;</span>, <span style="color:#e6db74">&#34;Exterior1st&#34;</span>, <span style="color:#e6db74">&#34;Exterior2nd&#34;</span>, <span style="color:#e6db74">&#34;SaleType&#34;</span>])
+fill_missing(df_train, [<span style="color:#e6db74">&#34;Functional&#34;</span>],<span style="color:#e6db74">&#34;Typ&#34;</span>)
+</code></pre></div><h3 id="8-변수-삭제">(8) 변수 삭제</h3>
+<ul>
+<li>1개의 값만 존재하는 데이터는 삭제한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_train<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;Utilities&#39;</span>], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
+</code></pre></div><h3 id="9-이상치-제거">(9) 이상치 제거</h3>
+<ul>
+<li>적은 데이터에서 상위 또는 하위 이상치가 발생하는 것은 좋지 않다. 따라서, 해당 관측치는 제거한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_train<span style="color:#f92672">.</span>drop(df_train[(df_train[<span style="color:#e6db74">&#39;OverallQual&#39;</span>]<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">5</span>) <span style="color:#f92672">&amp;</span> (df_train[<span style="color:#e6db74">&#39;SalePrice&#39;</span>]<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">200000</span>)]<span style="color:#f92672">.</span>index, inplace<span style="color:#f92672">=</span>True)
+df_train<span style="color:#f92672">.</span>drop(df_train[(df_train[<span style="color:#e6db74">&#39;GrLivArea&#39;</span>]<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">4000</span>) <span style="color:#f92672">&amp;</span> (df_train[<span style="color:#e6db74">&#39;SalePrice&#39;</span>]<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">300000</span>)]<span style="color:#f92672">.</span>index, inplace<span style="color:#f92672">=</span>True)
+df_train<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92672">=</span>True, inplace<span style="color:#f92672">=</span>True)
+</code></pre></div><h3 id="10-재범주화">(10) 재범주화</h3>
+<ul>
+<li>몇몇 수치형 데이터는 사실 범주형 데이터에 가깝다.</li>
+<li>따라서, 이를 문자형으로 바꾼다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_train[<span style="color:#e6db74">&#39;MSSubClass&#39;</span>] <span style="color:#f92672">=</span> df_train[<span style="color:#e6db74">&#39;MSSubClass&#39;</span>]<span style="color:#f92672">.</span>apply(str)
+df_train[<span style="color:#e6db74">&#39;YrSold&#39;</span>] <span style="color:#f92672">=</span> df_train[<span style="color:#e6db74">&#39;YrSold&#39;</span>]<span style="color:#f92672">.</span>astype(str)
+df_train[<span style="color:#e6db74">&#39;MoSold&#39;</span>] <span style="color:#f92672">=</span> df_train[<span style="color:#e6db74">&#39;MoSold&#39;</span>]<span style="color:#f92672">.</span>astype(str)
+</code></pre></div><h3 id="11-범주형-데이터-다루기">(11) 범주형 데이터 다루기</h3>
+<ul>
+<li>이제 범주형 데이터를 원핫 인코딩으로 변환한다.</li>
+<li>원핫 인코딩으로 변환하는 이유는, 알고리즘은 수치형으로 되어 있기 때문에 그렇다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fix_missing_cols</span>(in_train, in_test):
+    missing_cols <span style="color:#f92672">=</span> set(in_train<span style="color:#f92672">.</span>columns) <span style="color:#f92672">-</span> set(in_test<span style="color:#f92672">.</span>columns)
+    <span style="color:#75715e"># 테스트 데이터와 훈련 데이터의 컬럼을 동일하게 하는 코드는 작성한다. </span>
+    <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> missing_cols:
+        in_test[c] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#75715e"># 순서를 동일하게 만든다. </span>
+    in_test <span style="color:#f92672">=</span> in_test[in_train<span style="color:#f92672">.</span>columns]
+    <span style="color:#66d9ef">return</span> in_test
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dummy_encode</span>(in_df_train, in_df_test):
+    df_train <span style="color:#f92672">=</span> in_df_train
+    df_test <span style="color:#f92672">=</span> in_df_test
+    categorical_feats <span style="color:#f92672">=</span> [
+        f <span style="color:#66d9ef">for</span> f <span style="color:#f92672">in</span> df_train<span style="color:#f92672">.</span>columns <span style="color:#66d9ef">if</span> df_train[f]<span style="color:#f92672">.</span>dtype <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;object&#39;</span>
+    ]
+    <span style="color:#66d9ef">print</span>(categorical_feats)
+    <span style="color:#66d9ef">for</span> f_ <span style="color:#f92672">in</span> categorical_feats:
+        prefix <span style="color:#f92672">=</span> f_
+        df_train <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>concat([df_train, pd<span style="color:#f92672">.</span>get_dummies(df_train[f_], prefix<span style="color:#f92672">=</span>prefix)], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>drop(f_, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+        df_test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>concat([df_test, pd<span style="color:#f92672">.</span>get_dummies(df_test[f_], prefix<span style="color:#f92672">=</span>prefix)], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>drop(f_, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+        df_test <span style="color:#f92672">=</span> fix_missing_cols(df_train, df_test)
+    <span style="color:#66d9ef">return</span> df_train, df_test
+</code></pre></div><ul>
+<li>훈련 데이터와 테스트 데이터의 크기가 다르면 예측 시, 에러가 발생한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_train, df_test <span style="color:#f92672">=</span> dummy_encode(df_train, df_test)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Shape train: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">, test: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> (df_train<span style="color:#f92672">.</span>shape, df_test<span style="color:#f92672">.</span>shape))
+</code></pre></div><pre><code>['MSSubClass', 'MSZoning', 'Street', 'Alley', 'LotShape', 'LandContour', 'LotConfig', 'LandSlope', 'Neighborhood', 'Condition1', 'Condition2', 'BldgType', 'HouseStyle', 'RoofStyle', 'RoofMatl', 'Exterior1st', 'Exterior2nd', 'MasVnrType', 'ExterQual', 'ExterCond', 'Foundation', 'BsmtQual', 'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2', 'Heating', 'HeatingQC', 'CentralAir', 'Electrical', 'KitchenQual', 'Functional', 'FireplaceQu', 'GarageType', 'GarageFinish', 'GarageQual', 'GarageCond', 'PavedDrive', 'PoolQC', 'Fence', 'MiscFeature', 'MoSold', 'YrSold', 'SaleType', 'SaleCondition']
+Shape train: (1456, 361), test: (1459, 361)
+</code></pre>
+<h2 id="iii-머신러닝-모형-개발">III. 머신러닝 모형 개발</h2>
+<ul>
+<li>이제 <code>LightGBM</code>을 활용하여 머신러닝 모형을 개발한다.</li>
+</ul>
+<h3 id="1-종속변수-처리">(1) 종속변수 처리</h3>
+<ul>
+<li>종속변수를 <code>y</code> 객체로 저장한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">y <span style="color:#f92672">=</span> df_train[<span style="color:#e6db74">&#34;SalePrice&#34;</span>]
+y<span style="color:#f92672">.</span>sample(<span style="color:#ae81ff">3</span>)
+</code></pre></div><pre><code>741     11.686887
+1032    12.959541
+1169    11.896833
+Name: SalePrice, dtype: float64
+</code></pre>
+<ul>
+<li>훈련 및 테스트 데이터의 변수를 삭제한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_train<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#34;SalePrice&#34;</span>], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
+df_test<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#34;SalePrice&#34;</span>], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
+
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Shape train: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">, test: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> (df_train<span style="color:#f92672">.</span>shape, df_test<span style="color:#f92672">.</span>shape))
+</code></pre></div><pre><code>Shape train: (1456, 360), test: (1459, 360)
+</code></pre>
+<h3 id="2-데이터셋-분리">(2) 데이터셋 분리</h3>
+<ul>
+<li>데이터셋을 분리한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X_train, X_test, y_train, y_test <span style="color:#f92672">=</span> train_test_split( df_train, y, test_size<span style="color:#f92672">=</span><span style="color:#ae81ff">0.2</span>, random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">42</span>)
+</code></pre></div><h3 id="3-lightgbm-파라미터-정의">(3) LightGBM 파라미터 정의</h3>
+<ul>
+<li><code>LightGBM</code> 파라미터 정의는 다음 메뉴얼을 읽고 적용한다.</li>
+<li><a href="https://lightgbm.readthedocs.io/en/latest/Parameters.html">LightGBM 파라미터 메뉴얼</a></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">hyper_params <span style="color:#f92672">=</span> {
+    <span style="color:#e6db74">&#39;task&#39;</span>: <span style="color:#e6db74">&#39;train&#39;</span>,
+    <span style="color:#e6db74">&#39;boosting_type&#39;</span>: <span style="color:#e6db74">&#39;gbdt&#39;</span>,
+    <span style="color:#e6db74">&#39;objective&#39;</span>: <span style="color:#e6db74">&#39;regression&#39;</span>,
+    <span style="color:#e6db74">&#39;metric&#39;</span>: [<span style="color:#e6db74">&#39;l2&#39;</span>, <span style="color:#e6db74">&#39;auc&#39;</span>],
+    <span style="color:#e6db74">&#39;learning_rate&#39;</span>: <span style="color:#ae81ff">0.005</span>,
+    <span style="color:#e6db74">&#39;feature_fraction&#39;</span>: <span style="color:#ae81ff">0.9</span>,
+    <span style="color:#e6db74">&#39;bagging_fraction&#39;</span>: <span style="color:#ae81ff">0.7</span>,
+    <span style="color:#e6db74">&#39;bagging_freq&#39;</span>: <span style="color:#ae81ff">10</span>,
+    <span style="color:#e6db74">&#39;verbose&#39;</span>: <span style="color:#ae81ff">0</span>,
+    <span style="color:#e6db74">&#34;max_depth&#34;</span>: <span style="color:#ae81ff">8</span>,
+    <span style="color:#e6db74">&#34;num_leaves&#34;</span>: <span style="color:#ae81ff">128</span>,  
+    <span style="color:#e6db74">&#34;max_bin&#34;</span>: <span style="color:#ae81ff">512</span>,
+    <span style="color:#e6db74">&#34;num_iterations&#34;</span>: <span style="color:#ae81ff">100000</span>,
+    <span style="color:#e6db74">&#34;n_estimators&#34;</span>: <span style="color:#ae81ff">1000</span>
+}
+</code></pre></div><h3 id="4-모델-정의">(4) 모델 정의</h3>
+<ul>
+<li>이제 모델을 정의한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">gbm <span style="color:#f92672">=</span> lgb<span style="color:#f92672">.</span>LGBMRegressor(<span style="color:#f92672">**</span>hyper_params)
+</code></pre></div><h3 id="5-모델-학습">(5) 모델 학습</h3>
+<ul>
+<li>이제 모델을 학습한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">gbm<span style="color:#f92672">.</span>fit(X_train, y_train,
+        eval_set<span style="color:#f92672">=</span>[(X_test, y_test)],
+        eval_metric<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;l1&#39;</span>,
+        early_stopping_rounds<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>)
+</code></pre></div><pre><code>/usr/local/lib/python3.6/dist-packages/lightgbm/engine.py:118: UserWarning: Found `num_iterations` in params. Will use it instead of argument
+  warnings.warn(&quot;Found `{}` in params. Will use it instead of argument&quot;.format(alias))
+
+
+[1]	valid_0's l2: 0.186477	valid_0's auc: 1	valid_0's l1: 0.333038
+Training until validation scores don't improve for 1000 rounds.
+[2]	valid_0's l2: 0.185073	valid_0's auc: 1	valid_0's l1: 0.331606
+[3]	valid_0's l2: 0.183684	valid_0's auc: 1	valid_0's l1: 0.330192
+[4]	valid_0's l2: 0.18231	valid_0's auc: 1	valid_0's l1: 0.328797
+[5]	valid_0's l2: 0.18095	valid_0's auc: 1	valid_0's l1: 0.327404
+[6]	valid_0's l2: 0.179603	valid_0's auc: 1	valid_0's l1: 0.326023
+[7]	valid_0's l2: 0.17828	valid_0's auc: 1	valid_0's l1: 0.324652
+[8]	valid_0's l2: 0.176947	valid_0's auc: 1	valid_0's l1: 0.323279
+[9]	valid_0's l2: 0.175652	valid_0's auc: 1	valid_0's l1: 0.321952
+[10]	valid_0's l2: 0.174352	valid_0's auc: 1	valid_0's l1: 0.320633
+[11]	valid_0's l2: 0.172985	valid_0's auc: 1	valid_0's l1: 0.319239
+[12]	valid_0's l2: 0.171633	valid_0's auc: 1	valid_0's l1: 0.317859
+[13]	valid_0's l2: 0.170309	valid_0's auc: 1	valid_0's l1: 0.316502
+[14]	valid_0's l2: 0.16898	valid_0's auc: 1	valid_0's l1: 0.315116
+[15]	valid_0's l2: 0.167683	valid_0's auc: 1	valid_0's l1: 0.313772
+[16]	valid_0's l2: 0.166394	valid_0's auc: 1	valid_0's l1: 0.31242
+[17]	valid_0's l2: 0.165107	valid_0's auc: 1	valid_0's l1: 0.311063
+[18]	valid_0's l2: 0.163844	valid_0's auc: 1	valid_0's l1: 0.309722
+[19]	valid_0's l2: 0.162577	valid_0's auc: 1	valid_0's l1: 0.308362
+[20]	valid_0's l2: 0.16135	valid_0's auc: 1	valid_0's l1: 0.307035
+[21]	valid_0's l2: 0.160154	valid_0's auc: 1	valid_0's l1: 0.30574
+[22]	valid_0's l2: 0.158952	valid_0's auc: 1	valid_0's l1: 0.304455
+[23]	valid_0's l2: 0.157766	valid_0's auc: 1	valid_0's l1: 0.303184
+[24]	valid_0's l2: 0.156588	valid_0's auc: 1	valid_0's l1: 0.301915
+[25]	valid_0's l2: 0.155422	valid_0's auc: 1	valid_0's l1: 0.300652
+[26]	valid_0's l2: 0.154271	valid_0's auc: 1	valid_0's l1: 0.299401
+[27]	valid_0's l2: 0.153128	valid_0's auc: 1	valid_0's l1: 0.29816
+[28]	valid_0's l2: 0.152007	valid_0's auc: 1	valid_0's l1: 0.296939
+[29]	valid_0's l2: 0.150886	valid_0's auc: 1	valid_0's l1: 0.29571
+[30]	valid_0's l2: 0.149777	valid_0's auc: 1	valid_0's l1: 0.294487
+[31]	valid_0's l2: 0.14867	valid_0's auc: 1	valid_0's l1: 0.293253
+[32]	valid_0's l2: 0.147577	valid_0's auc: 1	valid_0's l1: 0.292036
+[33]	valid_0's l2: 0.146476	valid_0's auc: 1	valid_0's l1: 0.290788
+[34]	valid_0's l2: 0.145403	valid_0's auc: 1	valid_0's l1: 0.289586
+[35]	valid_0's l2: 0.144338	valid_0's auc: 1	valid_0's l1: 0.288388
+[36]	valid_0's l2: 0.143281	valid_0's auc: 1	valid_0's l1: 0.287178
+[37]	valid_0's l2: 0.14225	valid_0's auc: 1	valid_0's l1: 0.286005
+[38]	valid_0's l2: 0.141221	valid_0's auc: 1	valid_0's l1: 0.284832
+[39]	valid_0's l2: 0.140209	valid_0's auc: 1	valid_0's l1: 0.283683
+[40]	valid_0's l2: 0.139199	valid_0's auc: 1	valid_0's l1: 0.282515
+[41]	valid_0's l2: 0.138212	valid_0's auc: 1	valid_0's l1: 0.28136
+[42]	valid_0's l2: 0.13724	valid_0's auc: 1	valid_0's l1: 0.280197
+[43]	valid_0's l2: 0.136299	valid_0's auc: 1	valid_0's l1: 0.279079
+[44]	valid_0's l2: 0.135336	valid_0's auc: 1	valid_0's l1: 0.277933
+[45]	valid_0's l2: 0.134398	valid_0's auc: 1	valid_0's l1: 0.276826
+[46]	valid_0's l2: 0.133457	valid_0's auc: 1	valid_0's l1: 0.275697
+[47]	valid_0's l2: 0.132536	valid_0's auc: 1	valid_0's l1: 0.274587
+[48]	valid_0's l2: 0.131645	valid_0's auc: 1	valid_0's l1: 0.273479
+[49]	valid_0's l2: 0.130738	valid_0's auc: 1	valid_0's l1: 0.272353
+[50]	valid_0's l2: 0.129837	valid_0's auc: 1	valid_0's l1: 0.271238
+[51]	valid_0's l2: 0.128927	valid_0's auc: 1	valid_0's l1: 0.270164
+[52]	valid_0's l2: 0.128026	valid_0's auc: 1	valid_0's l1: 0.269095
+[53]	valid_0's l2: 0.127123	valid_0's auc: 1	valid_0's l1: 0.267999
+[54]	valid_0's l2: 0.126228	valid_0's auc: 1	valid_0's l1: 0.266909
+[55]	valid_0's l2: 0.125343	valid_0's auc: 1	valid_0's l1: 0.265823
+[56]	valid_0's l2: 0.124466	valid_0's auc: 1	valid_0's l1: 0.264745
+[57]	valid_0's l2: 0.123598	valid_0's auc: 1	valid_0's l1: 0.263674
+[58]	valid_0's l2: 0.122749	valid_0's auc: 1	valid_0's l1: 0.262641
+[59]	valid_0's l2: 0.121909	valid_0's auc: 1	valid_0's l1: 0.261613
+[60]	valid_0's l2: 0.121066	valid_0's auc: 1	valid_0's l1: 0.260558
+[61]	valid_0's l2: 0.120198	valid_0's auc: 1	valid_0's l1: 0.259479
+[62]	valid_0's l2: 0.119359	valid_0's auc: 1	valid_0's l1: 0.258394
+[63]	valid_0's l2: 0.118533	valid_0's auc: 1	valid_0's l1: 0.25732
+[64]	valid_0's l2: 0.117703	valid_0's auc: 1	valid_0's l1: 0.25624
+[65]	valid_0's l2: 0.116867	valid_0's auc: 1	valid_0's l1: 0.255183
+[66]	valid_0's l2: 0.11604	valid_0's auc: 1	valid_0's l1: 0.254131
+[67]	valid_0's l2: 0.115221	valid_0's auc: 1	valid_0's l1: 0.253082
+[68]	valid_0's l2: 0.114427	valid_0's auc: 1	valid_0's l1: 0.252033
+[69]	valid_0's l2: 0.113636	valid_0's auc: 1	valid_0's l1: 0.251022
+[70]	valid_0's l2: 0.112841	valid_0's auc: 1	valid_0's l1: 0.249995
+[71]	valid_0's l2: 0.112099	valid_0's auc: 1	valid_0's l1: 0.249042
+[72]	valid_0's l2: 0.111356	valid_0's auc: 1	valid_0's l1: 0.248066
+[73]	valid_0's l2: 0.110633	valid_0's auc: 1	valid_0's l1: 0.247137
+[74]	valid_0's l2: 0.109927	valid_0's auc: 1	valid_0's l1: 0.246213
+[75]	valid_0's l2: 0.109217	valid_0's auc: 1	valid_0's l1: 0.245305
+[76]	valid_0's l2: 0.108526	valid_0's auc: 1	valid_0's l1: 0.244404
+[77]	valid_0's l2: 0.107828	valid_0's auc: 1	valid_0's l1: 0.243503
+[78]	valid_0's l2: 0.107142	valid_0's auc: 1	valid_0's l1: 0.24262
+[79]	valid_0's l2: 0.106454	valid_0's auc: 1	valid_0's l1: 0.24171
+[80]	valid_0's l2: 0.105774	valid_0's auc: 1	valid_0's l1: 0.240835
+[81]	valid_0's l2: 0.105113	valid_0's auc: 1	valid_0's l1: 0.239931
+[82]	valid_0's l2: 0.10445	valid_0's auc: 1	valid_0's l1: 0.239013
+[83]	valid_0's l2: 0.103802	valid_0's auc: 1	valid_0's l1: 0.238121
+[84]	valid_0's l2: 0.103149	valid_0's auc: 1	valid_0's l1: 0.237229
+[85]	valid_0's l2: 0.102513	valid_0's auc: 1	valid_0's l1: 0.236346
+[86]	valid_0's l2: 0.101873	valid_0's auc: 1	valid_0's l1: 0.235464
+[87]	valid_0's l2: 0.101239	valid_0's auc: 1	valid_0's l1: 0.234595
+[88]	valid_0's l2: 0.100623	valid_0's auc: 1	valid_0's l1: 0.233723
+[89]	valid_0's l2: 0.10003	valid_0's auc: 1	valid_0's l1: 0.232923
+[90]	valid_0's l2: 0.0994325	valid_0's auc: 1	valid_0's l1: 0.232081
+[91]	valid_0's l2: 0.0988341	valid_0's auc: 1	valid_0's l1: 0.231256
+[92]	valid_0's l2: 0.0982427	valid_0's auc: 1	valid_0's l1: 0.23043
+[93]	valid_0's l2: 0.0976575	valid_0's auc: 1	valid_0's l1: 0.229611
+[94]	valid_0's l2: 0.0970764	valid_0's auc: 1	valid_0's l1: 0.228802
+[95]	valid_0's l2: 0.0964998	valid_0's auc: 1	valid_0's l1: 0.227986
+[96]	valid_0's l2: 0.0959351	valid_0's auc: 1	valid_0's l1: 0.227177
+[97]	valid_0's l2: 0.0953646	valid_0's auc: 1	valid_0's l1: 0.226367
+[98]	valid_0's l2: 0.0948064	valid_0's auc: 1	valid_0's l1: 0.225571
+[99]	valid_0's l2: 0.0942486	valid_0's auc: 1	valid_0's l1: 0.224767
+[100]	valid_0's l2: 0.0937024	valid_0's auc: 1	valid_0's l1: 0.223984
+[101]	valid_0's l2: 0.0931472	valid_0's auc: 1	valid_0's l1: 0.223225
+[102]	valid_0's l2: 0.0925974	valid_0's auc: 1	valid_0's l1: 0.222479
+[103]	valid_0's l2: 0.0920528	valid_0's auc: 1	valid_0's l1: 0.221736
+[104]	valid_0's l2: 0.0915138	valid_0's auc: 1	valid_0's l1: 0.221
+[105]	valid_0's l2: 0.0909796	valid_0's auc: 1	valid_0's l1: 0.220276
+[106]	valid_0's l2: 0.090451	valid_0's auc: 1	valid_0's l1: 0.219556
+[107]	valid_0's l2: 0.0899295	valid_0's auc: 1	valid_0's l1: 0.218826
+[108]	valid_0's l2: 0.0894069	valid_0's auc: 1	valid_0's l1: 0.218104
+[109]	valid_0's l2: 0.088892	valid_0's auc: 1	valid_0's l1: 0.217398
+[110]	valid_0's l2: 0.0883824	valid_0's auc: 1	valid_0's l1: 0.216633
+[111]	valid_0's l2: 0.0878517	valid_0's auc: 1	valid_0's l1: 0.215829
+[112]	valid_0's l2: 0.0873278	valid_0's auc: 1	valid_0's l1: 0.215036
+[113]	valid_0's l2: 0.0868143	valid_0's auc: 1	valid_0's l1: 0.214272
+[114]	valid_0's l2: 0.0863019	valid_0's auc: 1	valid_0's l1: 0.21351
+[115]	valid_0's l2: 0.0857982	valid_0's auc: 1	valid_0's l1: 0.212764
+[116]	valid_0's l2: 0.0853065	valid_0's auc: 1	valid_0's l1: 0.212028
+[117]	valid_0's l2: 0.0848346	valid_0's auc: 1	valid_0's l1: 0.211302
+[118]	valid_0's l2: 0.0843538	valid_0's auc: 1	valid_0's l1: 0.210594
+[119]	valid_0's l2: 0.0838739	valid_0's auc: 1	valid_0's l1: 0.209875
+[120]	valid_0's l2: 0.0833984	valid_0's auc: 1	valid_0's l1: 0.209173
+[121]	valid_0's l2: 0.0829321	valid_0's auc: 1	valid_0's l1: 0.208462
+[122]	valid_0's l2: 0.0824703	valid_0's auc: 1	valid_0's l1: 0.207756
+[123]	valid_0's l2: 0.0820144	valid_0's auc: 1	valid_0's l1: 0.207066
+[124]	valid_0's l2: 0.081551	valid_0's auc: 1	valid_0's l1: 0.206367
+[125]	valid_0's l2: 0.0811024	valid_0's auc: 1	valid_0's l1: 0.205677
+[126]	valid_0's l2: 0.0806537	valid_0's auc: 1	valid_0's l1: 0.204991
+[127]	valid_0's l2: 0.0802125	valid_0's auc: 1	valid_0's l1: 0.2043
+[128]	valid_0's l2: 0.0797764	valid_0's auc: 1	valid_0's l1: 0.203624
+[129]	valid_0's l2: 0.0793265	valid_0's auc: 1	valid_0's l1: 0.202944
+[130]	valid_0's l2: 0.0788984	valid_0's auc: 1	valid_0's l1: 0.202282
+[131]	valid_0's l2: 0.0784813	valid_0's auc: 1	valid_0's l1: 0.201642
+[132]	valid_0's l2: 0.0780612	valid_0's auc: 1	valid_0's l1: 0.200997
+[133]	valid_0's l2: 0.0776434	valid_0's auc: 1	valid_0's l1: 0.20035
+[134]	valid_0's l2: 0.0772287	valid_0's auc: 1	valid_0's l1: 0.199709
+[135]	valid_0's l2: 0.076818	valid_0's auc: 1	valid_0's l1: 0.199071
+[136]	valid_0's l2: 0.0764078	valid_0's auc: 1	valid_0's l1: 0.198426
+[137]	valid_0's l2: 0.0760052	valid_0's auc: 1	valid_0's l1: 0.197792
+[138]	valid_0's l2: 0.0756034	valid_0's auc: 1	valid_0's l1: 0.197156
+[139]	valid_0's l2: 0.0752056	valid_0's auc: 1	valid_0's l1: 0.196522
+[140]	valid_0's l2: 0.0748172	valid_0's auc: 1	valid_0's l1: 0.195911
+[141]	valid_0's l2: 0.0744102	valid_0's auc: 1	valid_0's l1: 0.195286
+[142]	valid_0's l2: 0.0740071	valid_0's auc: 1	valid_0's l1: 0.194664
+[143]	valid_0's l2: 0.0735927	valid_0's auc: 1	valid_0's l1: 0.194012
+[144]	valid_0's l2: 0.0731805	valid_0's auc: 1	valid_0's l1: 0.193362
+[145]	valid_0's l2: 0.072793	valid_0's auc: 1	valid_0's l1: 0.192765
+[146]	valid_0's l2: 0.0723862	valid_0's auc: 1	valid_0's l1: 0.192119
+[147]	valid_0's l2: 0.0719923	valid_0's auc: 1	valid_0's l1: 0.191507
+[148]	valid_0's l2: 0.0715889	valid_0's auc: 1	valid_0's l1: 0.190867
+[149]	valid_0's l2: 0.0712158	valid_0's auc: 1	valid_0's l1: 0.190288
+[150]	valid_0's l2: 0.0708594	valid_0's auc: 1	valid_0's l1: 0.189705
+[151]	valid_0's l2: 0.070493	valid_0's auc: 1	valid_0's l1: 0.189144
+[152]	valid_0's l2: 0.0701238	valid_0's auc: 1	valid_0's l1: 0.188579
+[153]	valid_0's l2: 0.0697602	valid_0's auc: 1	valid_0's l1: 0.188021
+[154]	valid_0's l2: 0.0693983	valid_0's auc: 1	valid_0's l1: 0.187461
+[155]	valid_0's l2: 0.0690326	valid_0's auc: 1	valid_0's l1: 0.186898
+[156]	valid_0's l2: 0.0686763	valid_0's auc: 1	valid_0's l1: 0.186344
+[157]	valid_0's l2: 0.0683329	valid_0's auc: 1	valid_0's l1: 0.185798
+[158]	valid_0's l2: 0.0679865	valid_0's auc: 1	valid_0's l1: 0.185262
+[159]	valid_0's l2: 0.0676413	valid_0's auc: 1	valid_0's l1: 0.184716
+[160]	valid_0's l2: 0.0672995	valid_0's auc: 1	valid_0's l1: 0.184178
+[161]	valid_0's l2: 0.066948	valid_0's auc: 1	valid_0's l1: 0.183626
+[162]	valid_0's l2: 0.0666073	valid_0's auc: 1	valid_0's l1: 0.18307
+[163]	valid_0's l2: 0.0662621	valid_0's auc: 1	valid_0's l1: 0.182523
+[164]	valid_0's l2: 0.0659206	valid_0's auc: 1	valid_0's l1: 0.181984
+[165]	valid_0's l2: 0.0655801	valid_0's auc: 1	valid_0's l1: 0.181447
+[166]	valid_0's l2: 0.0652426	valid_0's auc: 1	valid_0's l1: 0.180916
+[167]	valid_0's l2: 0.0649108	valid_0's auc: 1	valid_0's l1: 0.18039
+[168]	valid_0's l2: 0.0645769	valid_0's auc: 1	valid_0's l1: 0.179857
+[169]	valid_0's l2: 0.0642507	valid_0's auc: 1	valid_0's l1: 0.179335
+[170]	valid_0's l2: 0.0639258	valid_0's auc: 1	valid_0's l1: 0.178825
+[171]	valid_0's l2: 0.0636088	valid_0's auc: 1	valid_0's l1: 0.178301
+[172]	valid_0's l2: 0.0632884	valid_0's auc: 1	valid_0's l1: 0.177774
+[173]	valid_0's l2: 0.0629678	valid_0's auc: 1	valid_0's l1: 0.177252
+[174]	valid_0's l2: 0.0626559	valid_0's auc: 1	valid_0's l1: 0.176743
+[175]	valid_0's l2: 0.0623445	valid_0's auc: 1	valid_0's l1: 0.176224
+[176]	valid_0's l2: 0.0620368	valid_0's auc: 1	valid_0's l1: 0.175713
+[177]	valid_0's l2: 0.0617362	valid_0's auc: 1	valid_0's l1: 0.175246
+[178]	valid_0's l2: 0.0614374	valid_0's auc: 1	valid_0's l1: 0.174753
+[179]	valid_0's l2: 0.0611418	valid_0's auc: 1	valid_0's l1: 0.174268
+[180]	valid_0's l2: 0.0608452	valid_0's auc: 1	valid_0's l1: 0.173767
+[181]	valid_0's l2: 0.0605311	valid_0's auc: 1	valid_0's l1: 0.173259
+[182]	valid_0's l2: 0.0602465	valid_0's auc: 1	valid_0's l1: 0.172779
+[183]	valid_0's l2: 0.0599334	valid_0's auc: 1	valid_0's l1: 0.172268
+[184]	valid_0's l2: 0.0596255	valid_0's auc: 1	valid_0's l1: 0.171752
+[185]	valid_0's l2: 0.0593249	valid_0's auc: 1	valid_0's l1: 0.171256
+[186]	valid_0's l2: 0.0590197	valid_0's auc: 1	valid_0's l1: 0.170737
+[187]	valid_0's l2: 0.0587211	valid_0's auc: 1	valid_0's l1: 0.170229
+[188]	valid_0's l2: 0.0584267	valid_0's auc: 1	valid_0's l1: 0.169738
+[189]	valid_0's l2: 0.0581327	valid_0's auc: 1	valid_0's l1: 0.169229
+[190]	valid_0's l2: 0.0578475	valid_0's auc: 1	valid_0's l1: 0.168741
+[191]	valid_0's l2: 0.0575943	valid_0's auc: 1	valid_0's l1: 0.16832
+[192]	valid_0's l2: 0.057342	valid_0's auc: 1	valid_0's l1: 0.167893
+[193]	valid_0's l2: 0.0570979	valid_0's auc: 1	valid_0's l1: 0.167463
+[194]	valid_0's l2: 0.0568503	valid_0's auc: 1	valid_0's l1: 0.167043
+[195]	valid_0's l2: 0.0566055	valid_0's auc: 1	valid_0's l1: 0.166605
+[196]	valid_0's l2: 0.0563625	valid_0's auc: 1	valid_0's l1: 0.166189
+[197]	valid_0's l2: 0.0561224	valid_0's auc: 1	valid_0's l1: 0.165779
+[198]	valid_0's l2: 0.0558846	valid_0's auc: 1	valid_0's l1: 0.165372
+[199]	valid_0's l2: 0.055649	valid_0's auc: 1	valid_0's l1: 0.164966
+[200]	valid_0's l2: 0.0554041	valid_0's auc: 1	valid_0's l1: 0.164528
+[201]	valid_0's l2: 0.0551436	valid_0's auc: 1	valid_0's l1: 0.164053
+[202]	valid_0's l2: 0.0548906	valid_0's auc: 1	valid_0's l1: 0.163601
+[203]	valid_0's l2: 0.0546344	valid_0's auc: 1	valid_0's l1: 0.163138
+[204]	valid_0's l2: 0.0543889	valid_0's auc: 1	valid_0's l1: 0.162662
+[205]	valid_0's l2: 0.0541447	valid_0's auc: 1	valid_0's l1: 0.162211
+[206]	valid_0's l2: 0.0539034	valid_0's auc: 1	valid_0's l1: 0.161763
+[207]	valid_0's l2: 0.0536569	valid_0's auc: 1	valid_0's l1: 0.161301
+[208]	valid_0's l2: 0.0534192	valid_0's auc: 1	valid_0's l1: 0.160861
+[209]	valid_0's l2: 0.0531823	valid_0's auc: 1	valid_0's l1: 0.160427
+[210]	valid_0's l2: 0.0529445	valid_0's auc: 1	valid_0's l1: 0.159991
+[211]	valid_0's l2: 0.0527023	valid_0's auc: 1	valid_0's l1: 0.159558
+[212]	valid_0's l2: 0.0524749	valid_0's auc: 1	valid_0's l1: 0.15915
+[213]	valid_0's l2: 0.0522381	valid_0's auc: 1	valid_0's l1: 0.158726
+[214]	valid_0's l2: 0.052006	valid_0's auc: 1	valid_0's l1: 0.15833
+[215]	valid_0's l2: 0.0517811	valid_0's auc: 1	valid_0's l1: 0.157918
+[216]	valid_0's l2: 0.0515663	valid_0's auc: 1	valid_0's l1: 0.157489
+[217]	valid_0's l2: 0.051345	valid_0's auc: 1	valid_0's l1: 0.157082
+[218]	valid_0's l2: 0.051122	valid_0's auc: 1	valid_0's l1: 0.156698
+[219]	valid_0's l2: 0.0509057	valid_0's auc: 1	valid_0's l1: 0.156298
+[220]	valid_0's l2: 0.0506877	valid_0's auc: 1	valid_0's l1: 0.155889
+[221]	valid_0's l2: 0.0504668	valid_0's auc: 1	valid_0's l1: 0.155489
+[222]	valid_0's l2: 0.0502482	valid_0's auc: 1	valid_0's l1: 0.155093
+[223]	valid_0's l2: 0.0500318	valid_0's auc: 1	valid_0's l1: 0.154697
+[224]	valid_0's l2: 0.0498198	valid_0's auc: 1	valid_0's l1: 0.154318
+[225]	valid_0's l2: 0.0496099	valid_0's auc: 1	valid_0's l1: 0.153933
+[226]	valid_0's l2: 0.0493988	valid_0's auc: 1	valid_0's l1: 0.153537
+[227]	valid_0's l2: 0.0491889	valid_0's auc: 1	valid_0's l1: 0.15317
+[228]	valid_0's l2: 0.048986	valid_0's auc: 1	valid_0's l1: 0.152792
+[229]	valid_0's l2: 0.0487852	valid_0's auc: 1	valid_0's l1: 0.152413
+[230]	valid_0's l2: 0.0485813	valid_0's auc: 1	valid_0's l1: 0.15203
+[231]	valid_0's l2: 0.0483812	valid_0's auc: 1	valid_0's l1: 0.151631
+[232]	valid_0's l2: 0.0481991	valid_0's auc: 1	valid_0's l1: 0.151286
+[233]	valid_0's l2: 0.0480033	valid_0's auc: 1	valid_0's l1: 0.150891
+[234]	valid_0's l2: 0.0478077	valid_0's auc: 1	valid_0's l1: 0.150495
+[235]	valid_0's l2: 0.0476157	valid_0's auc: 1	valid_0's l1: 0.150104
+[236]	valid_0's l2: 0.047424	valid_0's auc: 1	valid_0's l1: 0.149712
+[237]	valid_0's l2: 0.0472362	valid_0's auc: 1	valid_0's l1: 0.149326
+[238]	valid_0's l2: 0.0470503	valid_0's auc: 1	valid_0's l1: 0.148942
+[239]	valid_0's l2: 0.0468671	valid_0's auc: 1	valid_0's l1: 0.148568
+[240]	valid_0's l2: 0.046683	valid_0's auc: 1	valid_0's l1: 0.14819
+[241]	valid_0's l2: 0.0465001	valid_0's auc: 1	valid_0's l1: 0.147844
+[242]	valid_0's l2: 0.0463296	valid_0's auc: 1	valid_0's l1: 0.147511
+[243]	valid_0's l2: 0.0461576	valid_0's auc: 1	valid_0's l1: 0.147177
+[244]	valid_0's l2: 0.0459868	valid_0's auc: 1	valid_0's l1: 0.146845
+[245]	valid_0's l2: 0.0458166	valid_0's auc: 1	valid_0's l1: 0.14651
+[246]	valid_0's l2: 0.0456529	valid_0's auc: 1	valid_0's l1: 0.146188
+[247]	valid_0's l2: 0.0454948	valid_0's auc: 1	valid_0's l1: 0.145862
+[248]	valid_0's l2: 0.045335	valid_0's auc: 1	valid_0's l1: 0.145548
+[249]	valid_0's l2: 0.0451577	valid_0's auc: 1	valid_0's l1: 0.145199
+[250]	valid_0's l2: 0.0450023	valid_0's auc: 1	valid_0's l1: 0.144888
+[251]	valid_0's l2: 0.0448452	valid_0's auc: 1	valid_0's l1: 0.144573
+[252]	valid_0's l2: 0.044689	valid_0's auc: 1	valid_0's l1: 0.144258
+[253]	valid_0's l2: 0.0445356	valid_0's auc: 1	valid_0's l1: 0.143953
+[254]	valid_0's l2: 0.044386	valid_0's auc: 1	valid_0's l1: 0.143649
+[255]	valid_0's l2: 0.0442349	valid_0's auc: 1	valid_0's l1: 0.143349
+[256]	valid_0's l2: 0.0440847	valid_0's auc: 1	valid_0's l1: 0.143044
+[257]	valid_0's l2: 0.0439355	valid_0's auc: 1	valid_0's l1: 0.142746
+[258]	valid_0's l2: 0.0437919	valid_0's auc: 1	valid_0's l1: 0.142444
+[259]	valid_0's l2: 0.0436486	valid_0's auc: 1	valid_0's l1: 0.142152
+[260]	valid_0's l2: 0.0435075	valid_0's auc: 1	valid_0's l1: 0.141866
+[261]	valid_0's l2: 0.043366	valid_0's auc: 1	valid_0's l1: 0.141571
+[262]	valid_0's l2: 0.0432263	valid_0's auc: 1	valid_0's l1: 0.141294
+[263]	valid_0's l2: 0.0430953	valid_0's auc: 1	valid_0's l1: 0.141025
+[264]	valid_0's l2: 0.0429652	valid_0's auc: 1	valid_0's l1: 0.140755
+[265]	valid_0's l2: 0.0428411	valid_0's auc: 1	valid_0's l1: 0.140503
+[266]	valid_0's l2: 0.0427099	valid_0's auc: 1	valid_0's l1: 0.140231
+[267]	valid_0's l2: 0.0425881	valid_0's auc: 1	valid_0's l1: 0.139983
+[268]	valid_0's l2: 0.0424586	valid_0's auc: 1	valid_0's l1: 0.139723
+[269]	valid_0's l2: 0.0423306	valid_0's auc: 1	valid_0's l1: 0.139466
+[270]	valid_0's l2: 0.0422047	valid_0's auc: 1	valid_0's l1: 0.139213
+[271]	valid_0's l2: 0.0420666	valid_0's auc: 1	valid_0's l1: 0.13892
+[272]	valid_0's l2: 0.0419335	valid_0's auc: 1	valid_0's l1: 0.138637
+[273]	valid_0's l2: 0.0417981	valid_0's auc: 1	valid_0's l1: 0.138348
+[274]	valid_0's l2: 0.0416665	valid_0's auc: 1	valid_0's l1: 0.138072
+[275]	valid_0's l2: 0.0415361	valid_0's auc: 1	valid_0's l1: 0.137796
+[276]	valid_0's l2: 0.0414017	valid_0's auc: 1	valid_0's l1: 0.137511
+[277]	valid_0's l2: 0.0412752	valid_0's auc: 1	valid_0's l1: 0.137275
+[278]	valid_0's l2: 0.0411482	valid_0's auc: 1	valid_0's l1: 0.13701
+[279]	valid_0's l2: 0.0410198	valid_0's auc: 1	valid_0's l1: 0.136739
+[280]	valid_0's l2: 0.0408946	valid_0's auc: 1	valid_0's l1: 0.136476
+[281]	valid_0's l2: 0.0407681	valid_0's auc: 1	valid_0's l1: 0.136219
+[282]	valid_0's l2: 0.0406391	valid_0's auc: 1	valid_0's l1: 0.13596
+[283]	valid_0's l2: 0.0405189	valid_0's auc: 1	valid_0's l1: 0.135719
+[284]	valid_0's l2: 0.0403979	valid_0's auc: 1	valid_0's l1: 0.135471
+[285]	valid_0's l2: 0.0402758	valid_0's auc: 1	valid_0's l1: 0.135227
+[286]	valid_0's l2: 0.0401568	valid_0's auc: 1	valid_0's l1: 0.134988
+[287]	valid_0's l2: 0.0400414	valid_0's auc: 1	valid_0's l1: 0.134755
+[288]	valid_0's l2: 0.0399173	valid_0's auc: 1	valid_0's l1: 0.134522
+[289]	valid_0's l2: 0.0397983	valid_0's auc: 1	valid_0's l1: 0.1343
+[290]	valid_0's l2: 0.0396833	valid_0's auc: 1	valid_0's l1: 0.134081
+[291]	valid_0's l2: 0.0395465	valid_0's auc: 1	valid_0's l1: 0.133805
+[292]	valid_0's l2: 0.0394119	valid_0's auc: 1	valid_0's l1: 0.133533
+[293]	valid_0's l2: 0.039279	valid_0's auc: 1	valid_0's l1: 0.133265
+[294]	valid_0's l2: 0.0391465	valid_0's auc: 1	valid_0's l1: 0.132995
+[295]	valid_0's l2: 0.0390154	valid_0's auc: 1	valid_0's l1: 0.132727
+[296]	valid_0's l2: 0.0388867	valid_0's auc: 1	valid_0's l1: 0.132464
+[297]	valid_0's l2: 0.0387715	valid_0's auc: 1	valid_0's l1: 0.132228
+[298]	valid_0's l2: 0.0386451	valid_0's auc: 1	valid_0's l1: 0.131969
+[299]	valid_0's l2: 0.038541	valid_0's auc: 1	valid_0's l1: 0.13177
+[300]	valid_0's l2: 0.0384281	valid_0's auc: 1	valid_0's l1: 0.131538
+[301]	valid_0's l2: 0.0383025	valid_0's auc: 1	valid_0's l1: 0.131284
+[302]	valid_0's l2: 0.0381804	valid_0's auc: 1	valid_0's l1: 0.131033
+[303]	valid_0's l2: 0.0380598	valid_0's auc: 1	valid_0's l1: 0.130786
+[304]	valid_0's l2: 0.0379384	valid_0's auc: 1	valid_0's l1: 0.130533
+[305]	valid_0's l2: 0.0378162	valid_0's auc: 1	valid_0's l1: 0.13028
+[306]	valid_0's l2: 0.0376992	valid_0's auc: 1	valid_0's l1: 0.130039
+[307]	valid_0's l2: 0.0375799	valid_0's auc: 1	valid_0's l1: 0.129805
+[308]	valid_0's l2: 0.0374629	valid_0's auc: 1	valid_0's l1: 0.129566
+[309]	valid_0's l2: 0.037361	valid_0's auc: 1	valid_0's l1: 0.129365
+[310]	valid_0's l2: 0.037245	valid_0's auc: 1	valid_0's l1: 0.129135
+[311]	valid_0's l2: 0.0371502	valid_0's auc: 1	valid_0's l1: 0.128919
+[312]	valid_0's l2: 0.0370575	valid_0's auc: 1	valid_0's l1: 0.128706
+[313]	valid_0's l2: 0.0369641	valid_0's auc: 1	valid_0's l1: 0.128499
+[314]	valid_0's l2: 0.0368739	valid_0's auc: 1	valid_0's l1: 0.128288
+[315]	valid_0's l2: 0.0367811	valid_0's auc: 1	valid_0's l1: 0.128083
+[316]	valid_0's l2: 0.0366909	valid_0's auc: 1	valid_0's l1: 0.127882
+[317]	valid_0's l2: 0.0366029	valid_0's auc: 1	valid_0's l1: 0.127688
+[318]	valid_0's l2: 0.0365145	valid_0's auc: 1	valid_0's l1: 0.12749
+[319]	valid_0's l2: 0.0364251	valid_0's auc: 1	valid_0's l1: 0.12729
+[320]	valid_0's l2: 0.0363346	valid_0's auc: 1	valid_0's l1: 0.127085
+[321]	valid_0's l2: 0.0362488	valid_0's auc: 1	valid_0's l1: 0.12691
+[322]	valid_0's l2: 0.0361585	valid_0's auc: 1	valid_0's l1: 0.126726
+[323]	valid_0's l2: 0.0360754	valid_0's auc: 1	valid_0's l1: 0.126547
+[324]	valid_0's l2: 0.0359877	valid_0's auc: 1	valid_0's l1: 0.126359
+[325]	valid_0's l2: 0.0358996	valid_0's auc: 1	valid_0's l1: 0.126185
+[326]	valid_0's l2: 0.0358118	valid_0's auc: 1	valid_0's l1: 0.126007
+[327]	valid_0's l2: 0.0357264	valid_0's auc: 1	valid_0's l1: 0.125828
+[328]	valid_0's l2: 0.0356479	valid_0's auc: 1	valid_0's l1: 0.125666
+[329]	valid_0's l2: 0.0355716	valid_0's auc: 1	valid_0's l1: 0.125508
+[330]	valid_0's l2: 0.0354895	valid_0's auc: 1	valid_0's l1: 0.125331
+[331]	valid_0's l2: 0.0353982	valid_0's auc: 1	valid_0's l1: 0.125127
+[332]	valid_0's l2: 0.0353077	valid_0's auc: 1	valid_0's l1: 0.124925
+[333]	valid_0's l2: 0.0352172	valid_0's auc: 1	valid_0's l1: 0.124712
+[334]	valid_0's l2: 0.0351283	valid_0's auc: 1	valid_0's l1: 0.124511
+[335]	valid_0's l2: 0.0350401	valid_0's auc: 1	valid_0's l1: 0.124311
+[336]	valid_0's l2: 0.0349524	valid_0's auc: 1	valid_0's l1: 0.124111
+[337]	valid_0's l2: 0.0348666	valid_0's auc: 1	valid_0's l1: 0.123909
+[338]	valid_0's l2: 0.0347844	valid_0's auc: 1	valid_0's l1: 0.123733
+[339]	valid_0's l2: 0.0346992	valid_0's auc: 1	valid_0's l1: 0.123537
+[340]	valid_0's l2: 0.0346186	valid_0's auc: 1	valid_0's l1: 0.123367
+[341]	valid_0's l2: 0.0345239	valid_0's auc: 1	valid_0's l1: 0.123163
+[342]	valid_0's l2: 0.0344298	valid_0's auc: 1	valid_0's l1: 0.122961
+[343]	valid_0's l2: 0.0343371	valid_0's auc: 1	valid_0's l1: 0.122759
+[344]	valid_0's l2: 0.0342451	valid_0's auc: 1	valid_0's l1: 0.122567
+[345]	valid_0's l2: 0.0341563	valid_0's auc: 1	valid_0's l1: 0.122379
+[346]	valid_0's l2: 0.0340731	valid_0's auc: 1	valid_0's l1: 0.122217
+[347]	valid_0's l2: 0.0339864	valid_0's auc: 1	valid_0's l1: 0.122036
+[348]	valid_0's l2: 0.0339059	valid_0's auc: 1	valid_0's l1: 0.121881
+[349]	valid_0's l2: 0.0338175	valid_0's auc: 1	valid_0's l1: 0.121692
+[350]	valid_0's l2: 0.0337391	valid_0's auc: 1	valid_0's l1: 0.121539
+[351]	valid_0's l2: 0.0336639	valid_0's auc: 1	valid_0's l1: 0.121386
+[352]	valid_0's l2: 0.0335899	valid_0's auc: 1	valid_0's l1: 0.121236
+[353]	valid_0's l2: 0.0335224	valid_0's auc: 1	valid_0's l1: 0.121096
+[354]	valid_0's l2: 0.0334567	valid_0's auc: 1	valid_0's l1: 0.120952
+[355]	valid_0's l2: 0.033391	valid_0's auc: 1	valid_0's l1: 0.120815
+[356]	valid_0's l2: 0.033321	valid_0's auc: 1	valid_0's l1: 0.120674
+[357]	valid_0's l2: 0.033259	valid_0's auc: 1	valid_0's l1: 0.12055
+[358]	valid_0's l2: 0.0331915	valid_0's auc: 1	valid_0's l1: 0.120415
+[359]	valid_0's l2: 0.0331222	valid_0's auc: 1	valid_0's l1: 0.120271
+[360]	valid_0's l2: 0.0330541	valid_0's auc: 1	valid_0's l1: 0.120129
+[361]	valid_0's l2: 0.0329809	valid_0's auc: 1	valid_0's l1: 0.119979
+[362]	valid_0's l2: 0.0329058	valid_0's auc: 1	valid_0's l1: 0.119836
+[363]	valid_0's l2: 0.0328352	valid_0's auc: 1	valid_0's l1: 0.119691
+[364]	valid_0's l2: 0.0327654	valid_0's auc: 1	valid_0's l1: 0.119552
+[365]	valid_0's l2: 0.0326968	valid_0's auc: 1	valid_0's l1: 0.119406
+[366]	valid_0's l2: 0.0326268	valid_0's auc: 1	valid_0's l1: 0.119261
+[367]	valid_0's l2: 0.0325554	valid_0's auc: 1	valid_0's l1: 0.119117
+[368]	valid_0's l2: 0.0324874	valid_0's auc: 1	valid_0's l1: 0.118972
+[369]	valid_0's l2: 0.0324192	valid_0's auc: 1	valid_0's l1: 0.118831
+[370]	valid_0's l2: 0.0323503	valid_0's auc: 1	valid_0's l1: 0.118694
+[371]	valid_0's l2: 0.0322917	valid_0's auc: 1	valid_0's l1: 0.118578
+[372]	valid_0's l2: 0.0322364	valid_0's auc: 1	valid_0's l1: 0.118466
+[373]	valid_0's l2: 0.0321812	valid_0's auc: 1	valid_0's l1: 0.118361
+[374]	valid_0's l2: 0.0321266	valid_0's auc: 1	valid_0's l1: 0.118255
+[375]	valid_0's l2: 0.0320734	valid_0's auc: 1	valid_0's l1: 0.118147
+[376]	valid_0's l2: 0.03202	valid_0's auc: 1	valid_0's l1: 0.118043
+[377]	valid_0's l2: 0.0319445	valid_0's auc: 1	valid_0's l1: 0.117875
+[378]	valid_0's l2: 0.0318652	valid_0's auc: 1	valid_0's l1: 0.117696
+[379]	valid_0's l2: 0.0317931	valid_0's auc: 1	valid_0's l1: 0.117528
+[380]	valid_0's l2: 0.0317419	valid_0's auc: 1	valid_0's l1: 0.11742
+[381]	valid_0's l2: 0.0316841	valid_0's auc: 1	valid_0's l1: 0.117305
+[382]	valid_0's l2: 0.0316268	valid_0's auc: 1	valid_0's l1: 0.117189
+[383]	valid_0's l2: 0.0315697	valid_0's auc: 1	valid_0's l1: 0.117058
+[384]	valid_0's l2: 0.0315134	valid_0's auc: 1	valid_0's l1: 0.116943
+[385]	valid_0's l2: 0.0314555	valid_0's auc: 1	valid_0's l1: 0.11681
+[386]	valid_0's l2: 0.0313893	valid_0's auc: 1	valid_0's l1: 0.11665
+[387]	valid_0's l2: 0.0313257	valid_0's auc: 1	valid_0's l1: 0.116519
+[388]	valid_0's l2: 0.0312661	valid_0's auc: 1	valid_0's l1: 0.116393
+[389]	valid_0's l2: 0.0312123	valid_0's auc: 1	valid_0's l1: 0.116295
+[390]	valid_0's l2: 0.0311575	valid_0's auc: 1	valid_0's l1: 0.116182
+[391]	valid_0's l2: 0.0310947	valid_0's auc: 1	valid_0's l1: 0.116038
+[392]	valid_0's l2: 0.0310335	valid_0's auc: 1	valid_0's l1: 0.115899
+[393]	valid_0's l2: 0.0309703	valid_0's auc: 1	valid_0's l1: 0.11576
+[394]	valid_0's l2: 0.0309077	valid_0's auc: 1	valid_0's l1: 0.115621
+[395]	valid_0's l2: 0.0308536	valid_0's auc: 1	valid_0's l1: 0.115483
+[396]	valid_0's l2: 0.0307937	valid_0's auc: 1	valid_0's l1: 0.115344
+[397]	valid_0's l2: 0.0307315	valid_0's auc: 1	valid_0's l1: 0.115204
+[398]	valid_0's l2: 0.0306709	valid_0's auc: 1	valid_0's l1: 0.115071
+[399]	valid_0's l2: 0.0306094	valid_0's auc: 1	valid_0's l1: 0.114931
+[400]	valid_0's l2: 0.0305486	valid_0's auc: 1	valid_0's l1: 0.114795
+[401]	valid_0's l2: 0.0304879	valid_0's auc: 1	valid_0's l1: 0.114679
+[402]	valid_0's l2: 0.0304395	valid_0's auc: 1	valid_0's l1: 0.114569
+[403]	valid_0's l2: 0.030391	valid_0's auc: 1	valid_0's l1: 0.114463
+[404]	valid_0's l2: 0.0303317	valid_0's auc: 1	valid_0's l1: 0.114351
+[405]	valid_0's l2: 0.0302723	valid_0's auc: 1	valid_0's l1: 0.11425
+[406]	valid_0's l2: 0.0302237	valid_0's auc: 1	valid_0's l1: 0.114141
+[407]	valid_0's l2: 0.0301744	valid_0's auc: 1	valid_0's l1: 0.11403
+[408]	valid_0's l2: 0.0301256	valid_0's auc: 1	valid_0's l1: 0.113928
+[409]	valid_0's l2: 0.0300773	valid_0's auc: 1	valid_0's l1: 0.113818
+[410]	valid_0's l2: 0.0300273	valid_0's auc: 1	valid_0's l1: 0.113714
+[411]	valid_0's l2: 0.029979	valid_0's auc: 1	valid_0's l1: 0.113607
+[412]	valid_0's l2: 0.0299299	valid_0's auc: 1	valid_0's l1: 0.113498
+[413]	valid_0's l2: 0.0298811	valid_0's auc: 1	valid_0's l1: 0.11339
+[414]	valid_0's l2: 0.0298328	valid_0's auc: 1	valid_0's l1: 0.113282
+[415]	valid_0's l2: 0.029786	valid_0's auc: 1	valid_0's l1: 0.113178
+[416]	valid_0's l2: 0.0297376	valid_0's auc: 1	valid_0's l1: 0.113062
+[417]	valid_0's l2: 0.0296906	valid_0's auc: 1	valid_0's l1: 0.112956
+[418]	valid_0's l2: 0.0296435	valid_0's auc: 1	valid_0's l1: 0.112851
+[419]	valid_0's l2: 0.0295948	valid_0's auc: 1	valid_0's l1: 0.11274
+[420]	valid_0's l2: 0.0295482	valid_0's auc: 1	valid_0's l1: 0.112637
+[421]	valid_0's l2: 0.0295032	valid_0's auc: 1	valid_0's l1: 0.11256
+[422]	valid_0's l2: 0.0294562	valid_0's auc: 1	valid_0's l1: 0.112473
+[423]	valid_0's l2: 0.0294136	valid_0's auc: 1	valid_0's l1: 0.112396
+[424]	valid_0's l2: 0.0293727	valid_0's auc: 1	valid_0's l1: 0.112289
+[425]	valid_0's l2: 0.0293291	valid_0's auc: 1	valid_0's l1: 0.112182
+[426]	valid_0's l2: 0.0292863	valid_0's auc: 1	valid_0's l1: 0.112109
+[427]	valid_0's l2: 0.0292411	valid_0's auc: 1	valid_0's l1: 0.112019
+[428]	valid_0's l2: 0.0291943	valid_0's auc: 1	valid_0's l1: 0.111934
+[429]	valid_0's l2: 0.0291602	valid_0's auc: 1	valid_0's l1: 0.111858
+[430]	valid_0's l2: 0.0291242	valid_0's auc: 1	valid_0's l1: 0.111795
+[431]	valid_0's l2: 0.0290723	valid_0's auc: 1	valid_0's l1: 0.111672
+[432]	valid_0's l2: 0.0290289	valid_0's auc: 1	valid_0's l1: 0.111574
+[433]	valid_0's l2: 0.0289821	valid_0's auc: 1	valid_0's l1: 0.111451
+[434]	valid_0's l2: 0.028938	valid_0's auc: 1	valid_0's l1: 0.111349
+[435]	valid_0's l2: 0.0288905	valid_0's auc: 1	valid_0's l1: 0.111238
+[436]	valid_0's l2: 0.028845	valid_0's auc: 1	valid_0's l1: 0.111127
+[437]	valid_0's l2: 0.0287988	valid_0's auc: 1	valid_0's l1: 0.111016
+[438]	valid_0's l2: 0.0287512	valid_0's auc: 1	valid_0's l1: 0.1109
+[439]	valid_0's l2: 0.028711	valid_0's auc: 1	valid_0's l1: 0.110811
+[440]	valid_0's l2: 0.0286698	valid_0's auc: 1	valid_0's l1: 0.110716
+[441]	valid_0's l2: 0.0286214	valid_0's auc: 1	valid_0's l1: 0.110608
+[442]	valid_0's l2: 0.0285784	valid_0's auc: 1	valid_0's l1: 0.110513
+[443]	valid_0's l2: 0.0285358	valid_0's auc: 1	valid_0's l1: 0.110418
+[444]	valid_0's l2: 0.0284936	valid_0's auc: 1	valid_0's l1: 0.110324
+[445]	valid_0's l2: 0.0284532	valid_0's auc: 1	valid_0's l1: 0.110235
+[446]	valid_0's l2: 0.0284142	valid_0's auc: 1	valid_0's l1: 0.11015
+[447]	valid_0's l2: 0.0283756	valid_0's auc: 1	valid_0's l1: 0.110069
+[448]	valid_0's l2: 0.0283352	valid_0's auc: 1	valid_0's l1: 0.109982
+[449]	valid_0's l2: 0.0282955	valid_0's auc: 1	valid_0's l1: 0.1099
+[450]	valid_0's l2: 0.028259	valid_0's auc: 1	valid_0's l1: 0.109817
+[451]	valid_0's l2: 0.0282255	valid_0's auc: 1	valid_0's l1: 0.109736
+[452]	valid_0's l2: 0.0281897	valid_0's auc: 1	valid_0's l1: 0.109655
+[453]	valid_0's l2: 0.0281536	valid_0's auc: 1	valid_0's l1: 0.109583
+[454]	valid_0's l2: 0.0281179	valid_0's auc: 1	valid_0's l1: 0.109511
+[455]	valid_0's l2: 0.0280843	valid_0's auc: 1	valid_0's l1: 0.109438
+[456]	valid_0's l2: 0.02805	valid_0's auc: 1	valid_0's l1: 0.109359
+[457]	valid_0's l2: 0.0280163	valid_0's auc: 1	valid_0's l1: 0.10928
+[458]	valid_0's l2: 0.0279852	valid_0's auc: 1	valid_0's l1: 0.109211
+[459]	valid_0's l2: 0.027952	valid_0's auc: 1	valid_0's l1: 0.109136
+[460]	valid_0's l2: 0.0279212	valid_0's auc: 1	valid_0's l1: 0.109067
+[461]	valid_0's l2: 0.0278836	valid_0's auc: 1	valid_0's l1: 0.108997
+[462]	valid_0's l2: 0.027847	valid_0's auc: 1	valid_0's l1: 0.108922
+[463]	valid_0's l2: 0.0278072	valid_0's auc: 1	valid_0's l1: 0.108832
+[464]	valid_0's l2: 0.0277773	valid_0's auc: 1	valid_0's l1: 0.108777
+[465]	valid_0's l2: 0.0277336	valid_0's auc: 1	valid_0's l1: 0.108683
+[466]	valid_0's l2: 0.0276914	valid_0's auc: 1	valid_0's l1: 0.108595
+[467]	valid_0's l2: 0.027646	valid_0's auc: 1	valid_0's l1: 0.108494
+[468]	valid_0's l2: 0.0276104	valid_0's auc: 1	valid_0's l1: 0.108426
+[469]	valid_0's l2: 0.0275615	valid_0's auc: 1	valid_0's l1: 0.108298
+[470]	valid_0's l2: 0.027521	valid_0's auc: 1	valid_0's l1: 0.108198
+[471]	valid_0's l2: 0.0274906	valid_0's auc: 1	valid_0's l1: 0.108141
+[472]	valid_0's l2: 0.0274606	valid_0's auc: 1	valid_0's l1: 0.108087
+[473]	valid_0's l2: 0.0274282	valid_0's auc: 1	valid_0's l1: 0.108022
+[474]	valid_0's l2: 0.0273949	valid_0's auc: 1	valid_0's l1: 0.107939
+[475]	valid_0's l2: 0.0273599	valid_0's auc: 1	valid_0's l1: 0.107855
+[476]	valid_0's l2: 0.027328	valid_0's auc: 1	valid_0's l1: 0.107795
+[477]	valid_0's l2: 0.0272935	valid_0's auc: 1	valid_0's l1: 0.107712
+[478]	valid_0's l2: 0.0272658	valid_0's auc: 1	valid_0's l1: 0.107665
+[479]	valid_0's l2: 0.0272319	valid_0's auc: 1	valid_0's l1: 0.107583
+[480]	valid_0's l2: 0.0272038	valid_0's auc: 1	valid_0's l1: 0.107527
+[481]	valid_0's l2: 0.0271715	valid_0's auc: 1	valid_0's l1: 0.107445
+[482]	valid_0's l2: 0.0271403	valid_0's auc: 1	valid_0's l1: 0.107365
+[483]	valid_0's l2: 0.0271072	valid_0's auc: 1	valid_0's l1: 0.107284
+[484]	valid_0's l2: 0.0270767	valid_0's auc: 1	valid_0's l1: 0.107205
+[485]	valid_0's l2: 0.0270445	valid_0's auc: 1	valid_0's l1: 0.107137
+[486]	valid_0's l2: 0.0270146	valid_0's auc: 1	valid_0's l1: 0.107078
+[487]	valid_0's l2: 0.0269845	valid_0's auc: 1	valid_0's l1: 0.106999
+[488]	valid_0's l2: 0.0269559	valid_0's auc: 1	valid_0's l1: 0.10693
+[489]	valid_0's l2: 0.0269267	valid_0's auc: 1	valid_0's l1: 0.106849
+[490]	valid_0's l2: 0.0268974	valid_0's auc: 1	valid_0's l1: 0.106776
+[491]	valid_0's l2: 0.02687	valid_0's auc: 1	valid_0's l1: 0.106732
+[492]	valid_0's l2: 0.0268425	valid_0's auc: 1	valid_0's l1: 0.106699
+[493]	valid_0's l2: 0.0268153	valid_0's auc: 1	valid_0's l1: 0.106677
+[494]	valid_0's l2: 0.0267889	valid_0's auc: 1	valid_0's l1: 0.106659
+[495]	valid_0's l2: 0.0267625	valid_0's auc: 1	valid_0's l1: 0.106635
+[496]	valid_0's l2: 0.0267339	valid_0's auc: 1	valid_0's l1: 0.106587
+[497]	valid_0's l2: 0.0267083	valid_0's auc: 1	valid_0's l1: 0.106569
+[498]	valid_0's l2: 0.0266799	valid_0's auc: 1	valid_0's l1: 0.10653
+[499]	valid_0's l2: 0.0266529	valid_0's auc: 1	valid_0's l1: 0.106485
+[500]	valid_0's l2: 0.0266273	valid_0's auc: 1	valid_0's l1: 0.106452
+[501]	valid_0's l2: 0.0266011	valid_0's auc: 1	valid_0's l1: 0.106396
+[502]	valid_0's l2: 0.0265763	valid_0's auc: 1	valid_0's l1: 0.10634
+[503]	valid_0's l2: 0.0265525	valid_0's auc: 1	valid_0's l1: 0.106294
+[504]	valid_0's l2: 0.0265295	valid_0's auc: 1	valid_0's l1: 0.106247
+[505]	valid_0's l2: 0.0265079	valid_0's auc: 1	valid_0's l1: 0.106197
+[506]	valid_0's l2: 0.0264831	valid_0's auc: 1	valid_0's l1: 0.106148
+[507]	valid_0's l2: 0.0264594	valid_0's auc: 1	valid_0's l1: 0.106097
+[508]	valid_0's l2: 0.0264322	valid_0's auc: 1	valid_0's l1: 0.106045
+[509]	valid_0's l2: 0.026414	valid_0's auc: 1	valid_0's l1: 0.106009
+[510]	valid_0's l2: 0.0263932	valid_0's auc: 1	valid_0's l1: 0.105964
+[511]	valid_0's l2: 0.0263644	valid_0's auc: 1	valid_0's l1: 0.105905
+[512]	valid_0's l2: 0.0263368	valid_0's auc: 1	valid_0's l1: 0.105855
+[513]	valid_0's l2: 0.0263058	valid_0's auc: 1	valid_0's l1: 0.105779
+[514]	valid_0's l2: 0.026272	valid_0's auc: 1	valid_0's l1: 0.105696
+[515]	valid_0's l2: 0.0262413	valid_0's auc: 1	valid_0's l1: 0.105618
+[516]	valid_0's l2: 0.0262149	valid_0's auc: 1	valid_0's l1: 0.105571
+[517]	valid_0's l2: 0.0261888	valid_0's auc: 1	valid_0's l1: 0.105524
+[518]	valid_0's l2: 0.0261551	valid_0's auc: 1	valid_0's l1: 0.105443
+[519]	valid_0's l2: 0.0261295	valid_0's auc: 1	valid_0's l1: 0.105398
+[520]	valid_0's l2: 0.0260957	valid_0's auc: 1	valid_0's l1: 0.105311
+[521]	valid_0's l2: 0.0260728	valid_0's auc: 1	valid_0's l1: 0.10526
+[522]	valid_0's l2: 0.0260533	valid_0's auc: 1	valid_0's l1: 0.105223
+[523]	valid_0's l2: 0.0260353	valid_0's auc: 1	valid_0's l1: 0.105191
+[524]	valid_0's l2: 0.026017	valid_0's auc: 1	valid_0's l1: 0.105157
+[525]	valid_0's l2: 0.026001	valid_0's auc: 1	valid_0's l1: 0.105133
+[526]	valid_0's l2: 0.0259843	valid_0's auc: 1	valid_0's l1: 0.105107
+[527]	valid_0's l2: 0.0259585	valid_0's auc: 1	valid_0's l1: 0.105041
+[528]	valid_0's l2: 0.025941	valid_0's auc: 1	valid_0's l1: 0.105009
+[529]	valid_0's l2: 0.0259265	valid_0's auc: 1	valid_0's l1: 0.104972
+[530]	valid_0's l2: 0.0259117	valid_0's auc: 1	valid_0's l1: 0.104948
+[531]	valid_0's l2: 0.025893	valid_0's auc: 1	valid_0's l1: 0.104905
+[532]	valid_0's l2: 0.0258713	valid_0's auc: 1	valid_0's l1: 0.104857
+[533]	valid_0's l2: 0.0258463	valid_0's auc: 1	valid_0's l1: 0.104795
+[534]	valid_0's l2: 0.0258265	valid_0's auc: 1	valid_0's l1: 0.104751
+[535]	valid_0's l2: 0.0258034	valid_0's auc: 1	valid_0's l1: 0.104707
+[536]	valid_0's l2: 0.0257804	valid_0's auc: 1	valid_0's l1: 0.104647
+[537]	valid_0's l2: 0.0257557	valid_0's auc: 1	valid_0's l1: 0.104588
+[538]	valid_0's l2: 0.0257322	valid_0's auc: 1	valid_0's l1: 0.104541
+[539]	valid_0's l2: 0.0257065	valid_0's auc: 1	valid_0's l1: 0.104486
+[540]	valid_0's l2: 0.0256827	valid_0's auc: 1	valid_0's l1: 0.104434
+[541]	valid_0's l2: 0.0256639	valid_0's auc: 1	valid_0's l1: 0.104415
+[542]	valid_0's l2: 0.0256406	valid_0's auc: 1	valid_0's l1: 0.104375
+[543]	valid_0's l2: 0.0256225	valid_0's auc: 1	valid_0's l1: 0.104358
+[544]	valid_0's l2: 0.0256055	valid_0's auc: 1	valid_0's l1: 0.104341
+[545]	valid_0's l2: 0.0255879	valid_0's auc: 1	valid_0's l1: 0.104324
+[546]	valid_0's l2: 0.0255688	valid_0's auc: 1	valid_0's l1: 0.104304
+[547]	valid_0's l2: 0.0255565	valid_0's auc: 1	valid_0's l1: 0.1043
+[548]	valid_0's l2: 0.0255436	valid_0's auc: 1	valid_0's l1: 0.10429
+[549]	valid_0's l2: 0.0255245	valid_0's auc: 1	valid_0's l1: 0.104261
+[550]	valid_0's l2: 0.025511	valid_0's auc: 1	valid_0's l1: 0.104245
+[551]	valid_0's l2: 0.0254893	valid_0's auc: 1	valid_0's l1: 0.104199
+[552]	valid_0's l2: 0.0254698	valid_0's auc: 1	valid_0's l1: 0.104162
+[553]	valid_0's l2: 0.0254503	valid_0's auc: 1	valid_0's l1: 0.104125
+[554]	valid_0's l2: 0.0254309	valid_0's auc: 1	valid_0's l1: 0.104088
+[555]	valid_0's l2: 0.0254117	valid_0's auc: 1	valid_0's l1: 0.104052
+[556]	valid_0's l2: 0.0253928	valid_0's auc: 1	valid_0's l1: 0.104015
+[557]	valid_0's l2: 0.0253746	valid_0's auc: 1	valid_0's l1: 0.103981
+[558]	valid_0's l2: 0.0253517	valid_0's auc: 1	valid_0's l1: 0.10393
+[559]	valid_0's l2: 0.0253334	valid_0's auc: 1	valid_0's l1: 0.103894
+[560]	valid_0's l2: 0.0253122	valid_0's auc: 1	valid_0's l1: 0.103847
+[561]	valid_0's l2: 0.02529	valid_0's auc: 1	valid_0's l1: 0.103813
+[562]	valid_0's l2: 0.0252668	valid_0's auc: 1	valid_0's l1: 0.103779
+[563]	valid_0's l2: 0.0252414	valid_0's auc: 1	valid_0's l1: 0.103718
+[564]	valid_0's l2: 0.025218	valid_0's auc: 1	valid_0's l1: 0.103682
+[565]	valid_0's l2: 0.0251955	valid_0's auc: 1	valid_0's l1: 0.103649
+[566]	valid_0's l2: 0.0251741	valid_0's auc: 1	valid_0's l1: 0.103616
+[567]	valid_0's l2: 0.0251519	valid_0's auc: 1	valid_0's l1: 0.103582
+[568]	valid_0's l2: 0.025128	valid_0's auc: 1	valid_0's l1: 0.103546
+[569]	valid_0's l2: 0.0251075	valid_0's auc: 1	valid_0's l1: 0.103513
+[570]	valid_0's l2: 0.025089	valid_0's auc: 1	valid_0's l1: 0.103475
+[571]	valid_0's l2: 0.0250701	valid_0's auc: 1	valid_0's l1: 0.103428
+[572]	valid_0's l2: 0.0250498	valid_0's auc: 1	valid_0's l1: 0.103369
+[573]	valid_0's l2: 0.0250301	valid_0's auc: 1	valid_0's l1: 0.10331
+[574]	valid_0's l2: 0.0250102	valid_0's auc: 1	valid_0's l1: 0.103252
+[575]	valid_0's l2: 0.0249905	valid_0's auc: 1	valid_0's l1: 0.103195
+[576]	valid_0's l2: 0.0249694	valid_0's auc: 1	valid_0's l1: 0.103129
+[577]	valid_0's l2: 0.0249518	valid_0's auc: 1	valid_0's l1: 0.103078
+[578]	valid_0's l2: 0.0249341	valid_0's auc: 1	valid_0's l1: 0.103033
+[579]	valid_0's l2: 0.0249156	valid_0's auc: 1	valid_0's l1: 0.102976
+[580]	valid_0's l2: 0.0248978	valid_0's auc: 1	valid_0's l1: 0.102924
+[581]	valid_0's l2: 0.024878	valid_0's auc: 1	valid_0's l1: 0.102875
+[582]	valid_0's l2: 0.0248647	valid_0's auc: 1	valid_0's l1: 0.102848
+[583]	valid_0's l2: 0.0248452	valid_0's auc: 1	valid_0's l1: 0.102799
+[584]	valid_0's l2: 0.024826	valid_0's auc: 1	valid_0's l1: 0.10275
+[585]	valid_0's l2: 0.0248069	valid_0's auc: 1	valid_0's l1: 0.102701
+[586]	valid_0's l2: 0.0247868	valid_0's auc: 1	valid_0's l1: 0.102646
+[587]	valid_0's l2: 0.024774	valid_0's auc: 1	valid_0's l1: 0.10262
+[588]	valid_0's l2: 0.0247609	valid_0's auc: 1	valid_0's l1: 0.10261
+[589]	valid_0's l2: 0.0247409	valid_0's auc: 1	valid_0's l1: 0.102558
+[590]	valid_0's l2: 0.0247213	valid_0's auc: 1	valid_0's l1: 0.102501
+[591]	valid_0's l2: 0.0246987	valid_0's auc: 1	valid_0's l1: 0.102454
+[592]	valid_0's l2: 0.0246767	valid_0's auc: 1	valid_0's l1: 0.102408
+[593]	valid_0's l2: 0.0246563	valid_0's auc: 1	valid_0's l1: 0.102362
+[594]	valid_0's l2: 0.0246364	valid_0's auc: 1	valid_0's l1: 0.102311
+[595]	valid_0's l2: 0.0246173	valid_0's auc: 1	valid_0's l1: 0.102275
+[596]	valid_0's l2: 0.024598	valid_0's auc: 1	valid_0's l1: 0.102229
+[597]	valid_0's l2: 0.0245781	valid_0's auc: 1	valid_0's l1: 0.10219
+[598]	valid_0's l2: 0.0245636	valid_0's auc: 1	valid_0's l1: 0.102143
+[599]	valid_0's l2: 0.0245461	valid_0's auc: 1	valid_0's l1: 0.102102
+[600]	valid_0's l2: 0.0245316	valid_0's auc: 1	valid_0's l1: 0.102056
+[601]	valid_0's l2: 0.0245169	valid_0's auc: 1	valid_0's l1: 0.102014
+[602]	valid_0's l2: 0.0244994	valid_0's auc: 1	valid_0's l1: 0.101969
+[603]	valid_0's l2: 0.0244852	valid_0's auc: 1	valid_0's l1: 0.101935
+[604]	valid_0's l2: 0.0244692	valid_0's auc: 1	valid_0's l1: 0.101901
+[605]	valid_0's l2: 0.0244569	valid_0's auc: 1	valid_0's l1: 0.101878
+[606]	valid_0's l2: 0.024439	valid_0's auc: 1	valid_0's l1: 0.101833
+[607]	valid_0's l2: 0.0244259	valid_0's auc: 1	valid_0's l1: 0.101809
+[608]	valid_0's l2: 0.0244136	valid_0's auc: 1	valid_0's l1: 0.101789
+[609]	valid_0's l2: 0.0243976	valid_0's auc: 1	valid_0's l1: 0.101752
+[610]	valid_0's l2: 0.0243826	valid_0's auc: 1	valid_0's l1: 0.101715
+[611]	valid_0's l2: 0.0243716	valid_0's auc: 1	valid_0's l1: 0.101687
+[612]	valid_0's l2: 0.0243573	valid_0's auc: 1	valid_0's l1: 0.101647
+[613]	valid_0's l2: 0.0243463	valid_0's auc: 1	valid_0's l1: 0.101618
+[614]	valid_0's l2: 0.0243239	valid_0's auc: 1	valid_0's l1: 0.101571
+[615]	valid_0's l2: 0.0243099	valid_0's auc: 1	valid_0's l1: 0.101533
+[616]	valid_0's l2: 0.0242923	valid_0's auc: 1	valid_0's l1: 0.101498
+[617]	valid_0's l2: 0.0242776	valid_0's auc: 1	valid_0's l1: 0.101463
+[618]	valid_0's l2: 0.0242665	valid_0's auc: 1	valid_0's l1: 0.101442
+[619]	valid_0's l2: 0.0242518	valid_0's auc: 1	valid_0's l1: 0.101406
+[620]	valid_0's l2: 0.0242418	valid_0's auc: 1	valid_0's l1: 0.101385
+[621]	valid_0's l2: 0.0242221	valid_0's auc: 1	valid_0's l1: 0.101339
+[622]	valid_0's l2: 0.0241996	valid_0's auc: 1	valid_0's l1: 0.101291
+[623]	valid_0's l2: 0.0241807	valid_0's auc: 1	valid_0's l1: 0.101252
+[624]	valid_0's l2: 0.0241614	valid_0's auc: 1	valid_0's l1: 0.101207
+[625]	valid_0's l2: 0.0241406	valid_0's auc: 1	valid_0's l1: 0.101157
+[626]	valid_0's l2: 0.0241216	valid_0's auc: 1	valid_0's l1: 0.101112
+[627]	valid_0's l2: 0.0241034	valid_0's auc: 1	valid_0's l1: 0.101071
+[628]	valid_0's l2: 0.0240846	valid_0's auc: 1	valid_0's l1: 0.101026
+[629]	valid_0's l2: 0.0240707	valid_0's auc: 1	valid_0's l1: 0.100999
+[630]	valid_0's l2: 0.024052	valid_0's auc: 1	valid_0's l1: 0.100953
+[631]	valid_0's l2: 0.0240397	valid_0's auc: 1	valid_0's l1: 0.100923
+[632]	valid_0's l2: 0.0240302	valid_0's auc: 1	valid_0's l1: 0.100898
+[633]	valid_0's l2: 0.0240209	valid_0's auc: 1	valid_0's l1: 0.100873
+[634]	valid_0's l2: 0.0240136	valid_0's auc: 1	valid_0's l1: 0.100852
+[635]	valid_0's l2: 0.0239977	valid_0's auc: 1	valid_0's l1: 0.100809
+[636]	valid_0's l2: 0.0239826	valid_0's auc: 1	valid_0's l1: 0.100778
+[637]	valid_0's l2: 0.0239732	valid_0's auc: 1	valid_0's l1: 0.100753
+[638]	valid_0's l2: 0.0239645	valid_0's auc: 1	valid_0's l1: 0.100735
+[639]	valid_0's l2: 0.0239553	valid_0's auc: 1	valid_0's l1: 0.100711
+[640]	valid_0's l2: 0.0239438	valid_0's auc: 1	valid_0's l1: 0.100686
+[641]	valid_0's l2: 0.023932	valid_0's auc: 1	valid_0's l1: 0.100666
+[642]	valid_0's l2: 0.023918	valid_0's auc: 1	valid_0's l1: 0.100638
+[643]	valid_0's l2: 0.0239068	valid_0's auc: 1	valid_0's l1: 0.100616
+[644]	valid_0's l2: 0.0238947	valid_0's auc: 1	valid_0's l1: 0.100594
+[645]	valid_0's l2: 0.023884	valid_0's auc: 1	valid_0's l1: 0.10057
+[646]	valid_0's l2: 0.023873	valid_0's auc: 1	valid_0's l1: 0.100552
+[647]	valid_0's l2: 0.0238611	valid_0's auc: 1	valid_0's l1: 0.100527
+[648]	valid_0's l2: 0.0238508	valid_0's auc: 1	valid_0's l1: 0.100504
+[649]	valid_0's l2: 0.0238439	valid_0's auc: 1	valid_0's l1: 0.100498
+[650]	valid_0's l2: 0.0238336	valid_0's auc: 1	valid_0's l1: 0.10048
+[651]	valid_0's l2: 0.0238043	valid_0's auc: 1	valid_0's l1: 0.100419
+[652]	valid_0's l2: 0.0237767	valid_0's auc: 1	valid_0's l1: 0.100367
+[653]	valid_0's l2: 0.0237552	valid_0's auc: 1	valid_0's l1: 0.100322
+[654]	valid_0's l2: 0.0237331	valid_0's auc: 1	valid_0's l1: 0.10028
+[655]	valid_0's l2: 0.023706	valid_0's auc: 1	valid_0's l1: 0.100228
+[656]	valid_0's l2: 0.0236793	valid_0's auc: 1	valid_0's l1: 0.100177
+[657]	valid_0's l2: 0.0236528	valid_0's auc: 1	valid_0's l1: 0.100129
+[658]	valid_0's l2: 0.0236322	valid_0's auc: 1	valid_0's l1: 0.100088
+[659]	valid_0's l2: 0.0236125	valid_0's auc: 1	valid_0's l1: 0.100049
+[660]	valid_0's l2: 0.0235904	valid_0's auc: 1	valid_0's l1: 0.100011
+[661]	valid_0's l2: 0.0235781	valid_0's auc: 1	valid_0's l1: 0.0999903
+[662]	valid_0's l2: 0.0235659	valid_0's auc: 1	valid_0's l1: 0.09997
+[663]	valid_0's l2: 0.0235538	valid_0's auc: 1	valid_0's l1: 0.0999497
+[664]	valid_0's l2: 0.0235422	valid_0's auc: 1	valid_0's l1: 0.0999348
+[665]	valid_0's l2: 0.023528	valid_0's auc: 1	valid_0's l1: 0.099911
+[666]	valid_0's l2: 0.0235159	valid_0's auc: 1	valid_0's l1: 0.0998906
+[667]	valid_0's l2: 0.0235071	valid_0's auc: 1	valid_0's l1: 0.0998804
+[668]	valid_0's l2: 0.0234978	valid_0's auc: 1	valid_0's l1: 0.0998678
+[669]	valid_0's l2: 0.0234816	valid_0's auc: 1	valid_0's l1: 0.0998423
+[670]	valid_0's l2: 0.0234747	valid_0's auc: 1	valid_0's l1: 0.099828
+[671]	valid_0's l2: 0.0234564	valid_0's auc: 1	valid_0's l1: 0.099792
+[672]	valid_0's l2: 0.0234445	valid_0's auc: 1	valid_0's l1: 0.0997628
+[673]	valid_0's l2: 0.0234327	valid_0's auc: 1	valid_0's l1: 0.0997369
+[674]	valid_0's l2: 0.0234198	valid_0's auc: 1	valid_0's l1: 0.09971
+[675]	valid_0's l2: 0.0234021	valid_0's auc: 1	valid_0's l1: 0.0996733
+[676]	valid_0's l2: 0.0233845	valid_0's auc: 1	valid_0's l1: 0.0996368
+[677]	valid_0's l2: 0.023367	valid_0's auc: 1	valid_0's l1: 0.0996009
+[678]	valid_0's l2: 0.0233498	valid_0's auc: 1	valid_0's l1: 0.0995647
+[679]	valid_0's l2: 0.0233326	valid_0's auc: 1	valid_0's l1: 0.0995291
+[680]	valid_0's l2: 0.0233158	valid_0's auc: 1	valid_0's l1: 0.0994935
+[681]	valid_0's l2: 0.0233087	valid_0's auc: 1	valid_0's l1: 0.0994723
+[682]	valid_0's l2: 0.0233023	valid_0's auc: 1	valid_0's l1: 0.099458
+[683]	valid_0's l2: 0.0232917	valid_0's auc: 1	valid_0's l1: 0.0994282
+[684]	valid_0's l2: 0.0232831	valid_0's auc: 1	valid_0's l1: 0.0994028
+[685]	valid_0's l2: 0.0232797	valid_0's auc: 1	valid_0's l1: 0.0993943
+[686]	valid_0's l2: 0.0232702	valid_0's auc: 1	valid_0's l1: 0.0993791
+[687]	valid_0's l2: 0.0232606	valid_0's auc: 1	valid_0's l1: 0.09936
+[688]	valid_0's l2: 0.0232535	valid_0's auc: 1	valid_0's l1: 0.099341
+[689]	valid_0's l2: 0.0232472	valid_0's auc: 1	valid_0's l1: 0.0993214
+[690]	valid_0's l2: 0.0232404	valid_0's auc: 1	valid_0's l1: 0.0993026
+[691]	valid_0's l2: 0.0232348	valid_0's auc: 1	valid_0's l1: 0.0992751
+[692]	valid_0's l2: 0.0232259	valid_0's auc: 1	valid_0's l1: 0.099247
+[693]	valid_0's l2: 0.0232206	valid_0's auc: 1	valid_0's l1: 0.0992234
+[694]	valid_0's l2: 0.0232149	valid_0's auc: 1	valid_0's l1: 0.0992004
+[695]	valid_0's l2: 0.0232068	valid_0's auc: 1	valid_0's l1: 0.0991761
+[696]	valid_0's l2: 0.0231992	valid_0's auc: 1	valid_0's l1: 0.0991446
+[697]	valid_0's l2: 0.0231857	valid_0's auc: 1	valid_0's l1: 0.0991116
+[698]	valid_0's l2: 0.0231754	valid_0's auc: 1	valid_0's l1: 0.0990857
+[699]	valid_0's l2: 0.0231602	valid_0's auc: 1	valid_0's l1: 0.0990553
+[700]	valid_0's l2: 0.0231551	valid_0's auc: 1	valid_0's l1: 0.09904
+[701]	valid_0's l2: 0.0231446	valid_0's auc: 1	valid_0's l1: 0.0990026
+[702]	valid_0's l2: 0.0231341	valid_0's auc: 1	valid_0's l1: 0.0989664
+[703]	valid_0's l2: 0.0231238	valid_0's auc: 1	valid_0's l1: 0.0989304
+[704]	valid_0's l2: 0.0231148	valid_0's auc: 1	valid_0's l1: 0.0988982
+[705]	valid_0's l2: 0.0231093	valid_0's auc: 1	valid_0's l1: 0.0988837
+[706]	valid_0's l2: 0.023099	valid_0's auc: 1	valid_0's l1: 0.098855
+[707]	valid_0's l2: 0.0230892	valid_0's auc: 1	valid_0's l1: 0.098826
+[708]	valid_0's l2: 0.0230816	valid_0's auc: 1	valid_0's l1: 0.0987991
+[709]	valid_0's l2: 0.023073	valid_0's auc: 1	valid_0's l1: 0.0987675
+[710]	valid_0's l2: 0.0230706	valid_0's auc: 1	valid_0's l1: 0.0987532
+[711]	valid_0's l2: 0.0230674	valid_0's auc: 1	valid_0's l1: 0.0987399
+[712]	valid_0's l2: 0.0230637	valid_0's auc: 1	valid_0's l1: 0.0987251
+[713]	valid_0's l2: 0.0230606	valid_0's auc: 1	valid_0's l1: 0.0987147
+[714]	valid_0's l2: 0.0230522	valid_0's auc: 1	valid_0's l1: 0.0986984
+[715]	valid_0's l2: 0.0230471	valid_0's auc: 1	valid_0's l1: 0.0986772
+[716]	valid_0's l2: 0.0230437	valid_0's auc: 1	valid_0's l1: 0.0986649
+[717]	valid_0's l2: 0.0230407	valid_0's auc: 1	valid_0's l1: 0.0986542
+[718]	valid_0's l2: 0.0230368	valid_0's auc: 1	valid_0's l1: 0.09864
+[719]	valid_0's l2: 0.0230339	valid_0's auc: 1	valid_0's l1: 0.0986295
+[720]	valid_0's l2: 0.023026	valid_0's auc: 1	valid_0's l1: 0.0986111
+[721]	valid_0's l2: 0.0230112	valid_0's auc: 1	valid_0's l1: 0.0985884
+[722]	valid_0's l2: 0.0229925	valid_0's auc: 1	valid_0's l1: 0.0985517
+[723]	valid_0's l2: 0.0229793	valid_0's auc: 1	valid_0's l1: 0.0985286
+[724]	valid_0's l2: 0.0229659	valid_0's auc: 1	valid_0's l1: 0.0985082
+[725]	valid_0's l2: 0.0229542	valid_0's auc: 1	valid_0's l1: 0.0984834
+[726]	valid_0's l2: 0.02294	valid_0's auc: 1	valid_0's l1: 0.0984593
+[727]	valid_0's l2: 0.0229256	valid_0's auc: 1	valid_0's l1: 0.0984322
+[728]	valid_0's l2: 0.0229126	valid_0's auc: 1	valid_0's l1: 0.0984147
+[729]	valid_0's l2: 0.0228998	valid_0's auc: 1	valid_0's l1: 0.0983973
+[730]	valid_0's l2: 0.0228861	valid_0's auc: 1	valid_0's l1: 0.0983736
+[731]	valid_0's l2: 0.0228742	valid_0's auc: 1	valid_0's l1: 0.0983469
+[732]	valid_0's l2: 0.0228615	valid_0's auc: 1	valid_0's l1: 0.0983203
+[733]	valid_0's l2: 0.0228499	valid_0's auc: 1	valid_0's l1: 0.0982938
+[734]	valid_0's l2: 0.0228384	valid_0's auc: 1	valid_0's l1: 0.0982674
+[735]	valid_0's l2: 0.022828	valid_0's auc: 1	valid_0's l1: 0.09824
+[736]	valid_0's l2: 0.0228175	valid_0's auc: 1	valid_0's l1: 0.098215
+[737]	valid_0's l2: 0.022808	valid_0's auc: 1	valid_0's l1: 0.0981827
+[738]	valid_0's l2: 0.0227979	valid_0's auc: 1	valid_0's l1: 0.0981537
+[739]	valid_0's l2: 0.0227885	valid_0's auc: 1	valid_0's l1: 0.0981308
+[740]	valid_0's l2: 0.022776	valid_0's auc: 1	valid_0's l1: 0.0980925
+[741]	valid_0's l2: 0.0227644	valid_0's auc: 1	valid_0's l1: 0.0980603
+[742]	valid_0's l2: 0.0227595	valid_0's auc: 1	valid_0's l1: 0.0980434
+[743]	valid_0's l2: 0.0227504	valid_0's auc: 1	valid_0's l1: 0.0980255
+[744]	valid_0's l2: 0.0227461	valid_0's auc: 1	valid_0's l1: 0.0980052
+[745]	valid_0's l2: 0.022741	valid_0's auc: 1	valid_0's l1: 0.097983
+[746]	valid_0's l2: 0.0227298	valid_0's auc: 1	valid_0's l1: 0.0979513
+[747]	valid_0's l2: 0.022726	valid_0's auc: 1	valid_0's l1: 0.0979315
+[748]	valid_0's l2: 0.0227209	valid_0's auc: 1	valid_0's l1: 0.0979215
+[749]	valid_0's l2: 0.0227068	valid_0's auc: 1	valid_0's l1: 0.0978799
+[750]	valid_0's l2: 0.0227007	valid_0's auc: 1	valid_0's l1: 0.0978718
+[751]	valid_0's l2: 0.0226925	valid_0's auc: 1	valid_0's l1: 0.0978519
+[752]	valid_0's l2: 0.0226845	valid_0's auc: 1	valid_0's l1: 0.0978272
+[753]	valid_0's l2: 0.0226766	valid_0's auc: 1	valid_0's l1: 0.0978053
+[754]	valid_0's l2: 0.0226688	valid_0's auc: 1	valid_0's l1: 0.0977835
+[755]	valid_0's l2: 0.0226618	valid_0's auc: 1	valid_0's l1: 0.0977609
+[756]	valid_0's l2: 0.0226531	valid_0's auc: 1	valid_0's l1: 0.0977488
+[757]	valid_0's l2: 0.0226434	valid_0's auc: 1	valid_0's l1: 0.0977201
+[758]	valid_0's l2: 0.0226344	valid_0's auc: 1	valid_0's l1: 0.0977079
+[759]	valid_0's l2: 0.0226241	valid_0's auc: 1	valid_0's l1: 0.0976758
+[760]	valid_0's l2: 0.0226162	valid_0's auc: 1	valid_0's l1: 0.0976525
+[761]	valid_0's l2: 0.0226093	valid_0's auc: 1	valid_0's l1: 0.0976584
+[762]	valid_0's l2: 0.0226016	valid_0's auc: 1	valid_0's l1: 0.0976575
+[763]	valid_0's l2: 0.022593	valid_0's auc: 1	valid_0's l1: 0.0976512
+[764]	valid_0's l2: 0.0225835	valid_0's auc: 1	valid_0's l1: 0.0976307
+[765]	valid_0's l2: 0.0225741	valid_0's auc: 1	valid_0's l1: 0.0976312
+[766]	valid_0's l2: 0.0225669	valid_0's auc: 1	valid_0's l1: 0.0976331
+[767]	valid_0's l2: 0.0225608	valid_0's auc: 1	valid_0's l1: 0.0976418
+[768]	valid_0's l2: 0.0225546	valid_0's auc: 1	valid_0's l1: 0.097648
+[769]	valid_0's l2: 0.0225477	valid_0's auc: 1	valid_0's l1: 0.0976495
+[770]	valid_0's l2: 0.0225419	valid_0's auc: 1	valid_0's l1: 0.0976581
+[771]	valid_0's l2: 0.0225314	valid_0's auc: 1	valid_0's l1: 0.0976287
+[772]	valid_0's l2: 0.0225203	valid_0's auc: 1	valid_0's l1: 0.0975971
+[773]	valid_0's l2: 0.0225098	valid_0's auc: 1	valid_0's l1: 0.0975687
+[774]	valid_0's l2: 0.0225022	valid_0's auc: 1	valid_0's l1: 0.0975514
+[775]	valid_0's l2: 0.022492	valid_0's auc: 1	valid_0's l1: 0.0975226
+[776]	valid_0's l2: 0.0224825	valid_0's auc: 1	valid_0's l1: 0.0974917
+[777]	valid_0's l2: 0.0224751	valid_0's auc: 1	valid_0's l1: 0.0974747
+[778]	valid_0's l2: 0.0224651	valid_0's auc: 1	valid_0's l1: 0.0974352
+[779]	valid_0's l2: 0.0224563	valid_0's auc: 1	valid_0's l1: 0.0974024
+[780]	valid_0's l2: 0.0224475	valid_0's auc: 1	valid_0's l1: 0.0973866
+[781]	valid_0's l2: 0.022442	valid_0's auc: 1	valid_0's l1: 0.0973718
+[782]	valid_0's l2: 0.0224364	valid_0's auc: 1	valid_0's l1: 0.0973555
+[783]	valid_0's l2: 0.022434	valid_0's auc: 1	valid_0's l1: 0.097347
+[784]	valid_0's l2: 0.0224285	valid_0's auc: 1	valid_0's l1: 0.0973352
+[785]	valid_0's l2: 0.0224241	valid_0's auc: 1	valid_0's l1: 0.0973262
+[786]	valid_0's l2: 0.0224211	valid_0's auc: 1	valid_0's l1: 0.0973114
+[787]	valid_0's l2: 0.0224159	valid_0's auc: 1	valid_0's l1: 0.0972998
+[788]	valid_0's l2: 0.022411	valid_0's auc: 1	valid_0's l1: 0.0972862
+[789]	valid_0's l2: 0.0224064	valid_0's auc: 1	valid_0's l1: 0.0972775
+[790]	valid_0's l2: 0.0224018	valid_0's auc: 1	valid_0's l1: 0.0972696
+[791]	valid_0's l2: 0.0223912	valid_0's auc: 1	valid_0's l1: 0.0972437
+[792]	valid_0's l2: 0.022381	valid_0's auc: 1	valid_0's l1: 0.0972193
+[793]	valid_0's l2: 0.0223709	valid_0's auc: 1	valid_0's l1: 0.097195
+[794]	valid_0's l2: 0.0223595	valid_0's auc: 1	valid_0's l1: 0.0971637
+[795]	valid_0's l2: 0.0223488	valid_0's auc: 1	valid_0's l1: 0.097135
+[796]	valid_0's l2: 0.0223395	valid_0's auc: 1	valid_0's l1: 0.0971072
+[797]	valid_0's l2: 0.0223297	valid_0's auc: 1	valid_0's l1: 0.0970839
+[798]	valid_0's l2: 0.0223216	valid_0's auc: 1	valid_0's l1: 0.0970579
+[799]	valid_0's l2: 0.0223143	valid_0's auc: 1	valid_0's l1: 0.0970413
+[800]	valid_0's l2: 0.0223048	valid_0's auc: 1	valid_0's l1: 0.097013
+[801]	valid_0's l2: 0.0222923	valid_0's auc: 1	valid_0's l1: 0.0969772
+[802]	valid_0's l2: 0.0222837	valid_0's auc: 1	valid_0's l1: 0.0969543
+[803]	valid_0's l2: 0.0222756	valid_0's auc: 1	valid_0's l1: 0.0969335
+[804]	valid_0's l2: 0.0222711	valid_0's auc: 1	valid_0's l1: 0.0969297
+[805]	valid_0's l2: 0.022259	valid_0's auc: 1	valid_0's l1: 0.0968944
+[806]	valid_0's l2: 0.0222467	valid_0's auc: 1	valid_0's l1: 0.0968602
+[807]	valid_0's l2: 0.0222348	valid_0's auc: 1	valid_0's l1: 0.0968276
+[808]	valid_0's l2: 0.0222229	valid_0's auc: 1	valid_0's l1: 0.0967921
+[809]	valid_0's l2: 0.0222112	valid_0's auc: 1	valid_0's l1: 0.0967598
+[810]	valid_0's l2: 0.0221994	valid_0's auc: 1	valid_0's l1: 0.0967237
+[811]	valid_0's l2: 0.0221973	valid_0's auc: 1	valid_0's l1: 0.0967099
+[812]	valid_0's l2: 0.0221926	valid_0's auc: 1	valid_0's l1: 0.0966938
+[813]	valid_0's l2: 0.0221872	valid_0's auc: 1	valid_0's l1: 0.0966742
+[814]	valid_0's l2: 0.0221808	valid_0's auc: 1	valid_0's l1: 0.0966562
+[815]	valid_0's l2: 0.0221742	valid_0's auc: 1	valid_0's l1: 0.0966514
+[816]	valid_0's l2: 0.022167	valid_0's auc: 1	valid_0's l1: 0.0966468
+[817]	valid_0's l2: 0.0221616	valid_0's auc: 1	valid_0's l1: 0.096643
+[818]	valid_0's l2: 0.0221554	valid_0's auc: 1	valid_0's l1: 0.0966228
+[819]	valid_0's l2: 0.0221513	valid_0's auc: 1	valid_0's l1: 0.0966189
+[820]	valid_0's l2: 0.0221455	valid_0's auc: 1	valid_0's l1: 0.0966117
+[821]	valid_0's l2: 0.0221351	valid_0's auc: 1	valid_0's l1: 0.0965911
+[822]	valid_0's l2: 0.0221266	valid_0's auc: 1	valid_0's l1: 0.0965861
+[823]	valid_0's l2: 0.0221174	valid_0's auc: 1	valid_0's l1: 0.0965672
+[824]	valid_0's l2: 0.0221089	valid_0's auc: 1	valid_0's l1: 0.096547
+[825]	valid_0's l2: 0.0221007	valid_0's auc: 1	valid_0's l1: 0.0965303
+[826]	valid_0's l2: 0.0220923	valid_0's auc: 1	valid_0's l1: 0.0965103
+[827]	valid_0's l2: 0.0220856	valid_0's auc: 1	valid_0's l1: 0.0964954
+[828]	valid_0's l2: 0.0220758	valid_0's auc: 1	valid_0's l1: 0.0964753
+[829]	valid_0's l2: 0.0220677	valid_0's auc: 1	valid_0's l1: 0.096462
+[830]	valid_0's l2: 0.0220592	valid_0's auc: 1	valid_0's l1: 0.096454
+[831]	valid_0's l2: 0.0220456	valid_0's auc: 1	valid_0's l1: 0.0964269
+[832]	valid_0's l2: 0.0220328	valid_0's auc: 1	valid_0's l1: 0.0963965
+[833]	valid_0's l2: 0.0220201	valid_0's auc: 1	valid_0's l1: 0.0963663
+[834]	valid_0's l2: 0.0220057	valid_0's auc: 1	valid_0's l1: 0.0963352
+[835]	valid_0's l2: 0.021994	valid_0's auc: 1	valid_0's l1: 0.096311
+[836]	valid_0's l2: 0.0219816	valid_0's auc: 1	valid_0's l1: 0.0962853
+[837]	valid_0's l2: 0.0219693	valid_0's auc: 1	valid_0's l1: 0.0962577
+[838]	valid_0's l2: 0.021956	valid_0's auc: 1	valid_0's l1: 0.0962395
+[839]	valid_0's l2: 0.021944	valid_0's auc: 1	valid_0's l1: 0.0962122
+[840]	valid_0's l2: 0.0219321	valid_0's auc: 1	valid_0's l1: 0.0961869
+[841]	valid_0's l2: 0.0219236	valid_0's auc: 1	valid_0's l1: 0.0961607
+[842]	valid_0's l2: 0.0219141	valid_0's auc: 1	valid_0's l1: 0.0961355
+[843]	valid_0's l2: 0.0219029	valid_0's auc: 1	valid_0's l1: 0.0961025
+[844]	valid_0's l2: 0.0218954	valid_0's auc: 1	valid_0's l1: 0.0960801
+[845]	valid_0's l2: 0.0218895	valid_0's auc: 1	valid_0's l1: 0.0960733
+[846]	valid_0's l2: 0.0218818	valid_0's auc: 1	valid_0's l1: 0.0960567
+[847]	valid_0's l2: 0.021876	valid_0's auc: 1	valid_0's l1: 0.0960502
+[848]	valid_0's l2: 0.0218667	valid_0's auc: 1	valid_0's l1: 0.0960288
+[849]	valid_0's l2: 0.0218647	valid_0's auc: 1	valid_0's l1: 0.0960228
+[850]	valid_0's l2: 0.0218561	valid_0's auc: 1	valid_0's l1: 0.0960013
+[851]	valid_0's l2: 0.0218542	valid_0's auc: 1	valid_0's l1: 0.0959922
+[852]	valid_0's l2: 0.0218525	valid_0's auc: 1	valid_0's l1: 0.0959836
+[853]	valid_0's l2: 0.0218466	valid_0's auc: 1	valid_0's l1: 0.0959631
+[854]	valid_0's l2: 0.0218402	valid_0's auc: 1	valid_0's l1: 0.0959444
+[855]	valid_0's l2: 0.0218338	valid_0's auc: 1	valid_0's l1: 0.0959251
+[856]	valid_0's l2: 0.0218294	valid_0's auc: 1	valid_0's l1: 0.0959016
+[857]	valid_0's l2: 0.0218232	valid_0's auc: 1	valid_0's l1: 0.0958825
+[858]	valid_0's l2: 0.021817	valid_0's auc: 1	valid_0's l1: 0.0958635
+[859]	valid_0's l2: 0.0218154	valid_0's auc: 1	valid_0's l1: 0.0958555
+[860]	valid_0's l2: 0.0218138	valid_0's auc: 1	valid_0's l1: 0.0958475
+[861]	valid_0's l2: 0.0218084	valid_0's auc: 1	valid_0's l1: 0.0958269
+[862]	valid_0's l2: 0.021803	valid_0's auc: 1	valid_0's l1: 0.0958065
+[863]	valid_0's l2: 0.0217976	valid_0's auc: 1	valid_0's l1: 0.0957874
+[864]	valid_0's l2: 0.0217907	valid_0's auc: 1	valid_0's l1: 0.0957678
+[865]	valid_0's l2: 0.0217852	valid_0's auc: 1	valid_0's l1: 0.0957519
+[866]	valid_0's l2: 0.0217804	valid_0's auc: 1	valid_0's l1: 0.0957391
+[867]	valid_0's l2: 0.0217751	valid_0's auc: 1	valid_0's l1: 0.0957225
+[868]	valid_0's l2: 0.0217693	valid_0's auc: 1	valid_0's l1: 0.0957035
+[869]	valid_0's l2: 0.0217643	valid_0's auc: 1	valid_0's l1: 0.0956873
+[870]	valid_0's l2: 0.0217587	valid_0's auc: 1	valid_0's l1: 0.0956703
+[871]	valid_0's l2: 0.0217513	valid_0's auc: 1	valid_0's l1: 0.0956623
+[872]	valid_0's l2: 0.0217466	valid_0's auc: 1	valid_0's l1: 0.0956575
+[873]	valid_0's l2: 0.0217422	valid_0's auc: 1	valid_0's l1: 0.0956528
+[874]	valid_0's l2: 0.0217374	valid_0's auc: 1	valid_0's l1: 0.0956486
+[875]	valid_0's l2: 0.021732	valid_0's auc: 1	valid_0's l1: 0.0956435
+[876]	valid_0's l2: 0.0217281	valid_0's auc: 1	valid_0's l1: 0.0956366
+[877]	valid_0's l2: 0.0217234	valid_0's auc: 1	valid_0's l1: 0.0956334
+[878]	valid_0's l2: 0.0217189	valid_0's auc: 1	valid_0's l1: 0.0956316
+[879]	valid_0's l2: 0.0217146	valid_0's auc: 1	valid_0's l1: 0.0956247
+[880]	valid_0's l2: 0.0217109	valid_0's auc: 1	valid_0's l1: 0.0956179
+[881]	valid_0's l2: 0.0217062	valid_0's auc: 1	valid_0's l1: 0.095603
+[882]	valid_0's l2: 0.0217008	valid_0's auc: 1	valid_0's l1: 0.0955885
+[883]	valid_0's l2: 0.021693	valid_0's auc: 1	valid_0's l1: 0.0955768
+[884]	valid_0's l2: 0.0216884	valid_0's auc: 1	valid_0's l1: 0.095562
+[885]	valid_0's l2: 0.021684	valid_0's auc: 1	valid_0's l1: 0.0955486
+[886]	valid_0's l2: 0.0216798	valid_0's auc: 1	valid_0's l1: 0.0955406
+[887]	valid_0's l2: 0.0216736	valid_0's auc: 1	valid_0's l1: 0.0955193
+[888]	valid_0's l2: 0.0216686	valid_0's auc: 1	valid_0's l1: 0.0955051
+[889]	valid_0's l2: 0.0216642	valid_0's auc: 1	valid_0's l1: 0.0954907
+[890]	valid_0's l2: 0.0216582	valid_0's auc: 1	valid_0's l1: 0.0954697
+[891]	valid_0's l2: 0.0216569	valid_0's auc: 1	valid_0's l1: 0.0954542
+[892]	valid_0's l2: 0.021655	valid_0's auc: 1	valid_0's l1: 0.0954495
+[893]	valid_0's l2: 0.0216523	valid_0's auc: 1	valid_0's l1: 0.0954382
+[894]	valid_0's l2: 0.0216481	valid_0's auc: 1	valid_0's l1: 0.0954301
+[895]	valid_0's l2: 0.0216463	valid_0's auc: 1	valid_0's l1: 0.0954258
+[896]	valid_0's l2: 0.0216417	valid_0's auc: 1	valid_0's l1: 0.0954165
+[897]	valid_0's l2: 0.0216412	valid_0's auc: 1	valid_0's l1: 0.0954163
+[898]	valid_0's l2: 0.0216387	valid_0's auc: 1	valid_0's l1: 0.0954053
+[899]	valid_0's l2: 0.0216375	valid_0's auc: 1	valid_0's l1: 0.0954015
+[900]	valid_0's l2: 0.0216359	valid_0's auc: 1	valid_0's l1: 0.0953982
+[901]	valid_0's l2: 0.0216322	valid_0's auc: 1	valid_0's l1: 0.0953865
+[902]	valid_0's l2: 0.0216286	valid_0's auc: 1	valid_0's l1: 0.0953726
+[903]	valid_0's l2: 0.021625	valid_0's auc: 1	valid_0's l1: 0.0953611
+[904]	valid_0's l2: 0.021622	valid_0's auc: 1	valid_0's l1: 0.095351
+[905]	valid_0's l2: 0.0216204	valid_0's auc: 1	valid_0's l1: 0.0953431
+[906]	valid_0's l2: 0.0216174	valid_0's auc: 1	valid_0's l1: 0.0953332
+[907]	valid_0's l2: 0.0216141	valid_0's auc: 1	valid_0's l1: 0.0953195
+[908]	valid_0's l2: 0.0216103	valid_0's auc: 1	valid_0's l1: 0.0953033
+[909]	valid_0's l2: 0.0216082	valid_0's auc: 1	valid_0's l1: 0.0952955
+[910]	valid_0's l2: 0.0216061	valid_0's auc: 1	valid_0's l1: 0.0952889
+[911]	valid_0's l2: 0.0216058	valid_0's auc: 1	valid_0's l1: 0.0952842
+[912]	valid_0's l2: 0.0216037	valid_0's auc: 1	valid_0's l1: 0.0952856
+[913]	valid_0's l2: 0.0216012	valid_0's auc: 1	valid_0's l1: 0.0952732
+[914]	valid_0's l2: 0.0216009	valid_0's auc: 1	valid_0's l1: 0.0952746
+[915]	valid_0's l2: 0.0215993	valid_0's auc: 1	valid_0's l1: 0.0952651
+[916]	valid_0's l2: 0.021597	valid_0's auc: 1	valid_0's l1: 0.0952528
+[917]	valid_0's l2: 0.0215963	valid_0's auc: 1	valid_0's l1: 0.0952526
+[918]	valid_0's l2: 0.0215941	valid_0's auc: 1	valid_0's l1: 0.0952403
+[919]	valid_0's l2: 0.021593	valid_0's auc: 1	valid_0's l1: 0.0952397
+[920]	valid_0's l2: 0.0215911	valid_0's auc: 1	valid_0's l1: 0.0952237
+[921]	valid_0's l2: 0.0215922	valid_0's auc: 1	valid_0's l1: 0.0952161
+[922]	valid_0's l2: 0.0215924	valid_0's auc: 1	valid_0's l1: 0.0952078
+[923]	valid_0's l2: 0.0215947	valid_0's auc: 1	valid_0's l1: 0.0952031
+[924]	valid_0's l2: 0.0215955	valid_0's auc: 1	valid_0's l1: 0.0951948
+[925]	valid_0's l2: 0.0215939	valid_0's auc: 1	valid_0's l1: 0.0951858
+[926]	valid_0's l2: 0.0215937	valid_0's auc: 1	valid_0's l1: 0.0951802
+[927]	valid_0's l2: 0.0215958	valid_0's auc: 1	valid_0's l1: 0.0951758
+[928]	valid_0's l2: 0.0215931	valid_0's auc: 1	valid_0's l1: 0.0951683
+[929]	valid_0's l2: 0.0215937	valid_0's auc: 1	valid_0's l1: 0.095165
+[930]	valid_0's l2: 0.0215943	valid_0's auc: 1	valid_0's l1: 0.095169
+[931]	valid_0's l2: 0.0215862	valid_0's auc: 1	valid_0's l1: 0.0951457
+[932]	valid_0's l2: 0.0215834	valid_0's auc: 1	valid_0's l1: 0.095131
+[933]	valid_0's l2: 0.02158	valid_0's auc: 1	valid_0's l1: 0.0951186
+[934]	valid_0's l2: 0.0215747	valid_0's auc: 1	valid_0's l1: 0.0951052
+[935]	valid_0's l2: 0.021567	valid_0's auc: 1	valid_0's l1: 0.0950842
+[936]	valid_0's l2: 0.0215607	valid_0's auc: 1	valid_0's l1: 0.0950656
+[937]	valid_0's l2: 0.0215549	valid_0's auc: 1	valid_0's l1: 0.0950501
+[938]	valid_0's l2: 0.0215492	valid_0's auc: 1	valid_0's l1: 0.0950333
+[939]	valid_0's l2: 0.0215442	valid_0's auc: 1	valid_0's l1: 0.0950181
+[940]	valid_0's l2: 0.021538	valid_0's auc: 1	valid_0's l1: 0.0949997
+[941]	valid_0's l2: 0.0215329	valid_0's auc: 1	valid_0's l1: 0.0949882
+[942]	valid_0's l2: 0.0215296	valid_0's auc: 1	valid_0's l1: 0.0949695
+[943]	valid_0's l2: 0.0215246	valid_0's auc: 1	valid_0's l1: 0.094958
+[944]	valid_0's l2: 0.0215218	valid_0's auc: 1	valid_0's l1: 0.0949549
+[945]	valid_0's l2: 0.0215169	valid_0's auc: 1	valid_0's l1: 0.0949435
+[946]	valid_0's l2: 0.0215124	valid_0's auc: 1	valid_0's l1: 0.0949348
+[947]	valid_0's l2: 0.021508	valid_0's auc: 1	valid_0's l1: 0.0949246
+[948]	valid_0's l2: 0.021504	valid_0's auc: 1	valid_0's l1: 0.094918
+[949]	valid_0's l2: 0.0214996	valid_0's auc: 1	valid_0's l1: 0.0949079
+[950]	valid_0's l2: 0.0214969	valid_0's auc: 1	valid_0's l1: 0.0948961
+[951]	valid_0's l2: 0.0214896	valid_0's auc: 1	valid_0's l1: 0.0948728
+[952]	valid_0's l2: 0.0214833	valid_0's auc: 1	valid_0's l1: 0.0948522
+[953]	valid_0's l2: 0.0214762	valid_0's auc: 1	valid_0's l1: 0.0948291
+[954]	valid_0's l2: 0.0214693	valid_0's auc: 1	valid_0's l1: 0.0948044
+[955]	valid_0's l2: 0.021469	valid_0's auc: 1	valid_0's l1: 0.0948003
+[956]	valid_0's l2: 0.021462	valid_0's auc: 1	valid_0's l1: 0.0947774
+[957]	valid_0's l2: 0.0214615	valid_0's auc: 1	valid_0's l1: 0.0947748
+[958]	valid_0's l2: 0.0214549	valid_0's auc: 1	valid_0's l1: 0.0947515
+[959]	valid_0's l2: 0.0214553	valid_0's auc: 1	valid_0's l1: 0.0947529
+[960]	valid_0's l2: 0.0214544	valid_0's auc: 1	valid_0's l1: 0.0947481
+[961]	valid_0's l2: 0.0214478	valid_0's auc: 1	valid_0's l1: 0.0947334
+[962]	valid_0's l2: 0.0214413	valid_0's auc: 1	valid_0's l1: 0.0947188
+[963]	valid_0's l2: 0.0214348	valid_0's auc: 1	valid_0's l1: 0.0947043
+[964]	valid_0's l2: 0.0214305	valid_0's auc: 1	valid_0's l1: 0.094698
+[965]	valid_0's l2: 0.0214241	valid_0's auc: 1	valid_0's l1: 0.0946836
+[966]	valid_0's l2: 0.0214197	valid_0's auc: 1	valid_0's l1: 0.09468
+[967]	valid_0's l2: 0.0214164	valid_0's auc: 1	valid_0's l1: 0.0946764
+[968]	valid_0's l2: 0.0214101	valid_0's auc: 1	valid_0's l1: 0.0946622
+[969]	valid_0's l2: 0.0214039	valid_0's auc: 1	valid_0's l1: 0.094648
+[970]	valid_0's l2: 0.0213978	valid_0's auc: 1	valid_0's l1: 0.0946339
+[971]	valid_0's l2: 0.0213927	valid_0's auc: 1	valid_0's l1: 0.0946141
+[972]	valid_0's l2: 0.021387	valid_0's auc: 1	valid_0's l1: 0.094594
+[973]	valid_0's l2: 0.021382	valid_0's auc: 1	valid_0's l1: 0.0945744
+[974]	valid_0's l2: 0.0213781	valid_0's auc: 1	valid_0's l1: 0.0945629
+[975]	valid_0's l2: 0.0213727	valid_0's auc: 1	valid_0's l1: 0.0945424
+[976]	valid_0's l2: 0.0213678	valid_0's auc: 1	valid_0's l1: 0.09452
+[977]	valid_0's l2: 0.0213651	valid_0's auc: 1	valid_0's l1: 0.0945122
+[978]	valid_0's l2: 0.0213646	valid_0's auc: 1	valid_0's l1: 0.0945037
+[979]	valid_0's l2: 0.0213597	valid_0's auc: 1	valid_0's l1: 0.0944836
+[980]	valid_0's l2: 0.0213544	valid_0's auc: 1	valid_0's l1: 0.0944663
+[981]	valid_0's l2: 0.0213504	valid_0's auc: 1	valid_0's l1: 0.0944575
+[982]	valid_0's l2: 0.0213456	valid_0's auc: 1	valid_0's l1: 0.09444
+[983]	valid_0's l2: 0.0213383	valid_0's auc: 1	valid_0's l1: 0.09442
+[984]	valid_0's l2: 0.0213354	valid_0's auc: 1	valid_0's l1: 0.0944138
+[985]	valid_0's l2: 0.0213293	valid_0's auc: 1	valid_0's l1: 0.0943943
+[986]	valid_0's l2: 0.0213251	valid_0's auc: 1	valid_0's l1: 0.0943832
+[987]	valid_0's l2: 0.0213192	valid_0's auc: 1	valid_0's l1: 0.0943559
+[988]	valid_0's l2: 0.0213131	valid_0's auc: 1	valid_0's l1: 0.0943363
+[989]	valid_0's l2: 0.0213049	valid_0's auc: 1	valid_0's l1: 0.094306
+[990]	valid_0's l2: 0.0212989	valid_0's auc: 1	valid_0's l1: 0.0942866
+[991]	valid_0's l2: 0.0212984	valid_0's auc: 1	valid_0's l1: 0.0942869
+[992]	valid_0's l2: 0.021298	valid_0's auc: 1	valid_0's l1: 0.0942872
+[993]	valid_0's l2: 0.0212958	valid_0's auc: 1	valid_0's l1: 0.0942803
+[994]	valid_0's l2: 0.0212936	valid_0's auc: 1	valid_0's l1: 0.0942735
+[995]	valid_0's l2: 0.0212881	valid_0's auc: 1	valid_0's l1: 0.0942607
+[996]	valid_0's l2: 0.0212847	valid_0's auc: 1	valid_0's l1: 0.0942505
+[997]	valid_0's l2: 0.0212826	valid_0's auc: 1	valid_0's l1: 0.0942442
+[998]	valid_0's l2: 0.0212772	valid_0's auc: 1	valid_0's l1: 0.0942321
+[999]	valid_0's l2: 0.0212751	valid_0's auc: 1	valid_0's l1: 0.0942275
+[1000]	valid_0's l2: 0.0212723	valid_0's auc: 1	valid_0's l1: 0.0942257
+[1001]	valid_0's l2: 0.0212714	valid_0's auc: 1	valid_0's l1: 0.0942273
+Early stopping, best iteration is:
+[1]	valid_0's l2: 0.186477	valid_0's auc: 1	valid_0's l1: 0.333038
+
+
+
+
+
+LGBMRegressor(bagging_fraction=0.7, bagging_freq=10, boosting_type='gbdt',
+              class_weight=None, colsample_bytree=1.0, feature_fraction=0.9,
+              importance_type='split', learning_rate=0.005, max_bin=512,
+              max_depth=8, metric=['l2', 'auc'], min_child_samples=20,
+              min_child_weight=0.001, min_split_gain=0.0, n_estimators=1000,
+              n_jobs=-1, num_iterations=100000, num_leaves=128,
+              objective='regression', random_state=None, reg_alpha=0.0,
+              reg_lambda=0.0, silent=True, subsample=1.0,
+              subsample_for_bin=200000, subsample_freq=0, task='train',
+              verbose=0)
+</code></pre>
+<h3 id="6-모델-평가">(6) 모델 평가</h3>
+<ul>
+<li>모델을 평가한다. (RMSE)</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">y_pred <span style="color:#f92672">=</span> gbm<span style="color:#f92672">.</span>predict(X_train, num_iteration<span style="color:#f92672">=</span>gbm<span style="color:#f92672">.</span>best_iteration_)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;The rmse of prediction is:&#39;</span>, round(mean_squared_log_error(y_pred, y_train) <span style="color:#f92672">**</span> <span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">5</span>))
+</code></pre></div><pre><code>The rmse of prediction is: 0.02951
+</code></pre>
+<h3 id="7-결과-제출">(7) 결과 제출</h3>
+<ul>
+<li>이제 결과를 제출한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">test_pred <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>expm1(gbm<span style="color:#f92672">.</span>predict(df_test, num_iteration<span style="color:#f92672">=</span>gbm<span style="color:#f92672">.</span>best_iteration_))
+df_test[<span style="color:#e6db74">&#34;SalePrice&#34;</span>] <span style="color:#f92672">=</span> test_pred
+df_test<span style="color:#f92672">.</span>to_csv(<span style="color:#e6db74">&#34;results.csv&#34;</span>, columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;Id&#34;</span>, <span style="color:#e6db74">&#34;SalePrice&#34;</span>], index<span style="color:#f92672">=</span>False)
+</code></pre></div>
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="tag">머신러닝</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/python/" rel="tag">Python</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/machine-learning/" rel="tag">Machine Learning</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name"></span>
+	</div>
+	<div class="authorbox__description">
+		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.
+	</div>
+</div>
+
+
+<section class="comments">
+	<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-chloevan-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH…" value="" name="q" aria-label="SEARCH…">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://dschloe.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/settings/postgresql_install/">Postgre SQL Installation on MacOS M1</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/pandas/dictionary_replace/">Pandas 속도 비교 - with or without Dictionary</a></li>
+			<li class="widget__item"><a class="widget__link" href="/mlops/wandb/install/">[MLOps] Weight &amp; Biases 소개 및 사용 방법</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/pandas/loc_replace_2/">Pandas 속도 비교 - loc vs replace(2)</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/pandas/loc_replace/">Pandas 속도 비교 - loc vs replace</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/acea/">ACEA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/amazon-web-service/">Amazon Web Service</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/astype/">astype</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws/">AWS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">bar chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-data-transformation/">Basic Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basics/">Basics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-machine-learning/">BigQuery with Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-python/">BigQuery with Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blog/">Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bupar/">bupaR</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/categorical-features/">Categorical Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/class/">Class</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/cloud-build/">Cloud Build</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/colab/">Colab </a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conditional-statements/">Conditional Statements</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/corona-shiny-app/">Corona Shiny App</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dacon/">dacon</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-handling/">Data Handling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-science-project/">Data Science Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-structures/">Data Structures</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualization/">Data Visualization</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decorators/">Decorators</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deployment/">Deployment</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/design/">Design</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development/">Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development-settings/">Development Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dictionary/">Dictionary</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/discrete-features/">Discrete Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/docker/">Docker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/encoding/">Encoding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/feature-engineering/">Feature Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-i/o/">File I/O</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/function/">function</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ggplot2/">ggplot2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/git/">Git</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github/">Github</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/global-development/">Global Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-colab/">Google Colab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gradient-boosting-machine/">Gradient Boosting Machine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hexo/">Hexo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/histogram/">Histogram</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/installation/">Installation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/intermediate/">Intermediate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iteration/">iteration</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/jupyter-notebook/">Jupyter Notebook</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle/">Kaggle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle-api/">Kaggle API</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/konlp/">KoNLP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">line grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/linux/">Linux</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lollipop/">lollipop</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lstm/">LSTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/m1/">M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/macos-m1/">MacOS M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mask-r-cnn/">Mask R-CNN</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/merging-data/">Merging Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/missing-values/">Missing Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/neural-network/">Neural Network</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/new-packages/">New Packages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nonparametric/">Nonparametric</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/numeric-features/">Numeric Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/object-detection/">Object Detection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oce/">OCE</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/optimizer/">Optimizer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas-merge/">Pandas Merge</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pivot-table/">pivot table</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pls-sem/">PLS-SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/postgre-sql/">Postgre SQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/project/">Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/py-openaq/">py-openaq</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pydataset/">PyDataset</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-basic/">Python Basic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-project/">Python Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/">R 마크다운</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ranzcr/">Ranzcr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/recommendation/">Recommendation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regular-expression/">regular expression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rpa/">RPA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rtweet/">rtweet</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/seaborn/">Seaborn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow/">Tensorflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0/">Tensorflow 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0-tutorial/">Tensorflow 2.0 Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tutorial/">Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/">객체지향 프로그래밍</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/">구글 클라우드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/">구조방정식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/">국제개발</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/">기초통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/">논문통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/">데이터 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">데이터 시각화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">데이터 싸이언스 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/">막대 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">머신러닝 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B3%B4%EA%B3%A0%EC%84%9C-%EC%9E%90%EB%8F%99%ED%99%94/">보고서 자동화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/">빅쿼리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%82%B0%EC%A0%90%EB%8F%84/">산점도</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/">선 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/">시간 측정</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/">아마존 웹 서비스</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/">정규표현식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천 시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%BA%90%EA%B8%80/">캐글</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/">텍스트 마이닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/">텍스트 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/">텐서플로 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/">텐서플로 2.0 튜토리얼</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/">텐서플로우</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/">프로세스 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/">피벗 테이블</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/">환경설정</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/acea/" title="ACEA">ACEA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/amazon-web-service/" title="Amazon Web Service">Amazon Web Service</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/append/" title="append">append</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/astype/" title="astype">astype</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/auto-encoder/" title="Auto Encoder">Auto Encoder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85/" title="AWS 회원가입">AWS 회원가입</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="bar chart">bar chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-structures/" title="Basic Data Structures">Basic Data Structures</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-transformation/" title="Basic Data Transformation">Basic Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basics/" title="Basics">Basics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-machine-learning/" title="BigQuery with Machine Learning">BigQuery with Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery with Python">BigQuery with Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery with R">BigQuery with R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blog/" title="Blog">Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bupar/" title="bupaR">bupaR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/categorical-features/" title="Categorical Features">Categorical Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/class/" title="Class">Class</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cloud-build/" title="Cloud Build">Cloud Build</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/clustering/" title="Clustering">Clustering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/colab-with-kaggle/" title="Colab with Kaggle">Colab with Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-expressions/" title="Conditional Expressions">Conditional Expressions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-statements/" title="Conditional Statements">Conditional Statements</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cross-join/" title="Cross Join">Cross Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dashboard/" title="Dashboard">Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-handling/" title="Data Handling">Data Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-types/" title="Data Types">Data Types</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualization/" title="Data Visualization">Data Visualization</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dataframe/" title="DataFrame">DataFrame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decision-tree/" title="Decision Tree">Decision Tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decorators/" title="Decorators">Decorators</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deployment/" title="Deployment">Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/design/" title="Design">Design</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="Development">Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development-settings/" title="Development Settings">Development Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary/" title="Dictionary">Dictionary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/discrete-features/" title="Discrete Features">Discrete Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/disk.frame/" title="disk.frame">disk.frame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/docker/" title="Docker">Docker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="dplyr">dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/eda/" title="EDA">EDA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/emr/" title="EMR">EMR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/encoding/" title="Encoding">Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enumerate/" title="enumerate">enumerate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exploratory-data-analysis/" title="Exploratory Data Analysis">Exploratory Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/extend/" title="extend">extend</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/feature-engineering/" title="Feature Engineering">Feature Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-i/o/" title="File I/O">File I/O</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="filter">filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/for-loop/" title="for-loop">for-loop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geospatial-analysis/" title="Geospatial Analysis">Geospatial Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gghistostats/" title="gghistostats">gghistostats</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ggplot2/" title="ggplot2">ggplot2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/git/" title="Git">Git</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github/" title="Github">Github</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/global-development/" title="Global Development">Global Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="GRU 레이어">GRU 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="gt">gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gtsummary/" title="gtsummary">gtsummary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hadoop/" title="Hadoop">Hadoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heatmap/" title="Heatmap">Heatmap</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hexo/" title="Hexo">Hexo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/histogram/" title="Histogram">Histogram</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-segmentation/" title="Image Segmentation">Image Segmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-settings/" title="Image Settings">Image Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/insert/" title="insert">insert</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/installation/" title="Installation">Installation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/intermediate/" title="Intermediate">Intermediate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interview/" title="Interview">Interview</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iteration/" title="iteration">iteration</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="iterrows">iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/join/" title="JOIN">JOIN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle/" title="Kaggle">Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle-api/" title="Kaggle API">Kaggle API</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/konlp/" title="KoNLP">KoNLP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/label-encoding/" title="Label Encoding">Label Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lambda/" title="lambda">lambda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="leaflet">leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="line grpah">line grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linux/" title="Linux">Linux</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/list/" title="list">list</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="lists">lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists-and-tuples/" title="Lists and Tuples">Lists and Tuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lollipop/" title="lollipop">lollipop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m1/" title="M1">M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m5-forecasting/" title="M5 Forecasting">M5 Forecasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/macos-m1/" title="MacOS M1">MacOS M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mask-r-cnn/" title="Mask R-CNN">Mask R-CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathematical-functions/" title="Mathematical Functions">Mathematical Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-%EC%84%A4%EC%A0%95/" title="Mathjax 설정">Mathjax 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiprocessing/" title="multiprocessing">multiprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/neural-network/" title="Neural Network">Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/new-packages/" title="New Packages">New Packages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nonparametric/" title="Nonparametric">Nonparametric</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numeric-features/" title="Numeric Features">Numeric Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numpy/" title="NumPy">NumPy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/object-detection/" title="Object Detection">Object Detection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oce/" title="OCE">OCE</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/one-hot-encoding/" title="One-Hot Encoding">One-Hot Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outer-join/" title="Outer Join">Outer Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outliers/" title="Outliers">Outliers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-merge/" title="Pandas Merge">Pandas Merge</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pd.concat/" title="pd.concat">pd.concat</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pins/" title="pins">pins</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pivot-table/" title="pivot table">pivot table</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="plotly">plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pls-sem/" title="PLS-SEM">PLS-SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/polar-chart/" title="Polar Chart">Polar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/postgre-sql/" title="Postgre SQL">Postgre SQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/probability/" title="Probability">Probability</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/productive-box/" title="productive-box">productive-box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/py-openaq/" title="py-openaq">py-openaq</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pycaret/" title="PyCaret">PyCaret</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pydataset/" title="PyDataset">PyDataset</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-basic/" title="Python Basic">Python Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-excel/" title="Python Excel">Python Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-numpy-broadcasting/" title="Python NumPy Broadcasting">Python NumPy Broadcasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-project/" title="Python Project">Python Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="Python 포트폴리오">Python 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-basic/" title="R Basic">R Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EA%B8%B0%EC%B4%88%EB%AC%B8/" title="R 기초문">R 기초문</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="R 포트폴리오">R 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ranzcr/" title="Ranzcr">Ranzcr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recommendation/" title="Recommendation">Recommendation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regular-expression/" title="regular expression">regular expression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rpa/" title="RPA">RPA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rstudio/" title="RStudio">RStudio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rtweet/" title="rtweet">rtweet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/seaborn/" title="Seaborn">Seaborn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-app-%EB%B0%B0%ED%8F%AC/" title="Shiny App 배포">Shiny App 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="shinydashboard">shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="sort_values">sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/super-resolution/" title="Super Resolution">Super Resolution</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/swifter/" title="swifter">swifter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow/" title="Tensorflow">Tensorflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0/" title="Tensorflow 2.0">Tensorflow 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0-tutorial/" title="Tensorflow 2.0 Tutorial">Tensorflow 2.0 Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text/" title="Text">Text</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tutorial/" title="Tutorial">Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/types-of-functions/" title="Types of Functions">Types of Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="vcrs">vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/" title="객체지향 프로그래밍">객체지향 프로그래밍</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B2%BD%EC%A7%84%EB%8C%80%ED%9A%8C/" title="경진대회">경진대회</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/" title="구조방정식">구조방정식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/" title="국제개발">국제개발</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%8D%EC%A0%95-%EB%B6%80%EC%A0%95-%EA%B0%90%EC%84%B1%EB%B6%84%EC%84%9D/" title="긍정, 부정 감성분석">긍정, 부정 감성분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C/" title="깃허브">깃허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="깃허브 환경설정">깃허브 환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/" title="논문통계">논문통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="데이터 싸이언스 프로젝트">데이터 싸이언스 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="데이터 전처리">데이터 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%94%A5%EB%9F%AC%EB%8B%9D/" title="딥러닝">딥러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/" title="막대 그래프">막대 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" title="머신러닝">머신러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="머신러닝 프로젝트">머신러닝 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%AA%A8%EB%8D%B8%EB%A7%81-%EC%8B%9C%EA%B0%81%ED%99%94/" title="모델링 시각화">모델링 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B0%98%EC%98%81%EC%A0%81-%EC%A7%80%ED%91%9C/" title="반영적 지표">반영적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B3%B4%EC%8A%A4%ED%84%B4-%EC%A3%BC%ED%83%9D-%EA%B0%80%EA%B2%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%B8%ED%8A%B8/" title="보스턴 주택 가격 데이터세트">보스턴 주택 가격 데이터세트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B6%84%EB%A5%98/" title="분류">분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" title="빅쿼리">빅쿼리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-r/" title="빅쿼리 R">빅쿼리 R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%EA%B8%B0%EB%B3%B8/" title="빅쿼리 기본">빅쿼리 기본</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%ED%8C%8C%EC%9D%B4%EC%8D%AC/" title="빅쿼리 파이썬">빅쿼리 파이썬</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%B0%EC%A0%90%EB%8F%84/" title="산점도">산점도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%BC%EC%84%B1%EC%B9%B4%EB%93%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EA%B3%B5%EB%AA%A8%EC%A0%84/" title="삼성카드 데이터분석 공모전">삼성카드 데이터분석 공모전</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%83%A4%EC%9D%B4%EB%8B%88-%EC%95%B1-%EB%B0%B0%ED%8F%AC/" title="샤이니 앱 배포">샤이니 앱 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" title="선 그래프">선 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/" title="선형회귀">선형회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%88%9C%ED%99%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="순환 신경망">순환 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" title="시각화 문법">시각화 문법</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/" title="시간 측정">시간 측정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" title="시그노이드">시그노이드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%A0%EA%B2%BD-%EC%8A%A4%ED%83%80%EC%9D%BC-%EC%A0%84%EC%9D%B4/" title="신경 스타일 전이">신경 스타일 전이</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/" title="아마존 웹 서비스">아마존 웹 서비스</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%98%A4%ED%86%A0%EC%9D%B8%EC%BD%94%EB%8D%94/" title="오토인코더">오토인코더</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B6%84%ED%95%A0/" title="이미지 분할">이미지 분할</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%84%A4%EC%A0%95/" title="이미지 설정">이미지 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" title="이항분류">이항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%84%EB%B2%A0%EB%94%A9-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="임베딩 레이어">임베딩 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%83%9D%EC%84%B1/" title="자연어 생성">자연어 생성</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/" title="전이 학습">전이 학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/" title="정규표현식">정규표현식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/" title="지도학습">지도학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B4%88%ED%95%B4%EC%83%81%EB%8F%84/" title="초해상도">초해상도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천 시스템">추천 시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천시스템">추천시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B8%A1%EC%A0%95%EC%B2%99%EB%8F%84/" title="측정척도">측정척도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BA%90%EA%B8%80/" title="캐글">캐글</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BB%A8%EB%B3%BC%EB%A3%A8%EC%85%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="컨볼루션 신경망">컨볼루션 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="코로나 대시보드">코로나 대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%8B%A4%EB%A3%A8%EA%B8%B0/" title="테이블 다루기">테이블 다루기</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="텍스트 마이닝">텍스트 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="텍스트 전처리">텍스트 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" title="텐서플로 2.0">텐서플로 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" title="텐서플로 2.0 튜토리얼">텐서플로 2.0 튜토리얼</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-%ED%97%88%EB%B8%8C/" title="텐서플로 허브">텐서플로 허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/" title="텐서플로우">텐서플로우</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%97%91%EC%85%80/" title="판다스 엑셀">판다스 엑셀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" title="판다스 자료구조">판다스 자료구조</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="포트폴리오">포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="프로세스 마이닝">프로세스 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/" title="프로세스 분석">프로세스 분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/" title="피벗 테이블">피벗 테이블</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80-%ED%8F%B0%ED%8A%B8-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0/" title="한글 폰트 오류 해결">한글 폰트 오류 해결</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%98%95%EC%84%B1%EC%A0%81-%EC%A7%80%ED%91%9C/" title="형성적 지표">형성적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="환경설정">환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9A%8C%EA%B7%80%EB%AA%A8%ED%98%95/" title="회귀모형">회귀모형</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9C%B4%EA%B3%A0/" title="휴고">휴고</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9E%88%EC%8A%A4%ED%86%A0%EA%B7%B8%EB%9E%A8/" title="히스토그램">히스토그램</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2021 DSChloe.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>

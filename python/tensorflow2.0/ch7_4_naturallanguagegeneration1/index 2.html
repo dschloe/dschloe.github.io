@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Tensorflow 2.0 Tutorial ch7.4 - (1) 단어 단위 생성 - Data Science | DSChloe</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+		<meta property="og:title" content="Tensorflow 2.0 Tutorial ch7.4 - (1) 단어 단위 생성" />
+<meta property="og:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+ Google Colab Tensorflow 2." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dschloe.github.io/python/tensorflow2.0/ch7_4_naturallanguagegeneration1/" />
+<meta property="article:published_time" content="2020-04-27T10:20:30+09:00" />
+<meta property="article:modified_time" content="2020-04-27T10:20:30+09:00" />
+
+		<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Tensorflow 2.0 Tutorial ch7.4 - (1) 단어 단위 생성"/>
+<meta name="twitter:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+ Google Colab Tensorflow 2."/>
+
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo">
+		<a class="logo__link" href="/" title="Data Science | DSChloe" rel="home">
+			<div class="logo__item logo__text">
+					<div class="logo__title">Data Science | DSChloe</div>
+					<div class="logo__tagline">Love your beloved one forever</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/aws/">
+				
+				<span class="menu__text">AWS</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/ds-projects/">
+				
+				<span class="menu__text">DS-Projects</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/gcp/">
+				
+				<span class="menu__text">GCP</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/kaggle/">
+				
+				<span class="menu__text">Kaggle</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/mlops/">
+				
+				<span class="menu__text">MLOps</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/python/">
+				
+				<span class="menu__text">Python</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/r/">
+				
+				<span class="menu__text">R</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/settings/">
+				
+				<span class="menu__text">settings</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About DSChloe</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">Tensorflow 2.0 Tutorial ch7.4 - (1) 단어 단위 생성</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-27T10:20:30&#43;09:00">2020-04-27</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#공지">공지</a></li>
+    <li><a href="#tutorial">Tutorial</a></li>
+    <li><a href="#i-개요">I. 개요</a></li>
+    <li><a href="#ii-단어-단위-생성">II. 단어 단위 생성</a>
+      <ul>
+        <li><a href="#1-데이터-로드">(1) 데이터 로드</a></li>
+        <li><a href="#2-데이터-문자열-전처리">(2) 데이터 문자열 전처리</a></li>
+        <li><a href="#3-데이터셋-생성">(3) 데이터셋 생성</a></li>
+        <li><a href="#4-shuffle-batch-설정">(4) Shuffle, Batch 설정</a></li>
+        <li><a href="#5-생성-모델-정의">(5) 생성 모델 정의</a></li>
+        <li><a href="#6-임의의-문장을-사용한-단어-생성-확인">(6) 임의의 문장을 사용한 단어 생성 확인</a></li>
+      </ul>
+    </li>
+    <li><a href="#iii-연습-파일">III. 연습 파일</a></li>
+    <li><a href="#iv-reference">IV. Reference</a></li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="공지">공지</h2>
+<ul>
+<li>
+<p>본 Tutorial은 교재 <code>시작하세요 텐서플로 2.0 프로그래밍</code>의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.</p>
+</li>
+<li>
+<p>강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.</p>
+</li>
+</ul>
+<p><img src="/img/tensorflow2.0/book.jpg" alt=""><!-- raw HTML omitted --></p>
+<ul>
+<li>본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.</li>
+</ul>
+<h2 id="tutorial">Tutorial</h2>
+<p>이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.</p>
+<ul>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/googlecolab/">Google Colab Tensorflow 2.0 Installation</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch3_3_1_random_signoid/">Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch3_3_2_random_signoid_bias/">Tensorflow 2.0 Tutorial ch3.3.2 - 난수 생성 및 시그모이드 함수 편향성</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch3_3_3_network_and/">Tensorflow 2.0 Tutorial ch3.3.3 - 첫번째 신경망 네트워크 - AND</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch3_3_4_network_or/">Tensorflow 2.0 Tutorial ch3.3.4 - 두번째 신경망 네트워크 - OR</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch3_3_5_network_xor/">Tensorflow 2.0 Tutorial ch3.3.5 - 세번째 신경망 네트워크 - XOR</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch4_1_linear_regression/">Tensorflow 2.0 Tutorial ch4.1 - 선형회귀</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch4_2_multiple_linear_regression/">Tensorflow 2.0 Tutorial ch4.2 - 다항회귀</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch4_3_regression_with_deeplearning/">Tensorflow 2.0 Tutorial ch4.3 - 딥러닝 네트워크를 이용한 회귀</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch4_4_boston_housing_deeplearning/">Tensorflow 2.0 Tutorial ch4.4 - 보스턴 주택 가격 데이터세트</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch5_1_binary_classification/">Tensorflow 2.0 Tutorial ch5.1 - 분류</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch5_2_multi_classification/">Tensorflow 2.0 Tutorial ch5.2 - 다항분류</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch5_3_fashion_mnist/">Tensorflow 2.0 Tutorial ch5.3 - Fashion MNIST</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch6_1_2_cnn_theory/">Tensorflow 2.0 Tutorial ch6.1-2 - CNN 이론</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch6_3_fashion_mnist_with_cnn/">Tensorflow 2.0 Tutorial ch6.3 - Fashion MNIST with CNN 실습</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch6_4_improve_performance/">Tensorflow 2.0 Tutorial ch6.4 - 모형의 성능 높이기</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch7_1_2_rnn_theory1/">Tensorflow 2.0 Tutorial ch7.1 - RNN 이론 (1)</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch7_1_2_rnn_theory2/">Tensorflow 2.0 Tutorial ch7.1 - RNN 이론 (2)</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch7_3_sentimentanalysis/">Tensorflow 2.0 Tutorial ch7.3 - 긍정, 부정 감성 분석</a></li>
+</ul>
+<h2 id="i-개요">I. 개요</h2>
+<p>테슬라 <code>AI Director</code>인 안드레아 카르파티(<code>Andrej Karpathy</code>)는 <code>The Unreasonable Effectiveness of Recurrent Neural Networks</code>라는 글을 개인 블로그에 작성했는데, 짧게 요약하면 문자 단위의 순환 신경망이 셰익스피어의 희곡, 소스코드, <code>Latex</code>등을 재생산하는데 순환 신경망이 효과적이라는 것을 보여줍니다.</p>
+<p>이를 바탕으로, 한글 원본 텍스트를 자소 단위와 단어 단위로 나눠서 순환 신경망으로 생성해보도록 합니다.</p>
+<h2 id="ii-단어-단위-생성">II. 단어 단위 생성</h2>
+<p>이번에 작업할 원본 텍스트는 국사편찬위원회에서 제공하는 조선왕조실록 국문 번역본입니다. 먼저 <a href="https://raw.githubusercontent.com/greentec/greentec.github.io/master/public/other/data/chosundynasty/corpus.txt">데이터</a>를 다운로드 합니다.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<p>이제 본격적으로 소스코드를 작성하도록 합니다.</p>
+<h3 id="1-데이터-로드">(1) 데이터 로드</h3>
+<p>데이터 파일은 약 62MB 정도입니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
+<span style="color:#66d9ef">try</span>:
+    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
+    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
+<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+    <span style="color:#66d9ef">pass</span>
+<span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
+<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">path_to_train_file <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;input.txt&#39;</span>, <span style="color:#e6db74">&#39;https://raw.githubusercontent.com/greentec/greentec.github.io/master/public/other/data/chosundynasty/corpus.txt&#39;</span>)
+</code></pre></div><pre><code>Downloading data from https://raw.githubusercontent.com/greentec/greentec.github.io/master/public/other/data/chosundynasty/corpus.txt
+62013440/62012502 [==============================] - 1s 0us/step
+</code></pre>
+<p>데이터를 메모리에 불러옵니다. 인코딩 형식으로 <code>utf-8</code>을 지정한 뒤 텍스트가 총 몇 자인지 확인해봅니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_text <span style="color:#f92672">=</span> open(path_to_train_file, <span style="color:#e6db74">&#39;rb&#39;</span>)<span style="color:#f92672">.</span>read()<span style="color:#f92672">.</span>decode(encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;utf-8&#39;</span>)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Length of text: {} characters&#39;</span><span style="color:#f92672">.</span>format(len(train_text)))
+</code></pre></div><pre><code>Length of text: 26265493 characters
+</code></pre>
+<p>처음 100자를 확인한 후, 실제 <a href="https://raw.githubusercontent.com/greentec/greentec.github.io/master/public/other/data/chosundynasty/corpus.txt">데이터</a>와 일치하는지 확인해봅니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(train_text[:<span style="color:#ae81ff">100</span>])
+</code></pre></div><pre><code>﻿태조 이성계 선대의 가계. 목조 이안사가 전주에서 삼척·의주를 거쳐 알동에 정착하다 
+태조 강헌 지인 계운 성문 신무 대왕(太祖康獻至仁啓運聖文神武大王)의 성은 이씨(李氏)요, 휘
+</code></pre>
+<p>일치하는지 확인이 완료되었다면, 다음 소스코드를 진행하면 됩니다. 다운로드 시, 링크가 달라졌다면, 꼭 댓글을 남겨주시기를 바랍니다.</p>
+<h3 id="2-데이터-문자열-전처리">(2) 데이터 문자열 전처리</h3>
+<p>한자가 많은 부분을 차지하는데, 여기에서는 단어 기반의 생성을 위해 한자와 한자가 들어간 괄호는 생략합니다. 이전 포스트에 비슷하지만, 조금 다릅니다. 특히 영문 관련 처리는 모두 삭제했습니다. 또한, 한자와 함께 들어가 있는 괄호도 같이 삭제합니다. 또한, 개행 문자('\n')의 보존을 위해 텍스트를 먼저 개행 문자로 나눈 뒤에 다시 합칠 때 개행 문자를 추가합니다. 꼭 주의해서 사용자 정의 함수 <code>def</code>를 작성하시기를 바랍니다. 이렇게 정제 과정을 거치면 한자어와 괄호는 보이지 않을 것입니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> re
+<span style="color:#75715e"># From https://github.com/yoonkim/CNN_sentence/blob/master/process_data.py</span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">clean_str</span>(string):    
+    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;[^가-힣A-Za-z0-9(),!?\&#39;\`]&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>, string)
+    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;ll&#34;</span>, <span style="color:#e6db74">&#34; </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">ll&#34;</span>, string)
+    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;,&#34;</span>, <span style="color:#e6db74">&#34; , &#34;</span>, string)
+    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;!&#34;</span>, <span style="color:#e6db74">&#34; ! &#34;</span>, string)
+    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\(&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, string)
+    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\)&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, string)
+    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\?&#34;</span>, <span style="color:#e6db74">&#34; \? &#34;</span>, string)
+    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\s{2,}&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>, string)
+    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;{2,}&#34;</span>, <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#34;</span>, string)
+    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, string)
+
+    <span style="color:#66d9ef">return</span> string
+
+
+train_text <span style="color:#f92672">=</span> train_text<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)
+train_text <span style="color:#f92672">=</span> [clean_str(sentence) <span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> train_text]
+train_text_X <span style="color:#f92672">=</span> []
+<span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> train_text:
+    train_text_X<span style="color:#f92672">.</span>extend(sentence<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>))
+    train_text_X<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)
+    
+train_text_X <span style="color:#f92672">=</span> [word <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> train_text_X <span style="color:#66d9ef">if</span> word <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;&#39;</span>]
+
+<span style="color:#66d9ef">print</span>(train_text_X[:<span style="color:#ae81ff">20</span>])
+</code></pre></div><pre><code>['태조', '이성계', '선대의', '가계', '목조', '이안사가', '전주에서', '삼척', '의주를', '거쳐', '알동에', '정착하다', '\n', '태조', '강헌', '지인', '계운', '성문', '신무', '대왕']
+</code></pre>
+<p>결과가 잘 나온 것을 확인할 수 있습니다. 이제 단어를 토큰화합니다. 이 때, <code>Tokenizer</code>를 쓰지 않고, 직접 토큰화합니다. 단어의 수가 너무 많고, 모든 단어를 사용할 것이기 때문에, 단어의 빈도 수로 단어를 정렬하는 <code>Tokenizer</code>를 쓰면 불필요하게 많은 계산 시간을 쓰게 된다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">vocab <span style="color:#f92672">=</span> sorted(set(train_text_X))
+vocab<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;UNK&#39;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#39;{} unique words&#39;</span><span style="color:#f92672">.</span>format(len(vocab)))
+
+<span style="color:#75715e"># vocab list를 숫자로 맵핑하고, 반대도 실행합니다.</span>
+word2idx <span style="color:#f92672">=</span> {u:i <span style="color:#66d9ef">for</span> i, u <span style="color:#f92672">in</span> enumerate(vocab)}
+idx2word <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(vocab)
+
+text_as_int <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([word2idx[c] <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> train_text_X])
+
+<span style="color:#75715e"># word2idx 의 일부를 알아보기 쉽게 print 해봅니다.</span>
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;{&#39;</span>)
+<span style="color:#66d9ef">for</span> word,_ <span style="color:#f92672">in</span> zip(word2idx, range(<span style="color:#ae81ff">10</span>)):
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;  {:4s}: {:3d},&#39;</span><span style="color:#f92672">.</span>format(repr(word), word2idx[word]))
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;  ...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">}&#39;</span>)
+
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;index of UNK: {}&#39;</span><span style="color:#f92672">.</span>format(word2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>]))
+</code></pre></div><pre><code>332640 unique words
+{
+  '\n':   0,
+  '!' :   1,
+  ',' :   2,
+  '000명으로':   3,
+  '001':   4,
+  '002':   5,
+  '003':   6,
+  '004':   7,
+  '005':   8,
+  '006':   9,
+  ...
+}
+index of UNK: 332639
+</code></pre>
+<p>2번째 줄에서 텍스트에 들어간 각 단어가 중복되지 않는 리스트를 만든 다음에, 3번째 줄에서는 텍스트에 존재하지 않는 토큰을 <code>UNK</code>를 넣습니다. 총 단어 수는 332,640이고, 이 중 <code>UNK</code>의 인덱스는 332,639입니다. 이 인덱스는 나중에 임의의 문장을 입력할 때 텍스트에 미리 준비돼 있지 않았던 단어를 쓸 수 있기 때문에 그에 대한 토큰으로 쓰일 것입니다.</p>
+<p>토큰화가 잘 되었는지 확인하기 위해 처음 20개의 단어에 대한 토큰을 출력합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(train_text_X[:<span style="color:#ae81ff">20</span>])
+<span style="color:#66d9ef">print</span>(text_as_int[:<span style="color:#ae81ff">20</span>])
+</code></pre></div><pre><code>['태조', '이성계', '선대의', '가계', '목조', '이안사가', '전주에서', '삼척', '의주를', '거쳐', '알동에', '정착하다', '\n', '태조', '강헌', '지인', '계운', '성문', '신무', '대왕']
+[299305 229634 161443  17430 111029 230292 251081 155087 225462  29027
+ 190295 256129      0 299305  25624 273553  36147 163996 180466  84413]
+</code></pre>
+<p><code>태조</code>는 299,305로 <code>이성계</code>는 229,634로, 개행 문자는 0으로 토큰 변환이 된 것을 확인할 수 있습니다. 이제 학습을 위한 데이터세트를 만듭니다.</p>
+<h3 id="3-데이터셋-생성">(3) 데이터셋 생성</h3>
+<p>이 때, 기존과는 다르게, <code>train_X</code>, <code>train_Y</code>를 넘파이 <code>array</code>로 만드는 방식이 아닌 <code>tf.data.Dataset</code>를 이용해봅니다. <code>Dataset</code>의 장점은 간단한 코드로 데이터 섞기, 배치(<code>batch</code>)수만큼 자르기, 다른 <code>Dataset</code>에 매핑하기 등을 빠르게 수행할 수 있습니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">seq_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">25</span>
+examples_per_epoch <span style="color:#f92672">=</span> len(text_as_int) <span style="color:#f92672">//</span> seq_length
+sentence_dataset <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>Dataset<span style="color:#f92672">.</span>from_tensor_slices(text_as_int)
+
+sentence_dataset <span style="color:#f92672">=</span> sentence_dataset<span style="color:#f92672">.</span>batch(seq_length<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, drop_remainder<span style="color:#f92672">=</span>True)
+<span style="color:#66d9ef">for</span> item <span style="color:#f92672">in</span> sentence_dataset<span style="color:#f92672">.</span>take(<span style="color:#ae81ff">1</span>):
+    <span style="color:#66d9ef">print</span>(idx2word[item<span style="color:#f92672">.</span>numpy()])
+    <span style="color:#66d9ef">print</span>(item<span style="color:#f92672">.</span>numpy())
+</code></pre></div><pre><code>['태조' '이성계' '선대의' '가계' '목조' '이안사가' '전주에서' '삼척' '의주를' '거쳐' '알동에' '정착하다'
+ '\n' '태조' '강헌' '지인' '계운' '성문' '신무' '대왕' '의' '성은' '이씨' '요' ',' '휘']
+[299305 229634 161443  17430 111029 230292 251081 155087 225462  29027
+ 190295 256129      0 299305  25624 273553  36147 163996 180466  84413
+ 224182 164549 230248 210912      2 330313]
+</code></pre>
+<p>여기서는 <code>seq_length</code>를 25로 설정해서 25개의 단어가 주어졌을 때, 다음 단어를 예측하도록 데이터를 만듭니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">sentence_dataset <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>Dataset<span style="color:#f92672">.</span>from_tensor_slices(text_as_int)
+</code></pre></div><p><code>Dataset</code>를 생성하는 코드는 위와 같이 한 줄로 간단합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">sentence_dataset <span style="color:#f92672">=</span> sentence_dataset<span style="color:#f92672">.</span>batch(seq_length<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, drop_remainder<span style="color:#f92672">=</span>True)
+</code></pre></div><ul>
+<li><code>Dataset</code>에 쓰이는 <code>batch()</code>함수는 <code>Dataset</code>에서 한번에 반환하는 데이터의 숫자를 지정합니다.</li>
+<li>여기에서는 <code>seq_length_1</code>을 지정했는데, 처음의 25개 단어와 그 뒤에 오는 정답이 될 1단어를 합쳐서 함께 반환하기 위해서입니다.</li>
+<li><code>drop_remainder=True</code>옵션으로 남는 부분은 버리도록 합니다. 그러면 출력해서 의도한대로 26단어가 반환되는 것을 확인할 수 있습니다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">split_input_target</span>(chunk):
+    <span style="color:#66d9ef">return</span> [chunk[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], chunk[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]]
+
+train_dataset <span style="color:#f92672">=</span> sentence_dataset<span style="color:#f92672">.</span>map(split_input_target)
+<span style="color:#66d9ef">for</span> x,y <span style="color:#f92672">in</span> train_dataset<span style="color:#f92672">.</span>take(<span style="color:#ae81ff">1</span>):
+    <span style="color:#66d9ef">print</span>(idx2word[x<span style="color:#f92672">.</span>numpy()])
+    <span style="color:#66d9ef">print</span>(x<span style="color:#f92672">.</span>numpy())
+    <span style="color:#66d9ef">print</span>(idx2word[y<span style="color:#f92672">.</span>numpy()])
+    <span style="color:#66d9ef">print</span>(y<span style="color:#f92672">.</span>numpy())
+</code></pre></div><pre><code>['태조' '이성계' '선대의' '가계' '목조' '이안사가' '전주에서' '삼척' '의주를' '거쳐' '알동에' '정착하다'
+ '\n' '태조' '강헌' '지인' '계운' '성문' '신무' '대왕' '의' '성은' '이씨' '요' ',']
+[299305 229634 161443  17430 111029 230292 251081 155087 225462  29027
+ 190295 256129      0 299305  25624 273553  36147 163996 180466  84413
+ 224182 164549 230248 210912      2]
+휘
+330313
+</code></pre>
+<p>위 코드의 목적은 기존 <code>Dataset</code>으로 새로운 <code>Dataset</code>으로 만드는 과정입니다.</p>
+<ul>
+<li>26개의 단어가 각각 입력과 정답으로 묶어서([25단어], 1단어) 형태의 데이터를 반환하게 만드는 <code>Dataset</code>을 만드는 것입니다.</li>
+<li>먼저, 26개의 단어를 25단어, 1단어로 잘라주는 함수를 <code>split_input_target(chunk)</code>로 정의한 다음 이 함수를 기존 <code>sentence_dataset</code>에 <code>map()</code>함수(참조: 텐서플로 <a href="http://bit.ly/2GZTyW1">map 함수</a>)를 이용해 새로운 데이터세트인 <code>train_dataset</code>를 만듭니다.</li>
+</ul>
+<h3 id="4-shuffle-batch-설정">(4) Shuffle, Batch 설정</h3>
+<p><code>Dataset</code>의 데이터를 섞고, <code>batch_size</code>를 다시 설정합니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">BATCH_SIZE <span style="color:#f92672">=</span> <span style="color:#ae81ff">512</span>
+steps_per_epoch <span style="color:#f92672">=</span> examples_per_epoch <span style="color:#f92672">//</span> BATCH_SIZE
+BUFFER_SIZE <span style="color:#f92672">=</span> <span style="color:#ae81ff">10000</span>
+
+train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>shuffle(BUFFER_SIZE)<span style="color:#f92672">.</span>batch(BATCH_SIZE, drop_remainder<span style="color:#f92672">=</span>True)
+</code></pre></div><p>주의: 이 부분은 교재와 조금 상이합니다! 따라서, 위 코드로 구현 바랍니다.</p>
+<p>빠른 학습을 위해 한번에 512개의 데이터를 학습하게 하고, 데이터를 섞을 때의 <code>BUFFER_SIZE</code>는 10,000으로 설정합니다. <code>tf.data</code>는 이론적으로 무한한 데이터에 대해 대응 가능하기 때문에 한번에 모든 데이터를 섞지 않습니다. 따라서, 버퍼에 일정한 양의 데이터를 올려놓고 섞는데, 그 사이즈를 <code>10,000</code>으로 설정한 것입니다.</p>
+<h3 id="5-생성-모델-정의">(5) 생성 모델 정의</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">total_words <span style="color:#f92672">=</span> len(vocab)
+model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Embedding(total_words, <span style="color:#ae81ff">100</span>, input_length<span style="color:#f92672">=</span>seq_length),
+    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>LSTM(units<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, return_sequences<span style="color:#f92672">=</span>True),
+    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dropout(<span style="color:#ae81ff">0.2</span>),
+    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>LSTM(units<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>),
+    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(total_words, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;softmax&#39;</span>)
+])
+
+model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sparse_categorical_crossentropy&#39;</span>, metrics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;accuracy&#39;</span>])
+model<span style="color:#f92672">.</span>summary()
+</code></pre></div><pre><code>Model: &quot;sequential&quot;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+embedding (Embedding)        (None, 25, 100)           33264000  
+_________________________________________________________________
+lstm (LSTM)                  (None, 25, 100)           80400     
+_________________________________________________________________
+dropout (Dropout)            (None, 25, 100)           0         
+_________________________________________________________________
+lstm_1 (LSTM)                (None, 100)               80400     
+_________________________________________________________________
+dense (Dense)                (None, 332640)            33596640  
+=================================================================
+Total params: 67,021,440
+Trainable params: 67,021,440
+Non-trainable params: 0
+_________________________________________________________________
+</code></pre>
+<p>위 소스코드를 통해서 얻고자 하는 결과물은 주어진 입력에 대해 332,640개의 단어 중 어떤 단어를 선택해야 하는지 고르게 하는 기능을 하게 만듭니다.</p>
+<p>이제 학습을 시킵니다. 그런데, 이번에 학습시키는 방법은 기존과 조금 다르니 주의깊게 소스코드를 확인하시기를 바랍니다.</p>
+<p>또한, 학습시간이 GPU로 할당해도 매우 길기 때문에, 모형 학습 시간 계획을 잘 세우기를 바랍니다. (참고: 안 에포크당 10분 정도 소요됨)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> tensorflow.keras.preprocessing.sequence <span style="color:#f92672">import</span> pad_sequences
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">testmodel</span>(epoch, logs):
+    <span style="color:#66d9ef">if</span> epoch <span style="color:#f92672">%</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> epoch <span style="color:#f92672">!=</span> <span style="color:#ae81ff">49</span>:
+        <span style="color:#66d9ef">return</span>
+    test_sentence <span style="color:#f92672">=</span> train_text[<span style="color:#ae81ff">0</span>]
+
+    next_words <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+    <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(next_words):
+        test_text_X <span style="color:#f92672">=</span> test_sentence<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>)[<span style="color:#f92672">-</span>seq_length:]
+        test_text_X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([word2idx[c] <span style="color:#66d9ef">if</span> c <span style="color:#f92672">in</span> word2idx <span style="color:#66d9ef">else</span> word2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>] <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> test_text_X])
+        test_text_X <span style="color:#f92672">=</span> pad_sequences([test_text_X], maxlen<span style="color:#f92672">=</span>seq_length, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pre&#39;</span>, value<span style="color:#f92672">=</span>word2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>])
+
+        output_idx <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict_classes(test_text_X)
+        test_sentence <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">+</span> idx2word[output_idx[<span style="color:#ae81ff">0</span>]]
+    
+    <span style="color:#66d9ef">print</span>()
+    <span style="color:#66d9ef">print</span>(test_sentence)
+    <span style="color:#66d9ef">print</span>()
+
+testmodelcb <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>callbacks<span style="color:#f92672">.</span>LambdaCallback(on_epoch_end<span style="color:#f92672">=</span>testmodel)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">history <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>fit(train_dataset<span style="color:#f92672">.</span>repeat(), epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, steps_per_epoch<span style="color:#f92672">=</span>steps_per_epoch, callbacks<span style="color:#f92672">=</span>[testmodelcb], verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</code></pre></div><p>Epoch 1/50</p>
+<p>태조 이성계 선대의 가계 목조 이안사가 전주에서 삼척 의주를 거쳐 알동에 정착하다  , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,</p>
+<p>533/533 - 255s - loss: 9.3702 - accuracy: 0.0723
+Epoch 2/50
+533/533 - 249s - loss: 8.3646 - accuracy: 0.0741
+Epoch 3/50
+533/533 - 249s - loss: 8.0768 - accuracy: 0.0816
+Epoch 4/50
+533/533 - 249s - loss: 7.8147 - accuracy: 0.0911
+Epoch 5/50
+533/533 - 249s - loss: 7.5722 - accuracy: 0.1025
+Epoch 6/50</p>
+<p>태조 이성계 선대의 가계 목조 이안사가 전주에서 삼척 의주를 거쳐 알동에 정착하다  , , , , , , 그 , , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그 것은 , 그</p>
+<p>533/533 - 250s - loss: 7.3301 - accuracy: 0.1165
+Epoch 7/50
+533/533 - 249s - loss: 7.0574 - accuracy: 0.1305
+Epoch 8/50
+533/533 - 249s - loss: 6.7848 - accuracy: 0.1433
+Epoch 9/50
+533/533 - 249s - loss: 6.5153 - accuracy: 0.1555
+Epoch 10/50
+533/533 - 249s - loss: 6.2694 - accuracy: 0.1679
+Epoch 11/50</p>
+<p>태조 이성계 선대의 가계 목조 이안사가 전주에서 삼척 의주를 거쳐 알동에 정착하다  등 것입니다
+하니 , 임금이 말하기를 ,
+상참을 받고 , 임금이 아뢰기를 ,
+이 받고 그 일을 다 다 다 가지고 주고 , 그 거느리고 다 화살을 내어 주고 , 이는 아뢰기를 ,
+함길도 의 서쪽에 서향하여 없는 것입니다 또 아뢰기를 ,
+이 받고 반드시 보내어 가서 가지고 가서 가서 주고 , 그 거느리고 의하여 서향하여 있으니 , 그 받고 , 아뢰기를 ,
+그 일을 가지고 서향하여 서게 하고 , 그 받고 몸을 아뢰기를 ,
+예조에서 아뢰기를 ,
+함길도 의 서쪽에 인도하여 가지고 주고 , 아뢰기를 ,
+평안도 의 서쪽에 서향하여</p>
+<p>533/533 - 250s - loss: 6.0086 - accuracy: 0.1822
+Epoch 12/50
+533/533 - 249s - loss: 5.7584 - accuracy: 0.1960
+Epoch 13/50
+533/533 - 248s - loss: 5.5062 - accuracy: 0.2102
+Epoch 14/50
+533/533 - 249s - loss: 5.2491 - accuracy: 0.2261
+Epoch 15/50
+533/533 - 249s - loss: 4.9958 - accuracy: 0.2423
+Epoch 16/50</p>
+<p>태조 이성계 선대의 가계 목조 이안사가 전주에서 삼척 의주를 거쳐 알동에 정착하다  것이니 , 그 뜻을 다 알지 것이 없습니다 지금 내가 비록 여러 것은 모두 다 일을 다 일을 다 일을 다 말을 말을 다 알고 , 지금 만일 다시 가서 가서 아뢰게 하고 , 드디어 비가 보내어 가서 가서 토물 을 바쳤다 조회를 받았다 을축년 관찰사에게 이르기 살기가 , 의정부에서 아뢰기를 ,
+맹규의 관찰사에게 유시하기를 ,
+맹규의 벼슬만 아니오라 , 왕비가 관찰사에게 유시하기를 ,
+중추원 관찰사에게 유시하기를 ,
+중추원 부사 권맹경이
+하였다 전 도절제사 부사 로 하여금 상언 하기를 ,
+맹규의 관찰사에게 유시하기를 ,
+맹규의 죄수 벌할 하게 ,
+세자가 아뢰기를 ,</p>
+<p>533/533 - 249s - loss: 4.7473 - accuracy: 0.2599
+Epoch 17/50
+533/533 - 249s - loss: 4.5038 - accuracy: 0.2782
+Epoch 18/50
+533/533 - 249s - loss: 4.2670 - accuracy: 0.2984
+Epoch 19/50
+533/533 - 249s - loss: 4.0450 - accuracy: 0.3195
+Epoch 20/50
+533/533 - 249s - loss: 3.8258 - accuracy: 0.3440
+Epoch 21/50</p>
+<p>태조 이성계 선대의 가계 목조 이안사가 전주에서 삼척 의주를 거쳐 알동에 정착하다  것이다 고 하고 , 그 말을 있고 , 모두 같이 같이 같이 같이 한다 또한 있고 한 것은 더욱 말을 있는 것은 모두 이를 살피게 하라
+하였다 일본국 정난 공신 에게 유시 하기를 ,
+일본국 병조 에서 상서 하여 각각 더불어 제수 로 하여금 함께 의논하여 가서 아뢰니 , 일본국 명나라 정문 에 의거하여 아뢰니 , 임금이 말하기를 ,
+일본국 상송포 새긴들 다만 정난 신숙주 에게 유시 하기를 ,
+일본국 병조 에서 전지 하기를 ,
+이 사람을 보내어 와서 와서 가서 와서 이르기를 ,
+경 은 하직하니 , 그 죄는 와서 와서 의논하게 하였다</p>
+<p>533/533 - 250s - loss: 3.6157 - accuracy: 0.3703
+Epoch 22/50
+533/533 - 249s - loss: 3.4163 - accuracy: 0.3981
+Epoch 23/50
+533/533 - 249s - loss: 3.2208 - accuracy: 0.4284
+Epoch 24/50
+533/533 - 249s - loss: 3.0313 - accuracy: 0.4601
+Epoch 25/50
+533/533 - 249s - loss: 2.8555 - accuracy: 0.4897
+Epoch 26/50</p>
+<p>태조 이성계 선대의 가계 목조 이안사가 전주에서 삼척 의주를 거쳐 알동에 정착하다  것인데 , 만약 혹은 좋은 자는 백성을 주고 , 혹은 폐단이 있어 있어 오래 자가 나누어 주고 , 반드시 말을 일을 가지고 나누어 보내어 가게 하고 , 만일 병이 사실을 염려하여 , 드디어 말하기를 ,
+함길도 도절제사 의 죄는 돌아와서 보내지 않은 것을 옮겨 주어 아뢰게 하고 , 만일 자기 베어 징계하소서
+예조 에서 공조 판서 겸 형조 참판 제학 이조 등이 불러 불러서 조용히 전하다
+경상도 상호군 박경무 으로 종이 대부 로 삼았다 함길도 도절제사 에서 와서 와서 내려 죄를 가서 아뢰다
+사헌부에서 아뢰기를 ,
+함길도 나라 일로 감사 의 개를 바치었다 햇무리가 쏘았다</p>
+<p>533/533 - 250s - loss: 2.6946 - accuracy: 0.5192
+Epoch 27/50
+533/533 - 248s - loss: 2.5327 - accuracy: 0.5480
+Epoch 28/50
+533/533 - 249s - loss: 2.3733 - accuracy: 0.5766
+Epoch 29/50
+533/533 - 249s - loss: 2.2233 - accuracy: 0.6036
+Epoch 30/50
+533/533 - 249s - loss: 2.0778 - accuracy: 0.6309
+Epoch 31/50</p>
+<p>태조 이성계 선대의 가계 목조 이안사가 전주에서 삼척 의주를 거쳐 알동에 정착하다  되고 , 청컨대 본조 수는 없는데 , 무릇 여러 일은 이미 심히 알지 자는 서로 알 것이다 또한 이미 여러 사람이 심히 말을 사람을 얻게 합니다 이에 갖추어 아뢰니 , 드디어 세자에게 거둥하여 사실을 묻게 하였으나 , 임금이 말하기를 ,
+이 사람을 거느리고 가서 와서 이르기를 ,
+이 사람을 보내 토산물을 바쳤다 나도 아뢴 않겠는가
+하였다 임금이 말하기를 ,
+전하께서 전지 에서 함께 사사로이 듣고 아뢰게 하고 , 만일 잘못 묻지는 를 올려 국문 하여 계문 하여 이러하였다
+대간 으로 사제 를 하사하다
+대간 에 내리니 , 전하께서 다시 와서 가서 잘 알지 것은</p>
+<p>533/533 - 250s - loss: 1.9361 - accuracy: 0.6555
+Epoch 32/50
+533/533 - 249s - loss: 1.8070 - accuracy: 0.6788
+Epoch 33/50
+533/533 - 249s - loss: 1.6785 - accuracy: 0.7029
+Epoch 34/50
+533/533 - 249s - loss: 1.5642 - accuracy: 0.7236
+Epoch 35/50
+533/533 - 249s - loss: 1.4530 - accuracy: 0.7431
+Epoch 36/50</p>
+<p>태조 이성계 선대의 가계 목조 이안사가 전주에서 삼척 의주를 거쳐 알동에 정착하다  된다 말하다 , 사의가 음악은 옳을 수는 없으니 , 본조 가 같이 같이 같이 있고 북쪽을 안 한 뒤에 모두 다 자리로 나아간다
+창한다 마치면 , 통찬이 윤대를 행하고 , 신의 하나는 인도하여 내려와 제자리로 돌아간다 집례가 사배하라 찬하여 , 배 이하가 모두 꿇어앉는다 무릇 다음에 정한 것도 돌아간다 찬자가 사배하라 찬하면 , 감찰 는 단 가 자리에 나아간다 찬인이 감찰과 여러 때의 의식과 같이 한다 집례가 그 곡하라 하면 , 다음에 꿇어앉는다 여러 사람이 각기 각기 각기 자리에 나아간다 알자가 술잔을 씻고 올라가 인도하여 자리에 나간다 집례가 사배하라 찬하면 , 흥 , 흥 , 흥 , 흥 ,</p>
+<p>533/533 - 250s - loss: 1.3488 - accuracy: 0.7627
+Epoch 37/50
+533/533 - 249s - loss: 1.2497 - accuracy: 0.7815
+Epoch 38/50
+533/533 - 248s - loss: 1.1613 - accuracy: 0.7968
+Epoch 39/50
+533/533 - 249s - loss: 1.0768 - accuracy: 0.8122
+Epoch 40/50
+533/533 - 249s - loss: 0.9966 - accuracy: 0.8267
+Epoch 41/50</p>
+<p>태조 이성계 선대의 가계 목조 이안사가 전주에서 삼척 의주를 거쳐 알동에 정착하다  되고 , 청컨대 그전 무지한 곳이 없게 되니 , 물러가 가까이 가고 , 혹은 도로 사람이 있을 것이다 진실로 이미 가 서로 폐단이 심히 남겨서 대신의 무리들이 급히 주게 하고 , 그 온 1백 콩 1백 명을 조사하여 급히 오늘에 가서 크게 시종 중에 살펴보게 한다든가 허락하지 아니하였다 신이 그 죄가 와서 와서 가서 청하여 임금의 두게 하소서
+하니 , 의금부에서 아뢰기를 ,
+평안도 토관 죄수 벌송 애오라지 염법 을 내리어 의논하게 하므로 , 무릇 부득이하여 보면 , 무릇 성상께서 생각해 나아가 바로 전의 를 인도하여 주어 서향하게 하고 , 다음은 나라가 정한 지경에 너무 가지고 반드시 모두</p>
+<p>533/533 - 250s - loss: 0.9232 - accuracy: 0.8399
+Epoch 42/50
+533/533 - 249s - loss: 0.8571 - accuracy: 0.8523
+Epoch 43/50
+533/533 - 249s - loss: 0.7950 - accuracy: 0.8637
+Epoch 44/50
+533/533 - 249s - loss: 0.7335 - accuracy: 0.8753
+Epoch 45/50
+533/533 - 249s - loss: 0.6764 - accuracy: 0.8857
+Epoch 46/50</p>
+<p>태조 이성계 선대의 가계 목조 이안사가 전주에서 삼척 의주를 거쳐 알동에 정착하다  되고 , 청컨대 혹은 감한 많으며 , 겨우 휘 를 올리고 종자 가 서로 알 것이다 또한 감히 뒤에 모두 서로 폐단을 알 것이다 그러나 경 등과 천지 인 약정하기를 사직 과 더불어 글을 모여서 가서 본 말은 서울과 70이 민간에 시행할 있지 않는 것이니 , 이에 어질고 떨어져 구 에 참여하지 않을 것이니 , 마침내 그를 오지 아니하고 , 대개 속전 에 붙여 들지 아니할 것이니 , 그것을 그르다 힘쓰고 수양 3천 떼가 박천 2개는 모순 천하가 의논했다고 되었다 청백 양씨 중후 처소 740 강호덕 615 박사란 김선거 연변에 이등 씩 음식도 어리고 2명씩 뵙고 일본의 주었사오니 하옵고 침체</p>
+<p>533/533 - 250s - loss: 0.6241 - accuracy: 0.8957
+Epoch 47/50
+533/533 - 249s - loss: 0.5790 - accuracy: 0.9038
+Epoch 48/50
+533/533 - 249s - loss: 0.5355 - accuracy: 0.9114
+Epoch 49/50
+533/533 - 249s - loss: 0.4964 - accuracy: 0.9183
+Epoch 50/50</p>
+<p>태조 이성계 선대의 가계 목조 이안사가 전주에서 삼척 의주를 거쳐 알동에 정착하다  들을 것과 , 본조 가 없으면 서향하게 것입니다 만약 먼저 단 가 있고 , 한 법이 같이 같이 같이 되어 한 일이 있을 일이 없습니다 그러나 , 이제부터는 진휼사 에 술을 받들어 그 자리에 매우 옳지 를 나아가서 , 내가 그 아비를 가서 온 사람은 한번 가상히 부임 하여 이러한 때 아울러 국문 하여 외방 전의 일수 를 받들어 잡희 를 나아가서 나아가서 나가고 , 이어서 병법 과 악 을 외유 일어나고 , 의장 을 더하여 적당히 판위 에 올라 그치게 하되 , 앙제 에 나아가서 꿇어앉아 나아가서 선다 판통례가 , 다만 술 서문 궤 앞으로 나아가 부복하고 꿇어앉아 부복</p>
+<p>533/533 - 250s - loss: 0.4581 - accuracy: 0.9256</p>
+<p>먼저 모델을 학습시키면서 모델의 생성 결과물을 확인하기 위해 <code>testmodel</code>이라는 이름으로 콜백 함수를 정의합니다.</p>
+<ul>
+<li>조금 더 콜백 함수에 대해서 정의를 내리면, 먼저 임의의 문장을 입력한 다음, <code>seq_length</code>만큼의 단어 25개를 선택합니다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">test_test_X <span style="color:#f92672">=</span> test_sentence<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>)[<span style="color:#f92672">-</span>seg_length:]
+</code></pre></div><ul>
+<li>그 다음에는 문장의 단어를 인덱스 토큰으로 바꿉니다. 이 때 사전에 등록되어 있지 않은 단어의 경우에는 <code>UNK</code> 토큰 값으로 바꿉니다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">test_text_X <span style="color:#f92672">=</span> pad_sequences([test_text_X], maxlen <span style="color:#f92672">=</span> seq_length, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pre&#39;</span>, value<span style="color:#f92672">=</span>word2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>])
+</code></pre></div><ul>
+<li><code>pad_sequences()</code>로 문장의 앞쪽이 빈 자리가 있을 경우 25단어가 채워지도록 패딩을 넣습니다. 이 때 패딩 갑인 <code>value</code>인수에는 앞에서 지정했던 <code>UNK</code> 토큰의 값인 <code>word2idx['UNK']</code>를 사용합니다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">output_idx <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict_classes(test_text_X)
+</code></pre></div><ul>
+<li><code>model.predict()</code>는 <code>Dense</code>레이어의 332,640개의 값을 반환하기 때문에 출력을 간결하게 하기 위해 <code>model.predict_classes()</code>함수를 사용합니다. 이 함수는 출력 중에서 가장 값이 큰 인덱스를 반환합니다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">test_sentence <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">+</span> idx2word[output_idx[<span style="color:#ae81ff">0</span>]]
+</code></pre></div><ul>
+<li>
+<p>출력 단어는 test_sentence의 끝 부분에 저장되어 다음 스텝의 입력에 활용됩니다.</p>
+</li>
+<li>
+<p>이렇게 정의된 콜백 함수는 <code>testmodelcb</code>라는 이름으로 저장되어 <code>tf.keras</code>의 <code>model.fit()</code>의 <code>callbacks</code>인수에 포함됩니다.</p>
+</li>
+<li>
+<p>마지막으로 모형을 학습시킵니다.</p>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">history <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>fit(train_dataset<span style="color:#f92672">.</span>repeat(), epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, steps_per_epoch<span style="color:#f92672">=</span>steps_per_epoch, callbacks<span style="color:#f92672">=</span>[testmodelcb], verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</code></pre></div><ul>
+<li>학습을 시킬 때도 위에서 정의한 <code>Dataset</code>을 활용합니다. 그런데 주목해야 할 점은 <code>Dataset</code>에서 데이터를 끊임없이 반환하도록 <code>repeat()</code>함수를 사용합나다.</li>
+<li>넘파이 <code>array</code> 형태의 데이터를 사용할 때는 에포크마다 데이터를 한번씩 순회시켰지만, <code>Dataset</code>을 사용하면 데이터의 시작과 끝을 알 수 없기 때문에 에포크에 데이터를 얼마나 학습시키질를 <code>steps_per_epoch</code> 인수로 지정합니다.</li>
+</ul>
+<p>학습 결과를 살펴보면 처음에는 의미없는 단어가 반복되지만, 학습을 진행하면서 문맥이 연결되는 것을 확인할 수 있습니다.</p>
+<h3 id="6-임의의-문장을-사용한-단어-생성-확인">(6) 임의의 문장을 사용한 단어 생성 확인</h3>
+<p>이제 임의의 문장을 넣어 학습이 잘 되는지 난중일기의 한 구절을 입력해봅니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> tensorflow.keras.preprocessing.sequence <span style="color:#f92672">import</span> pad_sequences
+test_sentence <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;동헌에 나가 공무를 본 후 활 십오 순을 쏘았다&#39;</span>
+
+next_words <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+<span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(next_words):
+    test_text_X <span style="color:#f92672">=</span> test_sentence<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>)[<span style="color:#f92672">-</span>seq_length:]
+    test_text_X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([word2idx[c] <span style="color:#66d9ef">if</span> c <span style="color:#f92672">in</span> word2idx <span style="color:#66d9ef">else</span> word2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>] <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> test_text_X])
+    test_text_X <span style="color:#f92672">=</span> pad_sequences([test_text_X], maxlen<span style="color:#f92672">=</span>seq_length, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pre&#39;</span>, value<span style="color:#f92672">=</span>word2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>])
+    
+    output_idx <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict_classes(test_text_X)
+    test_sentence <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">+</span> idx2word[output_idx[<span style="color:#ae81ff">0</span>]]
+
+<span style="color:#66d9ef">print</span>(test_sentence)
+</code></pre></div><p>동헌에 나가 공무를 본 후 활 십오 순을 쏘았다 그곳의 사로잡힌 대리하는 호군직 2개는 놓기도 토의 으로써 차임 되고 , 저들은 일시에 굳게 것으로서 주고 , 더욱 높은 바가 많아서 정위 라 같다 하는데 하였습니다 빈자 는 부의 에 도와서 알아야 하여 주소서
+하니 , 형조 에서 교지 를 하사하고 충청도 도절제사 에서 다시 와서 와서 내려 쓸 하고 , 만일 잘 가는 것이 없었다 상수의 대한 한 한 뒤에 모두 능히 서로 알지 것은 감히 모두 모두 모두 사람을 죄를 죄를 사람을 죄를 온 한 사람을 삼가서 어질고 그믐날에 한다는 것이니 , 청컨대 이러한 정성을 알아서 난 를 정하여 급히 원하는 곳에 두고 특별히 징계하여 인도해 특별히</p>
+<p>전체적인 문장의 의미가 통하는 건 아닙니다만, 부분 부분에서는 자연스럽게 연결되는 단어들이 보이는 것을 확인할 수 있습니다.</p>
+<h2 id="iii-연습-파일">III. 연습 파일</h2>
+<ul>
+<li><a href="https://colab.research.google.com/github/dschloe/deeplearningAI/blob/master/tensorflow2.0/ch7_4_naturalLanguageGeneration(1).ipynb">구글 Colab에서 직접 연습해보자</a></li>
+</ul>
+<h2 id="iv-reference">IV. Reference</h2>
+<p>김환희. (2020). 시작하세요! 텐서플로 2.0 프로그래밍: 기초 이론부터 실전 예제까지 한번에 끝내는 머신러닝, 딥러닝 핵심 가이드. 서울: 위키북스.</p>
+<p>Karpathy, A. (2015). The Unreasonable Effectiveness of Recurrent Neural Networks. Retrieved April 26, 2020, from <a href="http://karpathy.github.io/2015/05/21/rnn-effectiveness/">http://karpathy.github.io/2015/05/21/rnn-effectiveness/</a></p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>교재에서는 전체 데이터(400MB) 중, 62MB만 잘라낸 파일을 사용했습니다. <a href="https://www.data.go.kr/">공공데이터포털</a>에서 조선왕조실록 데이터를 다운로드 받을 수 있습니다. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/deep-learning/" rel="tag">Deep Learning</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/python/" rel="tag">Python</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/google-colab/" rel="tag">Google Colab</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/tensorflow-2.0/" rel="tag">Tensorflow 2.0</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/binary-classification/" rel="tag">Binary Classification</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/classification/" rel="tag">Classification</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/sentiment-analysis/" rel="tag">Sentiment Analysis</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/natural-language-generation/" rel="tag">Natural Language Generation</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%83%9D%EC%84%B1/" rel="tag">자연어 생성</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="tag">텐서플로 2.0</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="tag">텐서플로 2.0 튜토리얼</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/tensorflow-2.0-tutorial/" rel="tag">Tensorflow 2.0 Tutorial</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name"></span>
+	</div>
+	<div class="authorbox__description">
+		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.
+	</div>
+</div>
+
+
+<section class="comments">
+	<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-chloevan-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH…" value="" name="q" aria-label="SEARCH…">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://dschloe.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/python/opencv/ch01_fileio/">[Python] 이미지 데이터 입출력</a></li>
+			<li class="widget__item"><a class="widget__link" href="/settings/postgresql_install/">Postgre SQL Installation on MacOS M1</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/pandas/dictionary_replace/">Pandas 속도 비교 - with or without Dictionary</a></li>
+			<li class="widget__item"><a class="widget__link" href="/mlops/wandb/install/">[MLOps] Weight &amp; Biases 소개 및 사용 방법</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/pandas/loc_replace_2/">Pandas 속도 비교 - loc vs replace(2)</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/acea/">ACEA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/amazon-web-service/">Amazon Web Service</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/astype/">astype</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws/">AWS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">bar chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-data-transformation/">Basic Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basics/">Basics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-machine-learning/">BigQuery with Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-python/">BigQuery with Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blog/">Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bupar/">bupaR</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/categorical-features/">Categorical Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/class/">Class</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/cloud-build/">Cloud Build</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/colab/">Colab </a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conditional-statements/">Conditional Statements</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/corona-shiny-app/">Corona Shiny App</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dacon/">dacon</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-handling/">Data Handling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-science-project/">Data Science Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-structures/">Data Structures</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualization/">Data Visualization</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decorators/">Decorators</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deployment/">Deployment</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/design/">Design</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development/">Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development-settings/">Development Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dictionary/">Dictionary</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/discrete-features/">Discrete Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/docker/">Docker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/encoding/">Encoding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/feature-engineering/">Feature Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-i/o/">File I/O</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/function/">function</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ggplot2/">ggplot2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/git/">Git</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github/">Github</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/global-development/">Global Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-colab/">Google Colab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gradient-boosting-machine/">Gradient Boosting Machine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hexo/">Hexo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/histogram/">Histogram</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/installation/">Installation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/intermediate/">Intermediate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iteration/">iteration</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/jupyter-notebook/">Jupyter Notebook</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle/">Kaggle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle-api/">Kaggle API</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/konlp/">KoNLP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">line grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/linux/">Linux</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lollipop/">lollipop</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lstm/">LSTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/m1/">M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/macos-m1/">MacOS M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mask-r-cnn/">Mask R-CNN</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/merging-data/">Merging Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/missing-values/">Missing Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/neural-network/">Neural Network</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/new-packages/">New Packages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nonparametric/">Nonparametric</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/numeric-features/">Numeric Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/object-detection/">Object Detection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oce/">OCE</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/opencv/">OpenCV</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/optimizer/">Optimizer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas-merge/">Pandas Merge</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pivot-table/">pivot table</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pls-sem/">PLS-SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/postgre-sql/">Postgre SQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/project/">Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/py-openaq/">py-openaq</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pydataset/">PyDataset</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-basic/">Python Basic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-project/">Python Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/">R 마크다운</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ranzcr/">Ranzcr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/recommendation/">Recommendation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regular-expression/">regular expression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rpa/">RPA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rtweet/">rtweet</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/seaborn/">Seaborn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow/">Tensorflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0/">Tensorflow 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0-tutorial/">Tensorflow 2.0 Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tutorial/">Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/">객체지향 프로그래밍</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/">구글 클라우드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/">구조방정식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/">국제개발</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/">기초통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/">논문통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/">데이터 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">데이터 시각화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">데이터 싸이언스 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/">막대 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">머신러닝 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B3%B4%EA%B3%A0%EC%84%9C-%EC%9E%90%EB%8F%99%ED%99%94/">보고서 자동화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/">빅쿼리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%82%B0%EC%A0%90%EB%8F%84/">산점도</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/">선 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/">시간 측정</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/">아마존 웹 서비스</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%84%EC%B2%98%EB%A6%AC/">이미지 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/">정규표현식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천 시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%BA%90%EA%B8%80/">캐글</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/">텍스트 마이닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/">텍스트 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/">텐서플로 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/">텐서플로 2.0 튜토리얼</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/">텐서플로우</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/">프로세스 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/">피벗 테이블</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/">환경설정</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/acea/" title="ACEA">ACEA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/amazon-web-service/" title="Amazon Web Service">Amazon Web Service</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/append/" title="append">append</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/astype/" title="astype">astype</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/auto-encoder/" title="Auto Encoder">Auto Encoder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85/" title="AWS 회원가입">AWS 회원가입</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="bar chart">bar chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-structures/" title="Basic Data Structures">Basic Data Structures</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-transformation/" title="Basic Data Transformation">Basic Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basics/" title="Basics">Basics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-machine-learning/" title="BigQuery with Machine Learning">BigQuery with Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery with Python">BigQuery with Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery with R">BigQuery with R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blog/" title="Blog">Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bupar/" title="bupaR">bupaR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/categorical-features/" title="Categorical Features">Categorical Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/class/" title="Class">Class</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cloud-build/" title="Cloud Build">Cloud Build</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/clustering/" title="Clustering">Clustering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/colab-with-kaggle/" title="Colab with Kaggle">Colab with Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-expressions/" title="Conditional Expressions">Conditional Expressions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-statements/" title="Conditional Statements">Conditional Statements</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cross-join/" title="Cross Join">Cross Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dashboard/" title="Dashboard">Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-handling/" title="Data Handling">Data Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-types/" title="Data Types">Data Types</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualization/" title="Data Visualization">Data Visualization</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dataframe/" title="DataFrame">DataFrame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decision-tree/" title="Decision Tree">Decision Tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decorators/" title="Decorators">Decorators</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deployment/" title="Deployment">Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/design/" title="Design">Design</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="Development">Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development-settings/" title="Development Settings">Development Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary/" title="Dictionary">Dictionary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/discrete-features/" title="Discrete Features">Discrete Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/disk.frame/" title="disk.frame">disk.frame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/docker/" title="Docker">Docker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="dplyr">dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/eda/" title="EDA">EDA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/emr/" title="EMR">EMR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/encoding/" title="Encoding">Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enumerate/" title="enumerate">enumerate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exploratory-data-analysis/" title="Exploratory Data Analysis">Exploratory Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/extend/" title="extend">extend</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/feature-engineering/" title="Feature Engineering">Feature Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-i/o/" title="File I/O">File I/O</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="filter">filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/for-loop/" title="for-loop">for-loop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geospatial-analysis/" title="Geospatial Analysis">Geospatial Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gghistostats/" title="gghistostats">gghistostats</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ggplot2/" title="ggplot2">ggplot2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/git/" title="Git">Git</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github/" title="Github">Github</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/global-development/" title="Global Development">Global Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="GRU 레이어">GRU 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="gt">gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gtsummary/" title="gtsummary">gtsummary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hadoop/" title="Hadoop">Hadoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heatmap/" title="Heatmap">Heatmap</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hexo/" title="Hexo">Hexo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/histogram/" title="Histogram">Histogram</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-segmentation/" title="Image Segmentation">Image Segmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-settings/" title="Image Settings">Image Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/insert/" title="insert">insert</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/installation/" title="Installation">Installation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/intermediate/" title="Intermediate">Intermediate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interview/" title="Interview">Interview</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iteration/" title="iteration">iteration</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="iterrows">iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/join/" title="JOIN">JOIN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle/" title="Kaggle">Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle-api/" title="Kaggle API">Kaggle API</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/konlp/" title="KoNLP">KoNLP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/label-encoding/" title="Label Encoding">Label Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lambda/" title="lambda">lambda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="leaflet">leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="line grpah">line grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linux/" title="Linux">Linux</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/list/" title="list">list</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="lists">lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists-and-tuples/" title="Lists and Tuples">Lists and Tuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lollipop/" title="lollipop">lollipop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m1/" title="M1">M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m5-forecasting/" title="M5 Forecasting">M5 Forecasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/macos-m1/" title="MacOS M1">MacOS M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mask-r-cnn/" title="Mask R-CNN">Mask R-CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathematical-functions/" title="Mathematical Functions">Mathematical Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-%EC%84%A4%EC%A0%95/" title="Mathjax 설정">Mathjax 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiprocessing/" title="multiprocessing">multiprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/neural-network/" title="Neural Network">Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/new-packages/" title="New Packages">New Packages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nonparametric/" title="Nonparametric">Nonparametric</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numeric-features/" title="Numeric Features">Numeric Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numpy/" title="NumPy">NumPy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/object-detection/" title="Object Detection">Object Detection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oce/" title="OCE">OCE</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/one-hot-encoding/" title="One-Hot Encoding">One-Hot Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/opencv/" title="OpenCV">OpenCV</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outer-join/" title="Outer Join">Outer Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outliers/" title="Outliers">Outliers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-merge/" title="Pandas Merge">Pandas Merge</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pd.concat/" title="pd.concat">pd.concat</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pins/" title="pins">pins</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pivot-table/" title="pivot table">pivot table</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="plotly">plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pls-sem/" title="PLS-SEM">PLS-SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/polar-chart/" title="Polar Chart">Polar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/postgre-sql/" title="Postgre SQL">Postgre SQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/probability/" title="Probability">Probability</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/productive-box/" title="productive-box">productive-box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/py-openaq/" title="py-openaq">py-openaq</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pycaret/" title="PyCaret">PyCaret</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pydataset/" title="PyDataset">PyDataset</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-basic/" title="Python Basic">Python Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-excel/" title="Python Excel">Python Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-numpy-broadcasting/" title="Python NumPy Broadcasting">Python NumPy Broadcasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-project/" title="Python Project">Python Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="Python 포트폴리오">Python 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-basic/" title="R Basic">R Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EA%B8%B0%EC%B4%88%EB%AC%B8/" title="R 기초문">R 기초문</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="R 포트폴리오">R 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ranzcr/" title="Ranzcr">Ranzcr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recommendation/" title="Recommendation">Recommendation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regular-expression/" title="regular expression">regular expression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rpa/" title="RPA">RPA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rstudio/" title="RStudio">RStudio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rtweet/" title="rtweet">rtweet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/seaborn/" title="Seaborn">Seaborn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-app-%EB%B0%B0%ED%8F%AC/" title="Shiny App 배포">Shiny App 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="shinydashboard">shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="sort_values">sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/super-resolution/" title="Super Resolution">Super Resolution</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/swifter/" title="swifter">swifter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow/" title="Tensorflow">Tensorflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0/" title="Tensorflow 2.0">Tensorflow 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0-tutorial/" title="Tensorflow 2.0 Tutorial">Tensorflow 2.0 Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text/" title="Text">Text</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tutorial/" title="Tutorial">Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/types-of-functions/" title="Types of Functions">Types of Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="vcrs">vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/" title="객체지향 프로그래밍">객체지향 프로그래밍</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B2%BD%EC%A7%84%EB%8C%80%ED%9A%8C/" title="경진대회">경진대회</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/" title="구조방정식">구조방정식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/" title="국제개발">국제개발</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%8D%EC%A0%95-%EB%B6%80%EC%A0%95-%EA%B0%90%EC%84%B1%EB%B6%84%EC%84%9D/" title="긍정, 부정 감성분석">긍정, 부정 감성분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C/" title="깃허브">깃허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="깃허브 환경설정">깃허브 환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/" title="논문통계">논문통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="데이터 싸이언스 프로젝트">데이터 싸이언스 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="데이터 전처리">데이터 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%94%A5%EB%9F%AC%EB%8B%9D/" title="딥러닝">딥러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/" title="막대 그래프">막대 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" title="머신러닝">머신러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="머신러닝 프로젝트">머신러닝 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%AA%A8%EB%8D%B8%EB%A7%81-%EC%8B%9C%EA%B0%81%ED%99%94/" title="모델링 시각화">모델링 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B0%98%EC%98%81%EC%A0%81-%EC%A7%80%ED%91%9C/" title="반영적 지표">반영적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B3%B4%EC%8A%A4%ED%84%B4-%EC%A3%BC%ED%83%9D-%EA%B0%80%EA%B2%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%B8%ED%8A%B8/" title="보스턴 주택 가격 데이터세트">보스턴 주택 가격 데이터세트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B6%84%EB%A5%98/" title="분류">분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" title="빅쿼리">빅쿼리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-r/" title="빅쿼리 R">빅쿼리 R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%EA%B8%B0%EB%B3%B8/" title="빅쿼리 기본">빅쿼리 기본</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%ED%8C%8C%EC%9D%B4%EC%8D%AC/" title="빅쿼리 파이썬">빅쿼리 파이썬</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%B0%EC%A0%90%EB%8F%84/" title="산점도">산점도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%BC%EC%84%B1%EC%B9%B4%EB%93%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EA%B3%B5%EB%AA%A8%EC%A0%84/" title="삼성카드 데이터분석 공모전">삼성카드 데이터분석 공모전</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%83%A4%EC%9D%B4%EB%8B%88-%EC%95%B1-%EB%B0%B0%ED%8F%AC/" title="샤이니 앱 배포">샤이니 앱 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" title="선 그래프">선 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/" title="선형회귀">선형회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%88%9C%ED%99%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="순환 신경망">순환 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" title="시각화 문법">시각화 문법</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/" title="시간 측정">시간 측정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" title="시그노이드">시그노이드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%A0%EA%B2%BD-%EC%8A%A4%ED%83%80%EC%9D%BC-%EC%A0%84%EC%9D%B4/" title="신경 스타일 전이">신경 스타일 전이</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/" title="아마존 웹 서비스">아마존 웹 서비스</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%98%A4%ED%86%A0%EC%9D%B8%EC%BD%94%EB%8D%94/" title="오토인코더">오토인코더</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B6%84%ED%95%A0/" title="이미지 분할">이미지 분할</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%84%A4%EC%A0%95/" title="이미지 설정">이미지 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="이미지 전처리">이미지 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" title="이항분류">이항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%84%EB%B2%A0%EB%94%A9-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="임베딩 레이어">임베딩 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%83%9D%EC%84%B1/" title="자연어 생성">자연어 생성</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/" title="전이 학습">전이 학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/" title="정규표현식">정규표현식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/" title="지도학습">지도학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B4%88%ED%95%B4%EC%83%81%EB%8F%84/" title="초해상도">초해상도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천 시스템">추천 시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천시스템">추천시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B8%A1%EC%A0%95%EC%B2%99%EB%8F%84/" title="측정척도">측정척도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BA%90%EA%B8%80/" title="캐글">캐글</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BB%A8%EB%B3%BC%EB%A3%A8%EC%85%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="컨볼루션 신경망">컨볼루션 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="코로나 대시보드">코로나 대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%8B%A4%EB%A3%A8%EA%B8%B0/" title="테이블 다루기">테이블 다루기</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="텍스트 마이닝">텍스트 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="텍스트 전처리">텍스트 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" title="텐서플로 2.0">텐서플로 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" title="텐서플로 2.0 튜토리얼">텐서플로 2.0 튜토리얼</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-%ED%97%88%EB%B8%8C/" title="텐서플로 허브">텐서플로 허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/" title="텐서플로우">텐서플로우</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%97%91%EC%85%80/" title="판다스 엑셀">판다스 엑셀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" title="판다스 자료구조">판다스 자료구조</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="포트폴리오">포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="프로세스 마이닝">프로세스 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/" title="프로세스 분석">프로세스 분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/" title="피벗 테이블">피벗 테이블</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80-%ED%8F%B0%ED%8A%B8-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0/" title="한글 폰트 오류 해결">한글 폰트 오류 해결</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%98%95%EC%84%B1%EC%A0%81-%EC%A7%80%ED%91%9C/" title="형성적 지표">형성적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="환경설정">환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9A%8C%EA%B7%80%EB%AA%A8%ED%98%95/" title="회귀모형">회귀모형</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9C%B4%EA%B3%A0/" title="휴고">휴고</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9E%88%EC%8A%A4%ED%86%A0%EA%B7%B8%EB%9E%A8/" title="히스토그램">히스토그램</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2021 DSChloe.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>

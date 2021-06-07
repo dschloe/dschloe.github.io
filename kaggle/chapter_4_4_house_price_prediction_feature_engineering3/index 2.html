@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Feature Engineering with Housing Price Prediction - Numerical Features - Data Science | DSChloe</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+		<meta property="og:title" content="Feature Engineering with Housing Price Prediction - Numerical Features" />
+<meta property="og:description" content="개요  Feature Engineering를 이해하고 실습한다.  결측치를 처리한다 Categorical Feature를 다룬다.    I. 사전 준비작업  Kaggle API 설치 후 데이터를 Kaggle에서 직접 가져오는 것을 구현한다.  (1) Kaggle API 설치  구글 코랩에서 API를 불러오려면 다음 소스코드를 실행한다.  !pip install kaggle Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.8) Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.23.0) Requirement already satisfied: urllib3&lt;1.25,&gt;=1.21.1 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dschloe.github.io/kaggle/chapter_4_4_house_price_prediction_feature_engineering3/" />
+<meta property="article:published_time" content="2020-09-16T12:00:47+09:00" />
+<meta property="article:modified_time" content="2020-09-16T12:00:47+09:00" />
+
+		<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Feature Engineering with Housing Price Prediction - Numerical Features"/>
+<meta name="twitter:description" content="개요  Feature Engineering를 이해하고 실습한다.  결측치를 처리한다 Categorical Feature를 다룬다.    I. 사전 준비작업  Kaggle API 설치 후 데이터를 Kaggle에서 직접 가져오는 것을 구현한다.  (1) Kaggle API 설치  구글 코랩에서 API를 불러오려면 다음 소스코드를 실행한다.  !pip install kaggle Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.8) Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.23.0) Requirement already satisfied: urllib3&lt;1.25,&gt;=1.21.1 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1."/>
+
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo">
+		<a class="logo__link" href="/" title="Data Science | DSChloe" rel="home">
+			<div class="logo__item logo__text">
+					<div class="logo__title">Data Science | DSChloe</div>
+					<div class="logo__tagline">Love your beloved one forever</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/aws/">
+				
+				<span class="menu__text">AWS</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/ds-projects/">
+				
+				<span class="menu__text">DS-Projects</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/gcp/">
+				
+				<span class="menu__text">GCP</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/kaggle/">
+				
+				<span class="menu__text">Kaggle</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/mlops/">
+				
+				<span class="menu__text">MLOps</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/python/">
+				
+				<span class="menu__text">Python</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/r/">
+				
+				<span class="menu__text">R</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/settings/">
+				
+				<span class="menu__text">settings</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About DSChloe</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">Feature Engineering with Housing Price Prediction - Numerical Features</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-09-16T12:00:47&#43;09:00">2020-09-16</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="category">머신러닝</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#개요">개요</a></li>
+    <li><a href="#i-사전-준비작업">I. 사전 준비작업</a>
+      <ul>
+        <li><a href="#1-kaggle-api-설치">(1) Kaggle API 설치</a></li>
+        <li><a href="#2-kaggle-token-다운로드">(2) Kaggle Token 다운로드</a></li>
+        <li><a href="#3-kaggle-데이터-불러오기">(3) Kaggle 데이터 불러오기</a></li>
+        <li><a href="#4-데이터-불러오기">(4) 데이터 불러오기</a></li>
+      </ul>
+    </li>
+    <li><a href="#ii-데이터-싸이언스의-전반적인-흐름-리뷰">II. 데이터 싸이언스의 전반적인 흐름 리뷰</a></li>
+    <li><a href="#iii-feature-engineering">III. Feature Engineering</a>
+      <ul>
+        <li><a href="#1-데이터-합치기">(1) 데이터 합치기</a></li>
+        <li><a href="#2-결측치-데이터-확인">(2) 결측치 데이터 확인</a></li>
+        <li><a href="#3-결측치-데이터-채우기">(3) 결측치 데이터 채우기</a></li>
+        <li><a href="#4-데이터-변환">(4) 데이터 변환</a></li>
+        <li><a href="#5-label-encoding-vs-one-hot-encoding">(5) Label Encoding vs One-Hot Encoding</a></li>
+        <li><a href="#6-feature-scaling">(6) Feature Scaling</a></li>
+      </ul>
+    </li>
+    <li><a href="#iv-결론">IV. 결론</a></li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="개요">개요</h2>
+<ul>
+<li><code>Feature Engineering</code>를 이해하고 실습한다.
+<ul>
+<li>결측치를 처리한다</li>
+<li><code>Categorical Feature</code>를 다룬다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="i-사전-준비작업">I. 사전 준비작업</h2>
+<ul>
+<li><code>Kaggle API</code> 설치 후 데이터를 <code>Kaggle</code>에서 직접 가져오는 것을 구현한다.</li>
+</ul>
+<h3 id="1-kaggle-api-설치">(1) Kaggle API 설치</h3>
+<ul>
+<li>구글 코랩에서 <code>API</code>를 불러오려면 다음 소스코드를 실행한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>pip install kaggle
+</code></pre></div><pre><code>Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.8)
+Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.23.0)
+Requirement already satisfied: urllib3&lt;1.25,&gt;=1.21.1 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.24.3)
+Requirement already satisfied: python-dateutil in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.8.1)
+Requirement already satisfied: tqdm in /usr/local/lib/python3.6/dist-packages (from kaggle) (4.41.1)
+Requirement already satisfied: certifi in /usr/local/lib/python3.6/dist-packages (from kaggle) (2020.6.20)
+Requirement already satisfied: slugify in /usr/local/lib/python3.6/dist-packages (from kaggle) (0.0.1)
+Requirement already satisfied: six&gt;=1.10 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.15.0)
+Requirement already satisfied: python-slugify in /usr/local/lib/python3.6/dist-packages (from kaggle) (4.0.1)
+Requirement already satisfied: idna&lt;3,&gt;=2.5 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;kaggle) (2.10)
+Requirement already satisfied: chardet&lt;4,&gt;=3.0.2 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;kaggle) (3.0.4)
+Requirement already satisfied: text-unidecode&gt;=1.3 in /usr/local/lib/python3.6/dist-packages (from python-slugify-&gt;kaggle) (1.3)
+</code></pre>
+<h3 id="2-kaggle-token-다운로드">(2) Kaggle Token 다운로드</h3>
+<ul>
+<li>Kaggle에서 API Token을 다운로드 받는다.</li>
+<li>[Kaggle]-[My Account]-[API]-[Create New API Token]을 누르면 <code>kaggle.json</code> 파일이 다운로드 된다.</li>
+<li>이 파일을 바탕화면에 옮긴 뒤, 아래 코드를 실행 시킨다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> files
+uploaded <span style="color:#f92672">=</span> files<span style="color:#f92672">.</span>upload()
+<span style="color:#66d9ef">for</span> fn <span style="color:#f92672">in</span> uploaded<span style="color:#f92672">.</span>keys():
+  <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;uploaded file &#34;{name}&#34; with length {length} bytes&#39;</span><span style="color:#f92672">.</span>format(
+      name<span style="color:#f92672">=</span>fn, length<span style="color:#f92672">=</span>len(uploaded[fn])))
+  
+<span style="color:#75715e"># kaggle.json을 아래 폴더로 옮긴 뒤, file을 사용할 수 있도록 권한을 부여한다. </span>
+<span style="color:#960050;background-color:#1e0010">!</span>mkdir <span style="color:#f92672">-</span>p <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span> <span style="color:#f92672">&amp;&amp;</span> mv kaggle<span style="color:#f92672">.</span>json <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span> <span style="color:#f92672">&amp;&amp;</span> chmod <span style="color:#ae81ff">600</span> <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span>kaggle<span style="color:#f92672">.</span>json
+</code></pre></div><p><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+Upload widget is only available when the cell has been executed in the
+current browser session. Please rerun this cell to enable.
+<!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<pre><code>Saving kaggle.json to kaggle.json
+uploaded file &quot;kaggle.json&quot; with length 64 bytes
+</code></pre>
+<ul>
+<li>실제 <code>kaggle.json</code> 파일이 업로드 되었다는 뜻이다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ls <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>ha <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span>kaggle<span style="color:#f92672">.</span>json
+</code></pre></div><pre><code>/root/.kaggle/kaggle.json
+</code></pre>
+<h3 id="3-kaggle-데이터-불러오기">(3) Kaggle 데이터 불러오기</h3>
+<ul>
+<li><code>Kaggle</code> 대회 리스트를 불러온다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>kaggle competitions list
+</code></pre></div><pre><code>Warning: Looks like you're using an outdated API Version, please consider updating (server 1.5.6 / client 1.5.4)
+ref                                            deadline             category            reward  teamCount  userHasEntered  
+---------------------------------------------  -------------------  ---------------  ---------  ---------  --------------  
+contradictory-my-dear-watson                   2030-07-01 23:59:00  Getting Started     Prizes        263           False  
+gan-getting-started                            2030-07-01 23:59:00  Getting Started     Prizes        103           False  
+tpu-getting-started                            2030-06-03 23:59:00  Getting Started  Knowledge        360           False  
+digit-recognizer                               2030-01-01 00:00:00  Getting Started  Knowledge       2451           False  
+titanic                                        2030-01-01 00:00:00  Getting Started  Knowledge      18594            True  
+house-prices-advanced-regression-techniques    2030-01-01 00:00:00  Getting Started  Knowledge       4834            True  
+connectx                                       2030-01-01 00:00:00  Getting Started  Knowledge        548           False  
+nlp-getting-started                            2030-01-01 00:00:00  Getting Started  Knowledge       1422            True  
+competitive-data-science-predict-future-sales  2020-12-31 23:59:00  Playground           Kudos       8720            True  
+hashcode-drone-delivery                        2020-12-14 23:59:00  Playground       Knowledge         23           False  
+lish-moa                                       2020-11-30 23:59:00  Research           $30,000       1186           False  
+conways-reverse-game-of-life-2020              2020-11-30 23:59:00  Playground            Swag         64           False  
+lyft-motion-prediction-autonomous-vehicles     2020-11-25 23:59:00  Featured           $30,000        389           False  
+rsna-str-pulmonary-embolism-detection          2020-10-26 23:59:00  Featured           $30,000         72           False  
+osic-pulmonary-fibrosis-progression            2020-10-06 23:59:00  Featured           $55,000       1720           False  
+stanford-covid-vaccine                         2020-10-05 23:59:00  Research           $25,000        570           False  
+landmark-recognition-2020                      2020-09-29 23:59:00  Research           $25,000        643           False  
+halite                                         2020-09-22 23:59:00  Featured              Swag       1143           False  
+birdsong-recognition                           2020-09-15 23:59:00  Research           $25,000       1395           False  
+global-wheat-detection                         2020-08-19 01:59:00  Research           $15,000       2245           False  
+</code></pre>
+<ul>
+<li>여기에서 참여하기 원하는 대회의 데이터셋을 불러오면 된다.</li>
+<li>이번 <code>basic</code>강의에서는 <code>house-prices-advanced-regression-techniques</code> 데이터를 활용한 데이터 가공과 시각화를 연습할 것이기 때문에 아래와 같이 코드를 실행하여 데이터를 불러온다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>kaggle competitions download <span style="color:#f92672">-</span>c house<span style="color:#f92672">-</span>prices<span style="color:#f92672">-</span>advanced<span style="color:#f92672">-</span>regression<span style="color:#f92672">-</span>techniques
+</code></pre></div><pre><code>Warning: Looks like you're using an outdated API Version, please consider updating (server 1.5.6 / client 1.5.4)
+Downloading test.csv to /content
+  0% 0.00/441k [00:00&lt;?, ?B/s]
+100% 441k/441k [00:00&lt;00:00, 66.4MB/s]
+Downloading train.csv to /content
+  0% 0.00/450k [00:00&lt;?, ?B/s]
+100% 450k/450k [00:00&lt;00:00, 62.5MB/s]
+Downloading data_description.txt to /content
+  0% 0.00/13.1k [00:00&lt;?, ?B/s]
+100% 13.1k/13.1k [00:00&lt;00:00, 13.2MB/s]
+Downloading sample_submission.csv to /content
+  0% 0.00/31.2k [00:00&lt;?, ?B/s]
+100% 31.2k/31.2k [00:00&lt;00:00, 28.5MB/s]
+</code></pre>
+<ul>
+<li>실제 데이터가 잘 다운로드 받게 되었는지 확인한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>ls
+</code></pre></div><pre><code>data_description.txt  sample_data  sample_submission.csv  test.csv  train.csv
+</code></pre>
+<h3 id="4-데이터-불러오기">(4) 데이터 불러오기</h3>
+<ul>
+<li><code>pandas</code> 모듈을 활용해서 데이터를 확인해본다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+train <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;train.csv&#39;</span>)
+test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;test.csv&#39;</span>)
+
+<span style="color:#75715e"># Id Column 저장</span>
+train_ID <span style="color:#f92672">=</span> train[<span style="color:#e6db74">&#39;Id&#39;</span>]
+test_ID <span style="color:#f92672">=</span> test[<span style="color:#e6db74">&#39;Id&#39;</span>]
+
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Id 컬럼 삭제 전 Train 데이터 size : {} &#34;</span><span style="color:#f92672">.</span>format(train<span style="color:#f92672">.</span>shape))
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Id 컬럼 삭제 전 Test 데이터 size : {} &#34;</span><span style="color:#f92672">.</span>format(test<span style="color:#f92672">.</span>shape))
+
+<span style="color:#75715e"># Id 삭제</span>
+train<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#34;Id&#34;</span>, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, inplace <span style="color:#f92672">=</span> True)
+test<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#34;Id&#34;</span>, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, inplace <span style="color:#f92672">=</span> True)
+
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Id 컬럼 삭제 후 Train 데이터 size : {} &#34;</span><span style="color:#f92672">.</span>format(train<span style="color:#f92672">.</span>shape))
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Id 컬럼 삭제 후 Test 데이터 size : {} &#34;</span><span style="color:#f92672">.</span>format(test<span style="color:#f92672">.</span>shape))
+</code></pre></div><pre><code>Id 컬럼 삭제 전 Train 데이터 size : (1460, 81) 
+Id 컬럼 삭제 전 Test 데이터 size : (1459, 80) 
+Id 컬럼 삭제 후 Train 데이터 size : (1460, 80) 
+Id 컬럼 삭제 후 Test 데이터 size : (1459, 79) 
+</code></pre>
+<ul>
+<li>변수명이 삭제된 것을 확인한다.</li>
+</ul>
+<h2 id="ii-데이터-싸이언스의-전반적인-흐름-리뷰">II. 데이터 싸이언스의 전반적인 흐름 리뷰</h2>
+<ul>
+<li>
+<p>전반적인 흐름은 보통 다음과 같이 이루어진다.</p>
+<ul>
+<li>문제정의</li>
+<li>데이터 수집</li>
+<li>데이터 EDA (기초 통계 및 시각화)</li>
+<li><code>Feature Preprocessing</code> - 정규표현식 통해서 데이터를 문자열 데이터를 처리하는 방법, 불필요한 변수 삭제,</li>
+<li><code>Feature Engineering</code> - Feature를 선택, 추출함 via 통계적 기법, 도메인 지식을 활용</li>
+<li>모델링</li>
+<li>모형 평가</li>
+<li>모형 배포 및 보고서</li>
+</ul>
+</li>
+<li>
+<p>데이터 시각화는 다음 페이지에 연재했기 때문에 참고한다.</p>
+<ul>
+<li><a href="https://dschloe.github.io/kaggle/">https://dschloe.github.io/kaggle/</a></li>
+</ul>
+</li>
+<li>
+<p>Feature Preprocessing에 관련된 추가 자료는 다음을 참조하자.</p>
+<ul>
+<li><a href="http://scikit-learn.org/stable/modules/preprocessing.html">Preprocessing in Sklearn</a></li>
+<li><a href="http://sebastianraschka.com/Articles/2014_about_feature_scaling.html">Feature Scaling and the effect of standardization for machine learning algorithms</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="iii-feature-engineering">III. Feature Engineering</h2>
+<ul>
+<li>도메인 지식을 활용하여 특징(<code>Feature</code>)을 만들어내는 과정</li>
+<li>머신러닝 모델을 위한 <code>Column</code> 생성하거나 또는 선택하는 작업 의미</li>
+<li><code>Feature Engineering</code>은 모델 성능에 즉각적으로 영향을 미치기 때문에 <code>ML</code>응용에 있어서 굉장히 중요한 단계이며, 전문성과 시간과 비용이 많이 듬</li>
+<li>리뷰하는 차원에서 말하면, Feature Preprocessing관한 일반적인 내용은 다음과 같다.
+<ul>
+<li>수치형: <code>Scaling</code>, <code>Outliers</code>, <code>Rank</code>, <code>np.log(1+x) and np.sqrt(1+x)</code></li>
+<li>범주형: <code>Label Encoding</code> for tree based models, <code>One-hot encoding</code> for non-tree-based models</li>
+<li>날짜: <code>주기성(=Periodicity)</code>, <code>Time Since</code>, <code>날짜간의 차이</code></li>
+<li>위도 &amp; 경도: <code>places</code>, <code>centers</code>, <code>statistics</code></li>
+</ul>
+</li>
+<li><code>Feature Engineering</code>은 결국 <code>Feature</code>를 컨트롤 및 추출하는 것으로 정의할 수 있다.
+<ul>
+<li>수치형 데이터: Binarization, Log Transformation, Scaling, Normalization, Regularization</li>
+<li>텍스트 데이터: Bag of X, Stopwords, Tokenization, Tf-IDF Transformation, Regularization</li>
+<li>범주형 데이터: One-hot encoding, Dummy Encoding, Effect Coding</li>
+<li>차원축소(PCA)</li>
+</ul>
+</li>
+<li>그러나, 결측치를 채우는 것도 <code>Feature Engineering</code>에 포함되며, 이 때 <code>Target</code>에 따른 <code>mean encoding</code>도 포함하게 된다. 특히, <code>mean encoding</code>은 분류모형을 다룰 때 다시 설명하도록 한다.</li>
+</ul>
+<h3 id="1-데이터-합치기">(1) 데이터 합치기</h3>
+<ul>
+<li>데이터를 합치는데, <code>target</code> 데이터를 별도 변수로 저장한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ntrain <span style="color:#f92672">=</span> train<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>] <span style="color:#75715e"># 행 개수 저장</span>
+ntest <span style="color:#f92672">=</span> test<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>] <span style="color:#75715e"># 행 개수 저장</span>
+
+y_train <span style="color:#f92672">=</span> train<span style="color:#f92672">.</span>SalePrice<span style="color:#f92672">.</span>values <span style="color:#75715e"># y_train 추출</span>
+
+house_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>concat((train, test))<span style="color:#f92672">.</span>reset_index(drop <span style="color:#f92672">=</span> True)
+house_df<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;SalePrice&#39;</span>], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;전체 데이터 Size : {}&#34;</span><span style="color:#f92672">.</span>format(house_df<span style="color:#f92672">.</span>shape))
+</code></pre></div><pre><code>전체 데이터 Size : (2919, 79)
+</code></pre>
+<h3 id="2-결측치-데이터-확인">(2) 결측치 데이터 확인</h3>
+<ul>
+<li>결측치 check 함수를 만든다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_na</span>(data):
+  isnull_na <span style="color:#f92672">=</span> (data<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> len(data)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>
+  data_na <span style="color:#f92672">=</span> isnull_na<span style="color:#f92672">.</span>drop(isnull_na[isnull_na <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>index)<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)
+  missing_data <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74">&#39;Missing Ratio&#39;</span> :data_na, 
+                               <span style="color:#e6db74">&#39;Data Type&#39;</span>: data<span style="color:#f92672">.</span>dtypes[data_na<span style="color:#f92672">.</span>index]})
+  <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;결측치 데이터 컬럼과 비율:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, missing_data)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 비율:
+               Missing Ratio Data Type
+PoolQC            99.657417    object
+MiscFeature       96.402878    object
+Alley             93.216855    object
+Fence             80.438506    object
+FireplaceQu       48.646797    object
+LotFrontage       16.649538   float64
+GarageFinish       5.447071    object
+GarageYrBlt        5.447071   float64
+GarageQual         5.447071    object
+GarageCond         5.447071    object
+GarageType         5.378554    object
+BsmtExposure       2.809181    object
+BsmtCond           2.809181    object
+BsmtQual           2.774923    object
+BsmtFinType2       2.740665    object
+BsmtFinType1       2.706406    object
+MasVnrType         0.822199    object
+MasVnrArea         0.787941   float64
+MSZoning           0.137033    object
+BsmtFullBath       0.068517   float64
+BsmtHalfBath       0.068517   float64
+Utilities          0.068517    object
+Functional         0.068517    object
+Exterior2nd        0.034258    object
+Exterior1st        0.034258    object
+SaleType           0.034258    object
+BsmtFinSF1         0.034258   float64
+BsmtFinSF2         0.034258   float64
+BsmtUnfSF          0.034258   float64
+Electrical         0.034258    object
+KitchenQual        0.034258    object
+GarageCars         0.034258   float64
+GarageArea         0.034258   float64
+TotalBsmtSF        0.034258   float64
+</code></pre>
+<h3 id="3-결측치-데이터-채우기">(3) 결측치 데이터 채우기</h3>
+<ul>
+<li>위 데이터에 순차적으로 처리하도록 한다.</li>
+<li>몇몇 분들은 <code>PoolQC</code>, <code>MiscFeature</code>와 같은 <code>Feature</code>는 삭제하기도 한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">var_lists <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;PoolQC&#39;</span>, <span style="color:#e6db74">&#39;MiscFeature&#39;</span>, <span style="color:#e6db74">&#39;Alley&#39;</span>, <span style="color:#e6db74">&#39;Fence&#39;</span>, <span style="color:#e6db74">&#39;FireplaceQu&#39;</span>]
+<span style="color:#66d9ef">for</span> fea <span style="color:#f92672">in</span> var_lists:
+  house_df[fea] <span style="color:#f92672">=</span> house_df[fea]<span style="color:#f92672">.</span>fillna(<span style="color:#e6db74">&#39;None&#39;</span>)
+
+check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 비율:
+               Missing Ratio Data Type
+LotFrontage       16.649538   float64
+GarageQual         5.447071    object
+GarageFinish       5.447071    object
+GarageYrBlt        5.447071   float64
+GarageCond         5.447071    object
+GarageType         5.378554    object
+BsmtExposure       2.809181    object
+BsmtCond           2.809181    object
+BsmtQual           2.774923    object
+BsmtFinType2       2.740665    object
+BsmtFinType1       2.706406    object
+MasVnrType         0.822199    object
+MasVnrArea         0.787941   float64
+MSZoning           0.137033    object
+BsmtFullBath       0.068517   float64
+Functional         0.068517    object
+Utilities          0.068517    object
+BsmtHalfBath       0.068517   float64
+Exterior2nd        0.034258    object
+Exterior1st        0.034258    object
+SaleType           0.034258    object
+BsmtFinSF1         0.034258   float64
+BsmtFinSF2         0.034258   float64
+TotalBsmtSF        0.034258   float64
+Electrical         0.034258    object
+KitchenQual        0.034258    object
+GarageCars         0.034258   float64
+GarageArea         0.034258   float64
+BsmtUnfSF          0.034258   float64
+</code></pre>
+<ul>
+<li><code>LotFrontage</code>의 데이터 <code>type</code>은 <code>float64</code>이기 때문에 <code>median</code>으로 처리하도록 한다.</li>
+<li>이 때 <code>Neighborhood</code>에 따른 <code>median</code>으로 지정하는 코드를 작성한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">house_df[<span style="color:#e6db74">&#39;LotFrontage&#39;</span>] <span style="color:#f92672">=</span> house_df<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;Neighborhood&#39;</span>)[<span style="color:#e6db74">&#39;LotFrontage&#39;</span>]<span style="color:#f92672">.</span>transform(<span style="color:#66d9ef">lambda</span> x: x<span style="color:#f92672">.</span>fillna(x<span style="color:#f92672">.</span>median()))
+check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 비율:
+               Missing Ratio Data Type
+GarageQual         5.447071    object
+GarageFinish       5.447071    object
+GarageYrBlt        5.447071   float64
+GarageCond         5.447071    object
+GarageType         5.378554    object
+BsmtCond           2.809181    object
+BsmtExposure       2.809181    object
+BsmtQual           2.774923    object
+BsmtFinType2       2.740665    object
+BsmtFinType1       2.706406    object
+MasVnrType         0.822199    object
+MasVnrArea         0.787941   float64
+MSZoning           0.137033    object
+BsmtFullBath       0.068517   float64
+BsmtHalfBath       0.068517   float64
+Functional         0.068517    object
+Utilities          0.068517    object
+Exterior1st        0.034258    object
+Exterior2nd        0.034258    object
+SaleType           0.034258    object
+BsmtFinSF1         0.034258   float64
+BsmtFinSF2         0.034258   float64
+TotalBsmtSF        0.034258   float64
+Electrical         0.034258    object
+KitchenQual        0.034258    object
+GarageCars         0.034258   float64
+GarageArea         0.034258   float64
+BsmtUnfSF          0.034258   float64
+</code></pre>
+<ul>
+<li><code>GarageQual</code>, <code>GarageFinish</code>, <code>GarageCond</code>, <code>GarageType</code>의 데이터는 <code>object</code>이므로 모두 <code>None</code>으로 처리한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">for</span> fea <span style="color:#f92672">in</span> (<span style="color:#e6db74">&#39;GarageQual&#39;</span>, <span style="color:#e6db74">&#39;GarageFinish&#39;</span>, <span style="color:#e6db74">&#39;GarageCond&#39;</span>, <span style="color:#e6db74">&#39;GarageType&#39;</span>):
+  house_df[fea] <span style="color:#f92672">=</span> house_df[fea]<span style="color:#f92672">.</span>fillna(<span style="color:#e6db74">&#39;None&#39;</span>)
+
+check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 비율:
+               Missing Ratio Data Type
+GarageYrBlt        5.447071   float64
+BsmtCond           2.809181    object
+BsmtExposure       2.809181    object
+BsmtQual           2.774923    object
+BsmtFinType2       2.740665    object
+BsmtFinType1       2.706406    object
+MasVnrType         0.822199    object
+MasVnrArea         0.787941   float64
+MSZoning           0.137033    object
+BsmtFullBath       0.068517   float64
+BsmtHalfBath       0.068517   float64
+Functional         0.068517    object
+Utilities          0.068517    object
+TotalBsmtSF        0.034258   float64
+BsmtUnfSF          0.034258   float64
+BsmtFinSF2         0.034258   float64
+GarageArea         0.034258   float64
+BsmtFinSF1         0.034258   float64
+Electrical         0.034258    object
+KitchenQual        0.034258    object
+GarageCars         0.034258   float64
+Exterior2nd        0.034258    object
+Exterior1st        0.034258    object
+SaleType           0.034258    object
+</code></pre>
+<ul>
+<li><code>BsmtCond</code>, <code>BsmtExposure</code>, <code>BsmtQual</code>, <code>BsmtFinType2</code>, <code>BsmtFinType1</code>, <code>MasVnrType</code>는 범주형 데이터이므로 모두 <code>None</code>으로 처리한다.</li>
+<li><code>GarageYrBlt</code>, <code>MasVnrArea</code>, <code>BsmtFullBath</code>, <code>BsmtHalfBath</code>, <code>TotalBsmtSF</code>, <code>BsmtUnfSF</code>, <code>BsmtFinSF2</code>, <code>GarageArea</code>, <code>BsmtFinSF1</code>는 모두 숫자형 데이터이므로 모두 0으로 처리한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">for</span> fea <span style="color:#f92672">in</span> (<span style="color:#e6db74">&#39;BsmtCond&#39;</span>, <span style="color:#e6db74">&#39;BsmtExposure&#39;</span>, <span style="color:#e6db74">&#39;BsmtQual&#39;</span>, <span style="color:#e6db74">&#39;BsmtFinType2&#39;</span>, <span style="color:#e6db74">&#39;BsmtFinType1&#39;</span>, <span style="color:#e6db74">&#39;MasVnrType&#39;</span>):
+  house_df[fea] <span style="color:#f92672">=</span> house_df[fea]<span style="color:#f92672">.</span>fillna(<span style="color:#e6db74">&#39;None&#39;</span>)
+
+<span style="color:#66d9ef">for</span> fea <span style="color:#f92672">in</span> (<span style="color:#e6db74">&#39;GarageYrBlt&#39;</span>, <span style="color:#e6db74">&#39;MasVnrArea&#39;</span>, <span style="color:#e6db74">&#39;BsmtFullBath&#39;</span>, <span style="color:#e6db74">&#39;BsmtHalfBath&#39;</span>, <span style="color:#e6db74">&#39;TotalBsmtSF&#39;</span>, <span style="color:#e6db74">&#39;BsmtUnfSF&#39;</span>, <span style="color:#e6db74">&#39;BsmtFinSF2&#39;</span>, <span style="color:#e6db74">&#39;GarageArea&#39;</span>, <span style="color:#e6db74">&#39;BsmtFinSF1&#39;</span>, <span style="color:#e6db74">&#39;GarageCars&#39;</span>):
+  house_df[fea] <span style="color:#f92672">=</span> house_df[fea]<span style="color:#f92672">.</span>fillna(<span style="color:#ae81ff">0</span>)
+
+check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 비율:
+              Missing Ratio Data Type
+MSZoning          0.137033    object
+Functional        0.068517    object
+Utilities         0.068517    object
+SaleType          0.034258    object
+KitchenQual       0.034258    object
+Electrical        0.034258    object
+Exterior2nd       0.034258    object
+Exterior1st       0.034258    object
+</code></pre>
+<ul>
+<li>우선 <code>Utilities</code> 데이터는 <code>AllPub</code> 한개의 값만 있기 때문에 삭제한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">house_df <span style="color:#f92672">=</span> house_df<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;Utilities&#39;</span>], axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 비율:
+              Missing Ratio Data Type
+MSZoning          0.137033    object
+Functional        0.068517    object
+SaleType          0.034258    object
+KitchenQual       0.034258    object
+Electrical        0.034258    object
+Exterior2nd       0.034258    object
+Exterior1st       0.034258    object
+</code></pre>
+<ul>
+<li><code>MSZoning</code> 내 각 데이터의 빈도수를 확인해본다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">house_df[<span style="color:#e6db74">&#39;MSZoning&#39;</span>]<span style="color:#f92672">.</span>value_counts()
+</code></pre></div><pre><code>RL         2265
+RM          460
+FV          139
+RH           26
+C (all)      25
+Name: MSZoning, dtype: int64
+</code></pre>
+<ul>
+<li>위와 같이 <code>RL</code>의 빈도수가 매우 많기 때문에 <code>RL</code>, 즉 최빈값을 대체해서 넣도록 한다.</li>
+<li>나머지 결측치의 데이터를 위와 같이 대체해서 넣도록 한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">for</span> fea <span style="color:#f92672">in</span> (<span style="color:#e6db74">&#39;MSZoning&#39;</span>, <span style="color:#e6db74">&#39;Functional&#39;</span>, <span style="color:#e6db74">&#39;SaleType&#39;</span>, <span style="color:#e6db74">&#39;KitchenQual&#39;</span>, <span style="color:#e6db74">&#39;Electrical&#39;</span>, <span style="color:#e6db74">&#39;Exterior2nd&#39;</span>, <span style="color:#e6db74">&#39;Exterior1st&#39;</span>):
+  house_df[fea] <span style="color:#f92672">=</span> house_df[fea]<span style="color:#f92672">.</span>fillna(house_df[fea]<span style="color:#f92672">.</span>mode()[<span style="color:#ae81ff">0</span>])
+
+check_na(house_df)
+</code></pre></div><pre><code>결측치 데이터 컬럼과 비율:
+ Empty DataFrame
+Columns: [Missing Ratio, Data Type]
+Index: []
+</code></pre>
+<h3 id="4-데이터-변환">(4) 데이터 변환</h3>
+<ul>
+<li>몇몇 수치형 데이터 시각화를 진행해본다.
+<ul>
+<li>이 때, 유용한 시각화는 산점도를 그려보면 된다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;The data type of `MSSubClass` is:&#34;</span>, house_df[<span style="color:#e6db74">&#39;MSSubClass&#39;</span>]<span style="color:#f92672">.</span>dtypes)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;The data type of `OverallCond` is:&#34;</span>, house_df[<span style="color:#e6db74">&#39;OverallCond&#39;</span>]<span style="color:#f92672">.</span>dtypes)
+</code></pre></div><pre><code>The data type of `MSSubClass` is: int64
+The data type of `OverallCond` is: int64
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+
+fig, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5</span>))
+
+<span style="color:#75715e"># MSSubClass</span>
+ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>scatter(house_df[<span style="color:#e6db74">&#39;MSSubClass&#39;</span>], house_df[<span style="color:#e6db74">&#39;LotFrontage&#39;</span>])
+ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>grid(True)
+ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#34;LotFrontage ~ MSSubClass&#34;</span>)
+
+<span style="color:#75715e"># OverallCont</span>
+ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>scatter(house_df[<span style="color:#e6db74">&#39;OverallCond&#39;</span>], house_df[<span style="color:#e6db74">&#39;LotFrontage&#39;</span>])
+ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>grid(True)
+ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#34;LotFrontage ~ OverallCond&#34;</span>)
+
+plt<span style="color:#f92672">.</span>tight_layout()
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/img/kaggle/housing_price/Chapter_4_4_house_price_prediction_feature_engineering(3)/output_42_0.png" alt="png"></p>
+<ul>
+<li>분명 데이터타입은 수치형이지만, 막상 그래프는 제대로 된 산점도가 그려지지 않는다.
+<ul>
+<li>이런 경우에는 문자형으로 바꿔주는게 좋다.</li>
+<li>실제, <code>data_description.txt</code>를 보면, 수치형 데이터로 보기에는 무리가 있다.</li>
+<li>마찬가지로 <code>연도</code>, <code>월</code>의 경우도 숫자로 보기에는 무리가 있다.</li>
+</ul>
+</li>
+<li>따라서, 위 데이터를 모두 문자형으로 바꾼다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">for</span> fea <span style="color:#f92672">in</span> (<span style="color:#e6db74">&#39;MSSubClass&#39;</span>, <span style="color:#e6db74">&#39;OverallCond&#39;</span>, <span style="color:#e6db74">&#39;YrSold&#39;</span>, <span style="color:#e6db74">&#39;MoSold&#39;</span>):
+  house_df[fea] <span style="color:#f92672">=</span> house_df[fea]<span style="color:#f92672">.</span>apply(str)
+</code></pre></div><h3 id="5-label-encoding-vs-one-hot-encoding">(5) Label Encoding vs One-Hot Encoding</h3>
+<p><img src="/img/kaggle/housing_price/Chapter_4_4_house_price_prediction_feature_engineering(2)/label_onehot_encoding.jpeg" alt="png"></p>
+<ul>
+<li>두 방법 모두 문자형 데이터를 수치형으로 바꿔주는 것이 주 목적이다.
+<ul>
+<li>머신러닝 알고리즘은 수식으로 되어 있기 때문에, 수치형으로 바꿔주는 것이다.</li>
+</ul>
+</li>
+<li>그런데, 데이터에 대한 적절한 이해 없이 적용하면 안된다.</li>
+<li>그러면, 언제 사용하는 것이 좋을까? 그럴려면, 우선 문자형 데이터에 대한 이해가 필요하다.
+<ul>
+<li>문자형 데이터가 명목형(예: 국가, 시도별 등)인 경우에는 <code>One-Hot Encoding</code>을 사용한다.</li>
+<li>문자형 데이터가 순서형(예: 학력, 등급)인 경우에는 <code>Label Encoding</code>을 사용한다.</li>
+</ul>
+</li>
+<li>따라서, 위 두개를 혼용해서 적정하게 사용해야 한다. 즉, 전체 문자형 데이터를 무조건 <code>One-Hot Encoding</code> 또는 <code>Label Encoding</code>을 적용해서는 안된다.</li>
+<li>보다 자세한 내용은 다음 글을 참조하기를 바란다.
+<ul>
+<li><a href="https://www.analyticsvidhya.com/blog/2020/03/one-hot-encoding-vs-label-encoding-using-scikit-learn/">One-Hot Encoding vs. Label Encoding using Scikit-Learn</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="a-label-encoding">(A) Label Encoding</h4>
+<ul>
+<li>먼저 Label Encoding을 적용하는 소스코드를 만든다.</li>
+<li>먼저 간단한 코드로 <code>LabelEncoder</code>를 익히도록 한다.
+<ul>
+<li>sklearn 공식 홈페이지: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelEncoder.html">sklearn.preprocessing.LabelEncoder</a></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.preprocessing <span style="color:#f92672">import</span> LabelEncoder
+
+cities <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;서울&#34;</span>, <span style="color:#e6db74">&#34;경기&#34;</span>, <span style="color:#e6db74">&#34;인천&#34;</span>, <span style="color:#e6db74">&#34;서울&#34;</span>, <span style="color:#e6db74">&#34;부산&#34;</span>]
+lbl_temp <span style="color:#f92672">=</span> LabelEncoder()
+lbl_temp<span style="color:#f92672">.</span>fit(cities)
+labels <span style="color:#f92672">=</span> lbl_temp<span style="color:#f92672">.</span>transform(cities)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;인코딩 변환값:&#34;</span>, labels)
+</code></pre></div><pre><code>인코딩 변환값: [2 0 3 2 1]
+</code></pre>
+<ul>
+<li>위 코드를 토대로 이제 각 변수에 위 코드를 적용하도록 한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.preprocessing <span style="color:#f92672">import</span> LabelEncoder
+
+features <span style="color:#f92672">=</span> (<span style="color:#e6db74">&#39;FireplaceQu&#39;</span>, <span style="color:#e6db74">&#39;BsmtQual&#39;</span>, <span style="color:#e6db74">&#39;BsmtCond&#39;</span>, <span style="color:#e6db74">&#39;GarageQual&#39;</span>, <span style="color:#e6db74">&#39;GarageCond&#39;</span>, 
+        <span style="color:#e6db74">&#39;ExterQual&#39;</span>, <span style="color:#e6db74">&#39;ExterCond&#39;</span>,<span style="color:#e6db74">&#39;HeatingQC&#39;</span>, <span style="color:#e6db74">&#39;PoolQC&#39;</span>, <span style="color:#e6db74">&#39;KitchenQual&#39;</span>, <span style="color:#e6db74">&#39;BsmtFinType1&#39;</span>, 
+        <span style="color:#e6db74">&#39;BsmtFinType2&#39;</span>, <span style="color:#e6db74">&#39;Functional&#39;</span>, <span style="color:#e6db74">&#39;Fence&#39;</span>, <span style="color:#e6db74">&#39;BsmtExposure&#39;</span>, <span style="color:#e6db74">&#39;GarageFinish&#39;</span>, <span style="color:#e6db74">&#39;LandSlope&#39;</span>,
+        <span style="color:#e6db74">&#39;LotShape&#39;</span>, <span style="color:#e6db74">&#39;PavedDrive&#39;</span>, <span style="color:#e6db74">&#39;Street&#39;</span>, <span style="color:#e6db74">&#39;Alley&#39;</span>, <span style="color:#e6db74">&#39;CentralAir&#39;</span>, <span style="color:#e6db74">&#39;MSSubClass&#39;</span>, <span style="color:#e6db74">&#39;OverallCond&#39;</span>, 
+        <span style="color:#e6db74">&#39;YrSold&#39;</span>, <span style="color:#e6db74">&#39;MoSold&#39;</span>)
+
+<span style="color:#66d9ef">for</span> fea <span style="color:#f92672">in</span> features:
+  <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;The current feature is:&#34;</span>, fea)
+  lbl <span style="color:#f92672">=</span> LabelEncoder() 
+  lbl<span style="color:#f92672">.</span>fit(list(house_df[fea]<span style="color:#f92672">.</span>values))
+  house_df[fea] <span style="color:#f92672">=</span> lbl<span style="color:#f92672">.</span>transform(list(house_df[fea]<span style="color:#f92672">.</span>values))
+  unique_value <span style="color:#f92672">=</span> house_df[fea]<span style="color:#f92672">.</span>unique() 
+  <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;현재 인코딩 클래스&#34;</span>, lbl<span style="color:#f92672">.</span>classes_)
+  <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;현재 인코딩 변환값&#34;</span>, unique_value)
+
+<span style="color:#75715e"># shape        </span>
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Shape house_df: {}&#39;</span><span style="color:#f92672">.</span>format(house_df<span style="color:#f92672">.</span>shape))
+</code></pre></div><pre><code>The current feature is: FireplaceQu
+현재 인코딩 클래스 ['Ex' 'Fa' 'Gd' 'None' 'Po' 'TA']
+현재 인코딩 변환값 [3 5 2 1 0 4]
+The current feature is: BsmtQual
+현재 인코딩 클래스 ['Ex' 'Fa' 'Gd' 'None' 'TA']
+현재 인코딩 변환값 [2 4 0 3 1]
+The current feature is: BsmtCond
+현재 인코딩 클래스 ['Fa' 'Gd' 'None' 'Po' 'TA']
+현재 인코딩 변환값 [4 1 2 0 3]
+The current feature is: GarageQual
+현재 인코딩 클래스 ['Ex' 'Fa' 'Gd' 'None' 'Po' 'TA']
+현재 인코딩 변환값 [5 1 2 3 0 4]
+The current feature is: GarageCond
+현재 인코딩 클래스 ['Ex' 'Fa' 'Gd' 'None' 'Po' 'TA']
+현재 인코딩 변환값 [5 1 3 2 4 0]
+The current feature is: ExterQual
+현재 인코딩 클래스 ['Ex' 'Fa' 'Gd' 'TA']
+현재 인코딩 변환값 [2 3 0 1]
+The current feature is: ExterCond
+현재 인코딩 클래스 ['Ex' 'Fa' 'Gd' 'Po' 'TA']
+현재 인코딩 변환값 [4 2 1 3 0]
+The current feature is: HeatingQC
+현재 인코딩 클래스 ['Ex' 'Fa' 'Gd' 'Po' 'TA']
+현재 인코딩 변환값 [0 2 4 1 3]
+The current feature is: PoolQC
+현재 인코딩 클래스 ['Ex' 'Fa' 'Gd' 'None']
+현재 인코딩 변환값 [3 0 1 2]
+The current feature is: KitchenQual
+현재 인코딩 클래스 ['Ex' 'Fa' 'Gd' 'TA']
+현재 인코딩 변환값 [2 3 0 1]
+The current feature is: BsmtFinType1
+현재 인코딩 클래스 ['ALQ' 'BLQ' 'GLQ' 'LwQ' 'None' 'Rec' 'Unf']
+현재 인코딩 변환값 [2 0 6 5 1 4 3]
+The current feature is: BsmtFinType2
+현재 인코딩 클래스 ['ALQ' 'BLQ' 'GLQ' 'LwQ' 'None' 'Rec' 'Unf']
+현재 인코딩 변환값 [6 1 4 0 5 3 2]
+The current feature is: Functional
+현재 인코딩 클래스 ['Maj1' 'Maj2' 'Min1' 'Min2' 'Mod' 'Sev' 'Typ']
+현재 인코딩 변환값 [6 2 0 3 4 1 5]
+The current feature is: Fence
+현재 인코딩 클래스 ['GdPrv' 'GdWo' 'MnPrv' 'MnWw' 'None']
+현재 인코딩 변환값 [4 2 1 0 3]
+The current feature is: BsmtExposure
+현재 인코딩 클래스 ['Av' 'Gd' 'Mn' 'No' 'None']
+현재 인코딩 변환값 [3 1 2 0 4]
+The current feature is: GarageFinish
+현재 인코딩 클래스 ['Fin' 'None' 'RFn' 'Unf']
+현재 인코딩 변환값 [2 3 0 1]
+The current feature is: LandSlope
+현재 인코딩 클래스 ['Gtl' 'Mod' 'Sev']
+현재 인코딩 변환값 [0 1 2]
+The current feature is: LotShape
+현재 인코딩 클래스 ['IR1' 'IR2' 'IR3' 'Reg']
+현재 인코딩 변환값 [3 0 1 2]
+The current feature is: PavedDrive
+현재 인코딩 클래스 ['N' 'P' 'Y']
+현재 인코딩 변환값 [2 0 1]
+The current feature is: Street
+현재 인코딩 클래스 ['Grvl' 'Pave']
+현재 인코딩 변환값 [1 0]
+The current feature is: Alley
+현재 인코딩 클래스 ['Grvl' 'None' 'Pave']
+현재 인코딩 변환값 [1 0 2]
+The current feature is: CentralAir
+현재 인코딩 클래스 ['N' 'Y']
+현재 인코딩 변환값 [1 0]
+The current feature is: MSSubClass
+현재 인코딩 클래스 ['120' '150' '160' '180' '190' '20' '30' '40' '45' '50' '60' '70' '75'
+ '80' '85' '90']
+현재 인코딩 변환값 [10  5 11  9  4  8 15  0  6 14 13  2 12  3  7  1]
+The current feature is: OverallCond
+현재 인코딩 클래스 ['1' '2' '3' '4' '5' '6' '7' '8' '9']
+현재 인코딩 변환값 [4 7 5 6 3 1 2 8 0]
+The current feature is: YrSold
+현재 인코딩 클래스 ['2006' '2007' '2008' '2009' '2010']
+현재 인코딩 변환값 [2 1 0 3 4]
+The current feature is: MoSold
+현재 인코딩 클래스 ['1' '10' '11' '12' '2' '3' '4' '5' '6' '7' '8' '9']
+현재 인코딩 변환값 [ 4  7 11  3  1 10  2  6  0  9  5  8]
+Shape house_df: (2919, 78)
+</code></pre>
+<h4 id="b-one-hot-encoding">(B) One-Hot Encoding</h4>
+<ul>
+<li>이번에는 <code>One-Hot Encoding</code>을 적용하는 소스코드를 만든다.
+<ul>
+<li>sklearn 공식 홈페이지: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html#sklearn.preprocessing.OneHotEncoder">sklearn.preprocessing.OneHotEncoder</a></li>
+</ul>
+</li>
+<li>그런데, 보통 Label-Encoding을 한 후에 원-핫 인코딩을 적용하는 것이 일반적이다.</li>
+<li>그러나 pandas 데이터를 활용할 경우 <code>pd.get_dummies(dataset)</code>를 활용한다.
+<ul>
+<li>본 코드에서는 <code>pd.get_dummies(dataset)</code>를 활용한다.</li>
+<li>pandas 공식 홈페이지: <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.get_dummies.html">pandas.get_dummies</a></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+
+cities <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;서울&#34;</span>, <span style="color:#e6db74">&#34;경기&#34;</span>, <span style="color:#e6db74">&#34;인천&#34;</span>, <span style="color:#e6db74">&#34;서울&#34;</span>, <span style="color:#e6db74">&#34;부산&#34;</span>]
+temp_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74">&#34;시도&#34;</span>: cities})
+pd<span style="color:#f92672">.</span>get_dummies(temp_df)
+</code></pre></div><style>
+    #customers {
+      font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+    }
+
+    #customers td,
+    #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    #customers tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    #customers tr:hover {
+      background-color: #ddd;
+    }
+    #customers th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: rgb(175, 107, 76);
+      color: white;
+    }
+  </style>
+  <div style="width:100%; height:400px; overflow:auto">
+    <table border="1" id="customers">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>시도_경기</th>
+      <th>시도_부산</th>
+      <th>시도_서울</th>
+      <th>시도_인천</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<ul>
+<li>
+<p>그러나, 이 부분은 Feature Scaling 이후에 진행해도록 한다.</p>
+</li>
+<li>
+<p>One-Hot Encoding은 가장 마지막으로 해주는 것이 좋다.</p>
+</li>
+<li>
+<p>데이터를 추가한다.</p>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">house_df[<span style="color:#e6db74">&#39;TotalSF&#39;</span>] <span style="color:#f92672">=</span> house_df[<span style="color:#e6db74">&#39;TotalBsmtSF&#39;</span>] <span style="color:#f92672">+</span> house_df[<span style="color:#e6db74">&#39;1stFlrSF&#39;</span>] <span style="color:#f92672">+</span> house_df[<span style="color:#e6db74">&#39;2ndFlrSF&#39;</span>]
+</code></pre></div><h3 id="6-feature-scaling">(6) Feature Scaling</h3>
+<ul>
+<li><code>Label Encoding</code>과 <code>One-Hot Encoding</code>을 통해서 범주형 데이터를 다룬다면, 이제 수치형 데이터를 다뤄야 한다.</li>
+<li>몇몇 머신러닝 알고리즘은 수치형 데이터를 다룰 때 특히, 엄격하게 다뤄야 할 필요가 있다.
+<ul>
+<li>수치형 데이터는 매우 자주 <code>이상치(=Outliers)</code>를 가지고 있다 (이상치에 대한 설명은 쉽게 검색해서 찾을 수 있어서, 해당 내용은 생략).</li>
+<li>이러한 이상치를 다룰 때, 주로 쓰이는 기법이 <code>Min-Max Scaling = Normalization</code>, <code>Centering = Standardization</code>, <code>Skewness = Box Transformation</code>등이 있다.</li>
+</ul>
+</li>
+</ul>
+<h4 id="a-normalization정규화">(A) Normalization(정규화)</h4>
+<ul>
+<li>보통 <code>Min-Max Scaling</code>으로 불리우기도 한다.</li>
+<li>기존 수치형 데이터의 범위를 <code>[0, 1]</code>사이로 조정한다.</li>
+<li>시각화로 파악을 한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+<span style="color:#f92672">from</span> sklearn.preprocessing <span style="color:#f92672">import</span> minmax_scale
+
+<span style="color:#75715e"># 10000개의 데이터를 생성한다. </span>
+raw_data <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>exponential(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">10000</span>)
+
+<span style="color:#75715e"># min-max scaling을 적용한다. </span>
+min_max_data <span style="color:#f92672">=</span> minmax_scale(raw_data)
+
+<span style="color:#75715e"># 두개의 그래프를 그린 후 확인한다. </span>
+fig, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5</span>))
+ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>hist(raw_data, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;y&#39;</span>)
+ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>grid(True)
+ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#34;raw Data&#34;</span>)
+
+ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>hist(min_max_data, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;g&#39;</span>)
+ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>grid(True)
+ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#34;Scaled data&#34;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/img/kaggle/housing_price/Chapter_4_4_house_price_prediction_feature_engineering(3)/output_57_0.png" alt="png"></p>
+<ul>
+<li>
+<p>위 그래프에서 알 수 있는 것은 세가지가 있다.</p>
+<ul>
+<li>정규화를 진행할 경우, X축의 값이 <code>[0,1]</code>로 바뀌었다.</li>
+<li>데이터 정규화를 해도 위치가 변하는 것은 아니다.</li>
+<li>범위가 바뀌었기 때문에 해석의 관점에서는 손실이 있다.</li>
+</ul>
+</li>
+<li>
+<p>공식은 다음과 같이 구한다.
+$$ x_{normalized} = \frac{x - x_{min}}{x_{max} - x_{min}} $$</p>
+</li>
+<li>
+<p><code>sklearn</code> 패키지에는 <code>MinMaxScaler</code>를 사용하기도 한다.</p>
+<ul>
+<li>차이점은 <code>Transformer API</code> 활용하느냐 안하느냐의 차이가 있을 뿐이다.</li>
+<li>자세한 것은 두개의 공식 홈페이지 문서를 확인한다.
+<ul>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.minmax_scale.html#sklearn.preprocessing.minmax_scale">sklearn.preprocessing.minmax_scale</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html#sklearn.preprocessing.MinMaxScaler">sklearn.preprocessing.MinMaxScaler</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="b-standardization표준화">(B) Standardization(표준화)</h4>
+<ul>
+<li>어떤 책에서는 <code>Centering</code>으로 표현되기도 한다.</li>
+<li><code>정규화</code>하고는 조금 다르다.</li>
+<li>평균이 <code>0</code>이고 표준편차가 <code>1</code>인 가우시안 정규분포(Gaussian Distribution)로 변환하는 것을 의미한다.</li>
+<li>시각화로 구체적으로 확인해본다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+<span style="color:#f92672">from</span> scipy <span style="color:#f92672">import</span> stats
+
+np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">1</span>)
+
+<span style="color:#75715e"># 10000개의 데이터를 생성한다. </span>
+raw_data <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>exponential(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">10000</span>) <span style="color:#f92672">+</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>exponential(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">10000</span>) 
+num_bins <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>
+
+<span style="color:#75715e"># raw_data</span>
+raw_mu <span style="color:#f92672">=</span> raw_data<span style="color:#f92672">.</span>mean()  <span style="color:#75715e"># mean of distribution</span>
+raw_sigma <span style="color:#f92672">=</span> raw_data<span style="color:#f92672">.</span>std()  <span style="color:#75715e"># standard deviation of distribution</span>
+raw_x <span style="color:#f92672">=</span> raw_mu <span style="color:#f92672">+</span> raw_sigma <span style="color:#f92672">*</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>randn(<span style="color:#ae81ff">10000</span>)
+
+
+<span style="color:#75715e"># scaled_data</span>
+scaled_data <span style="color:#f92672">=</span> stats<span style="color:#f92672">.</span>zscore(raw_data)
+scaled_mu <span style="color:#f92672">=</span> scaled_data<span style="color:#f92672">.</span>mean()  <span style="color:#75715e"># mean of distribution</span>
+scaled_sigma <span style="color:#f92672">=</span> scaled_data<span style="color:#f92672">.</span>std()  <span style="color:#75715e"># standard deviation of distribution</span>
+scaled_x <span style="color:#f92672">=</span> scaled_mu <span style="color:#f92672">+</span> scaled_sigma <span style="color:#f92672">*</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>randn(<span style="color:#ae81ff">10000</span>)
+
+fig, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5</span>))
+
+<span style="color:#75715e"># raw data</span>
+n, bins, patches <span style="color:#f92672">=</span> ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>hist(raw_x, num_bins, density<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+raw_y <span style="color:#f92672">=</span> ((<span style="color:#ae81ff">1</span> <span style="color:#f92672">/</span> (np<span style="color:#f92672">.</span>sqrt(<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> np<span style="color:#f92672">.</span>pi) <span style="color:#f92672">*</span> raw_sigma)) <span style="color:#f92672">*</span>
+     np<span style="color:#f92672">.</span>exp(<span style="color:#f92672">-</span><span style="color:#ae81ff">0.5</span> <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">/</span> raw_sigma <span style="color:#f92672">*</span> (bins <span style="color:#f92672">-</span> raw_mu))<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>))
+
+ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>plot(bins, raw_y, <span style="color:#e6db74">&#39;--&#39;</span>)
+ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#39;Smarts&#39;</span>)
+ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#39;Probability density&#39;</span>)
+ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;Raw Data Histogram of IQ: $\mu={}$, $\sigma={}$&#39;</span><span style="color:#f92672">.</span>format(round(raw_mu, <span style="color:#ae81ff">2</span>), round(raw_sigma, <span style="color:#ae81ff">2</span>)))
+
+<span style="color:#75715e"># scaled data</span>
+n, bins, patches <span style="color:#f92672">=</span> ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>hist(scaled_x, num_bins, density<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+scaled_y <span style="color:#f92672">=</span> ((<span style="color:#ae81ff">1</span> <span style="color:#f92672">/</span> (np<span style="color:#f92672">.</span>sqrt(<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> np<span style="color:#f92672">.</span>pi) <span style="color:#f92672">*</span> scaled_sigma)) <span style="color:#f92672">*</span>
+     np<span style="color:#f92672">.</span>exp(<span style="color:#f92672">-</span><span style="color:#ae81ff">0.5</span> <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">/</span> scaled_sigma <span style="color:#f92672">*</span> (bins <span style="color:#f92672">-</span> scaled_mu))<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>))
+
+ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>plot(bins, scaled_y, <span style="color:#e6db74">&#39;--&#39;</span>)
+ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#39;Smarts&#39;</span>)
+ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#39;Probability density&#39;</span>)
+ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;Scaled Data Histogram of IQ: $\mu={:.2f}$, $\sigma={:.2f}$&#39;</span><span style="color:#f92672">.</span>format(abs(scaled_mu), scaled_sigma))
+
+<span style="color:#75715e"># Tweak spacing to prevent clipping of ylabel</span>
+fig<span style="color:#f92672">.</span>tight_layout()
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/img/kaggle/housing_price/Chapter_4_4_house_price_prediction_feature_engineering(3)/output_60_0.png" alt="png"></p>
+<ul>
+<li>위 시각화 소스코드보다는 내용을 보자.
+<ul>
+<li>임의의 Raw 데이터의 평균은 <code>2.0</code>이고, 표준편차는 <code>1.39</code>으로 확인된다.</li>
+<li>그러나, <code>Scaled</code>한 경우에는 평균은 <code>0</code>이고, 표준편차는 <code>1.0</code>로 변동된 것을 알 수 있다.</li>
+<li>공식은 다음과 같다.</li>
+</ul>
+</li>
+</ul>
+<p>$$ x_{standardized} = \frac{x - \mu}{\sigma} $$</p>
+<ul>
+<li>$\mu$는 <code>평균</code>을 의미하며, $\sigma$는 <code>표준편차</code>를 의미한다.</li>
+<li><code>Sklearn</code>에서는 <code>StandardScaler()</code> 함수를 사용한다.
+<ul>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html">sklearn.preprocessing.StandardScaler</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="c-skewness--log-transformation">(C) Skewness &amp; Log Transformation</h4>
+<ul>
+<li>수치형 데이터의 또다른 문제는 <code>Skewness(왜도)</code>에 대한 처리법이다.</li>
+<li>왜도에 관한 그래프를 먼저 작성해본다.</li>
+<li><code>SalePrice</code>가 대표적인 예이기 때문에 직접 그래프를 작성한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> scipy <span style="color:#f92672">import</span> stats
+<span style="color:#f92672">from</span> scipy.stats <span style="color:#f92672">import</span> norm, skew <span style="color:#75715e">#for some statistics</span>
+<span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
+
+(norm_mu, norm_sigma) <span style="color:#f92672">=</span> norm<span style="color:#f92672">.</span>fit(y_train)
+<span style="color:#66d9ef">print</span>( <span style="color:#e6db74">&#39;norm_mu = {:.2f} and norm_sigma = {:.2f}&#39;</span><span style="color:#f92672">.</span>format(norm_mu, norm_sigma))
+
+fig, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(ncols<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5</span>))
+sns<span style="color:#f92672">.</span>distplot(y_train, ax <span style="color:#f92672">=</span> ax[<span style="color:#ae81ff">0</span>])
+sns<span style="color:#f92672">.</span>distplot(y_train, ax <span style="color:#f92672">=</span> ax[<span style="color:#ae81ff">1</span>], fit<span style="color:#f92672">=</span>norm)
+plt<span style="color:#f92672">.</span>legend([<span style="color:#e6db74">&#39;Normal dist. </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">($\mu=$ {:.2f} </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74"> $\sigma=$ {:.2f} )&#39;</span><span style="color:#f92672">.</span>format(norm_mu, norm_sigma)],
+            loc<span style="color:#f92672">=</span>[<span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.8</span>])
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><pre><code>norm_mu = 180921.20 and norm_sigma = 79415.29
+</code></pre>
+<p><img src="/img/kaggle/housing_price/Chapter_4_4_house_price_prediction_feature_engineering(3)/output_63_1.png" alt="png"></p>
+<ul>
+<li><code>SalePrice</code>의 그래프는 <code>right skewed</code>라고 불리운다.
+<ul>
+<li>데이터 분석 시에는 통상적으로는 이렇게 자료가 왼쪽이 많고, 오른쪽이 적은 형태의 데이터가 많다.</li>
+</ul>
+</li>
+<li>이러한 자료들은 정규분포를 따르지 않는다고 판단하며, 선형모델에는 유의한 결과가 나오지 않기 때문에 통상적으로 <code>log Transformation</code>을 취해준다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">temp_y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>log1p(y_train)
+
+(norm_mu, norm_sigma) <span style="color:#f92672">=</span> norm<span style="color:#f92672">.</span>fit(temp_y)
+<span style="color:#66d9ef">print</span>( <span style="color:#e6db74">&#39;norm_mu = {:.2f} and norm_sigma = {:.2f}&#39;</span><span style="color:#f92672">.</span>format(norm_mu, norm_sigma))
+
+fig, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(ncols<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5</span>))
+sns<span style="color:#f92672">.</span>distplot(temp_y, ax <span style="color:#f92672">=</span> ax[<span style="color:#ae81ff">0</span>])
+sns<span style="color:#f92672">.</span>distplot(temp_y, ax <span style="color:#f92672">=</span> ax[<span style="color:#ae81ff">1</span>], fit<span style="color:#f92672">=</span>norm)
+plt<span style="color:#f92672">.</span>legend([<span style="color:#e6db74">&#39;Normal dist. </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">($\mu=$ {:.2f} </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74"> $\sigma=$ {:.2f} )&#39;</span><span style="color:#f92672">.</span>format(norm_mu, norm_sigma)],
+            loc<span style="color:#f92672">=</span>[<span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.8</span>])
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><pre><code>norm_mu = 12.02 and norm_sigma = 0.40
+</code></pre>
+<p><img src="/img/kaggle/housing_price/Chapter_4_4_house_price_prediction_feature_engineering(3)/output_65_1.png" alt="png"></p>
+<ul>
+<li><code>np.log1p()</code> 함수를 사용해서 <code>Log-Transformation</code>을 적용하였다.</li>
+<li>문제는 이러한 수치형 데이터를 하나하나 확인하면서 진행할 수 없다.
+<ul>
+<li>따라서, 보통의 경우 <code>skew</code>를 확인한 뒤, 해당되는 변수만 뽑아서 처리하는 작업을 진행하게 된다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">numeric_features <span style="color:#f92672">=</span> house_df<span style="color:#f92672">.</span>dtypes[house_df<span style="color:#f92672">.</span>dtypes <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;object&#34;</span>]<span style="color:#f92672">.</span>index
+
+skewed_feats <span style="color:#f92672">=</span> house_df[numeric_features]<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: skew(x<span style="color:#f92672">.</span>dropna()))<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">Skew in numerical features: </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+skewness <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74">&#39;Skew&#39;</span> :skewed_feats})
+skewness<span style="color:#f92672">.</span>head
+</code></pre></div><pre><code>Skew in numerical features: 
+
+
+
+
+
+
+&lt;bound method NDFrame.head of                     Skew
+MiscVal        21.947195
+PoolArea       16.898328
+LotArea        12.822431
+LowQualFinSF   12.088761
+3SsnPorch      11.376065
+LandSlope       4.975157
+KitchenAbvGr    4.302254
+BsmtFinSF2      4.146143
+EnclosedPorch   4.003891
+ScreenPorch     3.946694
+BsmtHalfBath    3.931594
+MasVnrArea      2.613592
+OpenPorchSF     2.535114
+WoodDeckSF      1.842433
+TotalSF         1.511479
+LotFrontage     1.505704
+1stFlrSF        1.469604
+BsmtFinSF1      1.425230
+GrLivArea       1.269358
+TotalBsmtSF     1.156894
+BsmtUnfSF       0.919339
+2ndFlrSF        0.861675
+TotRmsAbvGrd    0.758367
+Fireplaces      0.733495
+HalfBath        0.694566
+BsmtFullBath    0.624832
+OverallCond     0.570312
+HeatingQC       0.486656
+FireplaceQu     0.333787
+BedroomAbvGr    0.326324
+GarageArea      0.239257
+OverallQual     0.197110
+FullBath        0.167606
+MSSubClass      0.138396
+YrSold          0.132399
+BsmtFinType1    0.084633
+GarageCars     -0.219581
+YearRemodAdd   -0.451020
+BsmtQual       -0.488273
+YearBuilt      -0.599806
+GarageFinish   -0.608033
+LotShape       -0.617690
+MoSold         -0.645257
+Alley          -0.652040
+BsmtExposure   -1.114856
+KitchenQual    -1.448023
+ExterQual      -1.801409
+Fence          -1.993777
+ExterCond      -2.497719
+BsmtCond       -2.862585
+PavedDrive     -2.979084
+BsmtFinType2   -3.044328
+GarageQual     -3.074152
+CentralAir     -3.459022
+GarageCond     -3.595790
+GarageYrBlt    -3.906205
+Functional     -4.055757
+Street        -15.500133
+PoolQC        -20.723994&gt;
+</code></pre>
+<h4 id="d-skewness--box-cox-transformation">(D) Skewness &amp; Box-Cox Transformation</h4>
+<ul>
+<li><code>Skewness</code>를 보정하는 또다른 방법론 중의 하나는 <code>Box-Cox Transformation</code>을 수행하는 것이다.
+<ul>
+<li>Box-Cox의 기본적인 원리는 <code>Skeness</code>의 수치를 진단한 후, 왜도가 높은 부분만 가려내어 필터링을 한다는 것이 주 목적이다.</li>
+<li><code>scipy</code> 모듈 안에 <code>boxcox1p()</code> 함수를 사용한다.</li>
+<li><code>Box-Cox</code>에 대한 설명은 다음 자료를 참조한다.
+<ul>
+<li><a href="http://onlinestatbook.com/2/transformations/box-cox.html">Box-Cox Transformations</a></li>
+</ul>
+</li>
+<li>공식은 크게 2개로 구분된다.
+<ul>
+<li>$x^{*} = \frac{x^{\lambda}-1}{\lambda} , \text{ if } \lambda \neq 0 $</li>
+<li>$x^{*} =  log(x) ,  \text{ if }  \lambda = 0$</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>$\lambda = 0$ 이면 <code>log-Transformation</code>을 수행한다.</li>
+<li>$\lambda \neq 0$ 이면 <code>Box-Cox Transformation</code>을 수행한다.
+<ul>
+<li>이 때, <code>boxcox1p()</code> 함수가 사용된다는 것을 의미한다.</li>
+<li><a href="https://docs.scipy.org/doc/scipy-0.19.0/reference/generated/scipy.special.boxcox1p.html">boxcox1p</a> 함수에 대한 구체적인 설명은 공식홈페이지를 참조한다.</li>
+</ul>
+</li>
+<li>물론 $\lambda = 2$인 경우, $\lambda = 0.5$인 경우, $\lambda = -1$인 경우에도 다른 적용법이 있기도 하다. 그러나, 여기에서는 그러한 구체적인 적용법은 <code>Box-Cox(1964)</code>의 논문을 참조하기를 바란다.
+<ul>
+<li>Reference: <a href="https://www.researchgate.net/publication/224839719_An_Analysis_of_Transformations_with_Discussion">An Analysis of Transformations (with Discussion)</a></li>
+</ul>
+</li>
+<li><code>sklearn</code>에서는 <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PowerTransformer.html">PowerTransformer</a>를 활용할 수도 있다.</li>
+<li>이제 구체적으로 코드를 작성한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">skewness <span style="color:#f92672">=</span> skewness[abs(skewness) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.75</span>]
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;박스-콕스 변환이 필요한 수치형 변수의 개수는 {}으로 확인된다. &#34;</span><span style="color:#f92672">.</span>format(skewness<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]))
+</code></pre></div><pre><code>박스-콕스 변환이 필요한 수치형 변수의 개수는 59으로 확인된다. 
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> scipy.special <span style="color:#f92672">import</span> boxcox1p
+skewed_features <span style="color:#f92672">=</span> skewness<span style="color:#f92672">.</span>index
+lam <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.15</span>
+<span style="color:#66d9ef">for</span> fea <span style="color:#f92672">in</span> skewed_features:
+    house_df[fea] <span style="color:#f92672">=</span> boxcox1p(house_df[fea], lam)
+</code></pre></div><h4 id="e-one-hot-encoding">(E) One-hot Encoding</h4>
+<ul>
+<li>이제 마지막으로 원핫 인코딩을 진행한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;원핫 인코딩 전의 Shape:&#34;</span>, house_df<span style="color:#f92672">.</span>shape)
+house_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>get_dummies(house_df)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;원핫 인코딩 후의 Shape:&#34;</span>, house_df<span style="color:#f92672">.</span>shape)
+</code></pre></div><pre><code>원핫 인코딩 전의 Shape: (2919, 79)
+원핫 인코딩 후의 Shape: (2919, 221)
+</code></pre>
+<h2 id="iv-결론">IV. 결론</h2>
+<ul>
+<li><code>Feature Engineering</code>의 이론적인 개념을 배웠다.
+<ul>
+<li>실제 각각에 대해서 깊이 배우고자 한다면, <code>Feature Engineering</code> 교재를 읽으시는 것을 추천한다.</li>
+</ul>
+</li>
+<li><code>결측치</code>를 채우는 방법에 대해서 배웠다</li>
+<li><code>데이터 변환</code> &amp; Label Encoding과 One-Hot Encoding 방법에 대해 기술 하였다.
+<ul>
+<li>아직, 각각의 인코딩 방법이 각각 어떠한 머신러닝 알고리즘에 유용한지는 배우지는 않았다. 이는 추후에 다시 정리할 예정이다.</li>
+</ul>
+</li>
+<li>수치형 데이터에 변환을 주는 작업을 진행하였다.
+<ul>
+<li>정규화, 표준화의 차이점을 이해한다.</li>
+<li>Box-Cox에 대해 이해하고 코드를 적용하였다.</li>
+</ul>
+</li>
+<li><code>Feature Engineering</code>이 끝나면 이제 본격적으로 모델링 작업을 수행하도록 한다.</li>
+</ul>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="tag">머신러닝</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/python/" rel="tag">Python</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/machine-learning/" rel="tag">Machine Learning</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name"></span>
+	</div>
+	<div class="authorbox__description">
+		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.
+	</div>
+</div>
+
+
+<section class="comments">
+	<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-chloevan-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH…" value="" name="q" aria-label="SEARCH…">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://dschloe.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/settings/postgresql_install/">Postgre SQL Installation on MacOS M1</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/pandas/dictionary_replace/">Pandas 속도 비교 - with or without Dictionary</a></li>
+			<li class="widget__item"><a class="widget__link" href="/mlops/wandb/install/">[MLOps] Weight &amp; Biases 소개 및 사용 방법</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/pandas/loc_replace_2/">Pandas 속도 비교 - loc vs replace(2)</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/pandas/loc_replace/">Pandas 속도 비교 - loc vs replace</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/acea/">ACEA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/amazon-web-service/">Amazon Web Service</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/astype/">astype</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws/">AWS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">bar chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-data-transformation/">Basic Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basics/">Basics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-machine-learning/">BigQuery with Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-python/">BigQuery with Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blog/">Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bupar/">bupaR</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/categorical-features/">Categorical Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/class/">Class</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/cloud-build/">Cloud Build</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/colab/">Colab </a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conditional-statements/">Conditional Statements</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/corona-shiny-app/">Corona Shiny App</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dacon/">dacon</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-handling/">Data Handling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-science-project/">Data Science Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-structures/">Data Structures</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualization/">Data Visualization</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decorators/">Decorators</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deployment/">Deployment</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/design/">Design</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development/">Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development-settings/">Development Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dictionary/">Dictionary</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/discrete-features/">Discrete Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/docker/">Docker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/encoding/">Encoding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/feature-engineering/">Feature Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-i/o/">File I/O</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/function/">function</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ggplot2/">ggplot2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/git/">Git</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github/">Github</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/global-development/">Global Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-colab/">Google Colab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gradient-boosting-machine/">Gradient Boosting Machine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hexo/">Hexo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/histogram/">Histogram</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/installation/">Installation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/intermediate/">Intermediate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iteration/">iteration</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/jupyter-notebook/">Jupyter Notebook</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle/">Kaggle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle-api/">Kaggle API</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/konlp/">KoNLP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">line grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/linux/">Linux</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lollipop/">lollipop</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lstm/">LSTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/m1/">M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/macos-m1/">MacOS M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mask-r-cnn/">Mask R-CNN</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/merging-data/">Merging Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/missing-values/">Missing Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/neural-network/">Neural Network</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/new-packages/">New Packages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nonparametric/">Nonparametric</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/numeric-features/">Numeric Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/object-detection/">Object Detection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oce/">OCE</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/optimizer/">Optimizer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas-merge/">Pandas Merge</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pivot-table/">pivot table</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pls-sem/">PLS-SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/postgre-sql/">Postgre SQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/project/">Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/py-openaq/">py-openaq</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pydataset/">PyDataset</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-basic/">Python Basic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-project/">Python Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/">R 마크다운</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ranzcr/">Ranzcr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/recommendation/">Recommendation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regular-expression/">regular expression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rpa/">RPA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rtweet/">rtweet</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/seaborn/">Seaborn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow/">Tensorflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0/">Tensorflow 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0-tutorial/">Tensorflow 2.0 Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tutorial/">Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/">객체지향 프로그래밍</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/">구글 클라우드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/">구조방정식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/">국제개발</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/">기초통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/">논문통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/">데이터 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">데이터 시각화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">데이터 싸이언스 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/">막대 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">머신러닝 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B3%B4%EA%B3%A0%EC%84%9C-%EC%9E%90%EB%8F%99%ED%99%94/">보고서 자동화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/">빅쿼리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%82%B0%EC%A0%90%EB%8F%84/">산점도</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/">선 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/">시간 측정</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/">아마존 웹 서비스</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/">정규표현식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천 시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%BA%90%EA%B8%80/">캐글</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/">텍스트 마이닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/">텍스트 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/">텐서플로 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/">텐서플로 2.0 튜토리얼</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/">텐서플로우</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/">프로세스 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/">피벗 테이블</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/">환경설정</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/acea/" title="ACEA">ACEA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/amazon-web-service/" title="Amazon Web Service">Amazon Web Service</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/append/" title="append">append</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/astype/" title="astype">astype</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/auto-encoder/" title="Auto Encoder">Auto Encoder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85/" title="AWS 회원가입">AWS 회원가입</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="bar chart">bar chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-structures/" title="Basic Data Structures">Basic Data Structures</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-transformation/" title="Basic Data Transformation">Basic Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basics/" title="Basics">Basics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-machine-learning/" title="BigQuery with Machine Learning">BigQuery with Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery with Python">BigQuery with Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery with R">BigQuery with R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blog/" title="Blog">Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bupar/" title="bupaR">bupaR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/categorical-features/" title="Categorical Features">Categorical Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/class/" title="Class">Class</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cloud-build/" title="Cloud Build">Cloud Build</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/clustering/" title="Clustering">Clustering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/colab-with-kaggle/" title="Colab with Kaggle">Colab with Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-expressions/" title="Conditional Expressions">Conditional Expressions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-statements/" title="Conditional Statements">Conditional Statements</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cross-join/" title="Cross Join">Cross Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dashboard/" title="Dashboard">Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-handling/" title="Data Handling">Data Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-types/" title="Data Types">Data Types</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualization/" title="Data Visualization">Data Visualization</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dataframe/" title="DataFrame">DataFrame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decision-tree/" title="Decision Tree">Decision Tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decorators/" title="Decorators">Decorators</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deployment/" title="Deployment">Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/design/" title="Design">Design</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="Development">Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development-settings/" title="Development Settings">Development Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary/" title="Dictionary">Dictionary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/discrete-features/" title="Discrete Features">Discrete Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/disk.frame/" title="disk.frame">disk.frame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/docker/" title="Docker">Docker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="dplyr">dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/eda/" title="EDA">EDA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/emr/" title="EMR">EMR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/encoding/" title="Encoding">Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enumerate/" title="enumerate">enumerate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exploratory-data-analysis/" title="Exploratory Data Analysis">Exploratory Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/extend/" title="extend">extend</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/feature-engineering/" title="Feature Engineering">Feature Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-i/o/" title="File I/O">File I/O</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="filter">filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/for-loop/" title="for-loop">for-loop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geospatial-analysis/" title="Geospatial Analysis">Geospatial Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gghistostats/" title="gghistostats">gghistostats</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ggplot2/" title="ggplot2">ggplot2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/git/" title="Git">Git</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github/" title="Github">Github</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/global-development/" title="Global Development">Global Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="GRU 레이어">GRU 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="gt">gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gtsummary/" title="gtsummary">gtsummary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hadoop/" title="Hadoop">Hadoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heatmap/" title="Heatmap">Heatmap</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hexo/" title="Hexo">Hexo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/histogram/" title="Histogram">Histogram</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-segmentation/" title="Image Segmentation">Image Segmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-settings/" title="Image Settings">Image Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/insert/" title="insert">insert</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/installation/" title="Installation">Installation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/intermediate/" title="Intermediate">Intermediate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interview/" title="Interview">Interview</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iteration/" title="iteration">iteration</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="iterrows">iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/join/" title="JOIN">JOIN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle/" title="Kaggle">Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle-api/" title="Kaggle API">Kaggle API</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/konlp/" title="KoNLP">KoNLP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/label-encoding/" title="Label Encoding">Label Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lambda/" title="lambda">lambda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="leaflet">leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="line grpah">line grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linux/" title="Linux">Linux</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/list/" title="list">list</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="lists">lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists-and-tuples/" title="Lists and Tuples">Lists and Tuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lollipop/" title="lollipop">lollipop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m1/" title="M1">M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m5-forecasting/" title="M5 Forecasting">M5 Forecasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/macos-m1/" title="MacOS M1">MacOS M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mask-r-cnn/" title="Mask R-CNN">Mask R-CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathematical-functions/" title="Mathematical Functions">Mathematical Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-%EC%84%A4%EC%A0%95/" title="Mathjax 설정">Mathjax 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiprocessing/" title="multiprocessing">multiprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/neural-network/" title="Neural Network">Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/new-packages/" title="New Packages">New Packages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nonparametric/" title="Nonparametric">Nonparametric</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numeric-features/" title="Numeric Features">Numeric Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numpy/" title="NumPy">NumPy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/object-detection/" title="Object Detection">Object Detection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oce/" title="OCE">OCE</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/one-hot-encoding/" title="One-Hot Encoding">One-Hot Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outer-join/" title="Outer Join">Outer Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outliers/" title="Outliers">Outliers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-merge/" title="Pandas Merge">Pandas Merge</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pd.concat/" title="pd.concat">pd.concat</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pins/" title="pins">pins</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pivot-table/" title="pivot table">pivot table</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="plotly">plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pls-sem/" title="PLS-SEM">PLS-SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/polar-chart/" title="Polar Chart">Polar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/postgre-sql/" title="Postgre SQL">Postgre SQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/probability/" title="Probability">Probability</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/productive-box/" title="productive-box">productive-box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/py-openaq/" title="py-openaq">py-openaq</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pycaret/" title="PyCaret">PyCaret</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pydataset/" title="PyDataset">PyDataset</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-basic/" title="Python Basic">Python Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-excel/" title="Python Excel">Python Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-numpy-broadcasting/" title="Python NumPy Broadcasting">Python NumPy Broadcasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-project/" title="Python Project">Python Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="Python 포트폴리오">Python 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-basic/" title="R Basic">R Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EA%B8%B0%EC%B4%88%EB%AC%B8/" title="R 기초문">R 기초문</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="R 포트폴리오">R 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ranzcr/" title="Ranzcr">Ranzcr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recommendation/" title="Recommendation">Recommendation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regular-expression/" title="regular expression">regular expression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rpa/" title="RPA">RPA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rstudio/" title="RStudio">RStudio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rtweet/" title="rtweet">rtweet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/seaborn/" title="Seaborn">Seaborn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-app-%EB%B0%B0%ED%8F%AC/" title="Shiny App 배포">Shiny App 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="shinydashboard">shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="sort_values">sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/super-resolution/" title="Super Resolution">Super Resolution</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/swifter/" title="swifter">swifter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow/" title="Tensorflow">Tensorflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0/" title="Tensorflow 2.0">Tensorflow 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0-tutorial/" title="Tensorflow 2.0 Tutorial">Tensorflow 2.0 Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text/" title="Text">Text</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tutorial/" title="Tutorial">Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/types-of-functions/" title="Types of Functions">Types of Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="vcrs">vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/" title="객체지향 프로그래밍">객체지향 프로그래밍</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B2%BD%EC%A7%84%EB%8C%80%ED%9A%8C/" title="경진대회">경진대회</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/" title="구조방정식">구조방정식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/" title="국제개발">국제개발</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%8D%EC%A0%95-%EB%B6%80%EC%A0%95-%EA%B0%90%EC%84%B1%EB%B6%84%EC%84%9D/" title="긍정, 부정 감성분석">긍정, 부정 감성분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C/" title="깃허브">깃허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="깃허브 환경설정">깃허브 환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/" title="논문통계">논문통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="데이터 싸이언스 프로젝트">데이터 싸이언스 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="데이터 전처리">데이터 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%94%A5%EB%9F%AC%EB%8B%9D/" title="딥러닝">딥러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/" title="막대 그래프">막대 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" title="머신러닝">머신러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="머신러닝 프로젝트">머신러닝 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%AA%A8%EB%8D%B8%EB%A7%81-%EC%8B%9C%EA%B0%81%ED%99%94/" title="모델링 시각화">모델링 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B0%98%EC%98%81%EC%A0%81-%EC%A7%80%ED%91%9C/" title="반영적 지표">반영적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B3%B4%EC%8A%A4%ED%84%B4-%EC%A3%BC%ED%83%9D-%EA%B0%80%EA%B2%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%B8%ED%8A%B8/" title="보스턴 주택 가격 데이터세트">보스턴 주택 가격 데이터세트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B6%84%EB%A5%98/" title="분류">분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" title="빅쿼리">빅쿼리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-r/" title="빅쿼리 R">빅쿼리 R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%EA%B8%B0%EB%B3%B8/" title="빅쿼리 기본">빅쿼리 기본</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%ED%8C%8C%EC%9D%B4%EC%8D%AC/" title="빅쿼리 파이썬">빅쿼리 파이썬</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%B0%EC%A0%90%EB%8F%84/" title="산점도">산점도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%BC%EC%84%B1%EC%B9%B4%EB%93%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EA%B3%B5%EB%AA%A8%EC%A0%84/" title="삼성카드 데이터분석 공모전">삼성카드 데이터분석 공모전</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%83%A4%EC%9D%B4%EB%8B%88-%EC%95%B1-%EB%B0%B0%ED%8F%AC/" title="샤이니 앱 배포">샤이니 앱 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" title="선 그래프">선 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/" title="선형회귀">선형회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%88%9C%ED%99%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="순환 신경망">순환 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" title="시각화 문법">시각화 문법</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/" title="시간 측정">시간 측정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" title="시그노이드">시그노이드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%A0%EA%B2%BD-%EC%8A%A4%ED%83%80%EC%9D%BC-%EC%A0%84%EC%9D%B4/" title="신경 스타일 전이">신경 스타일 전이</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/" title="아마존 웹 서비스">아마존 웹 서비스</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%98%A4%ED%86%A0%EC%9D%B8%EC%BD%94%EB%8D%94/" title="오토인코더">오토인코더</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B6%84%ED%95%A0/" title="이미지 분할">이미지 분할</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%84%A4%EC%A0%95/" title="이미지 설정">이미지 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" title="이항분류">이항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%84%EB%B2%A0%EB%94%A9-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="임베딩 레이어">임베딩 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%83%9D%EC%84%B1/" title="자연어 생성">자연어 생성</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/" title="전이 학습">전이 학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/" title="정규표현식">정규표현식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/" title="지도학습">지도학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B4%88%ED%95%B4%EC%83%81%EB%8F%84/" title="초해상도">초해상도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천 시스템">추천 시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천시스템">추천시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B8%A1%EC%A0%95%EC%B2%99%EB%8F%84/" title="측정척도">측정척도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BA%90%EA%B8%80/" title="캐글">캐글</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BB%A8%EB%B3%BC%EB%A3%A8%EC%85%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="컨볼루션 신경망">컨볼루션 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="코로나 대시보드">코로나 대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%8B%A4%EB%A3%A8%EA%B8%B0/" title="테이블 다루기">테이블 다루기</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="텍스트 마이닝">텍스트 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="텍스트 전처리">텍스트 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" title="텐서플로 2.0">텐서플로 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" title="텐서플로 2.0 튜토리얼">텐서플로 2.0 튜토리얼</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-%ED%97%88%EB%B8%8C/" title="텐서플로 허브">텐서플로 허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/" title="텐서플로우">텐서플로우</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%97%91%EC%85%80/" title="판다스 엑셀">판다스 엑셀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" title="판다스 자료구조">판다스 자료구조</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="포트폴리오">포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="프로세스 마이닝">프로세스 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/" title="프로세스 분석">프로세스 분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/" title="피벗 테이블">피벗 테이블</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80-%ED%8F%B0%ED%8A%B8-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0/" title="한글 폰트 오류 해결">한글 폰트 오류 해결</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%98%95%EC%84%B1%EC%A0%81-%EC%A7%80%ED%91%9C/" title="형성적 지표">형성적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="환경설정">환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9A%8C%EA%B7%80%EB%AA%A8%ED%98%95/" title="회귀모형">회귀모형</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9C%B4%EA%B3%A0/" title="휴고">휴고</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9E%88%EC%8A%A4%ED%86%A0%EA%B7%B8%EB%9E%A8/" title="히스토그램">히스토그램</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2021 DSChloe.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>
