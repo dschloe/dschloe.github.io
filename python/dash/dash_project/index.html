@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Python Dash를 활용한 대시보드 만들기 with Heroku - Data Science | DSChloe</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+		<meta property="og:title" content="Python Dash를 활용한 대시보드 만들기 with Heroku" />
+<meta property="og:description" content="개요  대시보드 프로젝트를 진행한다. Heroku에 배포까지 진행하는 것을 목적으로 한다. 참조: https://realpython.com/python-dash/  여기에 있는 내용을 최대한 간결하게 한글로 재 작성하였다. 중간에 없는 코드들도 있으니, 가급적 본 소스코드를 활용한다.    1. 데이터 수집  데이터: https://www.kaggle.com/neuromusic/avocado-prices 다운로드 받은 파일은 임의의 폴더 안에 넣습니다. (필자: dashboard-project21)  C:\Users\1\Desktop\dashboard-project21&gt;tree /f 폴더 PATH의 목록입니다. 볼륨 일련 번호는 E657-CFA3입니다. C:. │ README.md │ └─data avocado.csv  파일 경로를 주의해서 보도록 합니다.  2." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dschloe.github.io/python/dash/dash_project/" />
+<meta property="article:published_time" content="2021-08-04T18:10:47+09:00" />
+<meta property="article:modified_time" content="2021-08-04T18:10:47+09:00" />
+
+		<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Python Dash를 활용한 대시보드 만들기 with Heroku"/>
+<meta name="twitter:description" content="개요  대시보드 프로젝트를 진행한다. Heroku에 배포까지 진행하는 것을 목적으로 한다. 참조: https://realpython.com/python-dash/  여기에 있는 내용을 최대한 간결하게 한글로 재 작성하였다. 중간에 없는 코드들도 있으니, 가급적 본 소스코드를 활용한다.    1. 데이터 수집  데이터: https://www.kaggle.com/neuromusic/avocado-prices 다운로드 받은 파일은 임의의 폴더 안에 넣습니다. (필자: dashboard-project21)  C:\Users\1\Desktop\dashboard-project21&gt;tree /f 폴더 PATH의 목록입니다. 볼륨 일련 번호는 E657-CFA3입니다. C:. │ README.md │ └─data avocado.csv  파일 경로를 주의해서 보도록 합니다.  2."/>
+
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo">
+		<a class="logo__link" href="/" title="Data Science | DSChloe" rel="home">
+			<div class="logo__item logo__text">
+					<div class="logo__title">Data Science | DSChloe</div>
+					<div class="logo__tagline">Love your beloved one forever</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/aws/">
+				
+				<span class="menu__text">AWS</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/ds-projects/">
+				
+				<span class="menu__text">DS-Projects</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/gcp/">
+				
+				<span class="menu__text">GCP</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/kaggle/">
+				
+				<span class="menu__text">Kaggle</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/mlops/">
+				
+				<span class="menu__text">MLOps</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/python/">
+				
+				<span class="menu__text">Python</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/r/">
+				
+				<span class="menu__text">R</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/settings/">
+				
+				<span class="menu__text">settings</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/sql/">
+				
+				<span class="menu__text">SQL</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About DSChloe</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">Python Dash를 활용한 대시보드 만들기 with Heroku</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-08-04T18:10:47&#43;09:00">2021-08-04</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/dashboard/" rel="category">Dashboard</a>, <a class="meta__link" href="/categories/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" rel="category">대시보드</a>, <a class="meta__link" href="/categories/dash/" rel="category">Dash</a>, <a class="meta__link" href="/categories/heroku/" rel="category">Heroku</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#개요">개요</a></li>
+    <li><a href="#1-데이터-수집">1. 데이터 수집</a></li>
+    <li><a href="#2-가상환경-및-라이브러리-설치">2. 가상환경 및 라이브러리 설치</a></li>
+    <li><a href="#3-대시-보드-코드-작성">3. 대시 보드 코드 작성</a>
+      <ul>
+        <li><a href="#1-데이터-수집-및-dash-클래스-정의">(1) 데이터 수집 및 Dash 클래스 정의</a></li>
+        <li><a href="#2-대시보드-html-layout-정의">(2) 대시보드 HTML Layout 정의</a></li>
+        <li><a href="#3-대시보드-배포-localhost">(3) 대시보드 배포 (localhost)</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-대시보드에-style-입히기">4. 대시보드에 Style 입히기</a>
+      <ul>
+        <li><a href="#1-태그에-직접-style-입히기">(1) 태그에 직접 style 입히기</a></li>
+        <li><a href="#2-로고-추가하기">(2) 로고 추가하기</a></li>
+        <li><a href="#3-external-style-sheet">(3) External Style Sheet</a></li>
+        <li><a href="#4-header-layout-커스텀화">(4) Header Layout 커스텀화</a></li>
+        <li><a href="#5-그래프-layout-커스텀화">(5) 그래프 Layout 커스텀화</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-대시보드에-interactive-구현하기">5. 대시보드에 Interactive 구현하기</a>
+      <ul>
+        <li><a href="#1-메뉴-구성하기">(1) 메뉴 구성하기</a></li>
+        <li><a href="#2-reactive-programming">(2) Reactive Programming</a></li>
+        <li><a href="#3-callbacks">(3) Callbacks</a></li>
+        <li><a href="#4-최종확인">(4) 최종확인</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-웹-배포하기-with-heroku--git">6. 웹 배포하기 with Heroku &amp; Git</a></li>
+    <li><a href="#reference">Reference</a></li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="개요">개요</h2>
+<ul>
+<li>대시보드 프로젝트를 진행한다.</li>
+<li>Heroku에 배포까지 진행하는 것을 목적으로 한다.</li>
+<li>참조: <a href="https://realpython.com/python-dash/">https://realpython.com/python-dash/</a>
+<ul>
+<li>여기에 있는 내용을 최대한 간결하게 한글로 재 작성하였다. 중간에 없는 코드들도 있으니, 가급적 본 소스코드를 활용한다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="1-데이터-수집">1. 데이터 수집</h2>
+<ul>
+<li>데이터: <a href="https://www.kaggle.com/neuromusic/avocado-prices">https://www.kaggle.com/neuromusic/avocado-prices</a></li>
+<li>다운로드 받은 파일은 임의의 폴더 안에 넣습니다. (필자: dashboard-project21)</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">C:\Users\1\Desktop\dashboard-project21&gt;tree /f
+폴더 PATH의 목록입니다.
+볼륨 일련 번호는 E657-CFA3입니다.
+C:.
+<span style="color:#960050;background-color:#1e0010">│</span>  README.md
+<span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">└─</span>data
+        avocado.csv
+</code></pre></div><ul>
+<li>파일 경로를 주의해서 보도록 합니다.</li>
+</ul>
+<h2 id="2-가상환경-및-라이브러리-설치">2. 가상환경 및 라이브러리 설치</h2>
+<ul>
+<li>conda를 활용하여 가상환경 설정을 합니다.</li>
+<li>(dashboard-project21) 형태로 터미널 명령어가 바뀌어 있어야 합니다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ conda create --name dashboard-project21 python=3.8
+.
+.
+$ conda activate dashboard_project
+(dashboard-project21) C:\Users\1\Desktop\dashboard-project21&gt;
+</code></pre></div><ul>
+<li>이번에는 <code>dash</code> 라이브러리를 설치한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ conda install dash
+$ conda install pandas
+$ conda install colorama
+</code></pre></div><h2 id="3-대시-보드-코드-작성">3. 대시 보드 코드 작성</h2>
+<h3 id="1-데이터-수집-및-dash-클래스-정의">(1) 데이터 수집 및 Dash 클래스 정의</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> dash
+<span style="color:#f92672">import</span> dash_core_components <span style="color:#f92672">as</span> dcc
+<span style="color:#f92672">import</span> dash_html_components <span style="color:#f92672">as</span> html
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+
+<span style="color:#75715e"># step 1. Data Import</span>
+data <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;avocado.csv&#34;</span>, index_col<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+data <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#34;type == &#39;conventional&#39; and region == &#39;Albany&#39;&#34;</span>)
+data[<span style="color:#e6db74">&#34;Date&#34;</span>] <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>to_datetime(data[<span style="color:#e6db74">&#34;Date&#34;</span>], format<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#34;</span>)
+data<span style="color:#f92672">.</span>sort_values(<span style="color:#e6db74">&#34;Date&#34;</span>, inplace<span style="color:#f92672">=</span>True)
+
+<span style="color:#75715e"># step 2. Dash Class</span>
+app <span style="color:#f92672">=</span> dash<span style="color:#f92672">.</span>Dash(__name__)
+</code></pre></div><ul>
+<li><code>dash</code> 라이브러리는 대시보드 어플리케이션 초기화를 담당한다.</li>
+<li><code>dash_core_components</code> 동적 구성요소들(예: 그래프, 드롭다운 메뉴, 날짜 기간 등) 작성할 수 있도록 도와주는 기능을 제공한다.</li>
+<li><code>dash_html_components</code> 은 html 태그에 접근하도록 한다.</li>
+<li><code>pandas</code> 데이터 수집 및 가공을 제공할 수 있는 함수들을 지원한다.</li>
+<li>코드 설명
+<ul>
+<li>step 1
+<ul>
+<li>데이터를 avocado.csv 데이터를 수집한 후, <code>type = conventional</code> 과, <code>region = Albany</code> 만 추출하는 행을 추출한다.</li>
+<li>그 이후 날짜의 오름차순으로 정렬하는 코드를 작성한다.</li>
+</ul>
+</li>
+<li>step 2
+<ul>
+<li>Dash 클래스를 정의하여 app이라는 객체를 별도 생성한 것을 의미한다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-대시보드-html-layout-정의">(2) 대시보드 HTML Layout 정의</h3>
+<ul>
+<li>이전 코드에 이어서 작성을 하도록 한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># step 3. HTML</span>
+app<span style="color:#f92672">.</span>layout <span style="color:#f92672">=</span> html<span style="color:#f92672">.</span>Div(
+	  <span style="color:#75715e"># Header Message</span>
+    children<span style="color:#f92672">=</span>[
+        html<span style="color:#f92672">.</span>H1(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp Analytics&#34;</span>,),
+        html<span style="color:#f92672">.</span>P(
+            children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp&#34;</span>,
+        ),
+        <span style="color:#75715e"># 그래프		</span>
+        dcc<span style="color:#f92672">.</span>Graph(
+            figure<span style="color:#f92672">=</span>{
+                <span style="color:#e6db74">&#34;data&#34;</span>: [
+                    {
+                        <span style="color:#e6db74">&#34;x&#34;</span>: data[<span style="color:#e6db74">&#34;Date&#34;</span>],
+                        <span style="color:#e6db74">&#34;y&#34;</span>: data[<span style="color:#e6db74">&#34;AveragePrice&#34;</span>],
+                        <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;lines&#34;</span>,
+                    },
+                ],
+                <span style="color:#e6db74">&#34;layout&#34;</span>: {<span style="color:#e6db74">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Title_1&#34;</span>},
+            },
+        ),
+        dcc<span style="color:#f92672">.</span>Graph(
+            figure<span style="color:#f92672">=</span>{
+                <span style="color:#e6db74">&#34;data&#34;</span>: [
+                    {
+                        <span style="color:#e6db74">&#34;x&#34;</span>: data[<span style="color:#e6db74">&#34;Date&#34;</span>],
+                        <span style="color:#e6db74">&#34;y&#34;</span>: data[<span style="color:#e6db74">&#34;Total Volume&#34;</span>],
+                        <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;lines&#34;</span>,
+                    },
+                ],
+                <span style="color:#e6db74">&#34;layout&#34;</span>: {<span style="color:#e6db74">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Title_2&#34;</span>},
+            },
+        ),
+    ]
+)
+</code></pre></div><ul>
+<li>
+<p><code>Dash</code>는 크게 2가지로 구성이 된다.</p>
+<ul>
+<li><a href="https://dash.plotly.com/dash-html-components">Dash HTML Components</a> : HTML components용 Wrappers를 제공합니다. 이 라이브러리를 사용하여 문단, 제목 또는 목록과 같은 요소를 작성할 수 있다.</li>
+<li><a href="https://dash.plotly.com/dash-core-components">Dash Core Components</a> : 대화형 사용자 인터페이스를 만들기 위한 Python 추상화를 제공합니다. 그래프, 슬라이더 또는 드롭다운과 같은 interactive elements를 만드는 데 사용할 수 있다.</li>
+</ul>
+</li>
+<li>
+<p>코드를 분석하면 다음과 같다.</p>
+<ul>
+<li><code># Header Message</code> : <code>html.div</code> 는 일종의 parent component라고 볼 수 있다. 그리고, html.h1은 h1 태그를 말하며, html.p은 p 태그를 의미한다.
+<ul>
+<li>HTML 코드로 변환하면 아래와 같다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&lt;</span>div<span style="color:#f92672">&gt;</span>
+  <span style="color:#f92672">&lt;</span>h1<span style="color:#f92672">&gt;</span>Temp Analytics<span style="color:#f92672">&lt;/</span>h1<span style="color:#f92672">&gt;</span>
+  <span style="color:#f92672">&lt;</span>p<span style="color:#f92672">&gt;</span>
+    Temp
+  <span style="color:#f92672">&lt;/</span>p<span style="color:#f92672">&gt;</span>
+  <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">!</span><span style="color:#f92672">--</span> Rest of the app <span style="color:#f92672">--&gt;</span>
+<span style="color:#f92672">&lt;/</span>div<span style="color:#f92672">&gt;</span>
+</code></pre></div><ul>
+<li><code># 그래프</code> : 그래프가 구현되는 코드를 작성했다. dcc.Graph에 관한 설명은 다음 공식 문서에서 확인을 하도록 한다. <a href="https://dash.plotly.com/dash-core-components/graph">https://dash.plotly.com/dash-core-components/grap</a>h</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-대시보드-배포-localhost">(3) 대시보드 배포 (localhost)</h3>
+<ul>
+<li>이전 코드에 이어서 작성을 하도록 한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    app<span style="color:#f92672">.</span>run_server(debug<span style="color:#f92672">=</span>True)
+</code></pre></div><ul>
+<li>
+<p>위 코드를 실행하면, Flask 기반의 서버로 작동을 한다. 파라미터 <code>debug=True</code> 를 하게되면, 수정입력을 해도, 서버를 <code>restarting</code> 하지 않고, 새로고침으로 변화를 확인할 수 있다.</p>
+</li>
+<li>
+<p>위 모든 소스코드를 <code>[app.py](http://app.py)</code> 에 저장 후 실행한다.</p>
+</li>
+<li>
+<p>파일의 경로는 아래와 같다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">C:\Users\1\Desktop\dashboard-project21&gt;tree /f
+C:.
+<span style="color:#960050;background-color:#1e0010">│</span>  app.py
+<span style="color:#960050;background-color:#1e0010">│</span>  README.md
+<span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">├─</span>.idea
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>  .gitignore
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>  dashboard-project21.iml
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>  misc.xml
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>  modules.xml
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>  vcs.xml
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>  workspace.xml
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">└─</span>inspectionProfiles
+<span style="color:#960050;background-color:#1e0010">│</span>          profiles_settings.xml
+<span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">└─</span>data
+        avocado.csv
+</code></pre></div><ul>
+<li>이제 app.py을 실행한다. 아래와 같이 나온다면 정상적으로 실행된 것이다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">(dashboard-project21) C:\Users\1\Desktop\dashboard-project21&gt; python app.py
+Dash is running on http<span style="color:#960050;background-color:#1e0010">:</span>//127.0.0.1<span style="color:#960050;background-color:#1e0010">:</span>8050/
+
+ * Serving Flask app <span style="color:#e6db74">&#34;app&#34;</span> (lazy loading)
+ * Environment<span style="color:#960050;background-color:#1e0010">:</span> production
+   WARNING<span style="color:#960050;background-color:#1e0010">:</span> This is a development server. <span style="color:#66d9ef">Do</span> not use it <span style="color:#66d9ef">in</span> a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode<span style="color:#960050;background-color:#1e0010">:</span> on
+</code></pre></div><ul>
+<li>실행 취소는 <code>ctrl + c</code> 을 하면 된다.</li>
+<li>인터넷에서 <code>[http://127.0.0.1:8050/](http://127.0.0.1:8050/)</code> 을 확인하도록 한다.</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/python/dash/dash_project/dash_01.png" alt="dash_01.png"></p>
+<ul>
+<li>대시보드가 구현된 것을 확인할 수 있다.</li>
+</ul>
+<h2 id="4-대시보드에-style-입히기">4. 대시보드에 Style 입히기</h2>
+<ul>
+<li>기존에 작성된 것으로도 충분히 시각화는 구현할 수 있다.</li>
+<li>그러나, 대시보드 개발은 <code>CSS</code> 를 활용할 때, 보다 예쁘게 꾸밀 수 있다.</li>
+</ul>
+<h3 id="1-태그에-직접-style-입히기">(1) 태그에 직접 style 입히기</h3>
+<ul>
+<li>H1 태그에 폰트 사이즈와 색상에 변화를 주도록 한다.
+<ul>
+<li><code>style={&quot;fontSize&quot;: &quot;48px&quot;, &quot;color&quot;: &quot;blue&quot;}</code> 를 추가한다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">html<span style="color:#f92672">.</span>H1(
+    children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp Analytics&#34;</span>,
+    style<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;fontSize&#34;</span>: <span style="color:#e6db74">&#34;48px&#34;</span>, <span style="color:#e6db74">&#34;color&#34;</span>: <span style="color:#e6db74">&#34;blue&#34;</span>},
+),
+</code></pre></div><ul>
+<li><code>Temp Analytics</code> 가 바뀐 것을 확인할 수 있다.</li>
+</ul>
+<p><img src="/img/python/dash/dash_project/dash_02.png" alt="dash_02.png"></p>
+<ul>
+<li>
+<p>그러나, 코드 관리를 위해서는 css 파일로 관리하는 것이 적절하다.</p>
+</li>
+<li>
+<p>따라서, 기존에 추가한 <code>style = ~</code> 이하 코드는 삭제하고, 아래와 같이 코드를 재 작성한다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">html<span style="color:#f92672">.</span>H1(
+    children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp Analytics&#34;</span>,
+    className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_title&#34;</span>,
+),
+</code></pre></div></li>
+<li>
+<p>CSS 파일을 하나 생성한 후, assets 폴더에 <code>style.css</code> 파일을 추가적으로 생성한다.</p>
+<ul>
+<li>폴더의 구조는 아래와 같다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">(dashboard-project21) C:\Users\1\Desktop\dashboard-project21&gt;tree /f
+폴더 PATH의 목록입니다.
+볼륨 일련 번호는 E657-CFA3입니다.
+C:.
+<span style="color:#960050;background-color:#1e0010">│</span>  app.py
+<span style="color:#960050;background-color:#1e0010">│</span>  README.md
+<span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">├─</span>.idea
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>  .gitignore
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>  dashboard-project21.iml
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>  misc.xml
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>  modules.xml
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>  vcs.xml
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>  workspace.xml
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>  <span style="color:#960050;background-color:#1e0010">└─</span>inspectionProfiles
+<span style="color:#960050;background-color:#1e0010">│</span>          profiles_settings.xml
+<span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">├─</span>assets
+<span style="color:#960050;background-color:#1e0010">│</span>      style.css
+<span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">├─</span>data
+<span style="color:#960050;background-color:#1e0010">│</span>      avocado.csv
+</code></pre></div><ul>
+<li>className에 해당하는 css 코드를 <code>style.css</code> 에 입히면 완성이다.</li>
+<li>이 때에는 색상의 변화를 주기 위해, blue 대신에 red 색상을 추가했다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css">.<span style="color:#a6e22e">header_title</span> {
+  <span style="color:#66d9ef">font-size</span>: <span style="color:#ae81ff">48</span><span style="color:#66d9ef">px</span>;
+  <span style="color:#66d9ef">color</span>: <span style="color:#66d9ef">red</span>;
+}
+</code></pre></div></li>
+</ul>
+<p>/img/python/dash/dash_project/
+<img src="/img/python/dash/dash_project/dash_03.png" alt="dash_03.png"></p>
+<h3 id="2-로고-추가하기">(2) 로고 추가하기</h3>
+<ul>
+<li>
+<p>임의의 로고를 추가한다. 필자는 Avocado에 어울리는 과일을 하나 가져온 후, assets 폴더에 추가한다.</p>
+<ul>
+<li>URL: <a href="https://raw.githubusercontent.com/dylanjcastillo/materials/python-dash/python-dash/additional_files/favicon.ico">https://raw.githubusercontent.com/dylanjcastillo/materials/python-dash/python-dash/additional_files/favicon.ico</a></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">├─</span>assets
+<span style="color:#960050;background-color:#1e0010">│</span>      favicon.ico
+<span style="color:#960050;background-color:#1e0010">│</span>      style.css
+</code></pre></div></li>
+<li>
+<p>일단, 로고만 추가한 후, 코드 수정은 추후에 진행한다.</p>
+</li>
+</ul>
+<h3 id="3-external-style-sheet">(3) External Style Sheet</h3>
+<ul>
+<li>외부에서 css 파일 등을 가져올 수 있다.</li>
+<li>마지막 app.title은 구글 검색 또는 사이트 공유 시 나타나는 타이틀이다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># step 2. Dash Class</span>
+external_stylesheets <span style="color:#f92672">=</span> [
+    {
+        <span style="color:#e6db74">&#34;href&#34;</span>: <span style="color:#e6db74">&#34;https://fonts.googleapis.com/css2?&#34;</span>
+                <span style="color:#e6db74">&#34;family=Lato:wght@400;700&amp;display=swap&#34;</span>,
+        <span style="color:#e6db74">&#34;rel&#34;</span>: <span style="color:#e6db74">&#34;stylesheet&#34;</span>,
+    },
+]
+app <span style="color:#f92672">=</span> dash<span style="color:#f92672">.</span>Dash(__name__, external_stylesheets<span style="color:#f92672">=</span>external_stylesheets)
+app<span style="color:#f92672">.</span>title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Temp Analytics: Understand Your Data!&#34;</span>
+</code></pre></div><h3 id="4-header-layout-커스텀화">(4) Header Layout 커스텀화</h3>
+<ul>
+<li>먼저 header 화면과 그래프 구성하는 화면을 div 태그로 구분하는 코드를 작성한다.</li>
+<li>이 때 중요한 건 className을 각 태그마다 입력하는 것이다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+<span style="color:#75715e"># step 3. HTML</span>
+app<span style="color:#f92672">.</span>layout <span style="color:#f92672">=</span> html<span style="color:#f92672">.</span>Div(
+    children<span style="color:#f92672">=</span>[
+        html<span style="color:#f92672">.</span>Div(
+            children<span style="color:#f92672">=</span>[
+                html<span style="color:#f92672">.</span>P(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;📈&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_emoji&#34;</span>),
+                html<span style="color:#f92672">.</span>H1(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp Analytics&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_title&#34;</span>,),
+                html<span style="color:#f92672">.</span>P(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_description&#34;</span>,),
+            ],
+            className<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;header&#39;</span>,
+        ),
+		dcc<span style="color:#f92672">.</span>Graph(
+        figure<span style="color:#f92672">=</span>{
+            <span style="color:#e6db74">&#34;data&#34;</span>: [
+								<span style="color:#f92672">.</span>
+								<span style="color:#f92672">.</span>
+</code></pre></div><ul>
+<li>이번에는 css파일을 아래와 같이 수정한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css">.<span style="color:#a6e22e">header_emoji</span> {
+    <span style="color:#66d9ef">font-size</span>: <span style="color:#ae81ff">48</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">margin</span>: <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">auto</span>;
+    <span style="color:#66d9ef">text-align</span>: <span style="color:#66d9ef">center</span>;
+}
+
+.<span style="color:#a6e22e">header_title</span> {
+    <span style="color:#66d9ef">color</span>: <span style="color:#ae81ff">#FFFFFF</span>;
+    <span style="color:#66d9ef">font-size</span>: <span style="color:#ae81ff">48</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">font-weight</span>: <span style="color:#66d9ef">bold</span>;
+    <span style="color:#66d9ef">text-align</span>: <span style="color:#66d9ef">center</span>;
+    <span style="color:#66d9ef">margin</span>: <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">auto</span>;
+}
+
+.<span style="color:#a6e22e">header_description</span> {
+    <span style="color:#66d9ef">color</span>: <span style="color:#ae81ff">#CFCFCF</span>;
+    <span style="color:#66d9ef">margin</span>: <span style="color:#ae81ff">4</span><span style="color:#66d9ef">px</span> <span style="color:#66d9ef">auto</span>;
+    <span style="color:#66d9ef">text-align</span>: <span style="color:#66d9ef">center</span>;
+    <span style="color:#66d9ef">max-width</span>: <span style="color:#ae81ff">384</span><span style="color:#66d9ef">px</span>;
+}
+
+.<span style="color:#a6e22e">header</span> {
+    <span style="color:#66d9ef">background-color</span>: <span style="color:#ae81ff">#222222</span>;
+    <span style="color:#66d9ef">height</span>: <span style="color:#ae81ff">256</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">display</span>: <span style="color:#66d9ef">flex</span>;
+    <span style="color:#66d9ef">flex-direction</span>: <span style="color:#66d9ef">column</span>;
+    <span style="color:#66d9ef">justify-content</span>: <span style="color:#66d9ef">center</span>;
+}
+</code></pre></div><ul>
+<li>이제 결과물을 확인한다.</li>
+</ul>
+<p><img src="/img/python/dash/dash_project/dash_04.png" alt="dash_04.png"></p>
+<h3 id="5-그래프-layout-커스텀화">(5) 그래프 Layout 커스텀화</h3>
+<ul>
+<li>동일한 방식으로 그래프를 커스텀화 하는 코드를 작성한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+<span style="color:#75715e"># step 3. HTML</span>
+app<span style="color:#f92672">.</span>layout <span style="color:#f92672">=</span> html<span style="color:#f92672">.</span>Div(
+    children<span style="color:#f92672">=</span>[
+        html<span style="color:#f92672">.</span>Div(
+            children<span style="color:#f92672">=</span>[
+                html<span style="color:#f92672">.</span>P(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;📈&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_emoji&#34;</span>),
+                html<span style="color:#f92672">.</span>H1(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp Analytics&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_title&#34;</span>,),
+                html<span style="color:#f92672">.</span>P(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_description&#34;</span>,),
+            ],
+            className<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;header&#39;</span>,
+        ),
+        html<span style="color:#f92672">.</span>Div(
+            children<span style="color:#f92672">=</span>[
+                html<span style="color:#f92672">.</span>Div(
+                    children<span style="color:#f92672">=</span>dcc<span style="color:#f92672">.</span>Graph(
+                        id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;price-chart&#34;</span>,
+                        config<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;displayModeBar&#34;</span>: False},
+                        figure<span style="color:#f92672">=</span>{
+                            <span style="color:#e6db74">&#34;data&#34;</span>: [
+                                {
+                                    <span style="color:#e6db74">&#34;x&#34;</span>: data[<span style="color:#e6db74">&#34;Date&#34;</span>],
+                                    <span style="color:#e6db74">&#34;y&#34;</span>: data[<span style="color:#e6db74">&#34;AveragePrice&#34;</span>],
+                                    <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;lines&#34;</span>,
+                                    <span style="color:#e6db74">&#34;hovertemplate&#34;</span>: <span style="color:#e6db74">&#34;$%{y:.2f}&#34;</span>
+                                    <span style="color:#e6db74">&#34;&lt;extra&gt;&lt;/extra&gt;&#34;</span>,
+                                },
+                            ],
+                            <span style="color:#e6db74">&#34;layout&#34;</span>: {
+                                <span style="color:#e6db74">&#34;title&#34;</span>: {
+                                    <span style="color:#e6db74">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;아보카도 평균가격($)&#34;</span>,
+                                    <span style="color:#e6db74">&#34;x&#34;</span>: <span style="color:#ae81ff">0.05</span>,
+                                    <span style="color:#e6db74">&#34;xanchor&#34;</span>: <span style="color:#e6db74">&#34;center&#34;</span>,
+                                },
+                                <span style="color:#e6db74">&#34;xaxis&#34;</span>: {<span style="color:#e6db74">&#34;fixedrange&#34;</span>: True},
+                                <span style="color:#e6db74">&#34;yaxis&#34;</span>: {
+                                    <span style="color:#e6db74">&#34;tickprefix&#34;</span>: <span style="color:#e6db74">&#34;$&#34;</span>,
+                                    <span style="color:#e6db74">&#34;fixedrange&#34;</span>: True,
+                                },
+                                <span style="color:#e6db74">&#34;colorway&#34;</span>: [<span style="color:#e6db74">&#34;#17B897&#34;</span>],
+                            },
+                        },
+                    ),
+                    className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;card&#34;</span>,
+                ),
+                html<span style="color:#f92672">.</span>Div(
+                    children<span style="color:#f92672">=</span>dcc<span style="color:#f92672">.</span>Graph(
+                        id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;volume-chart&#34;</span>,
+                        config<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;displayModeBar&#34;</span>: False},
+                        figure<span style="color:#f92672">=</span>{
+                            <span style="color:#e6db74">&#34;data&#34;</span>: [
+                                {
+                                    <span style="color:#e6db74">&#34;x&#34;</span>: data[<span style="color:#e6db74">&#34;Date&#34;</span>],
+                                    <span style="color:#e6db74">&#34;y&#34;</span>: data[<span style="color:#e6db74">&#34;Total Volume&#34;</span>],
+                                    <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;lines&#34;</span>,
+                                },
+                            ],
+                            <span style="color:#e6db74">&#34;layout&#34;</span>: {
+                                <span style="color:#e6db74">&#34;title&#34;</span>: {
+                                    <span style="color:#e6db74">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;아보카도 판매량&#34;</span>,
+                                    <span style="color:#e6db74">&#34;x&#34;</span>: <span style="color:#ae81ff">0.05</span>,
+                                    <span style="color:#e6db74">&#34;xanchor&#34;</span>: <span style="color:#e6db74">&#34;center&#34;</span>,
+                                },
+                                <span style="color:#e6db74">&#34;xaxis&#34;</span>: {<span style="color:#e6db74">&#34;fixedrange&#34;</span>: True},
+                                <span style="color:#e6db74">&#34;yaxis&#34;</span>: {<span style="color:#e6db74">&#34;fixedrange&#34;</span>: True},
+                                <span style="color:#e6db74">&#34;colorway&#34;</span>: [<span style="color:#e6db74">&#34;#E12D39&#34;</span>],
+                            },
+                        },
+                    ),
+                    className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;card&#34;</span>,
+                ),
+            ],
+            className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;wrapper&#34;</span>,
+        ),
+    ]
+)
+</code></pre></div><ul>
+<li>먼저, <code>&quot;hovertemplate&quot;: &quot;$%{y:.2f}&quot; &quot;&lt;extra&gt;&lt;/extra&gt;&quot;,</code> 는 마우스를 그래프에 갔다 대면, <code>$</code>표시가 나타나는 옵션이다.</li>
+<li>전체적인 그래프에 대한 코드는 <code>card</code> 클래스로 정의했다. 그리고, div 영역은 <code>wrapper</code> 로 구성했다.</li>
+<li>이번에는 <code>card</code>와 <code>wrapper</code> 를 정의하는 <code>css</code> 코드를 추가한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+.<span style="color:#a6e22e">wrapper</span> {
+    <span style="color:#66d9ef">margin-right</span>: <span style="color:#66d9ef">auto</span>;
+    <span style="color:#66d9ef">margin-left</span>: <span style="color:#66d9ef">auto</span>;
+    <span style="color:#66d9ef">max-width</span>: <span style="color:#ae81ff">1024</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">padding-right</span>: <span style="color:#ae81ff">10</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">padding-left</span>: <span style="color:#ae81ff">10</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">margin-top</span>: <span style="color:#ae81ff">32</span><span style="color:#66d9ef">px</span>;
+}
+
+.<span style="color:#a6e22e">card</span> {
+    <span style="color:#66d9ef">margin-bottom</span>: <span style="color:#ae81ff">24</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">box-shadow</span>: <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">4</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">6</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">0</span> rgba(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.18</span>);
+}
+</code></pre></div><ul>
+<li>파이썬과 CSS에서 추가된 코드를 통해 다음과 같은 결과물을 확인할 수 있다.</li>
+</ul>
+<p><img src="/img/python/dash/dash_project/dash_05.png" alt="dash_05.png"></p>
+<h2 id="5-대시보드에-interactive-구현하기">5. 대시보드에 Interactive 구현하기</h2>
+<ul>
+<li>날짜를 지정하여 그래프를 작성할 수는 없을까?</li>
+<li>지역을 선택할 때마다, 라인 그래프가 변동시킬 수는 없을까?</li>
+<li>위와 같은 질문에 대답하기 위해서는 Interactive Component를 구성해야 한다.</li>
+</ul>
+<h3 id="1-메뉴-구성하기">(1) 메뉴 구성하기</h3>
+<ul>
+<li>데이터부터 확인해본다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+
+<span style="color:#75715e"># step 1. Data Import</span>
+data <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;data/avocado.csv&#34;</span>, index_col<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+data <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#34;type == &#39;conventional&#39; and region == &#39;Albany&#39;&#34;</span>)
+data[<span style="color:#e6db74">&#34;Date&#34;</span>] <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>to_datetime(data[<span style="color:#e6db74">&#34;Date&#34;</span>], format<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#34;</span>)
+data<span style="color:#f92672">.</span>sort_values(<span style="color:#e6db74">&#34;Date&#34;</span>, inplace<span style="color:#f92672">=</span>True)
+<span style="color:#66d9ef">print</span>(data<span style="color:#f92672">.</span>info())
+<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#a6e22e">pandas</span><span style="color:#f92672">.</span>core<span style="color:#f92672">.</span>frame<span style="color:#f92672">.</span>DataFrame<span style="color:#e6db74">&#39;&gt;</span>
+Int64Index: <span style="color:#ae81ff">169</span> entries, <span style="color:#ae81ff">51</span> to <span style="color:#ae81ff">0</span>
+Data columns (total <span style="color:#ae81ff">13</span> columns):
+ <span style="color:#75715e">#   Column        Non-Null Count  Dtype</span>
+<span style="color:#f92672">---</span>  <span style="color:#f92672">------</span>        <span style="color:#f92672">--------------</span>  <span style="color:#f92672">-----</span>
+ <span style="color:#ae81ff">0</span>   Date          <span style="color:#ae81ff">169</span> non<span style="color:#f92672">-</span>null    datetime64[ns]
+ <span style="color:#ae81ff">1</span>   AveragePrice  <span style="color:#ae81ff">169</span> non<span style="color:#f92672">-</span>null    float64
+ <span style="color:#ae81ff">2</span>   Total Volume  <span style="color:#ae81ff">169</span> non<span style="color:#f92672">-</span>null    float64
+ <span style="color:#ae81ff">3</span>   <span style="color:#ae81ff">4046</span>          <span style="color:#ae81ff">169</span> non<span style="color:#f92672">-</span>null    float64
+ <span style="color:#ae81ff">4</span>   <span style="color:#ae81ff">4225</span>          <span style="color:#ae81ff">169</span> non<span style="color:#f92672">-</span>null    float64
+ <span style="color:#ae81ff">5</span>   <span style="color:#ae81ff">4770</span>          <span style="color:#ae81ff">169</span> non<span style="color:#f92672">-</span>null    float64
+ <span style="color:#ae81ff">6</span>   Total Bags    <span style="color:#ae81ff">169</span> non<span style="color:#f92672">-</span>null    float64
+ <span style="color:#ae81ff">7</span>   Small Bags    <span style="color:#ae81ff">169</span> non<span style="color:#f92672">-</span>null    float64
+ <span style="color:#ae81ff">8</span>   Large Bags    <span style="color:#ae81ff">169</span> non<span style="color:#f92672">-</span>null    float64
+ <span style="color:#ae81ff">9</span>   XLarge Bags   <span style="color:#ae81ff">169</span> non<span style="color:#f92672">-</span>null    float64
+ <span style="color:#ae81ff">10</span>  type          <span style="color:#ae81ff">169</span> non<span style="color:#f92672">-</span>null    object
+ <span style="color:#ae81ff">11</span>  year          <span style="color:#ae81ff">169</span> non<span style="color:#f92672">-</span>null    int64
+ <span style="color:#ae81ff">12</span>  region        <span style="color:#ae81ff">169</span> non<span style="color:#f92672">-</span>null    object
+dtypes: datetime64[ns](<span style="color:#ae81ff">1</span>), float64(<span style="color:#ae81ff">9</span>), int64(<span style="color:#ae81ff">1</span>), object(<span style="color:#ae81ff">2</span>)
+memory usage: <span style="color:#ae81ff">18.5</span><span style="color:#f92672">+</span> KB
+None
+</code></pre></div><ul>
+<li>여기에서 3가지 컬럼을 메뉴로 활용한다.
+<ul>
+<li>Region</li>
+<li>Type of avocado</li>
+<li>Date range</li>
+</ul>
+</li>
+<li>기존 코드에서 중간 코드만 주석 처리하면, 각각의 type,  region 등을 확인할 수 있다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">data <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;data/avocado.csv&#34;</span>, index_col<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+<span style="color:#75715e"># data = data.query(&#34;type == &#39;conventional&#39; and region == &#39;Albany&#39;&#34;)</span>
+data[<span style="color:#e6db74">&#34;Date&#34;</span>] <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>to_datetime(data[<span style="color:#e6db74">&#34;Date&#34;</span>], format<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#34;</span>)
+data<span style="color:#f92672">.</span>sort_values(<span style="color:#e6db74">&#34;Date&#34;</span>, inplace<span style="color:#f92672">=</span>True)
+
+<span style="color:#75715e"># print(data.info())</span>
+<span style="color:#66d9ef">print</span>(data[[<span style="color:#e6db74">&#39;region&#39;</span>, <span style="color:#e6db74">&#39;type&#39;</span>, <span style="color:#e6db74">&#39;Date&#39;</span>]]<span style="color:#f92672">.</span>head()) 
+
+                region          type       Date
+<span style="color:#ae81ff">51</span>           Southeast       organic <span style="color:#ae81ff">2015</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span><span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>
+<span style="color:#ae81ff">51</span>             Chicago       organic <span style="color:#ae81ff">2015</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span><span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>
+<span style="color:#ae81ff">51</span>  HarrisburgScranton       organic <span style="color:#ae81ff">2015</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span><span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>
+<span style="color:#ae81ff">51</span>          Pittsburgh  conventional <span style="color:#ae81ff">2015</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span><span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>
+<span style="color:#ae81ff">51</span>               Boise       organic <span style="color:#ae81ff">2015</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span><span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>
+</code></pre></div><ul>
+<li>위 3가지 메뉴가 구성되도록 <code>html.Div</code> 를 추가하는 코드를 작성한다.
+<ul>
+<li>드롭다운 관련 함수 설명: <a href="https://dash.plotly.com/dash-core-components">https://dash.plotly.com/dash-core-components</a></li>
+<li>날짜 관련 함수 설명: <a href="https://dash.plotly.com/dash-core-components/datepickerrange">https://dash.plotly.com/dash-core-components/datepickerrange</a></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+<span style="color:#75715e"># step 3. HTML</span>
+app<span style="color:#f92672">.</span>layout <span style="color:#f92672">=</span> html<span style="color:#f92672">.</span>Div(
+    children<span style="color:#f92672">=</span>[
+        html<span style="color:#f92672">.</span>Div(
+            children<span style="color:#f92672">=</span>[
+                html<span style="color:#f92672">.</span>P(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;📈&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_emoji&#34;</span>),
+                html<span style="color:#f92672">.</span>H1(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp Analytics&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_title&#34;</span>,),
+                html<span style="color:#f92672">.</span>P(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_description&#34;</span>,),
+            ],
+            className<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;header&#39;</span>,
+        ),
+        html<span style="color:#f92672">.</span>Div(
+            children<span style="color:#f92672">=</span>[
+                html<span style="color:#f92672">.</span>Div(
+                    children<span style="color:#f92672">=</span>[
+                        html<span style="color:#f92672">.</span>Div(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Region&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;menu-title&#34;</span>),
+                        dcc<span style="color:#f92672">.</span>Dropdown(
+                            id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;region-filter&#34;</span>,
+                            options<span style="color:#f92672">=</span>[
+                                {<span style="color:#e6db74">&#34;label&#34;</span>: region, <span style="color:#e6db74">&#34;value&#34;</span>: region}
+                                <span style="color:#66d9ef">for</span> region <span style="color:#f92672">in</span> np<span style="color:#f92672">.</span>sort(data<span style="color:#f92672">.</span>region<span style="color:#f92672">.</span>unique())
+                            ],
+                            value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Albany&#34;</span>,
+                            clearable<span style="color:#f92672">=</span>False,
+                            className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;dropdown&#34;</span>,
+                        ),
+                    ]
+                ),
+                html<span style="color:#f92672">.</span>Div(
+                    children<span style="color:#f92672">=</span>[
+                        html<span style="color:#f92672">.</span>Div(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Type&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;menu-title&#34;</span>),
+                        dcc<span style="color:#f92672">.</span>Dropdown(
+                            id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;type-filter&#34;</span>,
+                            options<span style="color:#f92672">=</span>[
+                                {<span style="color:#e6db74">&#34;label&#34;</span>: avocado_type, <span style="color:#e6db74">&#34;value&#34;</span>: avocado_type}
+                                <span style="color:#66d9ef">for</span> avocado_type <span style="color:#f92672">in</span> data<span style="color:#f92672">.</span>type<span style="color:#f92672">.</span>unique()
+                            ],
+                            value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;organic&#34;</span>,
+                            clearable<span style="color:#f92672">=</span>False,
+                            searchable<span style="color:#f92672">=</span>False,
+                            className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;dropdown&#34;</span>,
+                        ),
+                    ],
+                ),
+                html<span style="color:#f92672">.</span>Div(
+                    children<span style="color:#f92672">=</span>[
+                        html<span style="color:#f92672">.</span>Div(
+                            children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Date Range&#34;</span>,
+                            className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;menu-title&#34;</span>
+                            ),
+                        dcc<span style="color:#f92672">.</span>DatePickerRange(
+                            id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;date-range&#34;</span>,
+                            min_date_allowed<span style="color:#f92672">=</span>data<span style="color:#f92672">.</span>Date<span style="color:#f92672">.</span>min()<span style="color:#f92672">.</span>date(),
+                            max_date_allowed<span style="color:#f92672">=</span>data<span style="color:#f92672">.</span>Date<span style="color:#f92672">.</span>max()<span style="color:#f92672">.</span>date(),
+														initial_visible_month<span style="color:#f92672">=</span>data<span style="color:#f92672">.</span>Date<span style="color:#f92672">.</span>min()<span style="color:#f92672">.</span>date(),
+                            start_date<span style="color:#f92672">=</span>data<span style="color:#f92672">.</span>Date<span style="color:#f92672">.</span>min()<span style="color:#f92672">.</span>date(),
+                            end_date<span style="color:#f92672">=</span>data<span style="color:#f92672">.</span>Date<span style="color:#f92672">.</span>max()<span style="color:#f92672">.</span>date(),
+                        ),
+                    ]
+                ),
+            ],
+            className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;menu&#34;</span>,
+        ),
+        html<span style="color:#f92672">.</span>Div(
+            children<span style="color:#f92672">=</span>[
+                html<span style="color:#f92672">.</span>Div(
+                    children<span style="color:#f92672">=</span>dcc<span style="color:#f92672">.</span>Graph(
+                        id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;price-chart&#34;</span>,
+                        config<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;displayModeBar&#34;</span>: False},
+                        figure<span style="color:#f92672">=</span>{
+                            <span style="color:#e6db74">&#34;data&#34;</span>: [
+                                {
+                                    <span style="color:#e6db74">&#34;x&#34;</span>: data[<span style="color:#e6db74">&#34;Date&#34;</span>],
+                                    <span style="color:#e6db74">&#34;y&#34;</span>: data[<span style="color:#e6db74">&#34;AveragePrice&#34;</span>],
+                                    <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;lines&#34;</span>,
+                                    <span style="color:#e6db74">&#34;hovertemplate&#34;</span>: <span style="color:#e6db74">&#34;$%{y:.2f}&#34;</span>
+                                    <span style="color:#e6db74">&#34;&lt;extra&gt;&lt;/extra&gt;&#34;</span>,
+                                },
+                            ],
+                            <span style="color:#e6db74">&#34;layout&#34;</span>: {
+                                <span style="color:#e6db74">&#34;title&#34;</span>: {
+                                    <span style="color:#e6db74">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;아보카도 평균가격($)&#34;</span>,
+                                    <span style="color:#e6db74">&#34;x&#34;</span>: <span style="color:#ae81ff">2</span>,
+                                    <span style="color:#e6db74">&#34;xanchor&#34;</span>: <span style="color:#e6db74">&#34;center&#34;</span>,
+                                },
+                                <span style="color:#e6db74">&#34;xaxis&#34;</span>: {<span style="color:#e6db74">&#34;fixedrange&#34;</span>: True},
+                                <span style="color:#e6db74">&#34;yaxis&#34;</span>: {
+                                    <span style="color:#e6db74">&#34;tickprefix&#34;</span>: <span style="color:#e6db74">&#34;$&#34;</span>,
+                                    <span style="color:#e6db74">&#34;fixedrange&#34;</span>: True,
+                                },
+                                <span style="color:#e6db74">&#34;colorway&#34;</span>: [<span style="color:#e6db74">&#34;#17B897&#34;</span>],
+                            },
+                        },
+                    ),
+                    className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;card&#34;</span>,
+                ),
+                html<span style="color:#f92672">.</span>Div(
+                    children<span style="color:#f92672">=</span>dcc<span style="color:#f92672">.</span>Graph(
+                        id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;volume-chart&#34;</span>,
+                        config<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;displayModeBar&#34;</span>: False},
+                        figure<span style="color:#f92672">=</span>{
+                            <span style="color:#e6db74">&#34;data&#34;</span>: [
+                                {
+                                    <span style="color:#e6db74">&#34;x&#34;</span>: data[<span style="color:#e6db74">&#34;Date&#34;</span>],
+                                    <span style="color:#e6db74">&#34;y&#34;</span>: data[<span style="color:#e6db74">&#34;Total Volume&#34;</span>],
+                                    <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;lines&#34;</span>,
+                                },
+                            ],
+                            <span style="color:#e6db74">&#34;layout&#34;</span>: {
+                                <span style="color:#e6db74">&#34;title&#34;</span>: {
+                                    <span style="color:#e6db74">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;아보카도 판매량&#34;</span>,
+                                    <span style="color:#e6db74">&#34;x&#34;</span>: <span style="color:#ae81ff">0.05</span>,
+                                    <span style="color:#e6db74">&#34;xanchor&#34;</span>: <span style="color:#e6db74">&#34;left&#34;</span>,
+                                },
+                                <span style="color:#e6db74">&#34;xaxis&#34;</span>: {<span style="color:#e6db74">&#34;fixedrange&#34;</span>: True},
+                                <span style="color:#e6db74">&#34;yaxis&#34;</span>: {<span style="color:#e6db74">&#34;fixedrange&#34;</span>: True},
+                                <span style="color:#e6db74">&#34;colorway&#34;</span>: [<span style="color:#e6db74">&#34;#E12D39&#34;</span>],
+                            },
+                        },
+                    ),
+                    className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;card&#34;</span>,
+                ),
+            ],
+            className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;wrapper&#34;</span>,
+        ),
+    ]
+)
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    app<span style="color:#f92672">.</span>run_server(debug<span style="color:#f92672">=</span>True)
+</code></pre></div><ul>
+<li>style.css 파일도 변경해야 한다. 아래 코드를 추가한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+.<span style="color:#a6e22e">menu</span> {
+    <span style="color:#66d9ef">height</span>: <span style="color:#ae81ff">112</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">max-width</span>: <span style="color:#ae81ff">1024</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">display</span>: <span style="color:#66d9ef">flex</span>;
+    <span style="color:#66d9ef">justify-content</span>: <span style="color:#66d9ef">space</span><span style="color:#f92672">-</span>evenly;
+    <span style="color:#66d9ef">padding-top</span>: <span style="color:#ae81ff">32</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">margin</span>: <span style="color:#ae81ff">0</span><span style="color:#66d9ef">px</span> <span style="color:#66d9ef">auto</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">auto</span>;
+    <span style="color:#66d9ef">background-color</span>: <span style="color:#ae81ff">#FFFFFF</span>;
+    <span style="color:#66d9ef">box-shadow</span>: <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">4</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">6</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">0</span> rgba(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.18</span>);
+}
+
+.<span style="color:#a6e22e">menu-title</span> {
+    <span style="color:#66d9ef">margin-bottom</span>: <span style="color:#ae81ff">6</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">font-weight</span>: <span style="color:#66d9ef">bold</span>;
+    <span style="color:#66d9ef">color</span>: <span style="color:#ae81ff">#079A82</span>;
+}
+
+.<span style="color:#a6e22e">Select-control</span> {
+    <span style="color:#66d9ef">width</span>: <span style="color:#ae81ff">256</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">height</span>: <span style="color:#ae81ff">48</span><span style="color:#66d9ef">px</span>;
+}
+
+.<span style="color:#a6e22e">Select--single</span> <span style="color:#f92672">&gt;</span> .<span style="color:#a6e22e">Select-control</span> .<span style="color:#a6e22e">Select-value</span><span style="color:#f92672">,</span> .<span style="color:#a6e22e">Select-placeholder</span> {
+    <span style="color:#66d9ef">line-height</span>: <span style="color:#ae81ff">48</span><span style="color:#66d9ef">px</span>;
+}
+
+.<span style="color:#a6e22e">Select--multi</span> .<span style="color:#a6e22e">Select-value-label</span> {
+    <span style="color:#66d9ef">line-height</span>: <span style="color:#ae81ff">32</span><span style="color:#66d9ef">px</span>;
+}
+
+</code></pre></div><ul>
+<li><code>.Select-control</code> 등의 CSS 클래스명은 다음 <code>개발자 도구</code>에서 확인하면 된다.</li>
+</ul>
+<p><img src="/img/python/dash/dash_project/dash_07.png" alt="dash_07.png"></p>
+<ul>
+<li>이 때, 화면을 보면, 아래와 같이 나올 것이다.</li>
+<li>메뉴는 정상적으로 나오지만, Line 그래프는 정상적으로 나타나지 않는 것을 확인할 수 있다.</li>
+</ul>
+<p><img src="/img/python/dash/dash_project/dash_06.png" alt="dash_06.png"></p>
+<ul>
+<li>여기부터가 Reactive Programming이 필요한 순간이다.</li>
+<li><code>dcc.Dropdown</code> component에 대한 코드 설명이 필요할 것 같다. 코드를 다시 보자.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">html</span>.<span style="color:#a6e22e">Div</span><span style="color:#f92672">(</span>
+    <span style="color:#f92672">children</span><span style="color:#f92672">=[</span>
+        <span style="color:#f92672">html</span>.<span style="color:#a6e22e">Div</span><span style="color:#f92672">(</span><span style="color:#f92672">children</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Region&#34;</span><span style="color:#f92672">,</span> <span style="color:#f92672">className</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;menu-title&#34;</span><span style="color:#f92672">),</span>
+        <span style="color:#f92672">dcc</span>.<span style="color:#a6e22e">Dropdown</span><span style="color:#f92672">(</span>
+            <span style="color:#f92672">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;region-filter&#34;</span><span style="color:#f92672">,</span>
+            <span style="color:#f92672">options</span><span style="color:#f92672">=[</span>
+                {<span style="color:#960050;background-color:#1e0010">&#34;label&#34;:</span> <span style="color:#960050;background-color:#1e0010">region,</span> <span style="color:#960050;background-color:#1e0010">&#34;value&#34;:</span> <span style="color:#960050;background-color:#1e0010">region</span>}
+                <span style="color:#f92672">for</span> <span style="color:#f92672">region</span> <span style="color:#f92672">in</span> <span style="color:#f92672">np</span>.<span style="color:#a6e22e">sort</span><span style="color:#f92672">(</span><span style="color:#f92672">data</span>.<span style="color:#a6e22e">region</span>.<span style="color:#a6e22e">unique</span><span style="color:#f92672">())</span>
+            <span style="color:#f92672">],</span>
+            <span style="color:#f92672">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Albany&#34;</span><span style="color:#f92672">,</span>
+            <span style="color:#f92672">clearable</span><span style="color:#f92672">=</span><span style="color:#f92672">False</span><span style="color:#f92672">,</span>
+            <span style="color:#f92672">className</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;dropdown&#34;</span><span style="color:#f92672">,</span>
+        <span style="color:#f92672">),</span>
+    <span style="color:#f92672">]</span>
+<span style="color:#f92672">),</span>
+</code></pre></div><ul>
+<li>id: Dropdown 메뉴의 ID를 구성한다. 해당 ID는 향후 Callback을 정의할 때, 같이 활용된다.</li>
+<li>optinos: Dropdown 메뉴가 최초 선택이 될 때, 값(labesl 또는 values)을 보여줍니다.</li>
+<li>value: Default된 값을 보여줍니다.</li>
+<li>className: style.css 이 적용되는 영역이다.</li>
+</ul>
+<h3 id="2-reactive-programming">(2) Reactive Programming</h3>
+<ul>
+<li>간단히 말하면, 실시간으로 반응을 하는 프로그래밍을 말한다.
+<ul>
+<li>다른 유저가 페이스북에 &lsquo;좋아요&rsquo; 버튼을 누르면 해당 포스트를 보고 있는 사용자는 새로고침 할 것 없이 실시간으로 &lsquo;좋아요&rsquo;의 개수가 올라가는 것을 말한다.</li>
+<li>프로그래밍으로는 비동기 이벤트를 처리한다고 말한다.</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://youtu.be/jjypeFGJC3c">https://youtu.be/jjypeFGJC3c</a></p>
+<h3 id="3-callbacks">(3) Callbacks</h3>
+<ul>
+<li>Reactive Programming의 핵심이자, 본 Tutorial의 핵심이다.</li>
+<li>Callback 함수란, 개발자는 이벤트를 등록하기만 할 뿐, 실제 사이트 방문자가 특정 이벤트를 발생시키면, 특정 시점에 도달했을 때 해당 기능을 활성화 시키는 것이다.</li>
+</ul>
+<p><img src="/img/python/dash/dash_project/dash_08.png" alt="/img/python/dash/dash_project/dash_08.png"></p>
+<ul>
+<li>이제 위 코드를 실행시키는 코드를 추가한다.</li>
+<li>먼저 라이브러리를 추가한다. 그리고 이전 코드에 이어서 아래 코드를 추가한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">from</span> dash.dependencies <span style="color:#f92672">import</span> Output, Input
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+<span style="color:#a6e22e">@app.callback</span>(
+    [Output(<span style="color:#e6db74">&#34;price-chart&#34;</span>, <span style="color:#e6db74">&#34;figure&#34;</span>), Output(<span style="color:#e6db74">&#34;volume-chart&#34;</span>, <span style="color:#e6db74">&#34;figure&#34;</span>)],
+    [
+        Input(<span style="color:#e6db74">&#34;region-filter&#34;</span>, <span style="color:#e6db74">&#34;value&#34;</span>),
+        Input(<span style="color:#e6db74">&#34;type-filter&#34;</span>, <span style="color:#e6db74">&#34;value&#34;</span>),
+        Input(<span style="color:#e6db74">&#34;date-range&#34;</span>, <span style="color:#e6db74">&#34;start_date&#34;</span>),
+        Input(<span style="color:#e6db74">&#34;date-range&#34;</span>, <span style="color:#e6db74">&#34;end_date&#34;</span>),
+    ],
+)
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">update_charts</span>(region, avocado_type, start_date, end_date):
+    mask <span style="color:#f92672">=</span> (
+        (data<span style="color:#f92672">.</span>region <span style="color:#f92672">==</span> region)
+        <span style="color:#f92672">&amp;</span> (data<span style="color:#f92672">.</span>type <span style="color:#f92672">==</span> avocado_type)
+        <span style="color:#f92672">&amp;</span> (data<span style="color:#f92672">.</span>Date <span style="color:#f92672">&gt;=</span> start_date)
+        <span style="color:#f92672">&amp;</span> (data<span style="color:#f92672">.</span>Date <span style="color:#f92672">&lt;=</span> end_date)
+    )
+    filtered_data <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>loc[mask, :]
+    price_chart_figure <span style="color:#f92672">=</span> {
+        <span style="color:#e6db74">&#34;data&#34;</span>: [
+            {
+                <span style="color:#e6db74">&#34;x&#34;</span>: filtered_data[<span style="color:#e6db74">&#34;Date&#34;</span>],
+                <span style="color:#e6db74">&#34;y&#34;</span>: filtered_data[<span style="color:#e6db74">&#34;AveragePrice&#34;</span>],
+                <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;lines&#34;</span>,
+                <span style="color:#e6db74">&#34;hovertemplate&#34;</span>: <span style="color:#e6db74">&#34;$%{y:.2f}&lt;extra&gt;&lt;/extra&gt;&#34;</span>,
+            },
+        ],
+        <span style="color:#e6db74">&#34;layout&#34;</span>: {
+            <span style="color:#e6db74">&#34;title&#34;</span>: {
+                <span style="color:#e6db74">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;Average Price of Avocados&#34;</span>,
+                <span style="color:#e6db74">&#34;x&#34;</span>: <span style="color:#ae81ff">0.05</span>,
+                <span style="color:#e6db74">&#34;xanchor&#34;</span>: <span style="color:#e6db74">&#34;left&#34;</span>,
+            },
+            <span style="color:#e6db74">&#34;xaxis&#34;</span>: {<span style="color:#e6db74">&#34;fixedrange&#34;</span>: True},
+            <span style="color:#e6db74">&#34;yaxis&#34;</span>: {<span style="color:#e6db74">&#34;tickprefix&#34;</span>: <span style="color:#e6db74">&#34;$&#34;</span>, <span style="color:#e6db74">&#34;fixedrange&#34;</span>: True},
+            <span style="color:#e6db74">&#34;colorway&#34;</span>: [<span style="color:#e6db74">&#34;#17B897&#34;</span>],
+        },
+    }
+
+    volume_chart_figure <span style="color:#f92672">=</span> {
+        <span style="color:#e6db74">&#34;data&#34;</span>: [
+            {
+                <span style="color:#e6db74">&#34;x&#34;</span>: filtered_data[<span style="color:#e6db74">&#34;Date&#34;</span>],
+                <span style="color:#e6db74">&#34;y&#34;</span>: filtered_data[<span style="color:#e6db74">&#34;Total Volume&#34;</span>],
+                <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;lines&#34;</span>,
+            },
+        ],
+        <span style="color:#e6db74">&#34;layout&#34;</span>: {
+            <span style="color:#e6db74">&#34;title&#34;</span>: {
+                <span style="color:#e6db74">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;Avocados Sold&#34;</span>,
+                <span style="color:#e6db74">&#34;x&#34;</span>: <span style="color:#ae81ff">0.05</span>,
+                <span style="color:#e6db74">&#34;xanchor&#34;</span>: <span style="color:#e6db74">&#34;left&#34;</span>
+            },
+            <span style="color:#e6db74">&#34;xaxis&#34;</span>: {<span style="color:#e6db74">&#34;fixedrange&#34;</span>: True},
+            <span style="color:#e6db74">&#34;yaxis&#34;</span>: {<span style="color:#e6db74">&#34;fixedrange&#34;</span>: True},
+            <span style="color:#e6db74">&#34;colorway&#34;</span>: [<span style="color:#e6db74">&#34;#E12D39&#34;</span>],
+        },
+    }
+    <span style="color:#66d9ef">return</span> price_chart_figure, volume_chart_figure
+</code></pre></div><ul>
+<li>먼저 <code>@app.callback()</code> 은 Decorator에 관한 구문이다.
+<ul>
+<li>참조: <a href="https://dojang.io/mod/page/view.php?id=2427">https://dojang.io/mod/page/view.php?id=2427</a></li>
+</ul>
+</li>
+<li>전체적인 흐름도는 Input과 Output으로 구성되어 있고, 각 ID 이름 값으로 연결이 되는 것을 확인할 수 있다.</li>
+</ul>
+<p><img src="/img/python/dash/dash_project/Dash_Callbacks.jpg" alt="Dash_Callbacks.jpg"></p>
+<ul>
+<li>새롭게 정의된 함수 <code>update_chart</code>는 기존에 정적으로 작성된 두개의 chart 코드를 같이 변환할 수 있도록 담아두었다.
+<ul>
+<li><code>[ Input(&quot;region-filter&quot;, &quot;value&quot;), Input(&quot;type-filter&quot;, &quot;value&quot;), Input(&quot;date-range&quot;, &quot;start_date&quot;), Input(&quot;date-range&quot;, &quot;end_date&quot;), ],</code> 사용자가 각 구성요소를 선택하면, 정의된 변수 <code>value</code>, <code>start_date</code> 등 형태로 저장이 된다.
+<ul>
+<li>각각의 값은 <code>html.div</code> 코드에서 <code>options</code> 에 보면, 각각의 값과 연결이 되며, 최종적인 output은 반복문을 통해 구현되었다.</li>
+</ul>
+</li>
+<li><code>[Output(&quot;price-chart&quot;, &quot;figure&quot;), Output(&quot;volume-chart&quot;, &quot;figure&quot;)],</code> 에서 price-chart와 volume-chart는 <code>dcc.graph</code> ID를 의미하고, <code>figure</code> 는 그래프에 들어가는 각각의 변환되는 데이터를 의미한다.</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-최종확인">(4) 최종확인</h3>
+<ul>
+<li>이제 완성된 그래프를 확인해본다.</li>
+</ul>
+<p><img src="/img/python/dash/dash_project/dash_10.png" alt="dash_10.png"></p>
+<h2 id="6-웹-배포하기-with-heroku--git">6. 웹 배포하기 with Heroku &amp; Git</h2>
+<ul>
+<li>웹 배포를 위해서는 <a href="https://devcenter.heroku.com/articles/heroku-cli">Heroku</a> &amp; <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">Git</a> 설치를 해야 한다.</li>
+<li>각 버전에 맞는 것을 설치 진행한다.
+<ul>
+<li><code>Heroku</code> &amp; <code>git</code> 정상적으로 설치 후 버전 확인을 화면 다음과 같이 확인이 가능하다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ echo <span style="color:#e6db74">&#39;export PATH=&#34;/usr/local/homebrew/opt/heroku-node/bin:$PATH&#34;&#39;</span> &gt;&gt; /Users/evan/.bash_profile
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ git --version
+git version 2.30.0
+<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ heroku --version
+ ›   Warning: Our terms of service have changed: https://dashboard.heroku.com/terms-of-service
+heroku/7.56.1 darwin-x64 node-v12.21.0
+</code></pre></div><ul>
+<li>app server 객체를 생성한다.
+<ul>
+<li>해당 코드는 <code>[WSGI server](https://www.python.org/dev/peps/pep-3333/)</code> 에서 앱을 실행한다는 뜻을 가지고 있다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+app <span style="color:#f92672">=</span> dash<span style="color:#f92672">.</span>Dash(__name__, external_stylesheets<span style="color:#f92672">=</span>external_stylesheets)
+app<span style="color:#f92672">.</span>title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Temp Analytics: Understand Your Data!&#34;</span>
+server <span style="color:#f92672">=</span> app<span style="color:#f92672">.</span>server <span style="color:#75715e"># 해당 코드를 새롭게 추가한다. </span>
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+</code></pre></div><ul>
+<li>이번에는 <code>runtime.txt</code> 파일을 프로젝트 폴더 내 상단 위치에 생성한 후, 다음과 같이 입력한다.
+<ul>
+<li>해당 버전은 독자의 버전과 다를 수 있으니 확인 후 입력한다.</li>
+</ul>
+</li>
+</ul>
+<pre><code>python-3.8.7
+</code></pre><ul>
+<li>이번에는 <code>requirements.txt</code> 라이브러리명과 각 버전을 입력하도록 한다.</li>
+<li>현재 virtualenv 환경에서 작업중인 것을 그대로 받으려면 다음과 같이 실행한다.
+<ul>
+<li>그러나, 기존에 설치된 라이브러리가 많으면 직접 주요 패키지만 별도로 정리하는 것을 추천한다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ pip freeze &gt; requirements.txt
+</code></pre></div><ul>
+<li>필자는 아래와 같이 추가했다.</li>
+</ul>
+<pre><code>colorama==0.4.4
+dash==1.21.0
+gunicorn==20.1.0
+numpy==1.19.4
+pandas==1.2.0
+</code></pre><ul>
+<li>이번에는 <code>Procfile</code> 을 생성한 후, 아래 텍스트를 추가한다.
+<ul>
+<li>Heroku app에서 gunicorn 서버로 대시보드를 운영한다는 뜻이다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">web: gunicorn app:server
+</code></pre></div><ul>
+<li>이번에는 <code>.gitignore</code> 파일을 생성하여 불필요한 파일들을 추적하지 않도록 한다.
+<ul>
+<li>해당 파일만 <code>git commit</code> 을 진행한다.</li>
+</ul>
+</li>
+</ul>
+<pre><code>venv
+*.pyc
+.DS_Store # 맥 사용자만 추가
+</code></pre><ul>
+<li>전체적인 프로젝트의 파일 구조는 아래와 같다.</li>
+</ul>
+<pre><code>dashboard_project/
+│
+├── assets/
+│   ├── favicon.ico
+│   └── style.css
+│
+├── venv/
+│
+├── app.py
+├── data/
+│   ├── avocado.csv
+├── Procfile
+├── requirements.txt
+└── runtime.txt
+</code></pre><ul>
+<li>이제 마지막으로 <code>heroku</code>에 앱 배포를 시작한다.
+<ul>
+<li>사전에 회원가입 등 진행이 되어 있어야 한다.</li>
+<li>이 때, 중요한 것은 프로젝트 폴더명과 Heroku App 이름이 동일해야 한다. <code>dash-project21</code></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ heroku create dash-project21 <span style="color:#75715e"># 각자의 이름을 추가한다. </span>
+</code></pre></div><ul>
+<li>이제 <code>heroku login</code>을 진행한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ <span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> heroku login
+heroku: Press any key to open up the browser to login or q to exit: 
+Opening browser to https://cli-auth.heroku.com/auth/cli/browser/9320abcd-b8c6-406d-9198-ca14d1e59a26?requestor<span style="color:#f92672">=</span>SFMyNTY.g2gDbQAAAA4yMjEuMTU3LjM3LjIxNm4GAGgtTBB7AWIAAVGA.GlyVc8jbyiW6NG0MVzCS0bOjtzBWvYRfjB9-gnkQaoQ
+Logging in... <span style="color:#66d9ef">done</span>
+Logged in as your_email_address
+</code></pre></div><ul>
+<li>그리고, heroku 싸이트에 접속하여 각 명령어를 순서대로 입력한다.</li>
+</ul>
+<p><img src="%5B%E1%84%83%E1%85%A2%E1%84%89%E1%85%B5%E1%84%87%E1%85%A9%E1%84%83%E1%85%B3%5D%20Dash%20Project%209b6895a2ba5c41b3b18ebee41c08f58b/dash_09.png" alt="%5B%E1%84%83%E1%85%A2%E1%84%89%E1%85%B5%E1%84%87%E1%85%A9%E1%84%83%E1%85%B3%5D%20Dash%20Project%209b6895a2ba5c41b3b18ebee41c08f58b/dash_09.png"></p>
+<ul>
+<li>이제 repository를 생성한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ heroku git:remote -a dashboard-project21
+set git remote heroku to https://git.heroku.com/dashboard-project21.git
+</code></pre></div><ul>
+<li>이제 배포를 진행한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git add .
+$ git commit -am <span style="color:#e6db74">&#34;make it better&#34;</span>
+$ git push 
+$ git push heroku main
+</code></pre></div><ul>
+<li>이제 완성된 heroku-app을 확인한다.
+<ul>
+<li>URL: <a href="https://dashboard-project21.herokuapp.com/">https://dashboard-project21.herokuapp.com/</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>Develop Data Visualization Interfaces in Python With Dash, <a href="https://realpython.com/python-dash/">https://realpython.com/python-dash/</a></li>
+</ul>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/dashboard/" rel="tag">Dashboard</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" rel="tag">대시보드</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/dash/" rel="tag">Dash</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/heroku/" rel="tag">Heroku</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name"></span>
+	</div>
+	<div class="authorbox__description">
+		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.
+	</div>
+</div>
+
+
+<section class="comments">
+	<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-chloevan-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH…" value="" name="q" aria-label="SEARCH…">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://dschloe.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/python/dash/dash_project/">Python Dash를 활용한 대시보드 만들기 with Heroku</a></li>
+			<li class="widget__item"><a class="widget__link" href="/sql/python_oracle/">Python과 Oracle 연동</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/machin_learning/ch04_common_pitfalls_ans_recommended_practices/">In ML, Data Leakage - 2</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/machin_learning/ch03_data_preparation/">In ML, Data Leakage - 1</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/python_edu/02_datatransformation/excel_multipleheaders/">엑셀 데이터 가공하기 변환</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/acea/">ACEA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/airflow/">Airflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/amazon-web-service/">Amazon Web Service</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/astype/">astype</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws/">AWS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">bar chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-data-transformation/">Basic Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basics/">Basics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-machine-learning/">BigQuery with Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-python/">BigQuery with Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blog/">Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bupar/">bupaR</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/categorical-features/">Categorical Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/class/">Class</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/cloud-build/">Cloud Build</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/colab/">Colab </a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conditional-statements/">Conditional Statements</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/corona-shiny-app/">Corona Shiny App</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dacon/">dacon</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dash/">Dash</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dashboard/">Dashboard</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-handling/">Data Handling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-leakage/">Data Leakage</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-science-project/">Data Science Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-structures/">Data Structures</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualization/">Data Visualization</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decorators/">Decorators</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deployment/">Deployment</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/design/">Design</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development/">Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development-settings/">Development Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dictionary/">Dictionary</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/discrete-features/">Discrete Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/docker/">Docker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/eda/">EDA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/encoding/">Encoding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/exploratory-data-analysis/">Exploratory Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/feature-engineering/">Feature Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-download/">File Download</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-i/o/">File I/O</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/function/">function</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ggplot2/">ggplot2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/git/">Git</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github/">Github</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/global-development/">Global Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-colab/">Google Colab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gradient-boosting-machine/">Gradient Boosting Machine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/heroku/">Heroku</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hexo/">Hexo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/histogram/">Histogram</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/installation/">Installation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/intermediate/">Intermediate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iteration/">iteration</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/jupyter-notebook/">Jupyter Notebook</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle/">Kaggle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle-api/">Kaggle API</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/konlp/">KoNLP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">line grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/linux/">Linux</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lollipop/">lollipop</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lstm/">LSTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/m1/">M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/macos-m1/">MacOS M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mask-r-cnn/">Mask R-CNN</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/merging-data/">Merging Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/missing-values/">Missing Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/neural-network/">Neural Network</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/new-packages/">New Packages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nonparametric/">Nonparametric</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/numeric-features/">Numeric Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/object-detection/">Object Detection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oce/">OCE</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/opencv/">OpenCV</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/openpyxl/">openpyxl</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/optimizer/">Optimizer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas-merge/">Pandas Merge</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pivot-table/">pivot table</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pls-sem/">PLS-SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/postgresql/">PostgreSQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/project/">Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/py-openaq/">py-openaq</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pydataset/">PyDataset</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-basic/">Python Basic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-project/">Python Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/">R 마크다운</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ranzcr/">Ranzcr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/recommendation/">Recommendation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regular-expression/">regular expression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rpa/">RPA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rtweet/">rtweet</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/seaborn/">Seaborn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ssh/">SSH</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow/">Tensorflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0/">Tensorflow 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0-tutorial/">Tensorflow 2.0 Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tutorial/">Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/">객체지향 프로그래밍</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/">구글 클라우드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/">구조방정식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/">국제개발</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/">기초통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/">논문통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/">대시보드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/">데이터 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">데이터 시각화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">데이터 싸이언스 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/">막대 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">머신러닝 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B3%B4%EA%B3%A0%EC%84%9C-%EC%9E%90%EB%8F%99%ED%99%94/">보고서 자동화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/">빅쿼리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%82%B0%EC%A0%90%EB%8F%84/">산점도</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/">선 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/">시간 측정</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/">아마존 웹 서비스</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%84%EC%B2%98%EB%A6%AC/">이미지 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/">정규표현식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천 시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%BA%90%EA%B8%80/">캐글</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/">텍스트 마이닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/">텍스트 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/">텐서플로 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/">텐서플로 2.0 튜토리얼</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/">텐서플로우</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/">프로세스 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/">피벗 테이블</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/">환경설정</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/acea/" title="ACEA">ACEA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/airflow/" title="Airflow">Airflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/amazon-web-service/" title="Amazon Web Service">Amazon Web Service</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/append/" title="append">append</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/astype/" title="astype">astype</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/auto-encoder/" title="Auto Encoder">Auto Encoder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85/" title="AWS 회원가입">AWS 회원가입</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="bar chart">bar chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-structures/" title="Basic Data Structures">Basic Data Structures</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-transformation/" title="Basic Data Transformation">Basic Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basics/" title="Basics">Basics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-machine-learning/" title="BigQuery with Machine Learning">BigQuery with Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery with Python">BigQuery with Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery with R">BigQuery with R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blog/" title="Blog">Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bupar/" title="bupaR">bupaR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/categorical-features/" title="Categorical Features">Categorical Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/class/" title="Class">Class</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cloud-build/" title="Cloud Build">Cloud Build</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/clustering/" title="Clustering">Clustering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/colab-with-kaggle/" title="Colab with Kaggle">Colab with Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-expressions/" title="Conditional Expressions">Conditional Expressions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-statements/" title="Conditional Statements">Conditional Statements</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cross-join/" title="Cross Join">Cross Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dash/" title="Dash">Dash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dashboard/" title="Dashboard">Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-handling/" title="Data Handling">Data Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-leakage/" title="Data Leakage">Data Leakage</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-types/" title="Data Types">Data Types</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualization/" title="Data Visualization">Data Visualization</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dataframe/" title="DataFrame">DataFrame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decision-tree/" title="Decision Tree">Decision Tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decorators/" title="Decorators">Decorators</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deployment/" title="Deployment">Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/design/" title="Design">Design</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="Development">Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development-settings/" title="Development Settings">Development Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary/" title="Dictionary">Dictionary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/discrete-features/" title="Discrete Features">Discrete Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/disk.frame/" title="disk.frame">disk.frame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/docker/" title="Docker">Docker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="dplyr">dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/eda/" title="EDA">EDA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/emr/" title="EMR">EMR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/encoding/" title="Encoding">Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enumerate/" title="enumerate">enumerate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exploratory-data-analysis/" title="Exploratory Data Analysis">Exploratory Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/extend/" title="extend">extend</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/feature-engineering/" title="Feature Engineering">Feature Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-download/" title="File Download">File Download</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-i/o/" title="File I/O">File I/O</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="filter">filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/for-loop/" title="for-loop">for-loop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geospatial-analysis/" title="Geospatial Analysis">Geospatial Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gghistostats/" title="gghistostats">gghistostats</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ggplot2/" title="ggplot2">ggplot2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/git/" title="Git">Git</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github/" title="Github">Github</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/global-development/" title="Global Development">Global Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="GRU 레이어">GRU 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="gt">gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gtsummary/" title="gtsummary">gtsummary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hadoop/" title="Hadoop">Hadoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heatmap/" title="Heatmap">Heatmap</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heroku/" title="Heroku">Heroku</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hexo/" title="Hexo">Hexo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/histogram/" title="Histogram">Histogram</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-segmentation/" title="Image Segmentation">Image Segmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-settings/" title="Image Settings">Image Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/insert/" title="insert">insert</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/installation/" title="Installation">Installation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/intermediate/" title="Intermediate">Intermediate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interview/" title="Interview">Interview</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iteration/" title="iteration">iteration</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="iterrows">iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/join/" title="JOIN">JOIN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle/" title="Kaggle">Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle-api/" title="Kaggle API">Kaggle API</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/konlp/" title="KoNLP">KoNLP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/label-encoding/" title="Label Encoding">Label Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lambda/" title="lambda">lambda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="leaflet">leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="line grpah">line grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linux/" title="Linux">Linux</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/list/" title="list">list</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="lists">lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists-and-tuples/" title="Lists and Tuples">Lists and Tuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lollipop/" title="lollipop">lollipop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m1/" title="M1">M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m5-forecasting/" title="M5 Forecasting">M5 Forecasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/macos-m1/" title="MacOS M1">MacOS M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mask-r-cnn/" title="Mask R-CNN">Mask R-CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathematical-functions/" title="Mathematical Functions">Mathematical Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-%EC%84%A4%EC%A0%95/" title="Mathjax 설정">Mathjax 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiprocessing/" title="multiprocessing">multiprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/neural-network/" title="Neural Network">Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/new-packages/" title="New Packages">New Packages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nonparametric/" title="Nonparametric">Nonparametric</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numeric-features/" title="Numeric Features">Numeric Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numpy/" title="NumPy">NumPy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/object-detection/" title="Object Detection">Object Detection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oce/" title="OCE">OCE</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/one-hot-encoding/" title="One-Hot Encoding">One-Hot Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/opencv/" title="OpenCV">OpenCV</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/openpyxl/" title="openpyxl">openpyxl</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outer-join/" title="Outer Join">Outer Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outliers/" title="Outliers">Outliers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-merge/" title="Pandas Merge">Pandas Merge</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pd.concat/" title="pd.concat">pd.concat</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pins/" title="pins">pins</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pivot-table/" title="pivot table">pivot table</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="Plotly">Plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pls-sem/" title="PLS-SEM">PLS-SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/polar-chart/" title="Polar Chart">Polar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/postgresql/" title="PostgreSQL">PostgreSQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/probability/" title="Probability">Probability</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/productive-box/" title="productive-box">productive-box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/py-openaq/" title="py-openaq">py-openaq</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pycaret/" title="PyCaret">PyCaret</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pydataset/" title="PyDataset">PyDataset</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-basic/" title="Python Basic">Python Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-excel/" title="Python Excel">Python Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-numpy-broadcasting/" title="Python NumPy Broadcasting">Python NumPy Broadcasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-project/" title="Python Project">Python Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="Python 포트폴리오">Python 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-basic/" title="R Basic">R Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EA%B8%B0%EC%B4%88%EB%AC%B8/" title="R 기초문">R 기초문</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="R 포트폴리오">R 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ranzcr/" title="Ranzcr">Ranzcr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recommendation/" title="Recommendation">Recommendation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regular-expression/" title="regular expression">regular expression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rpa/" title="RPA">RPA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rstudio/" title="RStudio">RStudio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rtweet/" title="rtweet">rtweet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/seaborn/" title="Seaborn">Seaborn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-app-%EB%B0%B0%ED%8F%AC/" title="Shiny App 배포">Shiny App 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="shinydashboard">shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="sort_values">sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ssh/" title="SSH">SSH</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/super-resolution/" title="Super Resolution">Super Resolution</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/swifter/" title="swifter">swifter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow/" title="Tensorflow">Tensorflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0/" title="Tensorflow 2.0">Tensorflow 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0-tutorial/" title="Tensorflow 2.0 Tutorial">Tensorflow 2.0 Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text/" title="Text">Text</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tutorial/" title="Tutorial">Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/types-of-functions/" title="Types of Functions">Types of Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="vcrs">vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/" title="객체지향 프로그래밍">객체지향 프로그래밍</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B2%BD%EC%A7%84%EB%8C%80%ED%9A%8C/" title="경진대회">경진대회</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/" title="구조방정식">구조방정식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/" title="국제개발">국제개발</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%8D%EC%A0%95-%EB%B6%80%EC%A0%95-%EA%B0%90%EC%84%B1%EB%B6%84%EC%84%9D/" title="긍정, 부정 감성분석">긍정, 부정 감성분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C/" title="깃허브">깃허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="깃허브 환경설정">깃허브 환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/" title="논문통계">논문통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="데이터 싸이언스 프로젝트">데이터 싸이언스 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="데이터 전처리">데이터 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%94%A5%EB%9F%AC%EB%8B%9D/" title="딥러닝">딥러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/" title="막대 그래프">막대 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" title="머신러닝">머신러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="머신러닝 프로젝트">머신러닝 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%AA%A8%EB%8D%B8%EB%A7%81-%EC%8B%9C%EA%B0%81%ED%99%94/" title="모델링 시각화">모델링 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B0%98%EC%98%81%EC%A0%81-%EC%A7%80%ED%91%9C/" title="반영적 지표">반영적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B3%B4%EC%8A%A4%ED%84%B4-%EC%A3%BC%ED%83%9D-%EA%B0%80%EA%B2%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%B8%ED%8A%B8/" title="보스턴 주택 가격 데이터세트">보스턴 주택 가격 데이터세트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B6%84%EB%A5%98/" title="분류">분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" title="빅쿼리">빅쿼리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-r/" title="빅쿼리 R">빅쿼리 R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%EA%B8%B0%EB%B3%B8/" title="빅쿼리 기본">빅쿼리 기본</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%ED%8C%8C%EC%9D%B4%EC%8D%AC/" title="빅쿼리 파이썬">빅쿼리 파이썬</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%B0%EC%A0%90%EB%8F%84/" title="산점도">산점도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%BC%EC%84%B1%EC%B9%B4%EB%93%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EA%B3%B5%EB%AA%A8%EC%A0%84/" title="삼성카드 데이터분석 공모전">삼성카드 데이터분석 공모전</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%83%A4%EC%9D%B4%EB%8B%88-%EC%95%B1-%EB%B0%B0%ED%8F%AC/" title="샤이니 앱 배포">샤이니 앱 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" title="선 그래프">선 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/" title="선형회귀">선형회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%88%9C%ED%99%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="순환 신경망">순환 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" title="시각화 문법">시각화 문법</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/" title="시간 측정">시간 측정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" title="시그노이드">시그노이드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%A0%EA%B2%BD-%EC%8A%A4%ED%83%80%EC%9D%BC-%EC%A0%84%EC%9D%B4/" title="신경 스타일 전이">신경 스타일 전이</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/" title="아마존 웹 서비스">아마존 웹 서비스</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%98%A4%ED%86%A0%EC%9D%B8%EC%BD%94%EB%8D%94/" title="오토인코더">오토인코더</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B6%84%ED%95%A0/" title="이미지 분할">이미지 분할</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%84%A4%EC%A0%95/" title="이미지 설정">이미지 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="이미지 전처리">이미지 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" title="이항분류">이항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%84%EB%B2%A0%EB%94%A9-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="임베딩 레이어">임베딩 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%83%9D%EC%84%B1/" title="자연어 생성">자연어 생성</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/" title="전이 학습">전이 학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/" title="정규표현식">정규표현식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/" title="지도학습">지도학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B4%88%ED%95%B4%EC%83%81%EB%8F%84/" title="초해상도">초해상도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천 시스템">추천 시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천시스템">추천시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B8%A1%EC%A0%95%EC%B2%99%EB%8F%84/" title="측정척도">측정척도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BA%90%EA%B8%80/" title="캐글">캐글</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BB%A8%EB%B3%BC%EB%A3%A8%EC%85%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="컨볼루션 신경망">컨볼루션 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="코로나 대시보드">코로나 대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%8B%A4%EB%A3%A8%EA%B8%B0/" title="테이블 다루기">테이블 다루기</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="텍스트 마이닝">텍스트 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="텍스트 전처리">텍스트 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" title="텐서플로 2.0">텐서플로 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" title="텐서플로 2.0 튜토리얼">텐서플로 2.0 튜토리얼</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-%ED%97%88%EB%B8%8C/" title="텐서플로 허브">텐서플로 허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/" title="텐서플로우">텐서플로우</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%97%91%EC%85%80/" title="판다스 엑셀">판다스 엑셀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" title="판다스 자료구조">판다스 자료구조</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="포트폴리오">포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="프로세스 마이닝">프로세스 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/" title="프로세스 분석">프로세스 분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/" title="피벗 테이블">피벗 테이블</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80-%ED%8F%B0%ED%8A%B8-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0/" title="한글 폰트 오류 해결">한글 폰트 오류 해결</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%98%95%EC%84%B1%EC%A0%81-%EC%A7%80%ED%91%9C/" title="형성적 지표">형성적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="환경설정">환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9A%8C%EA%B7%80%EB%AA%A8%ED%98%95/" title="회귀모형">회귀모형</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9C%B4%EA%B3%A0/" title="휴고">휴고</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9E%88%EC%8A%A4%ED%86%A0%EA%B7%B8%EB%9E%A8/" title="히스토그램">히스토그램</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2021 DSChloe.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>
