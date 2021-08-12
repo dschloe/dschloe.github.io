@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Python Dash를 활용한 대시보드에서 엑셀 데이터로 다운로드 받기 - Data Science | DSChloe</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+		<meta property="og:title" content="Python Dash를 활용한 대시보드에서 엑셀 데이터로 다운로드 받기" />
+<meta property="og:description" content="[대시보드] Dash Project - Excel 다운로드 개요  각 레벨에 따라 달라지는 데이터를 시각화로 표현하고 결과치를 엑셀로 다운로드 받는 기능을 구현한다.  데이터 다운로드  데이터는 로그 분석을 통한 보안 위험도 예측 AI 경진대회 에서 가져왔다. (회원가입 필수)  Data: https://dacon.io/competitions/official/235717/data   데이터는 train 데이터만 활용한다.  import pandas as pd train_df = pd.read_csv(&#34;train.csv&#34;) id level full_log 0 0 0 Sep 24 10:02:22 localhost kibana: {&#34;type&#34;:&#34;err... 1 1 0 Feb 8 16:21:00 localhost logstash: [2021-02-0." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dschloe.github.io/python/dash/dash_security_log/" />
+<meta property="article:published_time" content="2021-08-12T09:10:47+09:00" />
+<meta property="article:modified_time" content="2021-08-12T09:10:47+09:00" />
+
+		<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Python Dash를 활용한 대시보드에서 엑셀 데이터로 다운로드 받기"/>
+<meta name="twitter:description" content="[대시보드] Dash Project - Excel 다운로드 개요  각 레벨에 따라 달라지는 데이터를 시각화로 표현하고 결과치를 엑셀로 다운로드 받는 기능을 구현한다.  데이터 다운로드  데이터는 로그 분석을 통한 보안 위험도 예측 AI 경진대회 에서 가져왔다. (회원가입 필수)  Data: https://dacon.io/competitions/official/235717/data   데이터는 train 데이터만 활용한다.  import pandas as pd train_df = pd.read_csv(&#34;train.csv&#34;) id level full_log 0 0 0 Sep 24 10:02:22 localhost kibana: {&#34;type&#34;:&#34;err... 1 1 0 Feb 8 16:21:00 localhost logstash: [2021-02-0."/>
+
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo">
+		<a class="logo__link" href="/" title="Data Science | DSChloe" rel="home">
+			<div class="logo__item logo__text">
+					<div class="logo__title">Data Science | DSChloe</div>
+					<div class="logo__tagline">Love your beloved one forever</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/aws/">
+				
+				<span class="menu__text">AWS</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/ds-projects/">
+				
+				<span class="menu__text">DS-Projects</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/gcp/">
+				
+				<span class="menu__text">GCP</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/kaggle/">
+				
+				<span class="menu__text">Kaggle</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/mlops/">
+				
+				<span class="menu__text">MLOps</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/python/">
+				
+				<span class="menu__text">Python</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/r/">
+				
+				<span class="menu__text">R</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/settings/">
+				
+				<span class="menu__text">settings</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/sql/">
+				
+				<span class="menu__text">SQL</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About DSChloe</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">Python Dash를 활용한 대시보드에서 엑셀 데이터로 다운로드 받기</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-08-12T09:10:47&#43;09:00">2021-08-12</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/dashboard/" rel="category">Dashboard</a>, <a class="meta__link" href="/categories/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" rel="category">대시보드</a>, <a class="meta__link" href="/categories/dash/" rel="category">Dash</a>, <a class="meta__link" href="/categories/heroku/" rel="category">Heroku</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#개요">개요</a></li>
+    <li><a href="#데이터-다운로드">데이터 다운로드</a></li>
+    <li><a href="#함수-작성">함수 작성</a></li>
+    <li><a href="#프로젝트-폴더-정리">프로젝트 폴더 정리</a>
+      <ul>
+        <li><a href="#1-데이터-불러오기">(1) 데이터 불러오기</a></li>
+        <li><a href="#2-dash-객체-생성">(2) Dash 객체 생성</a></li>
+        <li><a href="#3-html-상단-머리글-입력">(3) HTML 상단 머리글 입력</a></li>
+        <li><a href="#4-dropdown-메뉴-추가">(4) Dropdown 메뉴 추가</a></li>
+        <li><a href="#5-그래프-및-표-작성">(5) 그래프 및 표 작성</a></li>
+        <li><a href="#6-callback-코드-작성">(6) callback 코드 작성</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h1 id="대시보드-dash-project---excel-다운로드">[대시보드] Dash Project - Excel 다운로드</h1>
+<h2 id="개요">개요</h2>
+<ul>
+<li>각 레벨에 따라 달라지는 데이터를 시각화로 표현하고 결과치를 엑셀로 다운로드 받는 기능을 구현한다.</li>
+</ul>
+<h2 id="데이터-다운로드">데이터 다운로드</h2>
+<ul>
+<li>데이터는 <code>로그 분석을 통한 보안 위험도 예측 AI 경진대회</code> 에서 가져왔다. (회원가입 필수)
+<ul>
+<li>Data: <a href="https://dacon.io/competitions/official/235717/data">https://dacon.io/competitions/official/235717/data</a></li>
+</ul>
+</li>
+<li>데이터는 train 데이터만 활용한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+train_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;train.csv&#34;</span>)
+
+id  level                                           full_log
+<span style="color:#ae81ff">0</span>   <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>  Sep <span style="color:#ae81ff">24</span> <span style="color:#ae81ff">10</span>:<span style="color:#ae81ff">02</span>:<span style="color:#ae81ff">22</span> localhost kibana: {<span style="color:#e6db74">&#34;type&#34;</span>:<span style="color:#e6db74">&#34;err...</span>
+<span style="color:#ae81ff">1</span>   <span style="color:#ae81ff">1</span>      <span style="color:#ae81ff">0</span>  Feb  <span style="color:#ae81ff">8</span> <span style="color:#ae81ff">16</span>:<span style="color:#ae81ff">21</span>:<span style="color:#ae81ff">00</span> localhost logstash: [<span style="color:#ae81ff">2021</span><span style="color:#f92672">-</span><span style="color:#ae81ff">02</span><span style="color:#f92672">-</span><span style="color:#ae81ff">0.</span><span style="color:#f92672">..</span>
+<span style="color:#ae81ff">2</span>   <span style="color:#ae81ff">2</span>      <span style="color:#ae81ff">0</span>  Jan <span style="color:#ae81ff">13</span> <span style="color:#ae81ff">01</span>:<span style="color:#ae81ff">50</span>:<span style="color:#ae81ff">40</span> localhost kibana: {<span style="color:#e6db74">&#34;type&#34;</span>:<span style="color:#e6db74">&#34;err...</span>
+<span style="color:#ae81ff">3</span>   <span style="color:#ae81ff">3</span>      <span style="color:#ae81ff">0</span>  Jan  <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">10</span>:<span style="color:#ae81ff">18</span>:<span style="color:#ae81ff">31</span> localhost kibana: {<span style="color:#e6db74">&#34;type&#34;</span>:<span style="color:#e6db74">&#34;err...</span>
+<span style="color:#ae81ff">4</span>   <span style="color:#ae81ff">4</span>      <span style="color:#ae81ff">1</span>  type<span style="color:#f92672">=</span>SYSCALL msg<span style="color:#f92672">=</span>audit(<span style="color:#ae81ff">1603094402.016</span>:<span style="color:#ae81ff">52981</span>): <span style="color:#f92672">...</span>
+</code></pre></div><h2 id="함수-작성">함수 작성</h2>
+<ul>
+<li>각 레벨에 따른 첫번째 글자수의 빈도를 구하는 데이터를 구하도록 한다.</li>
+<li>예를 들면, level 1에 대한 첫번째 글자 수를 집계한 결과는 아래와 같다.
+<ul>
+<li>아래와 같은 결과값이 나오는 함수를 작성할 것이다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">index     cnt
+<span style="color:#ae81ff">0</span>  type<span style="color:#f92672">=</span>SYSCALL  <span style="color:#ae81ff">116496</span>
+<span style="color:#ae81ff">1</span>           Jan    <span style="color:#ae81ff">3019</span>
+<span style="color:#ae81ff">2</span>           Oct    <span style="color:#ae81ff">2904</span>
+<span style="color:#ae81ff">3</span>           Nov    <span style="color:#ae81ff">2646</span>
+<span style="color:#ae81ff">4</span>           Feb    <span style="color:#ae81ff">2381</span>
+</code></pre></div><ul>
+<li>먼저 함수를 작성해본다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_df</span>(data, level<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>):
+
+    <span style="color:#75715e"># pandas dataframe</span>
+    lvl_df <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>loc[data<span style="color:#f92672">.</span>level <span style="color:#f92672">==</span> level]<span style="color:#f92672">.</span>full_log<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: x<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>)[<span style="color:#ae81ff">0</span>])<span style="color:#f92672">.</span>value_counts()<span style="color:#f92672">.</span>rename(
+        <span style="color:#e6db74">&#39;cnt&#39;</span>)<span style="color:#f92672">.</span>to_frame()<span style="color:#f92672">.</span>reset_index()
+
+    <span style="color:#66d9ef">return</span> lvl_df
+
+data <span style="color:#f92672">=</span> get_df(train_df, level <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+<span style="color:#66d9ef">print</span>(data<span style="color:#f92672">.</span>head())
+index     cnt
+<span style="color:#ae81ff">0</span>  type<span style="color:#f92672">=</span>SYSCALL  <span style="color:#ae81ff">116496</span>
+<span style="color:#ae81ff">1</span>           Jan    <span style="color:#ae81ff">3019</span>
+<span style="color:#ae81ff">2</span>           Oct    <span style="color:#ae81ff">2904</span>
+<span style="color:#ae81ff">3</span>           Nov    <span style="color:#ae81ff">2646</span>
+<span style="color:#ae81ff">4</span>           Feb    <span style="color:#ae81ff">2381</span>
+</code></pre></div><ul>
+<li>위 데이터를 토대로 시각화를 작성하고, 그 후에는 엑셀로 된 데이터로 변환하는 것이 목표이다.</li>
+<li>이 때, 각 레벨의 값에 따라 데이터 결괏값과 시각화의 그림도 달라지게 된다.</li>
+</ul>
+<h2 id="프로젝트-폴더-정리">프로젝트 폴더 정리</h2>
+<ul>
+<li>최종적인 프로젝트 폴더 및 파일은 아래와 같다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">C:.
+<span style="color:#960050;background-color:#1e0010">│</span>  .gitignore
+<span style="color:#960050;background-color:#1e0010">│</span>  app.py
+<span style="color:#960050;background-color:#1e0010">│</span>  README.md
+<span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">├─</span>assets
+<span style="color:#960050;background-color:#1e0010">│</span>      style.css
+<span style="color:#960050;background-color:#1e0010">│</span>
+<span style="color:#960050;background-color:#1e0010">├─</span>data
+<span style="color:#960050;background-color:#1e0010">│</span>      train.csv
+
+</code></pre></div><h3 id="1-데이터-불러오기">(1) 데이터 불러오기</h3>
+<ul>
+<li>이제 <code>app.py</code>를 작성하도록 한다.</li>
+<li>먼저 데이터를 불러오는 코드 사용자 정의 함수는 다음과 같다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> dash
+<span style="color:#f92672">import</span> dash_table
+<span style="color:#f92672">import</span> dash_core_components <span style="color:#f92672">as</span> dcc
+<span style="color:#f92672">import</span> dash_html_components <span style="color:#f92672">as</span> html
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">from</span> dash.dependencies <span style="color:#f92672">import</span> Input, Output
+
+<span style="color:#75715e"># 함수 정의</span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_df</span>(data, level<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>):
+    <span style="color:#75715e"># pandas dataframe</span>
+    lvl_df <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>loc[data<span style="color:#f92672">.</span>level <span style="color:#f92672">==</span> level]<span style="color:#f92672">.</span>full_log<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: x<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>)[<span style="color:#ae81ff">0</span>])<span style="color:#f92672">.</span>value_counts()<span style="color:#f92672">.</span>rename(
+        <span style="color:#e6db74">&#39;cnt&#39;</span>)<span style="color:#f92672">.</span>to_frame()<span style="color:#f92672">.</span>reset_index()
+
+    <span style="color:#66d9ef">return</span> lvl_df
+
+DATA_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;data/&#34;</span>
+train_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(DATA_PATH <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;train.csv&#34;</span>)
+<span style="color:#66d9ef">print</span>(train_df<span style="color:#f92672">.</span>head())
+
+data <span style="color:#f92672">=</span> get_df(train_df, level<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+<span style="color:#66d9ef">print</span>(data<span style="color:#f92672">.</span>head()) <span style="color:#75715e"># 결과치가 잘 나오는지 확인하다. </span>
+</code></pre></div><ul>
+<li><code>level=1</code> 에서, 숫자를 변경하여 결괏값이 서로 다르게 나타나는지 반드시 확인하도록 한다.</li>
+</ul>
+<h3 id="2-dash-객체-생성">(2) Dash 객체 생성</h3>
+<ul>
+<li><code>dash</code> 클래스를 호출화여 app 인스턴스화를 진행한다.</li>
+<li>또한, <code>app.title</code> 과 <code>app.layout</code> 작성한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+external_stylesheets <span style="color:#f92672">=</span> [
+    {
+        <span style="color:#e6db74">&#34;href&#34;</span>: <span style="color:#e6db74">&#34;https://fonts.googleapis.com/css2?&#34;</span>
+                <span style="color:#e6db74">&#34;family=Lato:wght@400;700&amp;display=swap&#34;</span>,
+        <span style="color:#e6db74">&#34;rel&#34;</span>: <span style="color:#e6db74">&#34;stylesheet&#34;</span>,
+    },
+]
+app <span style="color:#f92672">=</span> dash<span style="color:#f92672">.</span>Dash(__name__, external_stylesheets<span style="color:#f92672">=</span>external_stylesheets)
+app<span style="color:#f92672">.</span>title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Temp Analytics: Understand Your Data!&#34;</span>
+
+app<span style="color:#f92672">.</span>layout <span style="color:#f92672">=</span> html<span style="color:#f92672">.</span>Div(
+    html<span style="color:#f92672">.</span>P(<span style="color:#e6db74">&#34;Hello World&#34;</span>)
+)
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+	app<span style="color:#f92672">.</span>run_server(debug<span style="color:#f92672">=</span>True)
+</code></pre></div><ul>
+<li>앱을 실행하면 아래와 같이 결괏값이 나타날 것이다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">id  level                                           full_log
+0   0      0  Sep 24 10<span style="color:#960050;background-color:#1e0010">:</span>02<span style="color:#960050;background-color:#1e0010">:</span>22 localhost kibana<span style="color:#960050;background-color:#1e0010">:</span> {<span style="color:#e6db74">&#34;type&#34;</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#e6db74">&#34;err...
+</span><span style="color:#e6db74">1   1      0  Feb  8 16:21:00 localhost logstash: [2021-02-0...
+</span><span style="color:#e6db74">2   2      0  Jan 13 01:50:40 localhost kibana: {&#34;</span>type<span style="color:#e6db74">&#34;:&#34;</span>err...
+3   3      0  Jan  4 10<span style="color:#960050;background-color:#1e0010">:</span>18<span style="color:#960050;background-color:#1e0010">:</span>31 localhost kibana<span style="color:#960050;background-color:#1e0010">:</span> {<span style="color:#e6db74">&#34;type&#34;</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#e6db74">&#34;err...
+</span><span style="color:#e6db74">4   4      1  type=SYSCALL msg=audit(1603094402.016:52981): ...
+</span><span style="color:#e6db74">          index     cnt
+</span><span style="color:#e6db74">0  type=SYSCALL  116496
+</span><span style="color:#e6db74">1           Jan    3019
+</span><span style="color:#e6db74">2           Oct    2904
+</span><span style="color:#e6db74">3           Nov    2646
+</span><span style="color:#e6db74">4           Feb    2381
+</span><span style="color:#e6db74">Dash is running on http://127.0.0.1:8050/
+</span></code></pre></div><ul>
+<li><code>[http://127.0.0.1:8050/](http://127.0.0.1:8050/)</code> 을 클릭하면 <code>Hello World</code> 만 나타날 것이다.</li>
+</ul>
+<h3 id="3-html-상단-머리글-입력">(3) HTML 상단 머리글 입력</h3>
+<ul>
+<li>이제 <code>HTML</code> 코드를 추가로 입력한다.</li>
+<li>이제 <code>app.layout</code> 을 입력 하는 코드를 작성해보도록 한다.</li>
+<li>HTML 코드는 <code>DIV 태그</code>가 기준이 된다. 따라서, <code>DIV</code> 태그가 완성될 때마다 화면을 공유하도록 했다.</li>
+<li>먼저, 화면의 상단 <code>DIV</code> 태그를 작업한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+app<span style="color:#f92672">.</span>layout <span style="color:#f92672">=</span> html<span style="color:#f92672">.</span>Div(
+	children<span style="color:#f92672">=</span>[
+        html<span style="color:#f92672">.</span>Div(
+            children<span style="color:#f92672">=</span>[
+                html<span style="color:#f92672">.</span>P(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;📈&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_emoji&#34;</span>),
+                html<span style="color:#f92672">.</span>H1(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp Analytics&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_title&#34;</span>, ),
+                html<span style="color:#f92672">.</span>P(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_description&#34;</span>, ),
+            ],
+            className<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;header&#39;</span>,
+        ),
+	]
+)
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+
+</code></pre></div><ul>
+<li>아직 <code>style.css</code>을 입히기 전의 화면을 보면 다음과 같이 출력될 것이다.</li>
+</ul>
+<p><img src="/img/python/dash/dash_security_log/dash_01.png" alt="dash_01.png"></p>
+<ul>
+<li>이번에는 <code>style.css</code>를 입혀본다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">body</span> {
+    <span style="color:#66d9ef">font-family</span>: <span style="color:#e6db74">&#34;Lato&#34;</span>, <span style="color:#66d9ef">sans-serif</span>;
+    <span style="color:#66d9ef">margin</span>: <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">background-color</span>: <span style="color:#ae81ff">#F7F7F7</span>;
+}
+
+.<span style="color:#a6e22e">header</span> {
+    <span style="color:#66d9ef">background-color</span>: <span style="color:#ae81ff">#222222</span>;
+    <span style="color:#66d9ef">height</span>: <span style="color:#ae81ff">288</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">padding</span>: <span style="color:#ae81ff">16</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>;
+}
+
+.<span style="color:#a6e22e">header_emoji</span> {
+    <span style="color:#66d9ef">font-size</span>: <span style="color:#ae81ff">48</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">margin</span>: <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">auto</span>;
+    <span style="color:#66d9ef">text-align</span>: <span style="color:#66d9ef">center</span>;
+}
+
+.<span style="color:#a6e22e">header_title</span> {
+    <span style="color:#66d9ef">color</span>: <span style="color:#ae81ff">#FFFFFF</span>;
+    <span style="color:#66d9ef">font-size</span>: <span style="color:#ae81ff">48</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">font-weight</span>: <span style="color:#66d9ef">bold</span>;
+    <span style="color:#66d9ef">text-align</span>: <span style="color:#66d9ef">center</span>;
+    <span style="color:#66d9ef">margin</span>: <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">auto</span>;
+}
+
+.<span style="color:#a6e22e">header_description</span> {
+    <span style="color:#66d9ef">color</span>: <span style="color:#ae81ff">#CFCFCF</span>;
+    <span style="color:#66d9ef">margin</span>: <span style="color:#ae81ff">4</span><span style="color:#66d9ef">px</span> <span style="color:#66d9ef">auto</span>;
+    <span style="color:#66d9ef">text-align</span>: <span style="color:#66d9ef">center</span>;
+    <span style="color:#66d9ef">max-width</span>: <span style="color:#ae81ff">384</span><span style="color:#66d9ef">px</span>;
+}
+</code></pre></div><ul>
+<li>이제 다시 앱을 실행하면 아래와 같은 화면이 나타난다.</li>
+</ul>
+<p><img src="/img/python/dash/dash_security_log/dash_02.png" alt="dash_02.png"></p>
+<h3 id="4-dropdown-메뉴-추가">(4) Dropdown 메뉴 추가</h3>
+<ul>
+<li>Dropdown 옵션에 대한 구체적인 설명은 다음 <a href="https://dash.plotly.com/dash-core-components/dropdown">Dropdown Examples and Reference</a> 에서 확인이 가능하다.</li>
+<li>우선 본 코드에서는 <code>Level 0 ~ 6</code>까지 존재하기 때문에 <code>options</code> 을 별도로 설정한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+
+app<span style="color:#f92672">.</span>layout <span style="color:#f92672">=</span> html<span style="color:#f92672">.</span>Div(
+    children<span style="color:#f92672">=</span>[
+        html<span style="color:#f92672">.</span>Div(
+            children<span style="color:#f92672">=</span>[
+                html<span style="color:#f92672">.</span>P(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;📈&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_emoji&#34;</span>),
+                html<span style="color:#f92672">.</span>H1(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp Analytics&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_title&#34;</span>),
+                html<span style="color:#f92672">.</span>P(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_description&#34;</span>, ),
+            ],
+            className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header&#34;</span>,
+        ),
+        html<span style="color:#f92672">.</span>Div(
+          children<span style="color:#f92672">=</span>[
+              html<span style="color:#f92672">.</span>Div(
+                  children<span style="color:#f92672">=</span>[
+                        html<span style="color:#f92672">.</span>Div(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Level&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;menu-title&#34;</span>),
+                        dcc<span style="color:#f92672">.</span>Dropdown(id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;level-dropdown&#34;</span>,
+                                     options<span style="color:#f92672">=</span>[
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">0</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">0</span>},
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">1</span>},
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">2</span>},
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">3</span>},
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">4</span>},
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">5</span>},
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">6</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">6</span>},
+                                     ],
+                                     value<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,
+                                     clearable<span style="color:#f92672">=</span>False,
+                                     className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;dropdown&#34;</span>),
+                  ]
+              ),
+          ],
+          className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;menu&#34;</span>
+        ),
+    ],
+)
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+
+</code></pre></div><ul>
+<li>이번에는 style.css 코드를 적용한 후, app을 실행한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css">.<span style="color:#a6e22e">menu</span> {
+    <span style="color:#66d9ef">height</span>: <span style="color:#ae81ff">112</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">width</span>: <span style="color:#ae81ff">912</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">display</span>: <span style="color:#66d9ef">flex</span>;
+    <span style="color:#66d9ef">justify-content</span>: <span style="color:#66d9ef">space</span><span style="color:#f92672">-</span>evenly;
+    <span style="color:#66d9ef">padding-top</span>: <span style="color:#ae81ff">24</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">margin</span>: <span style="color:#ae81ff">-80</span><span style="color:#66d9ef">px</span> <span style="color:#66d9ef">auto</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">auto</span>;
+    <span style="color:#66d9ef">background-color</span>: <span style="color:#ae81ff">#FFFFFF</span>;
+    <span style="color:#66d9ef">box-shadow</span>: <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">4</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">6</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">0</span> rgba(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.18</span>);
+}
+
+.<span style="color:#a6e22e">Select-control</span> {
+    <span style="color:#66d9ef">width</span>: <span style="color:#ae81ff">256</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">height</span>: <span style="color:#ae81ff">48</span><span style="color:#66d9ef">px</span>;
+}
+
+.<span style="color:#a6e22e">Select--single</span> <span style="color:#f92672">&gt;</span> .<span style="color:#a6e22e">Select-control</span> .<span style="color:#a6e22e">Select-value</span><span style="color:#f92672">,</span> .<span style="color:#a6e22e">Select-placeholder</span> {
+    <span style="color:#66d9ef">line-height</span>: <span style="color:#ae81ff">48</span><span style="color:#66d9ef">px</span>;
+}
+
+.<span style="color:#a6e22e">Select--multi</span> .<span style="color:#a6e22e">Select-value-label</span> {
+    <span style="color:#66d9ef">line-height</span>: <span style="color:#ae81ff">32</span><span style="color:#66d9ef">px</span>;
+}
+
+.<span style="color:#a6e22e">menu-title</span> {
+    <span style="color:#66d9ef">margin-bottom</span>: <span style="color:#ae81ff">6</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">font-weight</span>: <span style="color:#66d9ef">bold</span>;
+    <span style="color:#66d9ef">color</span>: <span style="color:#ae81ff">#079A82</span>;
+}
+</code></pre></div><ul>
+<li>앱을 실행하면 아래와 같은 결괏값을 확인할 수 있다.</li>
+</ul>
+<p><img src="/img/python/dash/dash_security_log/dash_03.png" alt="dash_03.png"></p>
+<h3 id="5-그래프-및-표-작성">(5) 그래프 및 표 작성</h3>
+<ul>
+<li>드롭다운 메뉴와 관계 없이 일단, 그래프 및 테이블이 정상적으로 나타나는지 확인한다.
+<ul>
+<li>자세한 설명은 <a href="https://dash.plotly.com/dash-core-components/graph">Graph Examples and Reference</a> &amp; <a href="https://dash.plotly.com/datatable">Dash DataTable</a> 를 확인한다.</li>
+</ul>
+</li>
+<li>기존 코드에서, 그래프와 테이블을 모두 담는 <code>html.Div</code> 코드를 추가한다.
+<ul>
+<li>그리고, 내부적으로 다시 <code>html.Div(graph)</code>, <code>html.Div(table)</code> 분리하도록 한다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+app<span style="color:#f92672">.</span>layout <span style="color:#f92672">=</span> html<span style="color:#f92672">.</span>Div(
+    children<span style="color:#f92672">=</span>[
+        html<span style="color:#f92672">.</span>Div(
+            children<span style="color:#f92672">=</span>[
+                html<span style="color:#f92672">.</span>P(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;📈&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_emoji&#34;</span>),
+                html<span style="color:#f92672">.</span>H1(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp Analytics&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_title&#34;</span>),
+                html<span style="color:#f92672">.</span>P(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temp&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header_description&#34;</span>, ),
+            ],
+            className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;header&#34;</span>,
+        ),
+        html<span style="color:#f92672">.</span>Div(
+          children<span style="color:#f92672">=</span>[
+              html<span style="color:#f92672">.</span>Div(
+                  children<span style="color:#f92672">=</span>[
+                        html<span style="color:#f92672">.</span>Div(children<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Level&#34;</span>, className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;menu-title&#34;</span>),
+                        dcc<span style="color:#f92672">.</span>Dropdown(id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;level-dropdown&#34;</span>,
+                                     options<span style="color:#f92672">=</span>[
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">0</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">0</span>},
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">1</span>},
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">2</span>},
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">3</span>},
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">4</span>},
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">5</span>},
+                                         {<span style="color:#e6db74">&#34;label&#34;</span>: <span style="color:#ae81ff">6</span>, <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">6</span>},
+                                     ],
+                                     value<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,
+                                     clearable<span style="color:#f92672">=</span>False,
+                                     className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;dropdown&#34;</span>),
+                  ]
+              ),
+          ],
+          className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;menu&#34;</span>
+        ),
+        <span style="color:#75715e"># 그래프</span>
+        html<span style="color:#f92672">.</span>Div(
+            children<span style="color:#f92672">=</span>[
+                html<span style="color:#f92672">.</span>P(<span style="color:#e6db74">&#34;--- Graph ----&#34;</span>),
+                html<span style="color:#f92672">.</span>Div(
+                    children<span style="color:#f92672">=</span>dcc<span style="color:#f92672">.</span>Graph(
+                        id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;bar-chart&#34;</span>,
+                        config<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;displayModeBar&#34;</span>:False},
+                        figure<span style="color:#f92672">=</span>{
+                            <span style="color:#e6db74">&#34;data&#34;</span>:[{
+                                <span style="color:#e6db74">&#34;x&#34;</span>: data[<span style="color:#e6db74">&#39;index&#39;</span>],
+                                <span style="color:#e6db74">&#34;y&#34;</span>: data[<span style="color:#e6db74">&#39;cnt&#39;</span>],
+                                <span style="color:#e6db74">&#39;type&#39;</span>: <span style="color:#e6db74">&#34;bar&#34;</span>,
+                            }],
+                            <span style="color:#e6db74">&#34;layout&#34;</span>: {<span style="color:#e6db74">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Title_1&#34;</span>}
+                        }
+                    ),
+                    className<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;card&#39;</span>,
+                ), <span style="color:#75715e"># Graph</span>
+                html<span style="color:#f92672">.</span>P(<span style="color:#e6db74">&#34;--- Table ----&#34;</span>),
+                html<span style="color:#f92672">.</span>Div(
+                    children<span style="color:#f92672">=</span>dash_table<span style="color:#f92672">.</span>DataTable(
+                        id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;data_id&#34;</span>,
+                        columns<span style="color:#f92672">=</span>[{<span style="color:#e6db74">&#34;id&#34;</span>:c, <span style="color:#e6db74">&#34;name&#34;</span>:c} <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> data<span style="color:#f92672">.</span>columns],
+                        data <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>to_dict(<span style="color:#e6db74">&#39;records&#39;</span>),
+                        export_format<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;xlsx&#34;</span>,
+                    ) <span style="color:#75715e"># children</span>
+                ) <span style="color:#75715e"># Table</span>
+            ],
+            className<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;wrapper&#34;</span>,
+        )
+    ],
+)
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+
+</code></pre></div><ul>
+<li>이번에는 CSS 코드를 추가했다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+.<span style="color:#a6e22e">wrapper</span> {
+    <span style="color:#66d9ef">margin-right</span>: <span style="color:#66d9ef">auto</span>;
+    <span style="color:#66d9ef">margin-left</span>: <span style="color:#66d9ef">auto</span>;
+    <span style="color:#66d9ef">max-width</span>: <span style="color:#ae81ff">1024</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">padding-right</span>: <span style="color:#ae81ff">10</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">padding-left</span>: <span style="color:#ae81ff">10</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">margin-top</span>: <span style="color:#ae81ff">32</span><span style="color:#66d9ef">px</span>;
+}
+
+.<span style="color:#a6e22e">card</span> {
+    <span style="color:#66d9ef">margin-bottom</span>: <span style="color:#ae81ff">24</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">box-shadow</span>: <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">4</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">6</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">0</span> rgba(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.18</span>);
+}
+</code></pre></div><ul>
+<li>이제 코드를 재실행하면 아래와 같은 결괏값이 나타난다.</li>
+</ul>
+<p><img src="/img/python/dash/dash_security_log/dash_04.png" alt="dash_04.png"></p>
+<ul>
+<li>그러나, 레벨 5로 변경하더라도 그래프와 테이블이 변경되지는 않는다.</li>
+</ul>
+<h3 id="6-callback-코드-작성">(6) callback 코드 작성</h3>
+<ul>
+<li>콜백에 관한 구체적인 설명은 <a href="https://dash.plotly.com/basic-callbacks">Basic Dash Callbacks</a> 에서 확인한다.</li>
+<li>아래 코드만 추가하도록 한다.
+<ul>
+<li>dash.Dash 코드를 변경한다.</li>
+<li>그리고, <code>app.callback</code> 코드를 추가한다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">app <span style="color:#f92672">=</span> dash<span style="color:#f92672">.</span>Dash(__name__, external_stylesheets<span style="color:#f92672">=</span>external_stylesheets,
+                suppress_callback_exceptions<span style="color:#f92672">=</span>True,
+                prevent_initial_callbacks<span style="color:#f92672">=</span>True)
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+<span style="color:#a6e22e">@app.callback</span>(
+    [Output(<span style="color:#e6db74">&#34;bar-chart&#34;</span>, <span style="color:#e6db74">&#34;figure&#34;</span>), Output(<span style="color:#e6db74">&#39;data_id&#39;</span>, <span style="color:#e6db74">&#39;data&#39;</span>)],
+    Input(<span style="color:#e6db74">&#34;level-dropdown&#34;</span>, <span style="color:#e6db74">&#34;value&#34;</span>)
+)
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">update_charts</span>(value):
+    data <span style="color:#f92672">=</span> get_df(train_df, level<span style="color:#f92672">=</span>value)
+    bar_chart_figure <span style="color:#f92672">=</span> {
+        <span style="color:#e6db74">&#34;data&#34;</span>: [
+            {
+                <span style="color:#e6db74">&#34;x&#34;</span>: data[<span style="color:#e6db74">&#34;index&#34;</span>],
+                <span style="color:#e6db74">&#34;y&#34;</span>: data[<span style="color:#e6db74">&#34;cnt&#34;</span>],
+                <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;bar&#34;</span>,
+            },
+        ],
+        <span style="color:#e6db74">&#34;layout&#34;</span>: {<span style="color:#e6db74">&#34;title&#34;</span>: f<span style="color:#e6db74">&#39;Level {value} Chart&#39;</span>},
+    }
+
+    <span style="color:#66d9ef">return</span> bar_chart_figure, data<span style="color:#f92672">.</span>to_dict(<span style="color:#e6db74">&#39;records&#39;</span>)
+
+<span style="color:#f92672">.</span>
+<span style="color:#f92672">.</span>
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    app<span style="color:#f92672">.</span>run_server(debug<span style="color:#f92672">=</span>True)
+</code></pre></div><ul>
+<li>최종적인 화면을 확인하면 level에 따라 그래프와 테이블이 동시에 변하는 것을 확인할 수 있다.</li>
+</ul>
+<p><img src="/img/python/dash/dash_security_log/dash_05.png" alt="dash_05.png"></p>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/dashboard/" rel="tag">Dashboard</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" rel="tag">대시보드</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/dash/" rel="tag">Dash</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/heroku/" rel="tag">Heroku</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name"></span>
+	</div>
+	<div class="authorbox__description">
+		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.
+	</div>
+</div>
+
+
+<section class="comments">
+	<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-chloevan-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH…" value="" name="q" aria-label="SEARCH…">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://dschloe.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/python/dash/dash_security_log/">Python Dash를 활용한 대시보드에서 엑셀 데이터로 다운로드 받기</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/dash/dash_project/">Python Dash를 활용한 대시보드 만들기 with Heroku</a></li>
+			<li class="widget__item"><a class="widget__link" href="/sql/python_oracle/">Python과 Oracle 연동</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/machin_learning/ch04_common_pitfalls_ans_recommended_practices/">In ML, Data Leakage - 2</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/machin_learning/ch03_data_preparation/">In ML, Data Leakage - 1</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/acea/">ACEA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/airflow/">Airflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/amazon-web-service/">Amazon Web Service</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/astype/">astype</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws/">AWS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">bar chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-data-transformation/">Basic Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basics/">Basics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-machine-learning/">BigQuery with Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-python/">BigQuery with Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blog/">Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bupar/">bupaR</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/categorical-features/">Categorical Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/class/">Class</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/cloud-build/">Cloud Build</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/colab/">Colab </a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conditional-statements/">Conditional Statements</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/corona-shiny-app/">Corona Shiny App</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dacon/">dacon</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dash/">Dash</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dashboard/">Dashboard</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-handling/">Data Handling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-leakage/">Data Leakage</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-science-project/">Data Science Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-structures/">Data Structures</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualization/">Data Visualization</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decorators/">Decorators</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deployment/">Deployment</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/design/">Design</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development/">Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development-settings/">Development Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dictionary/">Dictionary</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/discrete-features/">Discrete Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/docker/">Docker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/eda/">EDA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/encoding/">Encoding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/exploratory-data-analysis/">Exploratory Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/feature-engineering/">Feature Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-download/">File Download</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-i/o/">File I/O</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/function/">function</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ggplot2/">ggplot2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/git/">Git</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github/">Github</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/global-development/">Global Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-colab/">Google Colab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gradient-boosting-machine/">Gradient Boosting Machine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/heroku/">Heroku</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hexo/">Hexo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/histogram/">Histogram</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/installation/">Installation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/intermediate/">Intermediate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iteration/">iteration</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/jupyter-notebook/">Jupyter Notebook</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle/">Kaggle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle-api/">Kaggle API</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/konlp/">KoNLP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">line grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/linux/">Linux</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lollipop/">lollipop</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lstm/">LSTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/m1/">M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/macos-m1/">MacOS M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mask-r-cnn/">Mask R-CNN</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/merging-data/">Merging Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/missing-values/">Missing Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/neural-network/">Neural Network</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/new-packages/">New Packages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nonparametric/">Nonparametric</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/numeric-features/">Numeric Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/object-detection/">Object Detection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oce/">OCE</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/opencv/">OpenCV</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/openpyxl/">openpyxl</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/optimizer/">Optimizer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas-merge/">Pandas Merge</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pivot-table/">pivot table</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pls-sem/">PLS-SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/postgresql/">PostgreSQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/project/">Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/py-openaq/">py-openaq</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pydataset/">PyDataset</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-basic/">Python Basic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-project/">Python Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/">R 마크다운</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ranzcr/">Ranzcr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/recommendation/">Recommendation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regular-expression/">regular expression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rpa/">RPA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rtweet/">rtweet</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/seaborn/">Seaborn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ssh/">SSH</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow/">Tensorflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0/">Tensorflow 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0-tutorial/">Tensorflow 2.0 Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tutorial/">Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/">객체지향 프로그래밍</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/">구글 클라우드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/">구조방정식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/">국제개발</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/">기초통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/">논문통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/">대시보드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/">데이터 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">데이터 시각화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">데이터 싸이언스 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/">막대 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">머신러닝 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B3%B4%EA%B3%A0%EC%84%9C-%EC%9E%90%EB%8F%99%ED%99%94/">보고서 자동화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/">빅쿼리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%82%B0%EC%A0%90%EB%8F%84/">산점도</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/">선 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/">시간 측정</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/">아마존 웹 서비스</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%84%EC%B2%98%EB%A6%AC/">이미지 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/">정규표현식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천 시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%BA%90%EA%B8%80/">캐글</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/">텍스트 마이닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/">텍스트 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/">텐서플로 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/">텐서플로 2.0 튜토리얼</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/">텐서플로우</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/">프로세스 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/">피벗 테이블</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/">환경설정</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/acea/" title="ACEA">ACEA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/airflow/" title="Airflow">Airflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/amazon-web-service/" title="Amazon Web Service">Amazon Web Service</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/append/" title="append">append</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/astype/" title="astype">astype</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/auto-encoder/" title="Auto Encoder">Auto Encoder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85/" title="AWS 회원가입">AWS 회원가입</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="bar chart">bar chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-structures/" title="Basic Data Structures">Basic Data Structures</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-transformation/" title="Basic Data Transformation">Basic Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basics/" title="Basics">Basics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-machine-learning/" title="BigQuery with Machine Learning">BigQuery with Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery with Python">BigQuery with Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery with R">BigQuery with R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blog/" title="Blog">Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bupar/" title="bupaR">bupaR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/categorical-features/" title="Categorical Features">Categorical Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/class/" title="Class">Class</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cloud-build/" title="Cloud Build">Cloud Build</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/clustering/" title="Clustering">Clustering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/colab-with-kaggle/" title="Colab with Kaggle">Colab with Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-expressions/" title="Conditional Expressions">Conditional Expressions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-statements/" title="Conditional Statements">Conditional Statements</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cross-join/" title="Cross Join">Cross Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dash/" title="Dash">Dash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dashboard/" title="Dashboard">Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-handling/" title="Data Handling">Data Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-leakage/" title="Data Leakage">Data Leakage</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-types/" title="Data Types">Data Types</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualization/" title="Data Visualization">Data Visualization</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dataframe/" title="DataFrame">DataFrame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decision-tree/" title="Decision Tree">Decision Tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decorators/" title="Decorators">Decorators</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deployment/" title="Deployment">Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/design/" title="Design">Design</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="Development">Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development-settings/" title="Development Settings">Development Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary/" title="Dictionary">Dictionary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/discrete-features/" title="Discrete Features">Discrete Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/disk.frame/" title="disk.frame">disk.frame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/docker/" title="Docker">Docker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="dplyr">dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/eda/" title="EDA">EDA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/emr/" title="EMR">EMR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/encoding/" title="Encoding">Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enumerate/" title="enumerate">enumerate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exploratory-data-analysis/" title="Exploratory Data Analysis">Exploratory Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/extend/" title="extend">extend</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/feature-engineering/" title="Feature Engineering">Feature Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-download/" title="File Download">File Download</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-i/o/" title="File I/O">File I/O</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="filter">filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/for-loop/" title="for-loop">for-loop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geospatial-analysis/" title="Geospatial Analysis">Geospatial Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gghistostats/" title="gghistostats">gghistostats</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ggplot2/" title="ggplot2">ggplot2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/git/" title="Git">Git</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github/" title="Github">Github</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/global-development/" title="Global Development">Global Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="GRU 레이어">GRU 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="gt">gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gtsummary/" title="gtsummary">gtsummary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hadoop/" title="Hadoop">Hadoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heatmap/" title="Heatmap">Heatmap</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heroku/" title="Heroku">Heroku</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hexo/" title="Hexo">Hexo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/histogram/" title="Histogram">Histogram</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-segmentation/" title="Image Segmentation">Image Segmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-settings/" title="Image Settings">Image Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/insert/" title="insert">insert</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/installation/" title="Installation">Installation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/intermediate/" title="Intermediate">Intermediate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interview/" title="Interview">Interview</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iteration/" title="iteration">iteration</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="iterrows">iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/join/" title="JOIN">JOIN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle/" title="Kaggle">Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle-api/" title="Kaggle API">Kaggle API</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/konlp/" title="KoNLP">KoNLP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/label-encoding/" title="Label Encoding">Label Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lambda/" title="lambda">lambda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="leaflet">leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="line grpah">line grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linux/" title="Linux">Linux</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/list/" title="list">list</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="lists">lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists-and-tuples/" title="Lists and Tuples">Lists and Tuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lollipop/" title="lollipop">lollipop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m1/" title="M1">M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m5-forecasting/" title="M5 Forecasting">M5 Forecasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/macos-m1/" title="MacOS M1">MacOS M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mask-r-cnn/" title="Mask R-CNN">Mask R-CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathematical-functions/" title="Mathematical Functions">Mathematical Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-%EC%84%A4%EC%A0%95/" title="Mathjax 설정">Mathjax 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiprocessing/" title="multiprocessing">multiprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/neural-network/" title="Neural Network">Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/new-packages/" title="New Packages">New Packages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nonparametric/" title="Nonparametric">Nonparametric</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numeric-features/" title="Numeric Features">Numeric Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numpy/" title="NumPy">NumPy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/object-detection/" title="Object Detection">Object Detection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oce/" title="OCE">OCE</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/one-hot-encoding/" title="One-Hot Encoding">One-Hot Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/opencv/" title="OpenCV">OpenCV</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/openpyxl/" title="openpyxl">openpyxl</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outer-join/" title="Outer Join">Outer Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outliers/" title="Outliers">Outliers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-merge/" title="Pandas Merge">Pandas Merge</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pd.concat/" title="pd.concat">pd.concat</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pins/" title="pins">pins</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pivot-table/" title="pivot table">pivot table</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="Plotly">Plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pls-sem/" title="PLS-SEM">PLS-SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/polar-chart/" title="Polar Chart">Polar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/postgresql/" title="PostgreSQL">PostgreSQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/probability/" title="Probability">Probability</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/productive-box/" title="productive-box">productive-box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/py-openaq/" title="py-openaq">py-openaq</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pycaret/" title="PyCaret">PyCaret</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pydataset/" title="PyDataset">PyDataset</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-basic/" title="Python Basic">Python Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-excel/" title="Python Excel">Python Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-numpy-broadcasting/" title="Python NumPy Broadcasting">Python NumPy Broadcasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-project/" title="Python Project">Python Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="Python 포트폴리오">Python 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-basic/" title="R Basic">R Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EA%B8%B0%EC%B4%88%EB%AC%B8/" title="R 기초문">R 기초문</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="R 포트폴리오">R 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ranzcr/" title="Ranzcr">Ranzcr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recommendation/" title="Recommendation">Recommendation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regular-expression/" title="regular expression">regular expression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rpa/" title="RPA">RPA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rstudio/" title="RStudio">RStudio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rtweet/" title="rtweet">rtweet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/seaborn/" title="Seaborn">Seaborn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-app-%EB%B0%B0%ED%8F%AC/" title="Shiny App 배포">Shiny App 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="shinydashboard">shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="sort_values">sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ssh/" title="SSH">SSH</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/super-resolution/" title="Super Resolution">Super Resolution</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/swifter/" title="swifter">swifter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow/" title="Tensorflow">Tensorflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0/" title="Tensorflow 2.0">Tensorflow 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0-tutorial/" title="Tensorflow 2.0 Tutorial">Tensorflow 2.0 Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text/" title="Text">Text</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tutorial/" title="Tutorial">Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/types-of-functions/" title="Types of Functions">Types of Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="vcrs">vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/" title="객체지향 프로그래밍">객체지향 프로그래밍</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B2%BD%EC%A7%84%EB%8C%80%ED%9A%8C/" title="경진대회">경진대회</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/" title="구조방정식">구조방정식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/" title="국제개발">국제개발</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%8D%EC%A0%95-%EB%B6%80%EC%A0%95-%EA%B0%90%EC%84%B1%EB%B6%84%EC%84%9D/" title="긍정, 부정 감성분석">긍정, 부정 감성분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C/" title="깃허브">깃허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="깃허브 환경설정">깃허브 환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/" title="논문통계">논문통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="데이터 싸이언스 프로젝트">데이터 싸이언스 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="데이터 전처리">데이터 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%94%A5%EB%9F%AC%EB%8B%9D/" title="딥러닝">딥러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/" title="막대 그래프">막대 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" title="머신러닝">머신러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="머신러닝 프로젝트">머신러닝 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%AA%A8%EB%8D%B8%EB%A7%81-%EC%8B%9C%EA%B0%81%ED%99%94/" title="모델링 시각화">모델링 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B0%98%EC%98%81%EC%A0%81-%EC%A7%80%ED%91%9C/" title="반영적 지표">반영적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B3%B4%EC%8A%A4%ED%84%B4-%EC%A3%BC%ED%83%9D-%EA%B0%80%EA%B2%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%B8%ED%8A%B8/" title="보스턴 주택 가격 데이터세트">보스턴 주택 가격 데이터세트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B6%84%EB%A5%98/" title="분류">분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" title="빅쿼리">빅쿼리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-r/" title="빅쿼리 R">빅쿼리 R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%EA%B8%B0%EB%B3%B8/" title="빅쿼리 기본">빅쿼리 기본</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%ED%8C%8C%EC%9D%B4%EC%8D%AC/" title="빅쿼리 파이썬">빅쿼리 파이썬</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%B0%EC%A0%90%EB%8F%84/" title="산점도">산점도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%BC%EC%84%B1%EC%B9%B4%EB%93%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EA%B3%B5%EB%AA%A8%EC%A0%84/" title="삼성카드 데이터분석 공모전">삼성카드 데이터분석 공모전</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%83%A4%EC%9D%B4%EB%8B%88-%EC%95%B1-%EB%B0%B0%ED%8F%AC/" title="샤이니 앱 배포">샤이니 앱 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" title="선 그래프">선 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/" title="선형회귀">선형회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%88%9C%ED%99%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="순환 신경망">순환 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" title="시각화 문법">시각화 문법</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/" title="시간 측정">시간 측정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" title="시그노이드">시그노이드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%A0%EA%B2%BD-%EC%8A%A4%ED%83%80%EC%9D%BC-%EC%A0%84%EC%9D%B4/" title="신경 스타일 전이">신경 스타일 전이</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/" title="아마존 웹 서비스">아마존 웹 서비스</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%98%A4%ED%86%A0%EC%9D%B8%EC%BD%94%EB%8D%94/" title="오토인코더">오토인코더</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B6%84%ED%95%A0/" title="이미지 분할">이미지 분할</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%84%A4%EC%A0%95/" title="이미지 설정">이미지 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="이미지 전처리">이미지 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" title="이항분류">이항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%84%EB%B2%A0%EB%94%A9-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="임베딩 레이어">임베딩 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%83%9D%EC%84%B1/" title="자연어 생성">자연어 생성</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/" title="전이 학습">전이 학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/" title="정규표현식">정규표현식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/" title="지도학습">지도학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B4%88%ED%95%B4%EC%83%81%EB%8F%84/" title="초해상도">초해상도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천 시스템">추천 시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천시스템">추천시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B8%A1%EC%A0%95%EC%B2%99%EB%8F%84/" title="측정척도">측정척도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BA%90%EA%B8%80/" title="캐글">캐글</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BB%A8%EB%B3%BC%EB%A3%A8%EC%85%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="컨볼루션 신경망">컨볼루션 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="코로나 대시보드">코로나 대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%8B%A4%EB%A3%A8%EA%B8%B0/" title="테이블 다루기">테이블 다루기</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="텍스트 마이닝">텍스트 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="텍스트 전처리">텍스트 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" title="텐서플로 2.0">텐서플로 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" title="텐서플로 2.0 튜토리얼">텐서플로 2.0 튜토리얼</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-%ED%97%88%EB%B8%8C/" title="텐서플로 허브">텐서플로 허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/" title="텐서플로우">텐서플로우</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%97%91%EC%85%80/" title="판다스 엑셀">판다스 엑셀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" title="판다스 자료구조">판다스 자료구조</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="포트폴리오">포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="프로세스 마이닝">프로세스 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/" title="프로세스 분석">프로세스 분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/" title="피벗 테이블">피벗 테이블</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80-%ED%8F%B0%ED%8A%B8-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0/" title="한글 폰트 오류 해결">한글 폰트 오류 해결</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%98%95%EC%84%B1%EC%A0%81-%EC%A7%80%ED%91%9C/" title="형성적 지표">형성적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="환경설정">환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9A%8C%EA%B7%80%EB%AA%A8%ED%98%95/" title="회귀모형">회귀모형</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9C%B4%EA%B3%A0/" title="휴고">휴고</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9E%88%EC%8A%A4%ED%86%A0%EA%B7%B8%EB%9E%A8/" title="히스토그램">히스토그램</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2021 DSChloe.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>
