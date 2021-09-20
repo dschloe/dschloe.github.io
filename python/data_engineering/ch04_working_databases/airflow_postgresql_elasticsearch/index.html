@@ -8,7 +8,7 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="Airflow를 활용한 PostgreSQL에서 Elasticsearch로 데이터 마이그레이션 예제" />
-<meta property="og:description" content="개요  Airflow를 활용하여 PostgreSQL에 저장된 데이터를 디스크로 다운로드 받고, 그리고 그 파일을 다시 읽어서 Elasticsearch에 저장하도록 한다. 전체적인 흐름은 getData from PostgreSQL &gt;&gt; insertData to Elasticsearch 로 저장할 수 있다.  전체 코드 실행  우선 전체 코드를 실행하도록 한다.  import datetime as dt from datetime import timedelta from airflow import DAG from airflow.operators.bash import BashOperator from airflow.operators.python import PythonOperator import pandas as pd import psycopg2 as db from elasticsearch import Elasticsearch def queryPostgresql(): conn_string=&#34;dbname=&#39;python_dataengineering&#39; host=&#39;localhost&#39; user=&#39;postgres&#39; password=&#39;evan&#39;&#34; conn = db." />
+<meta property="og:description" content="강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   개요  Airflow를 활용하여 PostgreSQL에 저장된 데이터를 디스크로 다운로드 받고, 그리고 그 파일을 다시 읽어서 Elasticsearch에 저장하도록 한다. 전체적인 흐름은 getData from PostgreSQL &gt;&gt; insertData to Elasticsearch 로 저장할 수 있다." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://dschloe.github.io/python/data_engineering/ch04_working_databases/airflow_postgresql_elasticsearch/" />
 <meta property="article:published_time" content="2021-09-18T20:10:47+09:00" />
@@ -16,7 +16,7 @@
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Airflow를 활용한 PostgreSQL에서 Elasticsearch로 데이터 마이그레이션 예제"/>
-<meta name="twitter:description" content="개요  Airflow를 활용하여 PostgreSQL에 저장된 데이터를 디스크로 다운로드 받고, 그리고 그 파일을 다시 읽어서 Elasticsearch에 저장하도록 한다. 전체적인 흐름은 getData from PostgreSQL &gt;&gt; insertData to Elasticsearch 로 저장할 수 있다.  전체 코드 실행  우선 전체 코드를 실행하도록 한다.  import datetime as dt from datetime import timedelta from airflow import DAG from airflow.operators.bash import BashOperator from airflow.operators.python import PythonOperator import pandas as pd import psycopg2 as db from elasticsearch import Elasticsearch def queryPostgresql(): conn_string=&#34;dbname=&#39;python_dataengineering&#39; host=&#39;localhost&#39; user=&#39;postgres&#39; password=&#39;evan&#39;&#34; conn = db."/>
+<meta name="twitter:description" content="강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   개요  Airflow를 활용하여 PostgreSQL에 저장된 데이터를 디스크로 다운로드 받고, 그리고 그 파일을 다시 읽어서 Elasticsearch에 저장하도록 한다. 전체적인 흐름은 getData from PostgreSQL &gt;&gt; insertData to Elasticsearch 로 저장할 수 있다."/>
 
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -149,6 +149,7 @@ if (!doNotTrack) {
 	<div class="toc__menu">
 		<nav id="TableOfContents">
   <ul>
+    <li><a href="#강의-홍보">강의 홍보</a></li>
     <li><a href="#개요">개요</a></li>
     <li><a href="#전체-코드-실행">전체 코드 실행</a></li>
     <li><a href="#결과-확인">결과 확인</a></li>
@@ -161,7 +162,18 @@ if (!doNotTrack) {
 	</div>
 </div>
 <div class="content post__content clearfix">
-			<h2 id="개요">개요</h2>
+			<h2 id="강의-홍보">강의 홍보</h2>
+<ul>
+<li>취준생을 위한 강의를 제작하였습니다.</li>
+<li>본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.
+<ul>
+<li><code>스타벅스 아이스 아메리카노를 선물</code>로 보내드리겠습니다.</li>
+</ul>
+</li>
+<li><a href="https://www.inflearn.com/course/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EC%BA%90%EA%B8%80%EC%9E%85%EB%AC%B8?inst=46ae3c78">[비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기</a>
+<img src="/img/lecture_ad/lecture_ad_01.png" alt=""></li>
+</ul>
+<h2 id="개요">개요</h2>
 <ul>
 <li><code>Airflow</code>를 활용하여 <code>PostgreSQL</code>에 저장된 데이터를 디스크로 다운로드 받고, 그리고 그 파일을 다시 읽어서 <code>Elasticsearch</code>에 저장하도록 한다.</li>
 <li>전체적인 흐름은 <code>getData from PostgreSQL &gt;&gt; insertData to Elasticsearch</code> 로 저장할 수 있다.</li>
@@ -418,9 +430,9 @@ print_starting <span style="color:#f92672">&gt;&gt;</span> getData <span style="
 		<ul class="widget__list">
 			<li class="widget__item"><a class="widget__link" href="/python/data_engineering/ch04_working_databases/airflow_postgresql_elasticsearch/">Airflow를 활용한 PostgreSQL에서 Elasticsearch로 데이터 마이그레이션 예제</a></li>
 			<li class="widget__item"><a class="widget__link" href="/python/data_engineering/ch04_working_databases/elasticsearch_python_extract/">파이썬을 활용한 엘라스틱서치에서 데이터 추출</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/data_engineering/ch05_cleaning_transforming/data_cleaning_using_airflow/">Airflow를 활용한 Data Cleansing 예제</a></li>
 			<li class="widget__item"><a class="widget__link" href="/python/data_engineering/ch04_working_databases/elasticsearch_with_python_dbinsert/">파이썬과 엘라스틱서치 DB 연동</a></li>
 			<li class="widget__item"><a class="widget__link" href="/python/data_engineering/ch04_working_databases/python_postgresql/">파이썬과 PostgreSQL DB 연동</a></li>
-			<li class="widget__item"><a class="widget__link" href="/python/data_engineering/ch03_reading_writing_file/airflow_csv2json/">Apache Airflow를 활용한 CSV에서 JSON으로 변환하기</a></li>
 		</ul>
 	</div>
 </div>
