@@ -8,7 +8,7 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="결정 트리 학습 이론" />
-<meta property="og:description" content="개요  현대 머신러닝 이론의 백본(Backbone)이 되는 결정 트리에 대해 이론적으로 살짝 정리한다. 주요 수식은 Python Machine Learning Second Edition 교재를 주로 참고 하였다.  결정 트리의 예 " />
+<meta property="og:description" content="개요  현대 머신러닝 이론의 백본(Backbone)이 되는 결정 트리에 대해 이론적으로 살짝 정리한다. 주요 수식은 Python Machine Learning Second Edition 교재를 주로 참고 하였다. (Page: 90 ~ 94)  교재 출처: https://www.amazon.com/Python-Machine-Learning-scikit-learn-TensorFlow/dp/1787125939    결정 트리의 예  결정 트리는 여러가지 연속된 질문을 학습하여 분류하는 것이 원칙이다. 다음의 간단한 예를 들어본다.   결정 트리는 크게 3가지로 구성이 되어 있다.  트리 내부 노드, 리프 노드, 그리고 가지로 구성이 되어 있다." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://dschloe.github.io/python/python_edu/04_machinelearning/decision_tree/" />
 <meta property="article:published_time" content="2021-12-09T21:10:47+09:00" />
@@ -16,7 +16,7 @@
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="결정 트리 학습 이론"/>
-<meta name="twitter:description" content="개요  현대 머신러닝 이론의 백본(Backbone)이 되는 결정 트리에 대해 이론적으로 살짝 정리한다. 주요 수식은 Python Machine Learning Second Edition 교재를 주로 참고 하였다.  결정 트리의 예 "/>
+<meta name="twitter:description" content="개요  현대 머신러닝 이론의 백본(Backbone)이 되는 결정 트리에 대해 이론적으로 살짝 정리한다. 주요 수식은 Python Machine Learning Second Edition 교재를 주로 참고 하였다. (Page: 90 ~ 94)  교재 출처: https://www.amazon.com/Python-Machine-Learning-scikit-learn-TensorFlow/dp/1787125939    결정 트리의 예  결정 트리는 여러가지 연속된 질문을 학습하여 분류하는 것이 원칙이다. 다음의 간단한 예를 들어본다.   결정 트리는 크게 3가지로 구성이 되어 있다.  트리 내부 노드, 리프 노드, 그리고 가지로 구성이 되어 있다."/>
 
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -151,6 +151,11 @@ if (!doNotTrack) {
   <ul>
     <li><a href="#개요">개요</a></li>
     <li><a href="#결정-트리의-예">결정 트리의 예</a></li>
+    <li><a href="#결정-트리의-주요-원리">결정 트리의 주요 원리</a></li>
+    <li><a href="#주요-이론-1-정보-이득의-정의">주요 이론 1. 정보 이득의 정의</a></li>
+    <li><a href="#엔트로피의-정의">엔트로피의 정의</a></li>
+    <li><a href="#지니불순도gini-information">지니불순도(Gini Information)</a></li>
+    <li><a href="#분류-오차classification-error">분류 오차(Classification Error)</a></li>
   </ul>
 </nav>
 	</div>
@@ -159,9 +164,137 @@ if (!doNotTrack) {
 			<h2 id="개요">개요</h2>
 <ul>
 <li>현대 머신러닝 이론의 백본(Backbone)이 되는 결정 트리에 대해 이론적으로 살짝 정리한다.</li>
-<li>주요 수식은 Python Machine Learning Second Edition 교재를 주로 참고 하였다.</li>
+<li>주요 수식은 Python Machine Learning Second Edition 교재를 주로 참고 하였다. (Page: 90 ~ 94)
+<ul>
+<li>교재 출처: <a href="https://www.amazon.com/Python-Machine-Learning-scikit-learn-TensorFlow/dp/1787125939">https://www.amazon.com/Python-Machine-Learning-scikit-learn-TensorFlow/dp/1787125939</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="결정-트리의-예">결정 트리의 예</h2>
+<ul>
+<li>결정 트리는 여러가지 연속된 질문을 학습하여 분류하는 것이 원칙이다.</li>
+<li>다음의 간단한 예를 들어본다.</li>
+</ul>
+<p><img src="/img/python_edu/04_machineLearning/decision_tree/tutorial_01.png" alt=""></p>
+<ul>
+<li>결정 트리는 크게 3가지로 구성이 되어 있다.
+<ul>
+<li>트리 내부 노드, 리프 노드, 그리고 가지로 구성이 되어 있다.</li>
+<li>어떻게 질문을 하느냐에 따라서 분류가 결정된다.</li>
+</ul>
+</li>
+<li>결정 트리는 숫자에도 적용할 수 있다.
+<ul>
+<li>예) 키가 160cm보다 큰가요?</li>
+</ul>
+</li>
+</ul>
+<h2 id="결정-트리의-주요-원리">결정 트리의 주요 원리</h2>
+<ul>
+<li>결정 트리는 트리의 루트(Root)에서 시작하여, 정보 이득(Information Gain, IG)가 최대가 되는 특성으로 데이터를 나눔</li>
+<li>반복 과정(분류할 수 있는 연속적인 질문)을 통해 계속적으로 분류함
+<ul>
+<li>전문 용어로는 <code>Until the leaves are pure.</code></li>
+</ul>
+</li>
+<li>결정 트리에서 가장 중요한 것은 정보 이득 최대화임(Maximizing Information Gain)
+<ul>
+<li>가장 빠르게 확실하게 분류할 수 있는 질문(Question)</li>
+<li>다음 예를 살펴본다. (출처: <a href="https://www.geeksforgeeks.org/decision-tree-introduction-example/">https://www.geeksforgeeks.org/decision-tree-introduction-example/</a>)</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/python_edu/04_machineLearning/decision_tree/tutorial_02.png" alt=""></p>
+<ul>
+<li>이진 결정 트리에 널리 사용되는 세 개의 불순도 지표 또는 분할 조건은 다음과 같다.
+<ul>
+<li>지니 불순도(Gini Impurity, $I_{G}$)</li>
+<li>엔트로피(Entropy, $I_{H}$)</li>
+<li>분류 오차(Classification Error, $I_{E}$)</li>
+</ul>
+</li>
+</ul>
+<h2 id="주요-이론-1-정보-이득의-정의">주요 이론 1. 정보 이득의 정의</h2>
+<ul>
+<li>
+<p>정보 이득 수식은 다음과 같이 정의 할 수 있다.
+$$
+IG(D_{p}, f) = I(D_{p}) - \sum_{j=1}^{m}\frac{N_{j}}{N_{p}}I(D_{j})
+$$</p>
+</li>
+<li>
+<p>여기서 $f$는 분할에 사용할 특성이다.</p>
+</li>
+<li>
+<p>$D_{p}$와 $D_{j}$는 부모와 $j$번째 자식 노드의 데이터셋을 의미한다.</p>
+</li>
+<li>
+<p>$I$는 불순도(Inpurity) 지표를 말한다.</p>
+</li>
+<li>
+<p>$N_{p}$는 부모 노드에 있는 전체 샘플 개수를 말한다.</p>
+</li>
+<li>
+<p>$N_{j}$는 $j$번째 자식 노드에 있는 샘플 갯수를 말한다.</p>
+</li>
+<li>
+<p>부모 노드의 불순도와 자식 노드의 불순도 합의 차이이다.</p>
+<ul>
+<li>자식 노드의 불순도가 낮으면 낮을수록 정보 이득이 커진다. (the lower the impurity of the child
+nodes, the larger the information gain.)</li>
+</ul>
+</li>
+<li>
+<p>대부분의 라이브러리는 이진 결정 트리 사용(Binary Decision Trees)</p>
+<ul>
+<li>각 부모 노드는 두개의 자식 노드를 가진다. ($D_{left}$, $D_{right}$)</li>
+</ul>
+</li>
+</ul>
+<p>$$
+IG(D_{p}, f) = I(D_{p}) - \frac{N_{left}}{N_{p}}I(D_{left}) - \frac{N_{right}}{N_{p}}I(D_{right})
+$$</p>
+<h2 id="엔트로피의-정의">엔트로피의 정의</h2>
+<ul>
+<li>샘플이 있는 모든 클래스$(p(i|t)\neq 0)$에 대한 정의는 다음과 같다.
+$$
+I_{H}(t) = - \sum_{i=1}^{c}p(i|t)\log_{2}p(i|t)
+$$</li>
+<li>여기에서 $p(i|t)$는 특정 노드 $t$에 속한 샘플 비율</li>
+<li>한 노드의 모든 샘플이 같은 클래스면 엔트로피는 0임</li>
+<li>클래스 분포가 균등하면 엔트로피는 최대가 됨.
+<ul>
+<li>$p(i=1|t)=1$ 또는 $p(i=0)|t)=0$이면 엔트로피는 <code>0</code>임</li>
+<li>클래스가 $p(i=1|t)=0.5$와 $p(i=0)|t)=0.5$처럼 균등하게 분포가 되어 있으면 엔트로피는 <code>1</code>임</li>
+<li>$\log_{2}(0.5)$는 -1이므로 두 노드가 균등하게 분포가 되어 있으면 아래와 같은 식이 도출됨.
+<ul>
+<li>$I_{H}(t)=-(0.5\times(-1) + 0.5\times(-1)) = 1$</li>
+</ul>
+</li>
+<li>엔트로피 조건은 트리 내부의 상호 정보를 최대화하려고 시도 (the entropy criterion attempts to maximize the mutual
+information in the tree.)</li>
+</ul>
+</li>
+</ul>
+<h2 id="지니불순도gini-information">지니불순도(Gini Information)</h2>
+<ul>
+<li>잘못 분류될 확률을 최소화하기 위한 기준으로 이해</li>
+<li>지니 불순도는 만약의 클래스들이 완벽하게 섞여 있으면 최대치가 됨.
+<ul>
+<li>Binary Class Setting(C=2)
+$$
+I_{G}(t) = 1 - \sum_{i=1}^{c}0.5^{2} = 0.5
+$$</li>
+</ul>
+</li>
+</ul>
+<h2 id="분류-오차classification-error">분류 오차(Classification Error)</h2>
+<ul>
+<li>분류 오차의 정의는 다음과 같다.
+$$
+I_{E} = 1-max { (p(i|t)) }
+$$</li>
+</ul>
 
 		</div>
 		<footer class="post__footer">
