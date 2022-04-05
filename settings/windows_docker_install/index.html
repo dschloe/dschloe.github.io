@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Windows 10 도커 설치 과정 (2022 ver) - Data Science | DSChloe</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+		<meta property="og:title" content="Windows 10 도커 설치 과정 (2022 ver)" />
+<meta property="og:description" content="개요  주요 참고자료는 다음과 같다.  WSL2 설치 : https://www.lainyzine.com/ko/article/how-to-install-wsl2-and-use-linux-on-windows-10/#google_vignette 도커 설치 : https://www.lainyzine.com/ko/article/a-complete-guide-to-how-to-install-docker-desktop-on-windows-10/    Step 1. WSL2 설치 과정  Windows PowerShell 관리자로 실행 후 다음 명령어 입력  $ dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart $ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart  위 명령어 실행 후, 재부팅 필수 x64 머신용 최신 WSL2 Linux 커널 업데이트 패키지를 다운로드 받아 안내에 따라 설치합니다. Windows Powershell 열고 아래 코드 실행  $ wsl --set-default-version 2 WSL 2와의 주요 차이점에 대한 자세한 내용은 https://aka." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dschloe.github.io/settings/windows_docker_install/" />
+<meta property="article:published_time" content="2022-04-05T14:00:47+09:00" />
+<meta property="article:modified_time" content="2022-04-05T14:00:47+09:00" />
+
+		<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Windows 10 도커 설치 과정 (2022 ver)"/>
+<meta name="twitter:description" content="개요  주요 참고자료는 다음과 같다.  WSL2 설치 : https://www.lainyzine.com/ko/article/how-to-install-wsl2-and-use-linux-on-windows-10/#google_vignette 도커 설치 : https://www.lainyzine.com/ko/article/a-complete-guide-to-how-to-install-docker-desktop-on-windows-10/    Step 1. WSL2 설치 과정  Windows PowerShell 관리자로 실행 후 다음 명령어 입력  $ dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart $ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart  위 명령어 실행 후, 재부팅 필수 x64 머신용 최신 WSL2 Linux 커널 업데이트 패키지를 다운로드 받아 안내에 따라 설치합니다. Windows Powershell 열고 아래 코드 실행  $ wsl --set-default-version 2 WSL 2와의 주요 차이점에 대한 자세한 내용은 https://aka."/>
+
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo">
+		<a class="logo__link" href="/" title="Data Science | DSChloe" rel="home">
+			<div class="logo__item logo__text">
+					<div class="logo__title">Data Science | DSChloe</div>
+					<div class="logo__tagline">Love your beloved one forever</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/aws/">
+				
+				<span class="menu__text">AWS</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/ds-projects/">
+				
+				<span class="menu__text">DS-Projects</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/gcp/">
+				
+				<span class="menu__text">GCP</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/kaggle/">
+				
+				<span class="menu__text">Kaggle</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/mlops/">
+				
+				<span class="menu__text">MLOps</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/python/">
+				
+				<span class="menu__text">Python</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/r/">
+				
+				<span class="menu__text">R</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/settings/">
+				
+				<span class="menu__text">settings</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/sql/">
+				
+				<span class="menu__text">SQL</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About DSChloe</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">Windows 10 도커 설치 과정 (2022 ver)</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-04-05T14:00:47&#43;09:00">2022-04-05</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/windows-10/" rel="category">Windows 10</a>, <a class="meta__link" href="/categories/docker/" rel="category">Docker</a>, <a class="meta__link" href="/categories/wsl2/" rel="category">WSL2</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#개요">개요</a></li>
+    <li><a href="#step-1-wsl2-설치-과정">Step 1. WSL2 설치 과정</a></li>
+    <li><a href="#step-2l-docker-desktop-설치">Step 2l Docker Desktop 설치</a></li>
+    <li><a href="#step-3-docker-설치-확인-및-간단한-nginx-서버-예제-실행">Step 3. <strong>Docker 설치 확인 및 간단한 nginx 서버 예제 실행</strong></a></li>
+    <li><a href="#step-4--그외-추가-설치">Step 4.  그외 추가 설치</a></li>
+    <li><a href="#wsl-에러-대처법">WSL 에러 대처법</a></li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="개요">개요</h2>
+<ul>
+<li>주요 참고자료는 다음과 같다.
+<ul>
+<li>WSL2 설치 : <a href="https://www.lainyzine.com/ko/article/how-to-install-wsl2-and-use-linux-on-windows-10/#google_vignette">https://www.lainyzine.com/ko/article/how-to-install-wsl2-and-use-linux-on-windows-10/#google_vignette</a></li>
+<li>도커 설치 : <a href="https://www.lainyzine.com/ko/article/a-complete-guide-to-how-to-install-docker-desktop-on-windows-10/">https://www.lainyzine.com/ko/article/a-complete-guide-to-how-to-install-docker-desktop-on-windows-10/</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="step-1-wsl2-설치-과정">Step 1. WSL2 설치 과정</h2>
+<ul>
+<li>Windows PowerShell 관리자로 실행 후 다음 명령어 입력</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+$ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+</code></pre></div><ul>
+<li>위 명령어 실행 후, 재부팅 필수</li>
+<li><a href="https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi">x64 머신용 최신 WSL2 Linux 커널 업데이트 패키지</a>를 다운로드 받아 안내에 따라 설치합니다.</li>
+<li>Windows Powershell 열고 아래 코드 실행</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ wsl --set-default-version <span style="color:#ae81ff">2</span>
+WSL 2와의 주요 차이점에 대한 자세한 내용은 https://aka.ms/wsl2를 참조하세요
+</code></pre></div><h2 id="step-2l-docker-desktop-설치">Step 2l Docker Desktop 설치</h2>
+<ol>
+<li>다음 페이지로 이동해서 Docker Desktop for Windows를 다운로드 받습니다.</li>
+</ol>
+<ul>
+<li><a href="https://www.docker.com/products/docker-desktop">Docker Desktop for Mac and Windows | Docker</a></li>
+</ul>
+<p><img src="/img/settings/windows_docker_install/Untitled.png" alt="Untitled"></p>
+<ol start="2">
+<li>
+<p>다운로드 받은 <code>Docker Desktop Installer.exe</code> 를 실행하면 사용자 계정 컨트롤이 나타남. 설치를 진행하려면 ’예’를 클릭함.</p>
+</li>
+<li>
+<p>설치 중간에 Configuration이 나타납니다. 둘 다 체크하고 설치를 진행함. (첫 번째 옵션은 WSL 관련, 2번째 옵션은 바탕화면에 아이콘 추가할지 여부).</p>
+</li>
+</ol>
+<p><img src="/img/settings/windows_docker_install/Untitled%201.png" alt="Untitled"></p>
+<ol>
+<li>Docker Desktop 설치 진행.</li>
+</ol>
+<p><img src="/img/settings/windows_docker_install/Untitled%202.png" alt="Untitled"></p>
+<ol start="5">
+<li>설치가 끝나면 Installation succeeded 메시지가 나타남. 시스템 상태에 따라서 재시작이나 로그아웃을 해야하는 경우도 있다. Close 버튼을 클릭해 인스톨러를 종료함.</li>
+</ol>
+<ul>
+<li>재 접속 시, 아래 화면에서 약관 동의하면 끝.</li>
+</ul>
+<p><img src="/img/settings/windows_docker_install/Untitled%203.png" alt="Untitled"></p>
+<ol>
+<li>시스템에 WSL2가 활성화되어있다면 Docker는 기본적으로 WSL2를 백엔드로 Docker Engine을 실행함. 초기 셋업에는 몇 분 정도의 시간이 걸림. 성공적으로 Docker가 실행되면 Tutorial이 나타남.</li>
+</ol>
+<p><img src="/img/settings/windows_docker_install/Untitled%204.png" alt="Untitled"></p>
+<ol>
+<li>로그인 하면, 아래와 같은 화면이 나옴. Proceed to Docker Desktop 실행하면 종료</li>
+</ol>
+<p><img src="/img/settings/windows_docker_install/Untitled%205.png" alt="Untitled"></p>
+<ol>
+<li>도커 컨테이너 실행 시작 후, 오른쪽 상단 설정창을 클릭한다.</li>
+</ol>
+<p><img src="/img/settings/windows_docker_install/Untitled%206.png" alt="Untitled"></p>
+<ol start="9">
+<li>다음으로 WSL2 설정이 잘되어있는지 확인하고 WSL 통합 설정을 진행함. Docker 아이콘에서 오른쪽 버튼을 눌러 Settings를 선택함. 먼저 General 설정에서 ’Use the WSL 2 based engine’에 체크가 되어있는지 확인함. 미리 체크가 되어있을 텐데, 혹시 되어있지 않다면 체크하고 오른쪽 아래의 Apply &amp; Restart 버튼을 클릭함.</li>
+</ol>
+<p><img src="/img/settings/windows_docker_install/Untitled%207.png" alt="Untitled"></p>
+<ol start="10">
+<li>다음으로 왼쪽 사이드바에서 Resource &gt; WSL Integration 메뉴로 이동함. ’Enable Integration with my default WSL distro’에 체크되어있는지 확인함. 체크가 되어있지 않을 텐데 체크하고 오른쪽 아래의 Apply &amp; Restart 버튼을 클릭해주면 도커 엔진이 재실행됨.</li>
+</ol>
+<p><img src="/img/settings/windows_docker_install/Untitled%208.png" alt="Untitled"></p>
+<ul>
+<li>도커 설치는 완료 됨</li>
+</ul>
+<h2 id="step-3-docker-설치-확인-및-간단한-nginx-서버-예제-실행">Step 3. <strong>Docker 설치 확인 및 간단한 nginx 서버 예제 실행</strong></h2>
+<ul>
+<li>PowerShell 탭을 하나 열고 <code>wsl</code>명령어로 Docker 전용 머신이 실행중인 것을 확인할 수 있다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt; wsl -l -v
+  NAME                   STATE           VERSION
+* docker-desktop         Running         <span style="color:#ae81ff">2</span>
+  docker-desktop-data    Running         <span style="color:#ae81ff">2</span>
+</code></pre></div><ul>
+<li>wsl로 docker-desktop 리눅스에 명령어를 실행해볼 수 있습니다. docker-desktop은 BusyBox 기반의 경량 리눅스인 것을 확인해볼 수 있습니다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt; wsl -d docker-desktop busybox
+BusyBox v1.29.3 <span style="color:#f92672">(</span>2019-01-24 07:45:07 UTC<span style="color:#f92672">)</span> multi-call binary.
+BusyBox is copyrighted by many authors between 1998-2015.
+Licensed under GPLv2. See source distribution <span style="color:#66d9ef">for</span> detailed
+copyright notices.
+.
+.
+.
+</code></pre></div><ul>
+<li><code>docker version</code> 명령으로 Docker 서버와 클라이언트 정보를 확인해봅니다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt; docker version
+Client:
+ Cloud integration: v1.0.22
+ Version:           20.10.13
+ API version:       1.41
+ Go version:        go1.16.15
+ Git commit:        a224086
+ Built:             Thu Mar <span style="color:#ae81ff">10</span> 14:13:04 <span style="color:#ae81ff">2022</span>
+ OS/Arch:           windows/amd64
+ Context:           default
+ Experimental:      true
+
+Server: Docker Desktop 4.6.1 <span style="color:#f92672">(</span>76265<span style="color:#f92672">)</span>
+ Engine:
+  Version:          20.10.13
+  API version:      1.41 <span style="color:#f92672">(</span>minimum version 1.12<span style="color:#f92672">)</span>
+  Go version:       go1.16.15
+  Git commit:       906f57f
+  Built:            Thu Mar <span style="color:#ae81ff">10</span> 14:06:05 <span style="color:#ae81ff">2022</span>
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.5.10
+  GitCommit:        2a1d4dbdb2a1030dc5b01e96fb110a9d9f150ecc
+ runc:
+  Version:          1.0.3
+  GitCommit:        v1.0.3-0-gf46b6ba
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+</code></pre></div><ul>
+<li>docker로 실행중인 컨테이너 확인</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt; docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+</code></pre></div><ul>
+<li>이번에는 ngix 서버 활성화를 해본다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker run -p 4567:80 -d nginx:latest
+Unable to find image <span style="color:#e6db74">&#39;nginx:latest&#39;</span> locally
+latest: Pulling from library/nginx
+c229119241af: Pull complete                                                                                             2215908dc0a2: Pull complete                                                                                             08c3cb2073f1: Pull complete                                                                                             18f38162c0ce: Pull complete                                                                                             10e2168f148a: Pull complete                                                                                             c4ffe9532b5f: Pull complete                                                                                             Digest: sha256:2275af0f20d71b293916f1958f8497f987b8d8fd8113df54635f2a5915002bf1
+Status: Downloaded newer image <span style="color:#66d9ef">for</span> nginx:latest
+cd56760cf433cc797a6c43c544fe52493daccc06b4c30842a98ef6ec3665bf10
+</code></pre></div><ul>
+<li>다시 docker로 실행중인 컨테이너 확인을 한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt; docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS          PORTS                  NAMES
+cd56760cf433   nginx:latest   <span style="color:#e6db74">&#34;/docker-entrypoint.…&#34;</span>   <span style="color:#ae81ff">36</span> seconds ago   Up <span style="color:#ae81ff">31</span> seconds   0.0.0.0:4567-&gt;80/tcp   tender_benz
+</code></pre></div><ul>
+<li>주소창에 <a href="http://127.0.0.1:4567/">http://127.0.0.1:4567/</a> 실행하면 아래와 같은 화면이 나오면 정상이다.</li>
+</ul>
+<p><img src="/img/settings/windows_docker_install/Untitled%209.png" alt="Untitled"></p>
+<ul>
+<li>이번에는 실행중인 컨테이너를 삭제한다.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt; docker rm -f cd56760cf433
+cd56760cf433
+PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt; docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+</code></pre></div><h2 id="step-4--그외-추가-설치">Step 4.  그외 추가 설치</h2>
+<ul>
+<li>WSL2에서는 다양한 리눅스 배포판을 사용할 수 있습니다. 여기서는 가장 많이 사용되는 리눅스 배포판인 Ubuntu를 설치해보겠습니다(Ubuntu는 무료로 사용할 수 있지만, 리눅스 배포판에 따라서 유료인 경우도 있습니다). 맨 앞의 패키지를 선택하고 상세 페이지에서 설치를 진행합니다.</li>
+</ul>
+<p><img src="/img/settings/windows_docker_install/Untitled%2010.png" alt="Untitled"></p>
+<ul>
+<li><strong>Windows Ternminal 설치</strong></li>
+</ul>
+<p><img src="/img/settings/windows_docker_install/Untitled%2011.png" alt="Untitled"></p>
+<ul>
+<li>UNIX 계정 및 Password를 설정한다.</li>
+</ul>
+<p><img src="/img/settings/windows_docker_install/Untitled%2012.png" alt="Untitled"></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Installing, this may take a few minutes...
+Please create a default UNIX user account. The username does not need to match your Windows username.
+For more information visit: https://aka.ms/wslusers
+Enter new UNIX username: human
+New password:
+Retype new password:
+passwd: password updated successfully
+Installation successful!
+To run a command as administrator <span style="color:#f92672">(</span>user <span style="color:#e6db74">&#34;root&#34;</span><span style="color:#f92672">)</span>, use <span style="color:#e6db74">&#34;sudo &lt;command&gt;&#34;</span>.
+See <span style="color:#e6db74">&#34;man sudo_root&#34;</span> <span style="color:#66d9ef">for</span> details.
+
+Welcome to Ubuntu 20.04.4 LTS <span style="color:#f92672">(</span>GNU/Linux 5.10.16.3-microsoft-standard-WSL2 x86_64<span style="color:#f92672">)</span>
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Tue Apr  <span style="color:#ae81ff">5</span> 17:16:59 KST <span style="color:#ae81ff">2022</span>
+
+  System load:  0.71               Processes:             <span style="color:#ae81ff">8</span>
+  Usage of /:   0.5% of 250.98GB   Users logged in:       <span style="color:#ae81ff">0</span>
+  Memory usage: 5%                 IPv4 address <span style="color:#66d9ef">for</span> eth0: 172.17.187.7
+  Swap usage:   0%
+
+<span style="color:#ae81ff">1</span> update can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+The list of available updates is more than a week old.
+To check <span style="color:#66d9ef">for</span> new updates run: sudo apt update
+
+This message is shown once a day. To disable it please create the
+/home/human/.hushlogin file.
+</code></pre></div><ul>
+<li>ID : human / PW: 1234</li>
+<li>다시 터미널을 실행해주세요(이 때는 관리자 모드를 사용하지 않아도 됩니다). 이제 WSL을 관리하기 위한 <code>wsl</code>명령어를 사용할 수 있습니다. <code>wsl -l -v</code>로 현재 설치된 리눅스를 확인해봅니다.</li>
+<li>WSL 제대로 실행되었는지 확인하는 코드</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt; wsl -l -v
+  NAME                   STATE           VERSION
+* docker-desktop         Running         <span style="color:#ae81ff">2</span>
+  Ubuntu                 Running         <span style="color:#ae81ff">2</span>
+  docker-desktop-data    Running         <span style="color:#ae81ff">2</span>
+</code></pre></div><p>앞의 <code>*</code>는 디폴트 머신을 의미합니다. 여기서 버전 컬럼은 WSL의 버전을 의미합니다. 2가 출력된다면 그대로 사용하면 됩니다. 만약 버전이 1이라고 나온다면 다음 명령을 실행해줍니다.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx"><span style="color:#a6e22e">$</span> <span style="color:#a6e22e">wsl</span> <span style="color:#f92672">--</span><span style="color:#a6e22e">set</span><span style="color:#f92672">-</span><span style="color:#a6e22e">version</span> <span style="color:#a6e22e">Ubuntu</span> <span style="color:#ae81ff">2</span>
+<span style="color:#a6e22e">변환이</span> <span style="color:#a6e22e">진행</span> <span style="color:#a6e22e">중입니다</span>. <span style="color:#a6e22e">몇</span> <span style="color:#a6e22e">분</span> <span style="color:#a6e22e">정도</span> <span style="color:#a6e22e">걸릴</span> <span style="color:#a6e22e">수</span> <span style="color:#a6e22e">있습니다</span>...
+<span style="color:#a6e22e">WSL</span> <span style="color:#ae81ff">2</span><span style="color:#a6e22e">와의</span> <span style="color:#a6e22e">주요</span> <span style="color:#a6e22e">차이점에</span> <span style="color:#a6e22e">대한</span> <span style="color:#a6e22e">자세한</span> <span style="color:#a6e22e">내용은</span> <span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//aka.ms/wsl2를 참조하세요
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">변환이</span> <span style="color:#a6e22e">완료되었습니다</span>.
+</code></pre></div><p>실행 후 ’변환이 완료되었습니다’라는 출력 결과를 꼭 확인해주세요. 다시 <code>wsl -l -v</code>
+ 명령어로 확인해봅니다. 변환이 잘 되었는지 확인해보겠습니다.</p>
+<h2 id="wsl-에러-대처법">WSL 에러 대처법</h2>
+<ul>
+<li>자료 1 : <a href="https://docs.microsoft.com/en-us/windows/wsl/install-manual#step-3---enable-virtual-machine-feature">https://docs.microsoft.com/en-us/windows/wsl/install-manual#step-3&mdash;enable-virtual-machine-feature</a></li>
+<li><strong>Error when trying to upgrade: <code>Invalid command line option: wsl --set-version Ubuntu 2</code></strong>
+<ul>
+<li>Ensure that you have the Windows Subsystem for Linux enabled, and that you&rsquo;re using Windows Build version 18362 or higher. To enable WSL run this command in a PowerShell prompt with admin privileges: <code>Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux</code>.</li>
+</ul>
+</li>
+<li>가상화 설치 필요 시</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx"><span style="color:#a6e22e">$</span> <span style="color:#a6e22e">systeminfo</span>
+.
+.
+.
+<span style="color:#a6e22e">Hyper</span><span style="color:#f92672">-</span><span style="color:#a6e22e">V</span> <span style="color:#a6e22e">요구</span> <span style="color:#a6e22e">사항</span><span style="color:#f92672">:</span>       <span style="color:#a6e22e">VM</span> <span style="color:#a6e22e">모니터</span> <span style="color:#a6e22e">모드</span> <span style="color:#a6e22e">확장</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">예</span>
+                         <span style="color:#a6e22e">펌웨어에</span> <span style="color:#a6e22e">가상화</span> <span style="color:#a6e22e">사용</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">아니요</span>
+                         <span style="color:#a6e22e">두</span> <span style="color:#a6e22e">번째</span> <span style="color:#a6e22e">수준</span> <span style="color:#a6e22e">주소</span> <span style="color:#a6e22e">변환</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">예</span>
+                         <span style="color:#a6e22e">데이터</span> <span style="color:#a6e22e">실행</span> <span style="color:#a6e22e">방지</span> <span style="color:#a6e22e">사용</span> <span style="color:#a6e22e">가능</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">예</span>
+</code></pre></div><ul>
+<li><a href="https://support.bluestacks.com/hc/ko/articles/360058102252-%EB%B8%94%EB%A3%A8%EC%8A%A4%ED%83%9D5-Windows-10%EC%97%90%EC%84%9C-%EA%B0%80%EC%83%81%ED%99%94-VT-%ED%99%9C%EC%84%B1%ED%99%94%ED%95%98%EA%B8%B0">https://support.bluestacks.com/hc/ko/articles/360058102252-블루스택5-Windows-10에서-가상화-VT-활성화하기</a></li>
+</ul>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/windows-10/" rel="tag">Windows 10</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/docker/" rel="tag">Docker</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/wsl2/" rel="tag">WSL2</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name"></span>
+	</div>
+	<div class="authorbox__description">
+		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.
+	</div>
+</div>
+
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH…" value="" name="q" aria-label="SEARCH…">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://dschloe.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/settings/windows_docker_install/">Windows 10 도커 설치 과정 (2022 ver)</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/python_edu/04_machinelearning/one_hot_encoding_using_scikit_learn/">Scikit-Learn OneHot Encoding 다양한 적용 방법</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/python_edu/03_datavisualisation/plot_tree_color_changes/">Plot Tree 색상 변경</a></li>
+			<li class="widget__item"><a class="widget__link" href="/r/text_mining/r_text_mining_1_data_crawling/">R 텍스트 마이닝 1일차 - 빅카인즈 데이터 수집</a></li>
+			<li class="widget__item"><a class="widget__link" href="/python/dash/heroku_app_deploy/">Heroku App 배포</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/acea/">ACEA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/airflow/">Airflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/amazon-web-service/">Amazon Web Service</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/astype/">astype</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws/">AWS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">bar chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-data-transformation/">Basic Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basics/">Basics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-machine-learning/">BigQuery Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-machine-learning/">BigQuery with Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-python/">BigQuery with Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blog/">Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bupar/">bupaR</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/categorical-features/">Categorical Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/class/">Class</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/cloud-build/">Cloud Build</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/colab/">Colab </a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/columntransformer/">ColumnTransformer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conditional-statements/">Conditional Statements</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/corona-shiny-app/">Corona Shiny App</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dacon/">dacon</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dash/">Dash</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dashboard/">Dashboard</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-crawling/">Data Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-engineering/">Data Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-handling/">Data Handling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-leakage/">Data Leakage</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-science-project/">Data Science Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-structures/">Data Structures</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualization/">Data Visualization</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decision-tree/">Decision Tree</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decorators/">Decorators</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deployment/">Deployment</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/design/">Design</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development/">Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development-settings/">Development Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dictionary/">Dictionary</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/discrete-features/">Discrete Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/docker/">Docker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/eda/">EDA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/elastic/">Elastic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/elasticsearch/">Elasticsearch</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/encoding/">Encoding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/exploratory-data-analysis/">Exploratory Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/faker/">faker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/feature-engineering/">Feature Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-download/">File Download</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-i/o/">File I/O</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/function/">function</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gcp/">GCP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ggplot2/">ggplot2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/git/">Git</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github/">Github</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github-blog/">Github Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/global-development/">Global Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-colab/">Google Colab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gradient-boosting-machine/">Gradient Boosting Machine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/heroku/">Heroku</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hexo/">Hexo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/histogram/">Histogram</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/installation/">Installation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/intermediate/">Intermediate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iteration/">iteration</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/jupyter-notebook/">Jupyter Notebook</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle/">Kaggle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle-api/">Kaggle API</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kibana/">Kibana</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/konlp/">KoNLP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">line grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/linux/">Linux</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lollipop/">lollipop</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lstm/">LSTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/m1/">M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/m1-mac/">M1 Mac</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/macos-m1/">MacOS M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/make_column_transformer/">make_column_transformer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mask-r-cnn/">Mask R-CNN</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/merging-data/">Merging Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/missing-values/">Missing Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/neural-network/">Neural Network</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/new-packages/">New Packages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nifi/">NiFi</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nonparametric/">Nonparametric</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/numeric-features/">Numeric Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/object-detection/">Object Detection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oce/">OCE</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/opencv/">OpenCV</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/openpyxl/">openpyxl</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/optimizer/">Optimizer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/outlier-values/">Outlier Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas-merge/">Pandas Merge</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pipeline/">Pipeline</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pivot-table/">pivot table</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/plot_tree/">plot_tree</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pls-sem/">PLS-SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/postgresql/">PostgreSQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/project/">Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/psycopg2/">psycopg2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/py-openaq/">py-openaq</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pycaret/">PyCaret</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pydataset/">PyDataset</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pyspark/">PySpark</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-basic/">Python Basic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-project/">Python Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/">R 마크다운</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ranzcr/">Ranzcr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rcppmecab/">RcppMeCab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/recommendation/">Recommendation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regular-expression/">regular expression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/reticulate/">reticulate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rpa/">RPA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rtweet/">rtweet</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sales/">Sales</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scikit-learn/">Scikit-Learn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/seaborn/">Seaborn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/spark/">Spark</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ssh/">SSH</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow/">Tensorflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0/">Tensorflow 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow-2.0-tutorial/">Tensorflow 2.0 Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/text-mining/">Text Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tuber/">tuber</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tutorial/">Tutorial</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/web-crawling/">Web Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/windows-10/">Windows 10</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/wsl2/">WSL2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/">객체지향 프로그래밍</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/">구글 클라우드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/">구조방정식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/">국제개발</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/">기초통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%84%A4%EC%9D%B4%EB%B2%84-%EB%89%B4%EC%8A%A4-%ED%81%AC%EB%A1%A4%EB%A7%81/">네이버 뉴스 크롤링</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/">논문통계</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/">대시보드</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B3%B5%ED%95%99/">데이터 공학</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/">데이터 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">데이터 시각화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">데이터 싸이언스 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81/">데이터 엔지니어링</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/">막대 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/">머신러닝 프로젝트</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B3%B4%EA%B3%A0%EC%84%9C-%EC%9E%90%EB%8F%99%ED%99%94/">보고서 자동화</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EB%B9%85%EC%BF%BC%EB%A6%AC/">빅쿼리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%82%B0%EC%A0%90%EB%8F%84/">산점도</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/">선 그래프</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/">시간 측정</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/">아마존 웹 서비스</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%97%98%EB%9D%BC%EC%8A%A4%ED%8B%B1%EC%84%9C%EC%B9%98/">엘라스틱서치</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%9B%90%ED%95%AB-%EC%9D%B8%EC%BD%94%EB%94%A9/">원핫 인코딩</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%9B%B9-%ED%81%AC%EB%A1%A4%EB%A7%81/">웹 크롤링</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%9C%A0%ED%88%AC%EB%B8%8C/">유투브</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%84%EC%B2%98%EB%A6%AC/">이미지 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/">정규표현식</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천 시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/">추천시스템</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%EC%BA%90%EA%B8%80/">캐글</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%82%A4%EB%B0%94%EB%82%98/">키바나</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/">텍스트 마이닝</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/">텍스트 전처리</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/">텐서플로 2.0</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/">텐서플로 2.0 튜토리얼</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/">텐서플로우</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/">프로세스 분석</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/">피벗 테이블</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%95%9C%EA%B8%80%ED%8F%B0%ED%8A%B8-%EC%B6%94%EA%B0%80/">한글폰트 추가</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/">환경설정</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/acea/" title="ACEA">ACEA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/airflow/" title="Airflow">Airflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/amazon-web-service/" title="Amazon Web Service">Amazon Web Service</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/append/" title="append">append</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/astype/" title="astype">astype</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/auto-encoder/" title="Auto Encoder">Auto Encoder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85/" title="AWS 회원가입">AWS 회원가입</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="bar chart">bar chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-structures/" title="Basic Data Structures">Basic Data Structures</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-transformation/" title="Basic Data Transformation">Basic Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basics/" title="Basics">Basics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-machine-learning/" title="BigQuery Machine Learning">BigQuery Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-machine-learning/" title="BigQuery with Machine Learning">BigQuery with Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery with Python">BigQuery with Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery with R">BigQuery with R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blog/" title="Blog">Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bupar/" title="bupaR">bupaR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/categorical-features/" title="Categorical Features">Categorical Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/class/" title="Class">Class</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cloud-build/" title="Cloud Build">Cloud Build</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/clustering/" title="Clustering">Clustering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/colab-with-kaggle/" title="Colab with Kaggle">Colab with Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/columntransformer/" title="ColumnTransformer">ColumnTransformer</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-expressions/" title="Conditional Expressions">Conditional Expressions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-statements/" title="Conditional Statements">Conditional Statements</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cross-join/" title="Cross Join">Cross Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dash/" title="Dash">Dash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dashboard/" title="Dashboard">Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-crawling/" title="Data Crawling">Data Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-engineering/" title="Data Engineering">Data Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-handling/" title="Data Handling">Data Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-leakage/" title="Data Leakage">Data Leakage</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-types/" title="Data Types">Data Types</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualization/" title="Data Visualization">Data Visualization</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dataframe/" title="DataFrame">DataFrame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decision-tree/" title="Decision Tree">Decision Tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decorators/" title="Decorators">Decorators</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deployment/" title="Deployment">Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/design/" title="Design">Design</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="Development">Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development-settings/" title="Development Settings">Development Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary/" title="Dictionary">Dictionary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/discrete-features/" title="Discrete Features">Discrete Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/disk.frame/" title="disk.frame">disk.frame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/docker/" title="Docker">Docker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="dplyr">dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/eda/" title="EDA">EDA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/elastic/" title="Elastic">Elastic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/elasticsearch/" title="Elasticsearch">Elasticsearch</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/emr/" title="EMR">EMR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/encoding/" title="Encoding">Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enumerate/" title="enumerate">enumerate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exploratory-data-analysis/" title="Exploratory Data Analysis">Exploratory Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/extend/" title="extend">extend</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/faker/" title="faker">faker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/feature-engineering/" title="Feature Engineering">Feature Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-download/" title="File Download">File Download</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-i/o/" title="File I/O">File I/O</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="filter">filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/for-loop/" title="for-loop">for-loop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gcp/" title="GCP">GCP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geospatial-analysis/" title="Geospatial Analysis">Geospatial Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gghistostats/" title="gghistostats">gghistostats</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ggplot2/" title="ggplot2">ggplot2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/git/" title="Git">Git</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github/" title="Github">Github</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github-blog/" title="Github Blog">Github Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/global-development/" title="Global Development">Global Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="GRU 레이어">GRU 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="gt">gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gtsummary/" title="gtsummary">gtsummary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hadoop/" title="Hadoop">Hadoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heatmap/" title="Heatmap">Heatmap</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heroku/" title="Heroku">Heroku</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hexo/" title="Hexo">Hexo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/histogram/" title="Histogram">Histogram</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-segmentation/" title="Image Segmentation">Image Segmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-settings/" title="Image Settings">Image Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/insert/" title="insert">insert</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/installation/" title="Installation">Installation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/intermediate/" title="Intermediate">Intermediate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interview/" title="Interview">Interview</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iteration/" title="iteration">iteration</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="iterrows">iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/join/" title="JOIN">JOIN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle/" title="Kaggle">Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle-api/" title="Kaggle API">Kaggle API</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kibana/" title="Kibana">Kibana</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/konlp/" title="KoNLP">KoNLP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/label-encoding/" title="Label Encoding">Label Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lambda/" title="lambda">lambda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="leaflet">leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="line grpah">line grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linux/" title="Linux">Linux</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/list/" title="list">list</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="lists">lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists-and-tuples/" title="Lists and Tuples">Lists and Tuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lollipop/" title="lollipop">lollipop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m1/" title="M1">M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m1-mac/" title="M1 Mac">M1 Mac</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m5-forecasting/" title="M5 Forecasting">M5 Forecasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/macos-m1/" title="MacOS M1">MacOS M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/make_column_transformer/" title="make_column_transformer">make_column_transformer</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mask-r-cnn/" title="Mask R-CNN">Mask R-CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathematical-functions/" title="Mathematical Functions">Mathematical Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-%EC%84%A4%EC%A0%95/" title="Mathjax 설정">Mathjax 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiprocessing/" title="multiprocessing">multiprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/neural-network/" title="Neural Network">Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/new-packages/" title="New Packages">New Packages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nifi/" title="NiFi">NiFi</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nonparametric/" title="Nonparametric">Nonparametric</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numeric-features/" title="Numeric Features">Numeric Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numpy/" title="NumPy">NumPy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/object-detection/" title="Object Detection">Object Detection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oce/" title="OCE">OCE</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/one-hot-encoding/" title="One-Hot Encoding">One-Hot Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/opencv/" title="OpenCV">OpenCV</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/openpyxl/" title="openpyxl">openpyxl</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outer-join/" title="Outer Join">Outer Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outlier-values/" title="Outlier Values">Outlier Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outliers/" title="Outliers">Outliers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-merge/" title="Pandas Merge">Pandas Merge</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pd.concat/" title="pd.concat">pd.concat</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pins/" title="pins">pins</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pipeline/" title="Pipeline">Pipeline</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pivot-table/" title="pivot table">pivot table</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plot_tree/" title="plot_tree">plot_tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="Plotly">Plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pls-sem/" title="PLS-SEM">PLS-SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/polar-chart/" title="Polar Chart">Polar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/postgresql/" title="PostgreSQL">PostgreSQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/probability/" title="Probability">Probability</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/productive-box/" title="productive-box">productive-box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/psycopg2/" title="psycopg2">psycopg2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/py-openaq/" title="py-openaq">py-openaq</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pycaret/" title="PyCaret">PyCaret</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pydataset/" title="PyDataset">PyDataset</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pyspark/" title="PySpark">PySpark</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-basic/" title="Python Basic">Python Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-excel/" title="Python Excel">Python Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-numpy-broadcasting/" title="Python NumPy Broadcasting">Python NumPy Broadcasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-project/" title="Python Project">Python Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="Python 포트폴리오">Python 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-basic/" title="R Basic">R Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EA%B8%B0%EC%B4%88%EB%AC%B8/" title="R 기초문">R 기초문</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4/" title="R 마크다운">R 마크다운</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="R 포트폴리오">R 포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ranzcr/" title="Ranzcr">Ranzcr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rcppmecab/" title="RcppMeCab">RcppMeCab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="reactivity">reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recommendation/" title="Recommendation">Recommendation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regular-expression/" title="regular expression">regular expression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reticulate/" title="reticulate">reticulate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rpa/" title="RPA">RPA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rstudio/" title="RStudio">RStudio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rtweet/" title="rtweet">rtweet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sales/" title="Sales">Sales</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scikit-learn/" title="Scikit-Learn">Scikit-Learn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/seaborn/" title="Seaborn">Seaborn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-app-%EB%B0%B0%ED%8F%AC/" title="Shiny App 배포">Shiny App 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="shinydashboard">shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="sort_values">sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/spark/" title="Spark">Spark</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ssh/" title="SSH">SSH</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/super-resolution/" title="Super Resolution">Super Resolution</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/swifter/" title="swifter">swifter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow/" title="Tensorflow">Tensorflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0/" title="Tensorflow 2.0">Tensorflow 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-2.0-tutorial/" title="Tensorflow 2.0 Tutorial">Tensorflow 2.0 Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text/" title="Text">Text</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text-mining/" title="Text Mining">Text Mining</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tidymodels/" title="Tidymodels">Tidymodels</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tuber/" title="tuber">tuber</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tutorial/" title="Tutorial">Tutorial</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/types-of-functions/" title="Types of Functions">Types of Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="vcrs">vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/web-crawling/" title="Web Crawling">Web Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/windows-10/" title="Windows 10">Windows 10</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/wsl2/" title="WSL2">WSL2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/" title="객체지향 프로그래밍">객체지향 프로그래밍</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B2%BD%EC%A7%84%EB%8C%80%ED%9A%8C/" title="경진대회">경진대회</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EA%B8%80-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C/" title="구글 클라우드">구글 클라우드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AC%EC%A1%B0%EB%B0%A9%EC%A0%95%EC%8B%9D/" title="구조방정식">구조방정식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B5%AD%EC%A0%9C%EA%B0%9C%EB%B0%9C/" title="국제개발">국제개발</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%8D%EC%A0%95-%EB%B6%80%EC%A0%95-%EA%B0%90%EC%84%B1%EB%B6%84%EC%84%9D/" title="긍정, 부정 감성분석">긍정, 부정 감성분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B8%B0%EC%B4%88%ED%86%B5%EA%B3%84/" title="기초통계">기초통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C/" title="깃허브">깃허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EA%B9%83%ED%97%88%EB%B8%8C-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="깃허브 환경설정">깃허브 환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%84%A4%EC%9D%B4%EB%B2%84-%EB%89%B4%EC%8A%A4-%ED%81%AC%EB%A1%A4%EB%A7%81/" title="네이버 뉴스 크롤링">네이버 뉴스 크롤링</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%85%BC%EB%AC%B8%ED%86%B5%EA%B3%84/" title="논문통계">논문통계</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%EB%B6%84%EB%A5%98/" title="다항분류">다항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8B%A4%ED%95%AD%ED%9A%8C%EA%B7%80/" title="다항회귀">다항회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="대시보드">대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B3%B5%ED%95%99/" title="데이터 공학">데이터 공학</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/" title="데이터 시각화">데이터 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%B8%EC%9D%B4%EC%96%B8%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="데이터 싸이언스 프로젝트">데이터 싸이언스 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81/" title="데이터 엔지니어링">데이터 엔지니어링</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="데이터 전처리">데이터 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%94%A5%EB%9F%AC%EB%8B%9D/" title="딥러닝">딥러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A7%89%EB%8C%80-%EA%B7%B8%EB%9E%98%ED%94%84/" title="막대 그래프">막대 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" title="머신러닝">머신러닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="머신러닝 프로젝트">머신러닝 프로젝트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%AA%A8%EB%8D%B8%EB%A7%81-%EC%8B%9C%EA%B0%81%ED%99%94/" title="모델링 시각화">모델링 시각화</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B0%98%EC%98%81%EC%A0%81-%EC%A7%80%ED%91%9C/" title="반영적 지표">반영적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B3%B4%EC%8A%A4%ED%84%B4-%EC%A3%BC%ED%83%9D-%EA%B0%80%EA%B2%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%84%B8%ED%8A%B8/" title="보스턴 주택 가격 데이터세트">보스턴 주택 가격 데이터세트</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B6%84%EB%A5%98/" title="분류">분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC/" title="빅쿼리">빅쿼리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-r/" title="빅쿼리 R">빅쿼리 R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%EA%B8%B0%EB%B3%B8/" title="빅쿼리 기본">빅쿼리 기본</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EB%B9%85%EC%BF%BC%EB%A6%AC-%ED%8C%8C%EC%9D%B4%EC%8D%AC/" title="빅쿼리 파이썬">빅쿼리 파이썬</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%B0%EC%A0%90%EB%8F%84/" title="산점도">산점도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%82%BC%EC%84%B1%EC%B9%B4%EB%93%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EA%B3%B5%EB%AA%A8%EC%A0%84/" title="삼성카드 데이터분석 공모전">삼성카드 데이터분석 공모전</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%83%A4%EC%9D%B4%EB%8B%88-%EC%95%B1-%EB%B0%B0%ED%8F%AC/" title="샤이니 앱 배포">샤이니 앱 배포</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" title="선 그래프">선 그래프</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80/" title="선형회귀">선형회귀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%88%9C%ED%99%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="순환 신경망">순환 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%81%ED%99%94-%EB%AC%B8%EB%B2%95/" title="시각화 문법">시각화 문법</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/" title="시간 측정">시간 측정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%9C%EA%B7%B8%EB%85%B8%EC%9D%B4%EB%93%9C/" title="시그노이드">시그노이드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%8B%A0%EA%B2%BD-%EC%8A%A4%ED%83%80%EC%9D%BC-%EC%A0%84%EC%9D%B4/" title="신경 스타일 전이">신경 스타일 전이</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%95%84%EB%A7%88%EC%A1%B4-%EC%9B%B9-%EC%84%9C%EB%B9%84%EC%8A%A4/" title="아마존 웹 서비스">아마존 웹 서비스</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%97%98%EB%9D%BC%EC%8A%A4%ED%8B%B1%EC%84%9C%EC%B9%98/" title="엘라스틱서치">엘라스틱서치</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%98%A4%ED%86%A0%EC%9D%B8%EC%BD%94%EB%8D%94/" title="오토인코더">오토인코더</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9B%90%ED%95%AB-%EC%9D%B8%EC%BD%94%EB%94%A9/" title="원핫 인코딩">원핫 인코딩</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9B%B9-%ED%81%AC%EB%A1%A4%EB%A7%81/" title="웹 크롤링">웹 크롤링</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9C%A0%ED%88%AC%EB%B8%8C/" title="유투브">유투브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B6%84%ED%95%A0/" title="이미지 분할">이미지 분할</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%84%A4%EC%A0%95/" title="이미지 설정">이미지 설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="이미지 전처리">이미지 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9D%B4%ED%95%AD%EB%B6%84%EB%A5%98/" title="이항분류">이항분류</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%84%EB%B2%A0%EB%94%A9-%EB%A0%88%EC%9D%B4%EC%96%B4/" title="임베딩 레이어">임베딩 레이어</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%83%9D%EC%84%B1/" title="자연어 생성">자연어 생성</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/" title="전이 학습">전이 학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D/" title="정규표현식">정규표현식</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/" title="지도학습">지도학습</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B4%88%ED%95%B4%EC%83%81%EB%8F%84/" title="초해상도">초해상도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천 시스템">추천 시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B6%94%EC%B2%9C%EC%8B%9C%EC%8A%A4%ED%85%9C/" title="추천시스템">추천시스템</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%B8%A1%EC%A0%95%EC%B2%99%EB%8F%84/" title="측정척도">측정척도</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BA%90%EA%B8%80/" title="캐글">캐글</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BB%A8%EB%B3%BC%EB%A3%A8%EC%85%98-%EC%8B%A0%EA%B2%BD%EB%A7%9D/" title="컨볼루션 신경망">컨볼루션 신경망</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%EC%BD%94%EB%A1%9C%EB%82%98-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/" title="코로나 대시보드">코로나 대시보드</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%82%A4%EB%B0%94%EB%82%98/" title="키바나">키바나</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%8B%A4%EB%A3%A8%EA%B8%B0/" title="테이블 다루기">테이블 다루기</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="텍스트 마이닝">텍스트 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%84%EC%B2%98%EB%A6%AC/" title="텍스트 전처리">텍스트 전처리</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" title="텐서플로 2.0">텐서플로 2.0</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" title="텐서플로 2.0 튜토리얼">텐서플로 2.0 튜토리얼</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-%ED%97%88%EB%B8%8C/" title="텐서플로 허브">텐서플로 허브</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C%EC%9A%B0/" title="텐서플로우">텐서플로우</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%97%91%EC%85%80/" title="판다스 엑셀">판다스 엑셀</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8C%90%EB%8B%A4%EC%8A%A4-%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" title="판다스 자료구조">판다스 자료구조</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/" title="포트폴리오">포트폴리오</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%A7%88%EC%9D%B4%EB%8B%9D/" title="프로세스 마이닝">프로세스 마이닝</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%B6%84%EC%84%9D/" title="프로세스 분석">프로세스 분석</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%94%BC%EB%B2%97-%ED%85%8C%EC%9D%B4%EB%B8%94/" title="피벗 테이블">피벗 테이블</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80-%ED%8F%B0%ED%8A%B8-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0/" title="한글 폰트 오류 해결">한글 폰트 오류 해결</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%95%9C%EA%B8%80%ED%8F%B0%ED%8A%B8-%EC%B6%94%EA%B0%80/" title="한글폰트 추가">한글폰트 추가</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%98%95%EC%84%B1%EC%A0%81-%EC%A7%80%ED%91%9C/" title="형성적 지표">형성적 지표</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95/" title="환경설정">환경설정</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9A%8C%EA%B7%80%EB%AA%A8%ED%98%95/" title="회귀모형">회귀모형</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9C%B4%EA%B3%A0/" title="휴고">휴고</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%ED%9E%88%EC%8A%A4%ED%86%A0%EA%B7%B8%EB%9E%A8/" title="히스토그램">히스토그램</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2022 DSChloe.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>
