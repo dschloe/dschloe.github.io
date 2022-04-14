@@ -154,6 +154,7 @@ if (!doNotTrack) {
     <li><a href="#step-2-install-virtualenv-package">Step 2. <strong><strong>Install virtualenv package</strong></strong></a></li>
     <li><a href="#step-3-create-a-virtual-environment">Step 3. <strong><strong>Create a virtual environment</strong></strong></a></li>
     <li><a href="#step-4-apache-airflow-설치">Step 4. Apache Airflow 설치</a></li>
+    <li><a href="#default-예제-제거하기">Default 예제 제거하기</a></li>
   </ul>
 </nav>
 	</div>
@@ -236,6 +237,41 @@ $ airflow users create --username airflow --password airflow --firstname evan --
 <li>그리고, 다시 Webserver와 Scheduler를 동시에 실행한다. 로그인 화면에서 로그인을 진행하면 정상적으로 다양한 DAGs 파일이 나타난 것을 확인할 수 있다.</li>
 </ul>
 <p><img src="/img/settings/Apache_Airflow_using_WSL2/Untitled%201.png" alt="Untitled"></p>
+<h2 id="default-예제-제거하기">Default 예제 제거하기</h2>
+<ul>
+<li>만약에 load_examples를 없애고 싶다면 어떻게 해야할까?</li>
+<li>먼저, <code>airflow.cfg</code> 파일을 열고, <code>load_examples = True</code> 로 되어 있는 것을 <code>load_examples = False</code> 로 변경한다.</li>
+</ul>
+<p><img src="/img/settings/Apache_Airflow_using_WSL2/cfg.png" alt="cfg.png"></p>
+<ul>
+<li>그 후에, 다시 터미널로 돌아와서 <code>airflow db reset</code> 실행한다. Proceed? y 선택</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ airflow db reset
+/mnt/c/airflow-test/venv/lib/python3.8/site-packages/airflow/configuration.py:276: DeprecationWarning: distutils Version classes are deprecated. Use packaging.version instead.
+  <span style="color:#66d9ef">if</span> StrictVersion<span style="color:#f92672">(</span>sqlite3.sqlite_version<span style="color:#f92672">)</span> &lt; StrictVersion<span style="color:#f92672">(</span>min_sqlite_version<span style="color:#f92672">)</span>:
+DB: sqlite:////mnt/c/airflow-test/airflow.db
+This will drop existing tables <span style="color:#66d9ef">if</span> they exist. Proceed? <span style="color:#f92672">(</span>y/n<span style="color:#f92672">)</span>
+.
+.
+.
+INFO  <span style="color:#f92672">[</span>alembic.runtime.migration<span style="color:#f92672">]</span> Running upgrade 7b2661a43ba3 -&gt; be2bfac3da23, Add has_import_errors column to DagModel
+INFO  <span style="color:#f92672">[</span>alembic.runtime.migration<span style="color:#f92672">]</span> Running upgrade be2bfac3da23 -&gt; c381b21cb7e4, add session table to db
+INFO  <span style="color:#f92672">[</span>alembic.runtime.migration<span style="color:#f92672">]</span> Running upgrade c381b21cb7e4 -&gt; 587bdf053233, adding index <span style="color:#66d9ef">for</span> dag_id in job
+WARNI <span style="color:#f92672">[</span>airflow.models.crypto<span style="color:#f92672">]</span> empty cryptography key - values will not be stored encrypted.
+INFO  <span style="color:#f92672">[</span>airflow.models.dagbag.DagBag<span style="color:#f92672">]</span> Filling up the DagBag from /mnt/c/airflow-test/dags
+</code></pre></div><ul>
+<li>이제 <code>webserver</code> 를 다시 실행한다.
+<ul>
+<li>새로운 로그인 화면이 나오는 것이 정상이다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ airflow webserver -p <span style="color:#ae81ff">8080</span>
+</code></pre></div><p><img src="/img/settings/Apache_Airflow_using_WSL2/Untitled%202.png" alt="Untitled"></p>
+<ul>
+<li>이제 접속하면 아래와 같이 아무런 예제가 떠오르지 않는것을 확인할 수 있다.</li>
+</ul>
+<p><img src="/img/settings/Apache_Airflow_using_WSL2/Untitled%203.png" alt="Untitled"></p>
 
 		</div>
 		<footer class="post__footer">
