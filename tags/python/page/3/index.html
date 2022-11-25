@@ -28,13 +28,15 @@
 <script type="application/javascript">
 var doNotTrack = false;
 if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-160625195-1', 'auto');
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'G-K95C7LSPRK', 'auto');
 	
 	ga('send', 'pageview');
 }
 </script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
 
 </head>
 <body class="body">
@@ -142,384 +144,192 @@ if (!doNotTrack) {
 	</header><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/python/data_engineering/ch03_reading_writing_file/json_input_output/" rel="bookmark">
-			파이썬을 활용한 JSON 파일 입출력 예제 with faker
+			<a href="/python/data_engineering/ch03_reading_writing_file/airflow_csv2json_sample/" rel="bookmark">
+			Airflow 데이터 파이프라인 구축 예제
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-09-08T18:10:47&#43;09:00">2021-09-08</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/faker/" rel="category">faker</a>, <a class="meta__link" href="/categories/data-engineering/" rel="category">Data Engineering</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81/" rel="category">데이터 엔지니어링</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B3%B5%ED%95%99/" rel="category">데이터 공학</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-04-14T21:10:47&#43;09:00">2022-04-14</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/airflow/" rel="category">Airflow</a>, <a class="meta__link" href="/categories/data-engineering/" rel="category">Data Engineering</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81/" rel="category">데이터 엔지니어링</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B3%B5%ED%95%99/" rel="category">데이터 공학</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
 	</span>
 </div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   개요  JSON은 (JavaScript Object Notataion)의 약자이며, 주로 API 호출 시에 사용한다. JSON 데이터를 개별적인 파일 형태로 저장하기도 한다. json 라이브러리를 활용하여 입출력을 진행하고, pandas 라이브러리를 통해서도 직접 불러오도록 한다.
+		개요  이번에는 CSV-JSON으로 데이터를 변환하는 파이프라인을 구축하도록 한다.  Step 01. Dags 폴더 생성  프로젝트 Root 하단에 Dags 폴더를 만든다.  dags 폴더를 확인한다.    $ ls airflow.cfg airflow.db dags logs venv webserver_config.py Step 02. 가상의 데이터 생성  이번 테스트에서 사용할 라이브러리가 없다면 우선 설치한다.  $ pip3 install faker pandas  faker 라이브러리를 활용하여 가상의 데이터를 생성한다. (파일 경로 : data/step01_writecsv.py)  from faker import Faker import csv output=open(&#39;data.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/data_engineering/ch03_reading_writing_file/json_input_output/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/python/data_engineering/ch03_reading_writing_file/airflow_csv2json_sample/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/python/data_engineering/ch03_reading_writing_file/csv_input_ouput/" rel="bookmark">
-			파이썬을 활용한 CSV 파일 입출력 예제 with faker
+			<a href="/python/python_edu/04_machinelearning/one_hot_encoding_using_scikit_learn/" rel="bookmark">
+			Scikit-Learn OneHot Encoding 다양한 적용 방법
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-09-08T16:10:47&#43;09:00">2021-09-08</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/faker/" rel="category">faker</a>, <a class="meta__link" href="/categories/data-engineering/" rel="category">Data Engineering</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81/" rel="category">데이터 엔지니어링</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B3%B5%ED%95%99/" rel="category">데이터 공학</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-04-02T11:10:47&#43;09:00">2022-04-02</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EC%9B%90%ED%95%AB-%EC%9D%B8%EC%BD%94%EB%94%A9/" rel="category">원핫 인코딩</a>, <a class="meta__link" href="/categories/scikit-learn/" rel="category">Scikit-Learn</a>, <a class="meta__link" href="/categories/columntransformer/" rel="category">ColumnTransformer</a>, <a class="meta__link" href="/categories/make_column_transformer/" rel="category">make_column_transformer</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
 	</span>
 </div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   사전 작업  우선 임시 데이터를 기록할 라이브러리인 faker 를 설치한다. 흔히 쓰이는 필드들을 함수 하나로 쉽게 만들 수 있도록 지원한다.  (venv) $ pip3 install faker 데이터 생성하기 전체 코드  필자는 [writecsv.
+		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   개요  One-Hot Encoding 개념에 대해 이해한다. One-Hot Encoder 사용법을 익힌다.  One-Hot Encoding  One-Hot Encoding은 문자를 숫자로 변환하는 것이다. 먼저 그림을 보면서 이해하도록 한다.   머신러닝 알고리즘은 데이터가 모두 숫자인 것으로 이해하기 때문에 모두 변환해주어야 한다.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/data_engineering/ch03_reading_writing_file/csv_input_ouput/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/python/python_edu/04_machinelearning/one_hot_encoding_using_scikit_learn/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/python/data_engineering/ch02_infra/kibana_install/" rel="bookmark">
-			Kibana Installation
+			<a href="/python/python_edu/03_datavisualisation/plot_tree_color_changes/" rel="bookmark">
+			Plot Tree 색상 변경
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-09-07T13:13:47&#43;09:00">2021-09-07</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/kibana/" rel="category">Kibana</a>, <a class="meta__link" href="/categories/data-engineering/" rel="category">Data Engineering</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81/" rel="category">데이터 엔지니어링</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B3%B5%ED%95%99/" rel="category">데이터 공학</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-03-31T11:00:47&#43;09:00">2022-03-31</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-visualisation/" rel="category">Data Visualisation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/matplotlib/" rel="category">Matplotlib</a>, <a class="meta__link" href="/categories/plot_tree/" rel="category">plot_tree</a>, <a class="meta__link" href="/categories/decision-tree/" rel="category">Decision Tree</a>
 	</span>
 </div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   개요  Elastic Search는 GUI를 제공하지 않고 API만 제공한다. 따라서, 시각화 도구인 키바나를 GUI로 사용하도록 하는 것이 특징이다.  Elastic Search 설치는 Elastic Search Engine Installation에서 확인한다.   즉, 다시 말하면 Elastic Search 는 API 데이터만 제공할 뿐이고, 이를 가시적으로 보여주기 위해서는 Kibana를 설치해야 한다는 뜻이다.
+		개요  skleran.tree.plot_tree의 색상을 바꿔보도록 한다. matplotlib 객체지향의 구조를 알면 어렵지(?) 않게 바꿀 수 있다. 간단하게 plot_tree 시각화를 구현해본다.  언제나 예제로 희생당하는 iris 데이터에게 애도를 표한다.   구글코랩에서 실행 시, 다음 코드를 실행하여 최신 라이브러리로 업그레이드 한다.  !pip install -U matplotlib Requirement already satisfied: matplotlib in /usr/local/lib/python3.7/dist-packages (3.2.2) Collecting matplotlib Downloading matplotlib-3.5.1-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl (11.2 MB) [K |████████████████████████████████| 11.2 MB 27.0 MB/s [?25hRequirement already satisfied: kiwisolver&gt;=1.0.1 in /usr/local/lib/python3.7/dist-packages (from matplotlib) (1.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/data_engineering/ch02_infra/kibana_install/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/python/python_edu/03_datavisualisation/plot_tree_color_changes/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/python/data_engineering/ch02_infra/elastic_search_install/" rel="bookmark">
-			Elastic Search Engine Installation
+			<a href="/gcp/bigquery/01_settings/gcp_settings_20220118/" rel="bookmark">
+			GCP Settings 2022 ver
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-09-07T11:10:47&#43;09:00">2021-09-07</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/elastic/" rel="category">Elastic</a>, <a class="meta__link" href="/categories/data-engineering/" rel="category">Data Engineering</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81/" rel="category">데이터 엔지니어링</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B3%B5%ED%95%99/" rel="category">데이터 공학</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-01-18T14:00:47&#43;09:00">2022-01-18</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/gcp/" rel="category">GCP</a>, <a class="meta__link" href="/categories/bigquery/" rel="category">BigQuery</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
 	</span>
 </div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   개요  검색 엔진을 말한다. Mac에서 설치하는 과정을 진행한다. 가상 환경은 virtualenv 를 통해서 진행한다.  참조: https://lee-mandu.tistory.com/517?category=838684   그 후에 가상 환경에 접속한다.  설치  각 OS별 설치 과정은 해당 URL에서 참조할 수 있다.
+		개요  GCP 빅쿼리를 연동하는 예제를 구현한다. 먼저 빅쿼리를 통해 데이터를 적재하는 예제를 확인한다. 구글 코랩에서 빅쿼리 데이터를 불러온다. 데이터 스튜디오에서 빅쿼리 데이터를 불러온다.  소개  빅쿼리를 소개하는 영상은 유투브에서 검색하면 매우 쉽게 확인할 수 있다.  영상 참조: 데이터 웨어하우스 끝판왕 BigQuery 어디까지 알고 계신가요    Google Cloud 회원가입  준비물  Google 계정 신용카드나 체크카드 (개인적으로 돈이 없는 체크카드 사용 권장)   구글 클라우드 사이트 접속  싸이트: https://cloud.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/data_engineering/ch02_infra/elastic_search_install/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/gcp/bigquery/01_settings/gcp_settings_20220118/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/python/data_engineering/ch02_infra/apache_airflow_install/" rel="bookmark">
-			Apache Airflow Installation
+			<a href="/python/python_edu/00_settings/spark_installation_on_m1_mac/" rel="bookmark">
+			Spark Installation on M1 Mac
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-09-06T20:10:47&#43;09:00">2021-09-06</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/airflow/" rel="category">Airflow</a>, <a class="meta__link" href="/categories/data-engineering/" rel="category">Data Engineering</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81/" rel="category">데이터 엔지니어링</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B3%B5%ED%95%99/" rel="category">데이터 공학</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-01-05T14:00:47&#43;09:00">2022-01-05</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/spark/" rel="category">Spark</a>, <a class="meta__link" href="/categories/pyspark/" rel="category">PySpark</a>
 	</span>
 </div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   개요  NiFi와 같은 용도의 소프트웨어이며, 현재 가장 인기 있는 오픈소스 데이터 파이프라인 도구라고 할 수 있다. 보통은 시스템에 경로를 설정한다. 그런데, 본 장에서는 가상환경 설정 후 진행하는 것으로 했다.
+		사전준비  M1 Mac에서 스파크를 설치하는 과정을 소개 하려고 한다. 필자의 Python 버전은 아래와 같다.  $ python --version Python 3.8.7 자바 설치  자바 설치는 아래에서 다운로드 받았다.  URL: Java SE Development Kit 8u301     그 다음 자바 설치를 확정한다.  $ java --showversion  만약 에러가 아래와 같은 에러가 발생한다면, 시스템 환경설정 - Java - 업데이트 항목을 순차적으로 클릭한다.  $ java --showversion Error: Could not create the Java Virtual Machine.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/data_engineering/ch02_infra/apache_airflow_install/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/python/python_edu/00_settings/spark_installation_on_m1_mac/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/python/data_engineering/ch02_infra/apache_nifi_install/" rel="bookmark">
-			Apache NiFi Installation
+			<a href="/python/python_edu/00_settings/spark_installation_windows_10/" rel="bookmark">
+			Spark Installation on Windows 10
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-09-06T16:10:47&#43;09:00">2021-09-06</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/nifi/" rel="category">NiFi</a>, <a class="meta__link" href="/categories/data-engineering/" rel="category">Data Engineering</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81/" rel="category">데이터 엔지니어링</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B3%B5%ED%95%99/" rel="category">데이터 공학</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-01-03T14:00:47&#43;09:00">2022-01-03</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/spark/" rel="category">Spark</a>, <a class="meta__link" href="/categories/pyspark/" rel="category">PySpark</a>
 	</span>
 </div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   개요  데이터 엔지니어링에 필요한 기본적인 인프라를 설치 진행하는 튜토리얼을 만들었다. 기본적으로 교재에 충실하지만, 약 1년전에 쓰인 책이라, 최신 버전으로 업그레이드 하였다.  Apache NiFi 설치과정  먼저 웹사이트에 방문하여 필요한 파일을 다운로드 받는다.
+		사전준비  스파크를 설치하는 과정은 소개 하려고 한다. 사전에 파이썬 3만 설치가 되어 있으면 된다. 만약, 파이썬이 처음이라면 Anaconda를 설치한다.  다운로드 전 필수 확인사항  스파크 설치 전에는 반드시 체크해야 하는 사항이 있다. (System Compatibility) 2022년 1월 기준은 아래와 같다.  Get Spark from the downloads page of the project website. This documentation is for Spark version 3.2.0. Spark uses Hadoop’s client libraries for HDFS and YARN. Downloads are pre-packaged for a handful of popular Hadoop versions.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/data_engineering/ch02_infra/apache_nifi_install/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/python/python_edu/00_settings/spark_installation_windows_10/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/python/python_edu/07_deeplearning/deep_learning_lstm/" rel="bookmark">
-			LSTM을 활용한 주식가격 예측
+			<a href="/python/python_edu/00_settings/pycaret_installation_on_m1_mac/" rel="bookmark">
+			PyCaret Installation on M1 Mac
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-08-27T16:00:47&#43;09:00">2021-08-27</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/lstm/" rel="category">LSTM</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-12-31T14:00:47&#43;09:00">2021-12-31</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/pycaret/" rel="category">PyCaret</a>, <a class="meta__link" href="/categories/m1-mac/" rel="category">M1 Mac</a>
 	</span>
 </div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   [비전공자 대환영] 캐글 데이터를 활용한 Optuna with MLFlow - 캐글다지기  머신러닝 하이퍼파라미터 튜닝 등을 배우고 싶다면 다음 강의를 참고하세요.    LSTM과 RNN의 개요  RNN은 자연어처리에서 사용되는 대표적인 알고리즘  순환신경망으로 표현됨 활용범위: 음성 인식, 언어 모델링, 번역, 이미지 주석 생성      Long Short-term Memory로 1997년에 소개되었음(Hochreiter and Schmidhuber, 1997).
+		PyCaret Installation on M1 Mac 개요  M1 Mac에서 PyCaret을 설치하고 싶었다. PyCaret 은 AutoML 라이브러리이며, 단 몇줄의 코드로 복잡한 기계학습을 학습 및 비교할 수 있도록 구현한 코드라고 볼 수 있다.  PyCaret 패키지: https://pycaret.org/   M1 Mac에서 해당 라이브러리를 사용하려면 크게 2가지 필수 전제 조건이 있다.  LightGBM, XGboost 설치    1. PyCaret 설치 방법  일반 인텔 기반의 Mac의 설치는 매우 쉽다. (Intel Mac)  $ brew install lightgbm  그러나, M1 Mac에서는 생각보다 쉽지 않다.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/python_edu/07_deeplearning/deep_learning_lstm/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/python/python_edu/00_settings/pycaret_installation_on_m1_mac/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/python/machin_learning/ch04_common_pitfalls_ans_recommended_practices/" rel="bookmark">
-			In ML, Data Leakage - 2
+			<a href="/python/machin_learning/pycaret_with_sktorch/" rel="bookmark">
+			PyCaret, Skorch Using Pipeline
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-07-15T16:11:47&#43;09:00">2021-07-15</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/data-leakage/" rel="category">Data Leakage</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-12-28T16:11:47&#43;09:00">2021-12-28</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/pycaret/" rel="category">PyCaret</a>, <a class="meta__link" href="/categories/pipeline/" rel="category">Pipeline</a>
 	</span>
 </div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		머신러닝 전처리 자주하는 안 좋은 습관들 모음  참고 자료: https://scikit-learn.org/stable/common_pitfalls.html  Sample 데이터  먼저 가상의 데이터를 하나 생성합니다.  from sklearn.datasets import make_regression from sklearn.model_selection import train_test_split random_state = 42 X, y = make_regression(random_state = random_state, n_features = 1, noise = 1) X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.4, random_state = random_state) Inconsistent preprocessing  모델을 학습시킬 때 이러한 데이터 변환을 사용하는 경우 테스트 데이터든 프로덕션 시스템의 데이터든 후속 데이터셋에도 사용해야 합니다.
+		개요  Scikit-Learn의 Pipeline은 강력하다. PyCaret, Skorch에도 사용이 가능하다. Google Colab에서 시도해보자.  필수 라이브러리 설치  pycaret을 설치 한 후에는 반드시 런타임 재시작을 클릭한다.  !pip install pycaret Collecting pycaret Downloading pycaret-2.3.5-py3-none-any.whl (288 kB) . . Successfully installed Boruta-0.3 Mako-1.1.6 PyYAML-6.0 alembic-1.4.1 databricks-cli-0.16.2 docker-5.0.3 funcy-1.17 gitdb-4.0.9 gitpython-3.1.24 gunicorn-20.1.0 htmlmin-0.1.12 imagehash-4.2.1 imbalanced-learn-0.7.0 joblib-1.0.1 kmodes-0.11.1 lightgbm-3.3.1 mlflow-1.22.0 mlxtend-0.19.0 multimethod-1.6 pandas-profiling-3.1.0 phik-0.12.0 prometheus-flask-exporter-0.18.7 pyLDAvis-3.2.2 pycaret-2.3.5 pydantic-1.8.2 pynndescent-0.5.5 pyod-0.9.6 python-editor-1.0.4 querystring-parser-1.2.4 requests-2.26.0 scikit-learn-0.23.2 scikit-plot-0.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/machin_learning/ch04_common_pitfalls_ans_recommended_practices/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/python/machin_learning/pycaret_with_sktorch/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/python/machin_learning/ch03_data_preparation/" rel="bookmark">
-			In ML, Data Leakage - 1
+			<a href="/python/python_edu/00_settings/postgresql_python/" rel="bookmark">
+			Python with PostgreSQL - Create Database
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-07-15T11:11:47&#43;09:00">2021-07-15</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/data-leakage/" rel="category">Data Leakage</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-12-27T17:00:47&#43;09:00">2021-12-27</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/postgresql/" rel="category">PostgreSQL</a>
 	</span>
 </div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		Data Leakage  모형 평가를 하기 전에 전체 데이터셋을 가공 및 변환함. 이를 평가에 반영하면 새로운 데이터를 예측할 때 부정확한 결과를 도출 할 수 있음. 이를 방지 하기 위해서는 training 데이터만 데이터 전처리를 수행하는 것이 바람직함. Data Leakage를 피하기 위해서는 scikit-learn modeling pipeline을 설계해햐 함.  데이터 준비  가상의 데이터를 준비한다. 데이터는 모두 수치형 데이터로 준비했다.  from sklearn.datasets import make_classification X, y = make_classification(n_samples = 1000, n_features = 20, n_informative = 15, n_redundant = 5, random_state = 7) # summarize the dataset print(X.
+		PostgreSQL 및 Python 연동 예제  다음 예제에서는 Python과 PostgreSQL이 연동되는 코드를 작성해본다. PostgreSQL 설치 방법은 다음 자료를 확인한다.  https://dschloe.github.io/settings/postgresql_install_windows/    라이브러리 설치  우선 설치를 진행한다.  $ pip install psycopg2-binary Downloading psycopg2_binary-2.9.2-cp310-cp310-win_amd64.whl (1.2 MB) |████████████████████████████████| 1.2 MB 6.4 MB/s Installing collected packages: psycopg2-binary Successfully installed psycopg2-binary-2.9.2 현재 Database 확인  cmd 파일 창을 열고, 현재 DB 리스트를 확인한다.  \list or l: 전체 databases 리스트를 조회한다.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/machin_learning/ch03_data_preparation/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/python/python_edu/00_settings/postgresql_python/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/python/python_edu/03_datavisualisation/ch_plotly_html/" rel="bookmark">
-			(Python-Plotly) Plotly 그래프 깃헙 블로그에 올리기
+			<a href="/python/python_edu/02_datatransformation/verifying_outliers2/" rel="bookmark">
+			Verifying Outlier Values
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-06-24T10:30:47&#43;09:00">2021-06-24</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/exploratory-data-analysis/" rel="category">Exploratory Data Analysis</a>, <a class="meta__link" href="/categories/eda/" rel="category">EDA</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/hexo/" rel="category">Hexo</a>, <a class="meta__link" href="/categories/hugo/" rel="category">Hugo</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-12-19T11:10:47&#43;09:00">2021-12-19</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/pandas/" rel="category">Pandas</a>, <a class="meta__link" href="/categories/outlier-values/" rel="category">Outlier Values</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
 	</span>
 </div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   개요  깃헙 브로그에 동적 시각화를 올리는 방법에 대해 기술한다. 현재까지 찾아낸 것은 이게 최선입니다! 더 나은 것이 있다면 공유 부탁드립니다. (꾸벅)  필수 라이브러리 설치  라이브러리를 설치합니다.
+		이상값의 정의  다소 주관적이며(Somewhat Subjective), 특정 분포의 중심경향성, 퍼진 정도와 형태에 따라 밀접한 관련이 있다.  평균에서 표준편차보다 몇 배 더 떨어져 있다거나, 즉, 정규분포를 이루고 있지 않을 때 왜도 또는 첨도가 발생할 때   균등분포(Uniform Distribution)는, 발생할 확률이 모두 같다.  만약, 확진자수가 최소 1부터 최대 10,000,000까지 균등하게 분포한다면, 어떤 값도 이상값으로 고려하지 않는다.   이상값을 파악하려면, 반드시, 각 변수의 분포를 먼저 이해해야 한다.  라이브러리 및 데이터 불러오기  실습을 위한 데이터를 불러온다.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/python_edu/03_datavisualisation/ch_plotly_html/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/opencv/ch01_fileio/" rel="bookmark">
-			[Python] 이미지 데이터 입출력
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-06-02T14:10:47&#43;09:00">2021-06-02</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%84%EC%B2%98%EB%A6%AC/" rel="category">이미지 전처리</a>, <a class="meta__link" href="/categories/opencv/" rel="category">OpenCV</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		1줄 요약  OpenCV를 활용한 다양한 이미지 입출력에 대해 배우도록 한다.  Reading/Writing an image file  이미지 관련 I/O BMP, PNG, JPEG, and TIFF also supported.  import numpy as np img = np.zeros((3, 3), dtype=np.uint8) img array([[0, 0, 0], [0, 0, 0], [0, 0, 0]], dtype=uint8)   각 픽셀은 8비트 int로 구성되어 있음. 각 픽셀의 범위는 0-255, 0은 검은색, 255는 흰색을 의미함.  import cv2 img = cv2.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/opencv/ch01_fileio/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/dictionary_replace/" rel="bookmark">
-			Pandas 속도 비교 - with or without Dictionary
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-05-30T10:10:47&#43;09:00">2021-05-30</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/pandas/" rel="category">Pandas</a>, <a class="meta__link" href="/categories/dictionary/" rel="category">Dictionary</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   1줄 요약  Dictionary를 활용한 값 변경의 속도가 훨씬 빠르다.  데이터 불러오기  diamonds 데이터셋을 불러온다.  import pandas as pd import seaborn as sns diamonds = sns.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/dictionary_replace/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/loc_replace_2/" rel="bookmark">
-			Pandas 속도 비교 - loc vs replace(2)
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-05-20T00:10:47&#43;09:00">2021-05-20</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/pandas/" rel="category">Pandas</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   1줄 요약  값을 변경할 때에는 .replace 메서드를 사용합니다.  개요  Replace 속도를 측정해보자. 이번에는 multiple 값을 변경하는 방법에 대해 알아봅니다.  비교 1 .loc vs .replace  값을 바꾸는 방법은 다음과 같다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/loc_replace_2/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/loc_replace/" rel="bookmark">
-			Pandas 속도 비교 - loc vs replace
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-05-15T20:36:47&#43;09:00">2021-05-15</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/pandas/" rel="category">Pandas</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   개요  loc and Replace 속도를 비교 측정해본다..  방법 1. .loc vs .replace  값을 바꾸는 방법은 다음과 같다.  data['column'].loc[data['column'] == 'Old Value'] = 'New Value'    import pandas as pd import seaborn as sns diamonds = sns.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/loc_replace/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/loc_iloc/" rel="bookmark">
-			Pandas 속도 비교 - iloc and loc
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-05-12T20:36:47&#43;09:00">2021-05-12</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/pandas/" rel="category">Pandas</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   1줄 요약  .loc[]와 .iloc[] 인덱스의 속도 차이를 측정해본다.  개요  시간이 허락한다면, Pandas 속도를 비교하는 게시글을 자주 작성하려고 한다.  Pandas가 상대적으로 속도가 느리기 때문에, 조금 더 효율적인 코드를 작성하는 쪽에 초점을 맞춰본다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/loc_iloc/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/newpkgs/pycaret_install/" rel="bookmark">
-			[Python] PyCaret Windows 10 아나콘다 설치 방법
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-05-11T00:30:47&#43;09:00">2021-05-11</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/py-openaq/" rel="category">py-openaq</a>, <a class="meta__link" href="/categories/new-packages/" rel="category">New Packages</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   1줄 요약  관리자 실행해서 아나콘다 가상 환경을 만든 후, 새로운 패키지를 설치한다.  PyCaret 설치 방법 (Windows 10)  윈도우 10 환경에서 PyCaret 패키지를 설치해봅니다. 아나콘다 설치에 관한 내용은 생략합니다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/newpkgs/pycaret_install/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/python_edu/02_datatransformation/ch01_measuring_time/" rel="bookmark">
-			시간 측정의 중요성 및 방법
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-05-10T07:15:47&#43;09:00">2021-05-10</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/%EC%8B%9C%EA%B0%84-%EC%B8%A1%EC%A0%95/" rel="category">시간 측정</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   1줄 요약  코드를 효과적으로 작성해야 하는 이유를 확인한다.  Calculation 비교   요한 카를 프리드리히 가우스(1777-1855)가 문제를 냈다고 알려짐
-  1 + 2 + &hellip; + 1000000 까지 해당하는 모든 연속 양수의 합계를 구한다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/python_edu/02_datatransformation/ch01_measuring_time/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/newpkgs/pydataset/" rel="bookmark">
-			[Python] PyDataset Library를 활용한 Sample 데이터 수집
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-05-09T17:30:47&#43;09:00">2021-05-09</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/pydataset/" rel="category">PyDataset</a>, <a class="meta__link" href="/categories/new-packages/" rel="category">New Packages</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   1줄 요약  R처럼 Sample 데이터를 쉽게 불러오자.  Sample Dataset  Sample Data를 가져오는 코드를 작성합니다. 이 때 PyDataset 라이브러리를 활용합니다.  URL: https://github.com/iamaziz/PyDataset    !
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/newpkgs/pydataset/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/pandas_data_convert/" rel="bookmark">
-			(Python) Pandas Data Convert
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-04-28T14:15:47&#43;09:00">2021-04-28</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/astype/" rel="category">astype</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   1줄 요약  Pandas에서 데이터 형변환은 astype로 끝낸다.  참고자료  astype에 대한 공식 문서를 살펴본다.  참고자료: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.astype.html    예제  가상의 temp 데이터를 만든다. 모두 0, 1, 2 데이터이지만 각 데이터 타입은 모두 다르다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/pandas_data_convert/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/settings/encoding/" rel="bookmark">
-			(Python) Defining the Encoding
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-04-23T09:30:30&#43;09:00">2021-04-23</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/encoding/" rel="category">Encoding</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		1줄 요약  공식 문서를 한번 읽어보도록 합니다.  Why?  한글 사용자에게 인코딩은 언제나 어렵습니다. 한글 깨져요&hellip; 그리고 파이썬의 기본 인코딩은 ASCII라 합니다.  How to use  임의의 .py 파일에서 다음과 같이 시작을 합니다.  #!/usr/bin/python # -*- coding: utf-8 -*- import os, sys ...   첫줄은 /usr/bin에 있는 파이썬에서 실행한다는 의미.
- 경로는 각자의 코드에서 수정 가능    두번째 줄은 File Encoding 형식을 지정
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/settings/encoding/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/python/python_edu/02_datatransformation/verifying_outliers2/">Read more…</a>
 	</div>
 </article>
 </main>
@@ -623,6 +433,72 @@ if (!doNotTrack) {
       </a>
     </li>
     
+    <li class="pagination__item">
+      <a href="/tags/python/page/13/" class="pagination__link">
+        13
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/14/" class="pagination__link">
+        14
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/15/" class="pagination__link">
+        15
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/16/" class="pagination__link">
+        16
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/17/" class="pagination__link">
+        17
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/18/" class="pagination__link">
+        18
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/19/" class="pagination__link">
+        19
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/20/" class="pagination__link">
+        20
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/21/" class="pagination__link">
+        21
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/22/" class="pagination__link">
+        22
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/23/" class="pagination__link">
+        23
+      </a>
+    </li>
+    
 
     
     
@@ -636,7 +512,7 @@ if (!doNotTrack) {
     
     
     <li class="pagination__item pagination__item--last">
-      <a class="pagination__link pagination__link--last" href="/tags/python/page/12/">
+      <a class="pagination__link pagination__link--last" href="/tags/python/page/23/">
         »»
       </a>
     </li>

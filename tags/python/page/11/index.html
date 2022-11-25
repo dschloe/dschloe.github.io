@@ -28,13 +28,15 @@
 <script type="application/javascript">
 var doNotTrack = false;
 if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-160625195-1', 'auto');
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'G-K95C7LSPRK', 'auto');
 	
 	ga('send', 'pageview');
 }
 </script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
 
 </head>
 <body class="body">
@@ -142,409 +144,194 @@ if (!doNotTrack) {
 	</header><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/ch5_1_binary_classification/" rel="bookmark">
-			Tensorflow 2.0 Tutorial ch5.1 - 분류
+			<a href="/python/python_edu/04_machinelearning/chapter_4_3_regression_tree/" rel="bookmark">
+			머신러닝 알고리즘 - 결정트리 회귀모형
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-18T11:08:30&#43;09:00">2020-04-18</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-09-03T18:18:47&#43;09:00">2020-09-03</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="category">머신러닝</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>
 	</span>
 </div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2.
+		I. 개요  결정트리 회귀 모형에 대해 배우도록 한다. 트리모형의 일반적인 특징에 대해 익힌다.  II. 결정 트리 모형  결정 트리는 분류, 회귀, 다중출력 작업도 가능한 활용범위가 많은 머신러닝 알고리즘이다. 결정 트리는 최근에 사용하는 랜덤포레스트, XGboost, LightGBM과 같은 모형의 기본 구성 요소이다.  (1) 의사결정 나무 예제   의사 결정 나무에서 자주 사용되는 예제를 우선 확인해보자.
+  먼저, 데이터셋을 기준으로 IRIS 붓꽃의 종류는 아래와 같이 3가지로 구성되어 있다.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch5_1_binary_classification/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/python/python_edu/04_machinelearning/chapter_4_3_regression_tree/">Read more…</a>
 	</div>
 </article><article class="list__item post">
 	<header class="list__header">
 		<h3 class="list__title post__title ">
-			<a href="/settings/matplotlib_koreanfont/" rel="bookmark">
-			matplotlib 한글 폰트 오류 해결
+			<a href="/python/python_edu/05_statistics/chapter_5_2_positioning_analysis_2/" rel="bookmark">
+			Python 통계 - 포지셔닝 분석(2)
 			</a>
 		</h3>
 		<div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-17T23:15:47&#43;09:00">2020-04-17</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-visualisation/" rel="category">Data Visualisation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/line-grpah/" rel="category">line grpah</a>, <a class="meta__link" href="/categories/matplotlib/" rel="category">Matplotlib</a>, <a class="meta__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" rel="category">선 그래프</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-09-03T10:00:47&#43;09:00">2020-09-03</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="category">머신러닝</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>, <a class="meta__link" href="/categories/statistics/" rel="category">Statistics</a>
+	</span>
+</div></div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   포지셔닝 분석 개요  마케팅에서 자주 보는 분석 방법중의 하나는 포지셔닝(Positioning) 기법이다. 포지셔닝 분석은 마케팅 통계분석 기법중의 하나로, 기업이나, 상품, 브랜드 같은 개체들의 포지셔닝을 수행하는 다차원 척도법(MDS: Multi-Dimensional Scaling)과 상응분석(Correspondence Analysis)이 있다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/python_edu/05_statistics/chapter_5_2_positioning_analysis_2/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/python_edu/05_statistics/chapter_5_1_positioning_analysis_1/" rel="bookmark">
+			Python 통계 - 포지셔닝 분석(1)
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-09-02T20:00:47&#43;09:00">2020-09-02</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="category">머신러닝</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>, <a class="meta__link" href="/categories/statistics/" rel="category">Statistics</a>
+	</span>
+</div></div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   포지셔닝 분석 개요  마케팅에서 자주 보는 분석 방법중의 하나는 포지셔닝(Positioning) 기법이다. 포지셔닝 분석은 마케팅 통계분석 기법중의 하나로, 기업이나, 상품, 브랜드 같은 개체들의 포지셔닝을 수행하는 다차원 척도법(MDS: Multi-Dimensional Scaling)과 상응분석(Correspondence Analysis)이 있다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/python_edu/05_statistics/chapter_5_1_positioning_analysis_1/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/python_edu/competition/samsungcard20/samsung_card_track_2_2/" rel="bookmark">
+			삼성카드 대회 Track-2 - matplotlib 막대 그래프
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-09-02T15:00:47&#43;09:00">2020-09-02</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="category">머신러닝</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>
+	</span>
+</div></div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		대회 소개  삼성카드 데이터분석 공모전이 시행되고 있다.  대회에 처음 참여하는 아시아경제-수강생들을 위해 일종의 가이드라인으로 제안하고자 한다.   본 포스트에서는 기본적인 내용만 전달하고자 함을 밝힌다.  Track2 과정은 마케팅 전략 제안이 중요하다!    환경 세팅  먼저, 데이터가 모두 한글로 구성이 되어 있기 때문에 한글파일 설정부터 진행한다. 한글파일 설정이 완료되면 구글 드라이브와 연동한다. 데이터 시각화를 진행한다.  %config InlineBackend.figure_format = &#39;retina&#39; !sudo apt-get -qq -y install fonts-nanum fonts-nanum is already the newest version (20170925-1).
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/python_edu/competition/samsungcard20/samsung_card_track_2_2/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/python_edu/04_machinelearning/chapter_4_3_regression_basic/" rel="bookmark">
+			머신러닝 지도학습 - 선형회귀
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-09-02T00:00:05&#43;09:00">2020-09-02</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="category">머신러닝</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>
+	</span>
+</div></div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		I. 개요  머신러닝으로서 회귀 모형에 대해 숙지한다. 회귀 모형의 기본적인 개념과 평가 지표에 대해 숙지한다.  II. 회귀 모형 개요  회귀(Regression)은 통계 이론 중 가장 기본이다. 회귀의 기원은 영국의 통계학자 갈톤(Galton)이 수행한 연구에서 유래한다.   부모와 자식 간의 키의 상관관계를 분석하였는데, 키가 작은 가정과 키가 큰 가정을 살펴본 결과, 무한정 작아지지도 않고, 무한정 커지지 않아 일정한 평균으로 회귀하려는 자연적 법칙을 발견했다는 것이 기원이다.  (1) 회귀식의 개요  회귀는 1차 방정식이다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/python_edu/04_machinelearning/chapter_4_3_regression_basic/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/python_edu/04_machinelearning/chapter_4_2_ml_intro/" rel="bookmark">
+			입문자를 위한 머신러닝 개요
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-09-01T10:00:47&#43;09:00">2020-09-01</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="category">머신러닝</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>
+	</span>
+</div></div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		개요  캐글 데이터를 불러오는 방법에 대해 숙지한다. 머신러닝의 일반적인 내용에 대해 숙지한다.  I. 사전 준비작업  Kaggle API 설치 및 연동해서 GCP에 데이터를 적재하는 것까지 진행한다.  (1) Kaggle API 설치  구글 코랩에서 API를 불러오려면 다음 소스코드를 실행한다.  !pip install kaggle Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.6) Requirement already satisfied: urllib3&lt;1.25,&gt;=1.21.1 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.24.3) Requirement already satisfied: certifi in /usr/local/lib/python3.6/dist-packages (from kaggle) (2020.6.20) Requirement already satisfied: tqdm in /usr/local/lib/python3.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/python_edu/04_machinelearning/chapter_4_2_ml_intro/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/python_edu/competition/samsungcard20/samsung_card_track_2_1/" rel="bookmark">
+			삼성카드 대회 Track-2 데이터 고려 사항 (1)
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-08-31T01:00:47&#43;09:00">2020-08-31</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="category">머신러닝</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>
+	</span>
+</div></div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		대회 소개  삼성카드 데이터분석 공모전이 시행되고 있다.  대회에 처음 참여하는 아시아경제-수강생들을 위해 일종의 가이드라인으로 제안하고자 한다.   본 포스트에서는 기본적인 내용만 전달하고자 함을 밝힌다.  Track2 과정은 마케팅 전략 제안이 중요하다!    환경 세팅  먼저, 데이터가 모두 한글로 구성이 되어 있기 때문에 한글파일 설정부터 진행한다. 한글파일 설정이 완료되면 구글 드라이브와 연동한다. 데이터 시각화를 진행한다.  %config InlineBackend.figure_format = &#39;retina&#39; !sudo apt-get -qq -y install fonts-nanum The following package was automatically installed and is no longer required: libnvidia-common-440 Use 'apt autoremove' to remove it.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/python_edu/competition/samsungcard20/samsung_card_track_2_1/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/python_edu/02_datatransformation/chapter_4_6_datatransformation/" rel="bookmark">
+			DataFrame의 변수 추가 및 삭제
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-08-30T01:00:47&#43;09:00">2020-08-30</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/" rel="category">머신러닝</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>
+	</span>
+</div></div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   데이터 개요  German Credit Card를 활용하여 데이터를 가공하도록 한다.  데이터셋에 대한 설명은 Kaggle에서 확인한다.    import pandas as pd print(pd.__version__) 1.0.5  url = &#39;https://raw.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/python_edu/02_datatransformation/chapter_4_6_datatransformation/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/python_edu/03_datavisualisation/chapter_2_3_1_geospatial_analysis_using_python/" rel="bookmark">
+			Geospatial Analysis Using Python - Basic
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-08-23T10:30:47&#43;09:00">2020-08-23</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
+	</span>
+</div></div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   개요  파이썬을 활용한 공간 시각화에 대해 기술하도록 한다. 각 패키지의 쓰임새와 용도를 확인하도록 한다.  예제를 통해 확인한 뒤, 국내 데이터를 적용해보도록 한다. 한글 폰트상의 문제점 외에 다른 문제점은 없는지 확인해본다.
+	</div>
+	<div class="list__footer clearfix">
+		<a class="list__footer-readmore btn" href="/python/python_edu/03_datavisualisation/chapter_2_3_1_geospatial_analysis_using_python/">Read more…</a>
+	</div>
+</article><article class="list__item post">
+	<header class="list__header">
+		<h3 class="list__title post__title ">
+			<a href="/python/python_edu/01_basic/step1_visualisation/seaborn_basic_tutorial/" rel="bookmark">
+			Seaborn Visualisation Tutorial - Basic
+			</a>
+		</h3>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-08-21T11:15:47&#43;09:00">2020-08-21</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-visualisation/" rel="category">Data Visualisation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/lollipop/" rel="category">lollipop</a>, <a class="meta__link" href="/categories/matplotlib/" rel="category">Matplotlib</a>
 	</span>
 </div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
 		공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
-도움이 되었다면 Github에 Star를 눌러주세요.
- python_visualisation  Matplotlib 한글폰트 오류 해결 한글을 사랑하지만, 코딩의 예외다. 프로그래밍 언어 자체가 영어기반이기 때문에 그런것도 있고, 아무튼 한글 부분이 네모 박스로 표시되면서 한글폰트가 깨지는 현상이 종종 발생한다. 오류를 해결하려면 먼저 한글폰트를 지정하는 다음의 코드를 추가해야 한다.
+시각화 기본적 원리  비교, 대조, 차이를 드러내라. 인과관계와 상관관계를 보여라. 한 도표에 여러 변수를 보여라. 텍스트, 숫자, 이미지, 그래프 같은 데이터들을 한 곳에 통합하라. 사용된 데이터의 출처를 그래프 안이나 각주로 밝혀라. 의미 있는 내용을 담아라.   데이터 시각화를 정말 잘하고 싶다면, 책을 구매하는 것을 추천한다.
 	</div>
 	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/settings/matplotlib_koreanfont/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/matplotlib/matplotlib_01_linegraph/" rel="bookmark">
-			matplotlib_01_linegraph
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-17T11:15:47&#43;09:00">2020-04-17</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-visualisation/" rel="category">Data Visualisation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/line-grpah/" rel="category">line grpah</a>, <a class="meta__link" href="/categories/matplotlib/" rel="category">Matplotlib</a>, <a class="meta__link" href="/categories/%EC%84%A0-%EA%B7%B8%EB%9E%98%ED%94%84/" rel="category">선 그래프</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/matplotlib/matplotlib_01_linegraph/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/ch4_4_boston_housing_deeplearning/" rel="bookmark">
-			Tensorflow 2.0 Tutorial ch4.4 - 보스턴 주택 가격 데이터세트
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-16T20:00:30&#43;09:00">2020-04-16</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch4_4_boston_housing_deeplearning/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/ch4_3_regression_with_deeplearning/" rel="bookmark">
-			Tensorflow 2.0 Tutorial ch4.3 - 딥러닝 네트워크를 이용한 회귀
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-15T20:40:30&#43;09:00">2020-04-15</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch4_3_regression_with_deeplearning/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/ch4_2_multiple_linear_regression/" rel="bookmark">
-			Tensorflow 2.0 Tutorial ch4.2 - 다항 회귀
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-15T13:40:30&#43;09:00">2020-04-15</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch4_2_multiple_linear_regression/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/ch4_1_linear_regression/" rel="bookmark">
-			Tensorflow 2.0 Tutorial ch4.1 - 선형회귀
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-14T22:40:30&#43;09:00">2020-04-14</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지  본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다. 강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch4_1_linear_regression/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/ch3_3_5_network_xor/" rel="bookmark">
-			Tensorflow 2.0 Tutorial ch3.3.5 - 세번째 신경망 네트워크 - XOR
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-13T21:40:30&#43;09:00">2020-04-13</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지  본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다. 강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch3_3_5_network_xor/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/ch3_3_4_network_or/" rel="bookmark">
-			Tensorflow 2.0 Tutorial ch3.3.4 - 두번째 신경망 네트워크: OR
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-12T23:40:30&#43;09:00">2020-04-12</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지  본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다. 강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch3_3_4_network_or/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/ch3_3_3_network_and/" rel="bookmark">
-			Tensorflow 2.0 Tutorial ch3.3.3 - 첫번째 신경망 네트워크, AND
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-11T11:20:30&#43;09:00">2020-04-11</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지  본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다. 강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch3_3_3_network_and/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/ch3_3_2_random_signoid_bias/" rel="bookmark">
-			Tensorflow 2.0 Tutorial ch3.3.2 - 난수 생성 및 시그모이드 함수 편향성
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-10T10:20:30&#43;09:00">2020-04-10</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지  본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다. 강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch3_3_2_random_signoid_bias/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/ch3_3_1_random_signoid/" rel="bookmark">
-			Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-08T11:20:30&#43;09:00">2020-04-08</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		공지  본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다. 강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  I. 퍼셉트론의 한계 극복 AI는 과거부터 존재하였지만, 여러가지 한계로 인해 연구의 흥망성쇠가 계속적으로 있어왔다. 퍼셉트론의 한계를 지적하는 데 사용됐던, AND, OR, XOR 연산을 할 수 있는 신경망 네트워크를 직접 만들어보자.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/ch3_3_1_random_signoid/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/settings/settings02_vscode2jupyter/" rel="bookmark">
-			Connecting Jupyter Notebook to VS Code
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-05T00:30:47&#43;09:00">2020-04-05</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/development/" rel="category">Development</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		I. 개요 VS Code에 Jupyter Notebook을 연동해본다. 강사는 R &amp; Python을 연동해서 작업할 일이 많다. 특히 블로그를 쓰다보면 더욱 그러한 일이 많은데, IDE가 많으면 많을수록 무언가 복잡스러워 보일 때가 많다. 이 때 좀 더 효율적으로 일하고자 하는 마음에 VS Code에 Jupyter Notebook을 추가 및 연동하는 작업을 진행해본다.
-II. Installation 내용의 간결화를 위해, VS Code 및 Jupyter Notebook 설치 방법은 본 포스트에서는 생략한다.
- VS Code 설치방법: https://code.visualstudio.com/download Jupyter Notebook 설치 방법: https://jupyter.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/settings/settings02_vscode2jupyter/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/tensorflow2.0/googlecolab/" rel="bookmark">
-			Google Colab Tensorflow 2.0 Installation
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-04T11:03:30&#43;09:00">2020-04-04</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/%EB%94%A5%EB%9F%AC%EB%8B%9D/" rel="category">딥러닝</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0/" rel="category">텐서플로 2.0</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/tensorflow-2.0/" rel="category">Tensorflow 2.0</a>, <a class="meta__link" href="/categories/%ED%85%90%EC%84%9C%ED%94%8C%EB%A1%9C-2.0-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC/" rel="category">텐서플로 2.0 튜토리얼</a>, <a class="meta__link" href="/categories/tensorflow-2.0-tutorial/" rel="category">Tensorflow 2.0 Tutorial</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		I. 공지 이번 포스트부터 강사의 과거-기존-미래 수강생들이 보다 효율적으로 공부할 수 있도록 구글코랩에서 진행하는 텐서플로 2.0 Tutorial을 준비한다.
-II. 개요 GPU를 활용하여, 딥러닝을 연습하고 공부하고 싶지만, 쉽지많은 않다. 구글 코랩의 존재는 예전부터 알고 있었지만, 마땅히 정리를 하지 못하던 찰나에, 이제 본격적으로 강의 준비를 하며 2020년은 구글 코랩과 함께 하기로 결정하였다. 특히 텐서플로 Tutorial을 준비하면서 개인적으로 많이 성장하기를 바라며..
-III. Why Tensorflow 2.0? 비즈니스적으로 접근을 해보자. 앱의 경우, 2007년쯤 IOS가 출시된 이후, 경쟁자로 Andorid가 등장했다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/tensorflow2.0/googlecolab/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/filter/" rel="bookmark">
-			Pandas Filtering
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-03T22:15:47&#43;09:00">2020-04-03</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" rel="category">데이터 전처리</a>, <a class="meta__link" href="/categories/pandas/" rel="category">Pandas</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   Overview 필터링은 특정 조건식을 만족하는 행을 따로 추출하는 개념이다. 특정 행의 값에 조건식 True/False을 판별하여 값을 추출하는 방법이다. 이 때, 비교 연산자 또는 조건식 (&gt;, &lt;, ==, ...)을 적용하면 행을 추출할 수 있다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/filter/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/sort_values/" rel="bookmark">
-			Pandas sort_values()
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-03T20:15:47&#43;09:00">2020-04-03</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" rel="category">데이터 전처리</a>, <a class="meta__link" href="/categories/pandas/" rel="category">Pandas</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   I. Overview sort_values() 함수는 일종의 데이터의 정렬과 연관이 있다. 어려운 내용은 아니기 때문에 빠르게 소스 코드 구현 및 확인 하도록 한다.
-II. Sample Tutorial 엑셀로 된 ticket_sales 데이터에서 ticket_quantity가 가장 많이 팔린 영화 Top3를 구하는 소스코드를 구해본다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/sort_values/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/pandas_with_excel/" rel="bookmark">
-			Pandas With Excel
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-03-30T11:15:47&#43;09:00">2020-03-30</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" rel="category">데이터 전처리</a>, <a class="meta__link" href="/categories/pandas/" rel="category">Pandas</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   I. Overview 이번 포스트는 기존의 엑셀 사용자를 위해 준비했다. 엑셀에 익숙한 사람들에게 파이썬을 분석 용도로 사용하고자 하는 분들에게는 작은 도움이 되기를 바란다.
-II. 데이터 입출력 판다스는 다양한 형태의 외부 파일을 읽을 수 있다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/pandas_with_excel/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/apply/" rel="bookmark">
-			Pandas Lambda Apply 함수 활용
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-03-23T20:10:47&#43;09:00">2020-03-23</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" rel="category">데이터 전처리</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   I. Iterrows, Itertuples 복습 이번 포스팅은 For-loop의 대안에 관한 함수 apply에 관한 내용이다. 본 포스트를 보고 학습하시기 전에 Pandas Iterrows 함수 활용과 Pandas Itertuples 함수 활용에서 학습 하기를 바란다.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/apply/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/itertuples/" rel="bookmark">
-			Pandas Itertuples 함수 활용
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-03-22T20:36:47&#43;09:00">2020-03-22</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" rel="category">데이터 전처리</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   I. Iterrows 이번 포스팅은 Iterrows()의 확장개념입니다. 본 포스트를 보고 학습하시기 전에 Pandas Iterrows 함수 활용에서 학습 하기를 바란다.
-II. Itertuples의 개념 itertuples()는 기본적으로 iterrows() 함수보다는 빠르다.
-import pandas as pd import io import requests import pprint url = &#39;https://raw.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/itertuples/">Read more…</a>
-	</div>
-</article><article class="list__item post">
-	<header class="list__header">
-		<h3 class="list__title post__title ">
-			<a href="/python/pandas/iterrows/" rel="bookmark">
-			Pandas Iterrows 함수 활용
-			</a>
-		</h3>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-03-20T20:32:10&#43;09:00">2020-03-20</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>, <a class="meta__link" href="/categories/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/" rel="category">데이터 전처리</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   I. Iterrows의 개념 데이터 전처리를 진행할 때, 데이터프레임에서 행에 반복적으로 접근을 하면서 값을 추출하거나 또는 그 값을 조작하는 일이 발생한다. 예를 들면, 특정 컬럼 A의 값에서 대문자 A를 찾아내 소문자 b로 변경한다고 가정해보자.
-	</div>
-	<div class="list__footer clearfix">
-		<a class="list__footer-readmore btn" href="/python/pandas/iterrows/">Read more…</a>
+		<a class="list__footer-readmore btn" href="/python/python_edu/01_basic/step1_visualisation/seaborn_basic_tutorial/">Read more…</a>
 	</div>
 </article>
 </main>
@@ -648,6 +435,72 @@ import pandas as pd import io import requests import pprint url = &#39;https://r
       </a>
     </li>
     
+    <li class="pagination__item">
+      <a href="/tags/python/page/13/" class="pagination__link">
+        13
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/14/" class="pagination__link">
+        14
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/15/" class="pagination__link">
+        15
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/16/" class="pagination__link">
+        16
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/17/" class="pagination__link">
+        17
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/18/" class="pagination__link">
+        18
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/19/" class="pagination__link">
+        19
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/20/" class="pagination__link">
+        20
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/21/" class="pagination__link">
+        21
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/22/" class="pagination__link">
+        22
+      </a>
+    </li>
+    
+    <li class="pagination__item">
+      <a href="/tags/python/page/23/" class="pagination__link">
+        23
+      </a>
+    </li>
+    
 
     
     
@@ -661,7 +514,7 @@ import pandas as pd import io import requests import pprint url = &#39;https://r
     
     
     <li class="pagination__item pagination__item--last">
-      <a class="pagination__link pagination__link--last" href="/tags/python/page/12/">
+      <a class="pagination__link pagination__link--last" href="/tags/python/page/23/">
         »»
       </a>
     </li>
