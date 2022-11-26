@@ -8,36 +8,44 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="Tensorflow 2.0 Tutorial ch5.1 - 분류" />
-<meta property="og:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2." />
+<meta property="og:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/python/tensorflow2.0/ch5_1_binary_classification/" />
+<meta property="og:url" content="https://dschloe.github.io/python/tensorflow2.0/ch5_1_binary_classification/" /><meta property="article:section" content="Python" />
 <meta property="article:published_time" content="2020-04-18T11:08:30+09:00" />
 <meta property="article:modified_time" content="2020-04-18T11:08:30+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Tensorflow 2.0 Tutorial ch5.1 - 분류"/>
-<meta name="twitter:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2."/>
+<meta name="twitter:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -213,18 +221,18 @@
 </ul>
 <h2 id="ii-이항분류">II. 이항분류</h2>
 <p>와인 데이터세트로 이항분류를 진행합니다. 와인은 크게 레드 와인과 화이트 와인의 두 종류로 나눌 수 있습니다. 색깔 없이 단순히, 당도, 산도, 알코올 도수 등으로 분류하는 것은 쉽지 않습니다. 이번에는 데이터 정제 과정을 거쳐야 하기 때문에 주의깊게 살펴보시기를 바랍니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
-<span style="color:#66d9ef">try</span>:
-    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
-    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
-<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
-    <span style="color:#66d9ef">pass</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
-red <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv&#39;</span>, sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;;&#39;</span>)
-white <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv&#39;</span>, sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;;&#39;</span>)
-<span style="color:#66d9ef">print</span>(red<span style="color:#f92672">.</span>head())
-<span style="color:#66d9ef">print</span>(white<span style="color:#f92672">.</span>head())
-</code></pre></div><pre><code>   fixed acidity  volatile acidity  citric acid  ...  sulphates  alcohol  quality
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span>red <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv&#39;</span>, sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;;&#39;</span>)
+</span></span><span style="display:flex;"><span>white <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv&#39;</span>, sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;;&#39;</span>)
+</span></span><span style="display:flex;"><span>print(red<span style="color:#f92672">.</span>head())
+</span></span><span style="display:flex;"><span>print(white<span style="color:#f92672">.</span>head())
+</span></span></code></pre></div><pre><code>   fixed acidity  volatile acidity  citric acid  ...  sulphates  alcohol  quality
 0            7.4              0.70         0.00  ...       0.56      9.4        5
 1            7.8              0.88         0.00  ...       0.68      9.8        5
 2            7.8              0.76         0.04  ...       0.65      9.8        5
@@ -252,14 +260,14 @@ white <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span
 </ul>
 <h3 id="1-데이터-합치기">(1) 데이터 합치기</h3>
 <p>와인 분류문제에서는 12개 속성으로 와인의 종류(레드/화이트)를 분류해야 합니다. 현재는 <code>red</code>와 <code>white</code>의 두 데이터프레임으로 데이터가 분리되어 있기 때문에 텐서플로에서 이 데이터를 사용하기 위해 두 데이터프레임을 하나로 합쳐야 합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">red[<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-white[<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-<span style="color:#66d9ef">print</span>(red<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">2</span>))
-<span style="color:#66d9ef">print</span>(white<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">2</span>))
-
-wine <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>concat([red, white])
-<span style="color:#66d9ef">print</span>(wine<span style="color:#f92672">.</span>describe())
-</code></pre></div><pre><code>   fixed acidity  volatile acidity  citric acid  ...  alcohol  quality  type
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>red[<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>white[<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>print(red<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">2</span>))
+</span></span><span style="display:flex;"><span>print(white<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">2</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>wine <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>concat([red, white])
+</span></span><span style="display:flex;"><span>print(wine<span style="color:#f92672">.</span>describe())
+</span></span></code></pre></div><pre><code>   fixed acidity  volatile acidity  citric acid  ...  alcohol  quality  type
 0            7.4              0.70          0.0  ...      9.4        5     0
 1            7.8              0.88          0.0  ...      9.8        5     0
 
@@ -287,13 +295,13 @@ max        15.900000          1.580000  ...     9.000000     1.000000
 <li><code>pd.concat()</code> 데이터 프레임을 단순히 위아래로 연결하는 새로운 데이터프레임을 만들어 냅니다.</li>
 <li>데이터가 잘 입력되었는지 가설을 확인하기 위해 간단한 그래프를 그려봅니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-plt<span style="color:#f92672">.</span>hist(wine[<span style="color:#e6db74">&#39;type&#39;</span>])
-plt<span style="color:#f92672">.</span>xticks([<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>])
-plt<span style="color:#f92672">.</span>show()
-
-<span style="color:#66d9ef">print</span>(wine[<span style="color:#e6db74">&#39;type&#39;</span>]<span style="color:#f92672">.</span>value_counts())
-</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_05_01/output_7_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>hist(wine[<span style="color:#e6db74">&#39;type&#39;</span>])
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xticks([<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(wine[<span style="color:#e6db74">&#39;type&#39;</span>]<span style="color:#f92672">.</span>value_counts())
+</span></span></code></pre></div><p><img src="/img/tensorflow2.0/tutorial_05_01/output_7_0.png" alt="png"></p>
 <pre><code>1    4898
 0    1599
 Name: type, dtype: int64
@@ -301,8 +309,8 @@ Name: type, dtype: int64
 <p>위 그래프를 토대로 확인해보면 레드 와인보다 화이트 와인이 더 많다는 것을 알 수 있습니다. 정확한 수치로 표현하기 위해 <code>value_counts()</code>함수를 사용했습니다.</p>
 <h3 id="2-데이터-정규화">(2) 데이터 정규화</h3>
 <p>데이터 정규화는 수치형 값에 적용하는 것이지, 문자열에 적용하는 건 아닙니다. 문제는 외부에서 불러오는 데이터의 경우 어떤 값으로 구성되어 있는지 알기 어려운데, 이 때 데이터의 파악을 도와주는 것이 판다스의 <code>info()</code> 입니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(wine<span style="color:#f92672">.</span>info())
-</code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(wine<span style="color:#f92672">.</span>info())
+</span></span></code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
 Int64Index: 6497 entries, 0 to 4897
 Data columns (total 13 columns):
  #   Column                Non-Null Count  Dtype  
@@ -325,10 +333,10 @@ memory usage: 710.6 KB
 None
 </code></pre>
 <p>다행히 모든 데이터가 <code>float64</code> &amp; <code>int64</code>인 것을 확인할 수 있습니다. 데이터 정규화는 다음의 한줄 코드로 실현이 가능합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">wine_norm <span style="color:#f92672">=</span> (wine <span style="color:#f92672">-</span> wine<span style="color:#f92672">.</span>min()) <span style="color:#f92672">/</span> (wine<span style="color:#f92672">.</span>max() <span style="color:#f92672">-</span> wine<span style="color:#f92672">.</span>min())
-<span style="color:#66d9ef">print</span>(wine_norm<span style="color:#f92672">.</span>head())
-<span style="color:#66d9ef">print</span>(wine_norm<span style="color:#f92672">.</span>describe())
-</code></pre></div><pre><code>   fixed acidity  volatile acidity  citric acid  ...   alcohol   quality  type
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>wine_norm <span style="color:#f92672">=</span> (wine <span style="color:#f92672">-</span> wine<span style="color:#f92672">.</span>min()) <span style="color:#f92672">/</span> (wine<span style="color:#f92672">.</span>max() <span style="color:#f92672">-</span> wine<span style="color:#f92672">.</span>min())
+</span></span><span style="display:flex;"><span>print(wine_norm<span style="color:#f92672">.</span>head())
+</span></span><span style="display:flex;"><span>print(wine_norm<span style="color:#f92672">.</span>describe())
+</span></span></code></pre></div><pre><code>   fixed acidity  volatile acidity  citric acid  ...   alcohol   quality  type
 0       0.297521          0.413333     0.000000  ...  0.202899  0.333333   0.0
 1       0.330579          0.533333     0.000000  ...  0.260870  0.333333   0.0
 2       0.330579          0.453333     0.024096  ...  0.260870  0.333333   0.0
@@ -356,12 +364,12 @@ max         1.000000          1.000000  ...     1.000000     1.000000
 <ul>
 <li>이렇게 정규화된 데이터를 <code>NumPy Array</code>로 변환합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
-wine_shuffle <span style="color:#f92672">=</span> wine_norm<span style="color:#f92672">.</span>sample(frac<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-<span style="color:#66d9ef">print</span>(wine_shuffle<span style="color:#f92672">.</span>head())
-wine_np <span style="color:#f92672">=</span> wine_shuffle<span style="color:#f92672">.</span>to_numpy()
-<span style="color:#66d9ef">print</span>(wine_np[:<span style="color:#ae81ff">5</span>])
-</code></pre></div><pre><code>      fixed acidity  volatile acidity  citric acid  ...   alcohol   quality  type
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span>wine_shuffle <span style="color:#f92672">=</span> wine_norm<span style="color:#f92672">.</span>sample(frac<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>print(wine_shuffle<span style="color:#f92672">.</span>head())
+</span></span><span style="display:flex;"><span>wine_np <span style="color:#f92672">=</span> wine_shuffle<span style="color:#f92672">.</span>to_numpy()
+</span></span><span style="display:flex;"><span>print(wine_np[:<span style="color:#ae81ff">5</span>])
+</span></span></code></pre></div><pre><code>      fixed acidity  volatile acidity  citric acid  ...   alcohol   quality  type
 3006       0.198347          0.053333     0.192771  ...  0.434783  0.500000   1.0
 3757       0.223140          0.120000     0.204819  ...  0.391304  0.333333   1.0
 3052       0.148760          0.080000     0.397590  ...  0.347826  0.666667   1.0
@@ -390,19 +398,19 @@ wine_np <span style="color:#f92672">=</span> wine_shuffle<span style="color:#f92
 <p>*Tip: 입문자들이 처음 딥러닝 소스코드 작성하는 것을 어려워 하는 부분이 엑셀데이터와 같은 데이터프레임을 딥러닝의 Input 객체로 변환하는가인데, 위 소스코드는 굉장히 유용하며, 만약 반복적인 작업이 이루어지면 사용자 정의 함수를 사용하여 작성하여 사용하는 것도 도움이 된다.</p>
 <h3 id="4-훈련-데이터와-테스트-데이터-분리">(4) 훈련 데이터와 테스트 데이터 분리</h3>
 <p>훈련 데이터와 테스트 데이터로 나누어 진행합니다. 검증데이터는 훈련데이터서 일부를 떼서 자동으로 만들 예정이기 때문에, 여기에서는 훈련 데이터와 테스트 데이터로만 나누어 진행합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
-train_idx <span style="color:#f92672">=</span> int(len(wine_np) <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.8</span>)
-train_X, train_Y <span style="color:#f92672">=</span> wine_np[:train_idx, :<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], wine_np[:train_idx, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
-test_X, test_Y <span style="color:#f92672">=</span> wine_np[train_idx:, :<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], wine_np[train_idx:, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
-<span style="color:#66d9ef">print</span>(train_X[<span style="color:#ae81ff">0</span>])
-<span style="color:#66d9ef">print</span>(train_Y[<span style="color:#ae81ff">0</span>])
-<span style="color:#66d9ef">print</span>(test_X[<span style="color:#ae81ff">0</span>])
-<span style="color:#66d9ef">print</span>(test_Y[<span style="color:#ae81ff">0</span>])
-train_Y <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>to_categorical(train_Y, num_classes<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
-test_Y <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>to_categorical(test_Y, num_classes<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
-<span style="color:#66d9ef">print</span>(train_Y[<span style="color:#ae81ff">0</span>])
-<span style="color:#66d9ef">print</span>(test_Y[<span style="color:#ae81ff">0</span>])
-</code></pre></div><pre><code>[0.19834711 0.05333333 0.19277108 0.00766871 0.0448505  0.25347222
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+</span></span><span style="display:flex;"><span>train_idx <span style="color:#f92672">=</span> int(len(wine_np) <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.8</span>)
+</span></span><span style="display:flex;"><span>train_X, train_Y <span style="color:#f92672">=</span> wine_np[:train_idx, :<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], wine_np[:train_idx, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>test_X, test_Y <span style="color:#f92672">=</span> wine_np[train_idx:, :<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], wine_np[train_idx:, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>print(train_X[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>print(train_Y[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>print(test_X[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>print(test_Y[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>train_Y <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>to_categorical(train_Y, num_classes<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>test_Y <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>to_categorical(test_Y, num_classes<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>print(train_Y[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>print(test_Y[<span style="color:#ae81ff">0</span>])
+</span></span></code></pre></div><pre><code>[0.19834711 0.05333333 0.19277108 0.00766871 0.0448505  0.25347222
  0.41013825 0.07422402 0.3875969  0.10674157 0.43478261 0.5       ]
 1.0
 [0.84297521 0.22       0.37951807 0.04907975 0.13289037 0.01736111
@@ -419,19 +427,19 @@ test_Y <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</spa
 </ul>
 <h2 id="iii-딥러닝-학습">III. 딥러닝 학습</h2>
 <p>시퀀셜 모델을 통해서 모형을 학습니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 5.8 와인 데이터셋 분류 모델 생성</span>
-<span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
-model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(units<span style="color:#f92672">=</span><span style="color:#ae81ff">48</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>,)),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(units<span style="color:#f92672">=</span><span style="color:#ae81ff">24</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(units<span style="color:#f92672">=</span><span style="color:#ae81ff">12</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(units<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;softmax&#39;</span>)
-])
-
-model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(lr<span style="color:#f92672">=</span><span style="color:#ae81ff">0.07</span>), loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;categorical_crossentropy&#39;</span>, metrics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;accuracy&#39;</span>])
-
-model<span style="color:#f92672">.</span>summary()
-</code></pre></div><pre><code>Model: &quot;sequential_8&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 5.8 와인 데이터셋 분류 모델 생성</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(units<span style="color:#f92672">=</span><span style="color:#ae81ff">48</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>,)),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(units<span style="color:#f92672">=</span><span style="color:#ae81ff">24</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(units<span style="color:#f92672">=</span><span style="color:#ae81ff">12</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(units<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;softmax&#39;</span>)
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(lr<span style="color:#f92672">=</span><span style="color:#ae81ff">0.07</span>), loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;categorical_crossentropy&#39;</span>, metrics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;accuracy&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>summary()
+</span></span></code></pre></div><pre><code>Model: &quot;sequential_8&quot;
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
 =================================================================
@@ -456,29 +464,29 @@ _________________________________________________________________
 </ul>
 <p>$e$를 밑으로 하는 지수함수를 취하기 때문에 위의 효과가 발생하며, 0이나 음수에도 적용 가능합니다. <code>softmax</code>가 중요한 이유는 분류 문제나 언어 <code>RNN</code>에서의 다음 토큰 예측, 강화학습에서 에이전트의 행동 확률을 구하는 결과값으로 확률이 필요한 다양한 분야에서 쓰입니다.</p>
 <p>여기에서는 예측값이 레드 와인일 확률과 화이트 와인일 확률을 구하는데 사용되며, [0.97, 0.03]처럼 합이 <code>1.0</code>인 확률값이 될 것입니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-<span style="color:#f92672">import</span> math
-<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
-x <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>arange(<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">0.01</span>)
-e_x <span style="color:#f92672">=</span> math<span style="color:#f92672">.</span>e <span style="color:#f92672">**</span> x
-
-plt<span style="color:#f92672">.</span>axhline(<span style="color:#ae81ff">0</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
-plt<span style="color:#f92672">.</span>axvline(<span style="color:#ae81ff">0</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
-plt<span style="color:#f92672">.</span>plot(x, x, <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;y=x&#39;</span>)
-plt<span style="color:#f92672">.</span>plot(x, e_x, <span style="color:#e6db74">&#39;g.&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;y=e^x&#39;</span>)
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;X&#39;</span>)
-plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Y&#39;</span>)
-plt<span style="color:#f92672">.</span>legend()
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_05_01/output_19_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> math
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span>x <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>arange(<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">0.01</span>)
+</span></span><span style="display:flex;"><span>e_x <span style="color:#f92672">=</span> math<span style="color:#f92672">.</span>e <span style="color:#f92672">**</span> x
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>axhline(<span style="color:#ae81ff">0</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>axvline(<span style="color:#ae81ff">0</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(x, x, <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;y=x&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(x, e_x, <span style="color:#e6db74">&#39;g.&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;y=e^x&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;X&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Y&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>legend()
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img src="/img/tensorflow2.0/tutorial_05_01/output_19_0.png" alt="png"></p>
 <p>마지막 레이어에서 한 가지 더 주목할 점은 뉴런의 개수가 2로 설정되어 있다는 점입니다. 이는 종속변수의 클래스 숫자와 동일합니다.</p>
 <p>손실함수 <code>loss</code>에는 <code>sparse_categorical_crossentropy</code>라는 값이 들어가 있습니다. 이에 관한 구체적인 설명은 118~119 페이지에 있으니 참고바랍니다. 엔트로피와 정보이론에 관한 설명은 다음 자료를 참고하십시요.</p>
 <ul>
 <li><a href="http://blog.naver.com/gyrbsdl18/221013188633">Cross Entropy 란 무엇인가 (information theory)</a></li>
 </ul>
 <p>이제 분류 네트워크를 학습시켜 봅니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">history <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>fit(train_X, train_Y, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">25</span>, batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, validation_split<span style="color:#f92672">=</span><span style="color:#ae81ff">0.25</span>)
-</code></pre></div><pre><code>Epoch 1/25
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>history <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>fit(train_X, train_Y, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">25</span>, batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, validation_split<span style="color:#f92672">=</span><span style="color:#ae81ff">0.25</span>)
+</span></span></code></pre></div><pre><code>Epoch 1/25
 122/122 [==============================] - 0s 3ms/step - loss: 0.2900 - accuracy: 0.8673 - val_loss: 0.1034 - val_accuracy: 0.9762
 Epoch 2/25
 122/122 [==============================] - 0s 2ms/step - loss: 0.0825 - accuracy: 0.9800 - val_loss: 0.0609 - val_accuracy: 0.9823
@@ -531,28 +539,28 @@ Epoch 25/25
 </code></pre>
 <p>학습 과정에서의 training 데이터의 정확도와 검증 데이터의 정확도가 각각 accuracy와 val_accuracy라는 이름으로 표시됩니다.</p>
 <p>분류 모델의 학습 결과를 시각화해보면 정확도가 100%에 가까운 매우 좋은 결과를 유지하고 있음을 확인할 수 있습니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">4</span>))
-
-plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>)
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;loss&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;loss&#39;</span>)
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_loss&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_loss&#39;</span>)
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
-plt<span style="color:#f92672">.</span>legend()
-
-plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>)
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;accuracy&#39;</span>], <span style="color:#e6db74">&#39;g-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;accuracy&#39;</span>)
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_accuracy&#39;</span>], <span style="color:#e6db74">&#39;k--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_accuracy&#39;</span>)
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
-plt<span style="color:#f92672">.</span>ylim(<span style="color:#ae81ff">0.7</span>, <span style="color:#ae81ff">1</span>)
-plt<span style="color:#f92672">.</span>legend()
-
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_05_01/output_23_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">4</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;loss&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;loss&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_loss&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_loss&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>legend()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;accuracy&#39;</span>], <span style="color:#e6db74">&#39;g-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;accuracy&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_accuracy&#39;</span>], <span style="color:#e6db74">&#39;k--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_accuracy&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>ylim(<span style="color:#ae81ff">0.7</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>legend()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img src="/img/tensorflow2.0/tutorial_05_01/output_23_0.png" alt="png"></p>
 <h2 id="iv-딥러닝-모형-평가">IV. 딥러닝 모형 평가</h2>
 <p><code>model.evaluate()</code> 함수를 통해서 모델의 성능을 평가할 수 있습니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model<span style="color:#f92672">.</span>evaluate(test_X, test_Y)
-</code></pre></div><pre><code>41/41 [==============================] - 0s 1ms/step - loss: 0.0447 - accuracy: 0.9915
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model<span style="color:#f92672">.</span>evaluate(test_X, test_Y)
+</span></span></code></pre></div><pre><code>41/41 [==============================] - 0s 1ms/step - loss: 0.0447 - accuracy: 0.9915
 
 
 
@@ -617,7 +625,7 @@ plt<span style="color:#f92672">.</span>show()
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

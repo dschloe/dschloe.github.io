@@ -8,30 +8,38 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="텍스트 마이닝 - Bag of Words" />
-<meta property="og:description" content="공지  해당 포스트는 취업 준비반 대상 강의 교재로 파이썬 머신러닝 완벽가이드를 축약한 내용입니다.  매우 좋은 책이니 가급적 구매하시기를 바랍니다.    I. 개요  문서가 가지는 모든 단어(Words)를 문맥이나 순서를 무시하고 일괄적으로 단어에 대해 빈도 값을 부여하여 피처 값을 추출하는 모델을 말한다. 아래와 같은 세 개의 문장이 있다고 가정해본다.  Doc 1: I love dogs. Doc 2: I hate dogs and knitting. Doc 3: Knitting is my hobby and passion." />
+<meta property="og:description" content="공지 해당 포스트는 취업 준비반 대상 강의 교재로 파이썬 머신러닝 완벽가이드를 축약한 내용입니다. 매우 좋은 책이니 가급적 구매하시기를 바랍니다. I. 개요 문서가 가지는 모든 단어(Words)를 문맥이나 순서를 무시하고 일괄적으로 단어에 대해 빈도 값을 부여하여 피처 값을 추출하는 모델을 말한다. 아래와 같은 세 개의 문장이 있다고 가정해본다. Doc 1: I love dogs. Doc 2: I hate dogs and knitting. Doc 3: Knitting is my hobby and passion. 위 문장을 각각의 행렬로 표현하면 아래와 같다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/python/nlp/ch02_bag_of_words/" />
+<meta property="og:url" content="https://dschloe.github.io/python/nlp/ch02_bag_of_words/" /><meta property="article:section" content="Python" />
 <meta property="article:published_time" content="2020-11-22T14:10:47+09:00" />
 <meta property="article:modified_time" content="2020-11-22T14:10:47+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="텍스트 마이닝 - Bag of Words"/>
-<meta name="twitter:description" content="공지  해당 포스트는 취업 준비반 대상 강의 교재로 파이썬 머신러닝 완벽가이드를 축약한 내용입니다.  매우 좋은 책이니 가급적 구매하시기를 바랍니다.    I. 개요  문서가 가지는 모든 단어(Words)를 문맥이나 순서를 무시하고 일괄적으로 단어에 대해 빈도 값을 부여하여 피처 값을 추출하는 모델을 말한다. 아래와 같은 세 개의 문장이 있다고 가정해본다.  Doc 1: I love dogs. Doc 2: I hate dogs and knitting. Doc 3: Knitting is my hobby and passion."/>
+<meta name="twitter:description" content="공지 해당 포스트는 취업 준비반 대상 강의 교재로 파이썬 머신러닝 완벽가이드를 축약한 내용입니다. 매우 좋은 책이니 가급적 구매하시기를 바랍니다. I. 개요 문서가 가지는 모든 단어(Words)를 문맥이나 순서를 무시하고 일괄적으로 단어에 대해 빈도 값을 부여하여 피처 값을 추출하는 모델을 말한다. 아래와 같은 세 개의 문장이 있다고 가정해본다. Doc 1: I love dogs. Doc 2: I hate dogs and knitting. Doc 3: Knitting is my hobby and passion. 위 문장을 각각의 행렬로 표현하면 아래와 같다."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -203,28 +211,28 @@
 <ul>
 <li>단어 피처에 값을 부여하는 경우를 말한다. 간단한 예시를 활용한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> collections <span style="color:#f92672">import</span> Counter
-<span style="color:#f92672">import</span> nltk
-<span style="color:#f92672">from</span> nltk <span style="color:#f92672">import</span> word_tokenize
-nltk<span style="color:#f92672">.</span>download(<span style="color:#e6db74">&#39;punkt&#39;</span>)
-
-<span style="color:#75715e"># 텍스트</span>
-text <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;&#34;Yesterday I went fishing. I don&#39;t fish that often, 
-</span><span style="color:#e6db74">so I didn&#39;t catch any fish. I was told I&#39;d enjoy myself, 
-</span><span style="color:#e6db74">but it didn&#39;t really seem that fun.&#34;&#34;&#34;</span>
-
-<span style="color:#75715e"># 토큰화</span>
-tokens <span style="color:#f92672">=</span> word_tokenize(text)
-
-<span style="color:#75715e"># 모든 단어를 소문자화</span>
-lower_tokens <span style="color:#f92672">=</span> [t<span style="color:#f92672">.</span>lower() <span style="color:#66d9ef">for</span> t <span style="color:#f92672">in</span> tokens]
-
-<span style="color:#75715e"># Counter화</span>
-bow_simple <span style="color:#f92672">=</span> Counter(lower_tokens)
-
-<span style="color:#75715e"># 상위 10개의 단어 추출</span>
-<span style="color:#66d9ef">print</span>(bow_simple<span style="color:#f92672">.</span>most_common(<span style="color:#ae81ff">10</span>))
-</code></pre></div><pre><code>[nltk_data] Downloading package punkt to /root/nltk_data...
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> collections <span style="color:#f92672">import</span> Counter
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> nltk
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> nltk <span style="color:#f92672">import</span> word_tokenize
+</span></span><span style="display:flex;"><span>nltk<span style="color:#f92672">.</span>download(<span style="color:#e6db74">&#39;punkt&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 텍스트</span>
+</span></span><span style="display:flex;"><span>text <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;&#34;Yesterday I went fishing. I don&#39;t fish that often, 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">so I didn&#39;t catch any fish. I was told I&#39;d enjoy myself, 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">but it didn&#39;t really seem that fun.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 토큰화</span>
+</span></span><span style="display:flex;"><span>tokens <span style="color:#f92672">=</span> word_tokenize(text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 모든 단어를 소문자화</span>
+</span></span><span style="display:flex;"><span>lower_tokens <span style="color:#f92672">=</span> [t<span style="color:#f92672">.</span>lower() <span style="color:#66d9ef">for</span> t <span style="color:#f92672">in</span> tokens]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Counter화</span>
+</span></span><span style="display:flex;"><span>bow_simple <span style="color:#f92672">=</span> Counter(lower_tokens)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 상위 10개의 단어 추출</span>
+</span></span><span style="display:flex;"><span>print(bow_simple<span style="color:#f92672">.</span>most_common(<span style="color:#ae81ff">10</span>))
+</span></span></code></pre></div><pre><code>[nltk_data] Downloading package punkt to /root/nltk_data...
 [nltk_data]   Unzipping tokenizers/punkt.zip.
 [('i', 5), ('.', 3), (&quot;n't&quot;, 3), ('fish', 2), ('that', 2), (',', 2), ('did', 2), ('yesterday', 1), ('went', 1), ('fishing', 1)]
 </code></pre>
@@ -236,17 +244,17 @@ bow_simple <span style="color:#f92672">=</span> Counter(lower_tokens)
 <p>이러한 개념을 바탕으로 파이썬 머신러닝 패키지인 <code>sklearn</code>에서는 <code>CountVectorizer</code> 클래스를 별도로 구현하였다.</p>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.feature_extraction.text <span style="color:#f92672">import</span> CountVectorizer
-
-text <span style="color:#f92672">=</span> [
-    <span style="color:#e6db74">&#39;This is the first document.&#39;</span>,
-    <span style="color:#e6db74">&#39;This is the second second document.&#39;</span>,
-    <span style="color:#e6db74">&#39;And the third one.&#39;</span>,
-]
-vect <span style="color:#f92672">=</span> CountVectorizer()
-vect<span style="color:#f92672">.</span>fit(text)
-vect<span style="color:#f92672">.</span>vocabulary_
-</code></pre></div><pre><code>{'and': 0,
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.feature_extraction.text <span style="color:#f92672">import</span> CountVectorizer
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>text <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;This is the first document.&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;This is the second second document.&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;And the third one.&#39;</span>,
+</span></span><span style="display:flex;"><span>]
+</span></span><span style="display:flex;"><span>vect <span style="color:#f92672">=</span> CountVectorizer()
+</span></span><span style="display:flex;"><span>vect<span style="color:#f92672">.</span>fit(text)
+</span></span><span style="display:flex;"><span>vect<span style="color:#f92672">.</span>vocabulary_
+</span></span></code></pre></div><pre><code>{'and': 0,
  'document': 1,
  'first': 2,
  'is': 3,
@@ -256,10 +264,10 @@ vect<span style="color:#f92672">.</span>vocabulary_
  'third': 7,
  'this': 8}
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X <span style="color:#f92672">=</span> vect<span style="color:#f92672">.</span>fit_transform(text)
-<span style="color:#66d9ef">print</span>(vect<span style="color:#f92672">.</span>get_feature_names())
-<span style="color:#66d9ef">print</span>(X<span style="color:#f92672">.</span>toarray())
-</code></pre></div><pre><code>['and', 'document', 'first', 'is', 'one', 'second', 'the', 'third', 'this']
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>X <span style="color:#f92672">=</span> vect<span style="color:#f92672">.</span>fit_transform(text)
+</span></span><span style="display:flex;"><span>print(vect<span style="color:#f92672">.</span>get_feature_names())
+</span></span><span style="display:flex;"><span>print(X<span style="color:#f92672">.</span>toarray())
+</span></span></code></pre></div><pre><code>['and', 'document', 'first', 'is', 'one', 'second', 'the', 'third', 'this']
 [[0 1 1 1 0 0 1 0 1]
  [0 1 0 1 0 2 1 0 1]
  [1 0 0 0 1 0 1 1 0]]
@@ -285,23 +293,23 @@ vect<span style="color:#f92672">.</span>vocabulary_
 <li>여기에서는 <code>gensim</code>을 사용해보자.</li>
 <li>새로운 데이터를 가져와서 텍스트 전처리부터 진행한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> gensim.corpora.dictionary <span style="color:#f92672">import</span> Dictionary
-<span style="color:#f92672">from</span> nltk.tokenize <span style="color:#f92672">import</span> word_tokenize
-my_documents <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;When the screenwriter John Ridley pitched “The Other History of the DC Universe,” a five-part comic book series that looks at pivotal events through the perspectives of several nonwhite DC heroes, he knew Black Lightning would be at its center. Ridley was 11 when he met the hero in 1977.&#39;</span>,
-                <span style="color:#e6db74">&#39;This was a Black man who ostensibly looked like me with his own series,” Mr. Ridley said during a recent interview. An added bonus&#39;</span>,
-                <span style="color:#e6db74">&#39;Mr. Ridley’s career includes writing for television and film, which earned him an Academy Award in 2014 for Best Adapted Screenplay for “12 Years a Slave.” But he is no stranger to comics. He wrote “The American Way,” which was published in 2006, about a group of heroes in the 1960s and their reaction to a Black member joining the team, and a sequel in 2017.&#39;</span>
-                ]
-punctuations<span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;?:!.,;“&#39;</span>
-tokens <span style="color:#f92672">=</span> []
-<span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> my_documents:
-  sentence_words <span style="color:#f92672">=</span> word_tokenize(sentence)
-  <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> sentence_words:
-    <span style="color:#66d9ef">if</span> word <span style="color:#f92672">in</span> punctuations:
-      sentence_words<span style="color:#f92672">.</span>remove(word)
-  tokens<span style="color:#f92672">.</span>append(sentence_words)
-
-tokens[<span style="color:#ae81ff">0</span>][:<span style="color:#ae81ff">10</span>]
-</code></pre></div><pre><code>['When',
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> gensim.corpora.dictionary <span style="color:#f92672">import</span> Dictionary
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> nltk.tokenize <span style="color:#f92672">import</span> word_tokenize
+</span></span><span style="display:flex;"><span>my_documents <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;When the screenwriter John Ridley pitched “The Other History of the DC Universe,” a five-part comic book series that looks at pivotal events through the perspectives of several nonwhite DC heroes, he knew Black Lightning would be at its center. Ridley was 11 when he met the hero in 1977.&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;This was a Black man who ostensibly looked like me with his own series,” Mr. Ridley said during a recent interview. An added bonus&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;Mr. Ridley’s career includes writing for television and film, which earned him an Academy Award in 2014 for Best Adapted Screenplay for “12 Years a Slave.” But he is no stranger to comics. He wrote “The American Way,” which was published in 2006, about a group of heroes in the 1960s and their reaction to a Black member joining the team, and a sequel in 2017.&#39;</span>
+</span></span><span style="display:flex;"><span>                ]
+</span></span><span style="display:flex;"><span>punctuations<span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;?:!.,;“&#39;</span>
+</span></span><span style="display:flex;"><span>tokens <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> my_documents:
+</span></span><span style="display:flex;"><span>  sentence_words <span style="color:#f92672">=</span> word_tokenize(sentence)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> sentence_words:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> word <span style="color:#f92672">in</span> punctuations:
+</span></span><span style="display:flex;"><span>      sentence_words<span style="color:#f92672">.</span>remove(word)
+</span></span><span style="display:flex;"><span>  tokens<span style="color:#f92672">.</span>append(sentence_words)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tokens[<span style="color:#ae81ff">0</span>][:<span style="color:#ae81ff">10</span>]
+</span></span></code></pre></div><pre><code>['When',
  'the',
  'screenwriter',
  'John',
@@ -318,16 +326,16 @@ tokens[<span style="color:#ae81ff">0</span>][:<span style="color:#ae81ff">10</sp
 <li>먼저, <code>dictionary</code>의 키 값[15]를 확인하여 위 문장과 동일한지 다시 체크해본다.</li>
 <li>각 단어를 word_id, word_frequency로 표현하였다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> gensim.corpora.dictionary <span style="color:#f92672">import</span> Dictionary
-
-dictionary <span style="color:#f92672">=</span> Dictionary(tokens)
-<span style="color:#66d9ef">print</span>(dictionary[<span style="color:#ae81ff">19</span>]) <span style="color:#75715e"># key-value로 확인한다. </span>
-<span style="color:#66d9ef">print</span>(len(dictionary)) <span style="color:#75715e"># 학습된 단어의 수</span>
-Ridley_id <span style="color:#f92672">=</span> dictionary<span style="color:#f92672">.</span>token2id<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;Ridley&#34;</span>)
-<span style="color:#66d9ef">print</span>(dictionary<span style="color:#f92672">.</span>get(Ridley_id))
-corpus <span style="color:#f92672">=</span> [dictionary<span style="color:#f92672">.</span>doc2bow(article) <span style="color:#66d9ef">for</span> article <span style="color:#f92672">in</span> tokens]
-<span style="color:#66d9ef">print</span>(corpus[<span style="color:#ae81ff">2</span>][:<span style="color:#ae81ff">5</span>])
-</code></pre></div><pre><code>five-part
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> gensim.corpora.dictionary <span style="color:#f92672">import</span> Dictionary
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dictionary <span style="color:#f92672">=</span> Dictionary(tokens)
+</span></span><span style="display:flex;"><span>print(dictionary[<span style="color:#ae81ff">19</span>]) <span style="color:#75715e"># key-value로 확인한다. </span>
+</span></span><span style="display:flex;"><span>print(len(dictionary)) <span style="color:#75715e"># 학습된 단어의 수</span>
+</span></span><span style="display:flex;"><span>Ridley_id <span style="color:#f92672">=</span> dictionary<span style="color:#f92672">.</span>token2id<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;Ridley&#34;</span>)
+</span></span><span style="display:flex;"><span>print(dictionary<span style="color:#f92672">.</span>get(Ridley_id))
+</span></span><span style="display:flex;"><span>corpus <span style="color:#f92672">=</span> [dictionary<span style="color:#f92672">.</span>doc2bow(article) <span style="color:#66d9ef">for</span> article <span style="color:#f92672">in</span> tokens]
+</span></span><span style="display:flex;"><span>print(corpus[<span style="color:#ae81ff">2</span>][:<span style="color:#ae81ff">5</span>])
+</span></span></code></pre></div><pre><code>five-part
 105
 Ridley
 [(2, 1), (8, 1), (9, 1), (12, 4), (20, 1)]
@@ -337,27 +345,27 @@ Ridley
 <li><code>defaultdict</code>를 사용하면 존재하지 않는 키에 기본값을 할당하는 사전을 초기화할 수 있다. 인수를 제공함으로써 존재하지 않는 모든 키에 자동으로 기본값이 0으로 할당되도록 할 수 있다. 이는 단어 수를 저장하는 데 매우 이상적이다.</li>
 <li><code>itertools.chain.from_iterable()</code>는 하나의 연속적인 시퀀스인 것처럼 일련의 시퀀스를 통해 반복할 수 있게 해준다. 이 기능을 사용하면 말뭉치 개체(목록 목록)를 통해 쉽게 반복할 수 있다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> collections <span style="color:#f92672">import</span> defaultdict
-<span style="color:#f92672">import</span> itertools
-
-doc <span style="color:#f92672">=</span> corpus[<span style="color:#ae81ff">2</span>]
-bow_doc <span style="color:#f92672">=</span> sorted(doc, key<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> w: w[<span style="color:#ae81ff">1</span>], reverse<span style="color:#f92672">=</span>True)
-<span style="color:#66d9ef">for</span> word_id, word_count <span style="color:#f92672">in</span> bow_doc[:<span style="color:#ae81ff">5</span>]:
-    <span style="color:#66d9ef">print</span>(dictionary<span style="color:#f92672">.</span>get(word_id), word_count)
-
-
-total_word_count <span style="color:#f92672">=</span> defaultdict(int)
-<span style="color:#66d9ef">for</span> word_id, word_count <span style="color:#f92672">in</span> itertools<span style="color:#f92672">.</span>chain<span style="color:#f92672">.</span>from_iterable(corpus):
-    total_word_count[word_id] <span style="color:#f92672">+=</span> word_count
-
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
-<span style="color:#75715e"># 단어수가 많은 순대로 재 정렬</span>
-sorted_word_count <span style="color:#f92672">=</span> sorted(total_word_count<span style="color:#f92672">.</span>items(), key<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> w: w[<span style="color:#ae81ff">1</span>], reverse<span style="color:#f92672">=</span>True) 
-
-<span style="color:#75715e"># 정렬된 단어를 내림차순으로 출력한다. </span>
-<span style="color:#66d9ef">for</span> word_id, word_count <span style="color:#f92672">in</span> sorted_word_count[:<span style="color:#ae81ff">5</span>]:
-    <span style="color:#66d9ef">print</span>(dictionary<span style="color:#f92672">.</span>get(word_id), word_count)
-</code></pre></div><pre><code>a 4
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> collections <span style="color:#f92672">import</span> defaultdict
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> itertools
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>doc <span style="color:#f92672">=</span> corpus[<span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>bow_doc <span style="color:#f92672">=</span> sorted(doc, key<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> w: w[<span style="color:#ae81ff">1</span>], reverse<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> word_id, word_count <span style="color:#f92672">in</span> bow_doc[:<span style="color:#ae81ff">5</span>]:
+</span></span><span style="display:flex;"><span>    print(dictionary<span style="color:#f92672">.</span>get(word_id), word_count)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>total_word_count <span style="color:#f92672">=</span> defaultdict(int)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> word_id, word_count <span style="color:#f92672">in</span> itertools<span style="color:#f92672">.</span>chain<span style="color:#f92672">.</span>from_iterable(corpus):
+</span></span><span style="display:flex;"><span>    total_word_count[word_id] <span style="color:#f92672">+=</span> word_count
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 단어수가 많은 순대로 재 정렬</span>
+</span></span><span style="display:flex;"><span>sorted_word_count <span style="color:#f92672">=</span> sorted(total_word_count<span style="color:#f92672">.</span>items(), key<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> w: w[<span style="color:#ae81ff">1</span>], reverse<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>) 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 정렬된 단어를 내림차순으로 출력한다. </span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> word_id, word_count <span style="color:#f92672">in</span> sorted_word_count[:<span style="color:#ae81ff">5</span>]:
+</span></span><span style="display:flex;"><span>    print(dictionary<span style="color:#f92672">.</span>get(word_id), word_count)
+</span></span></code></pre></div><pre><code>a 4
 in 4
 and 3
 for 3
@@ -378,21 +386,21 @@ Ridley 4
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> gensim.models.tfidfmodel <span style="color:#f92672">import</span> TfidfModel
-
-tfidf <span style="color:#f92672">=</span> TfidfModel(corpus)
-tfidf_weights <span style="color:#f92672">=</span> tfidf[doc]
-
-<span style="color:#75715e"># 빈번하게 자주 나오는 단어 출력</span>
-<span style="color:#66d9ef">print</span>(tfidf_weights[:<span style="color:#ae81ff">5</span>])
-
-<span style="color:#75715e"># Sort the weights from highest to lowest: sorted_tfidf_weights</span>
-sorted_tfidf_weights <span style="color:#f92672">=</span> sorted(tfidf_weights, key<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> w: w[<span style="color:#ae81ff">1</span>], reverse<span style="color:#f92672">=</span>True)
-
-<span style="color:#75715e"># Print the top 5 weighted words</span>
-<span style="color:#66d9ef">for</span> term_id, weight <span style="color:#f92672">in</span> sorted_tfidf_weights[:<span style="color:#ae81ff">5</span>]:
-    <span style="color:#66d9ef">print</span>(dictionary<span style="color:#f92672">.</span>get(term_id), weight)
-</code></pre></div><pre><code>[(9, 0.04430091034557146), (20, 0.04430091034557146), (22, 0.04430091034557146), (23, 0.17720364138228584), (29, 0.04430091034557146)]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> gensim.models.tfidfmodel <span style="color:#f92672">import</span> TfidfModel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tfidf <span style="color:#f92672">=</span> TfidfModel(corpus)
+</span></span><span style="display:flex;"><span>tfidf_weights <span style="color:#f92672">=</span> tfidf[doc]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 빈번하게 자주 나오는 단어 출력</span>
+</span></span><span style="display:flex;"><span>print(tfidf_weights[:<span style="color:#ae81ff">5</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Sort the weights from highest to lowest: sorted_tfidf_weights</span>
+</span></span><span style="display:flex;"><span>sorted_tfidf_weights <span style="color:#f92672">=</span> sorted(tfidf_weights, key<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> w: w[<span style="color:#ae81ff">1</span>], reverse<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Print the top 5 weighted words</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> term_id, weight <span style="color:#f92672">in</span> sorted_tfidf_weights[:<span style="color:#ae81ff">5</span>]:
+</span></span><span style="display:flex;"><span>    print(dictionary<span style="color:#f92672">.</span>get(term_id), weight)
+</span></span></code></pre></div><pre><code>[(9, 0.04430091034557146), (20, 0.04430091034557146), (22, 0.04430091034557146), (23, 0.17720364138228584), (29, 0.04430091034557146)]
 and 0.3601014503954231
 for 0.3601014503954231
 to 0.24006763359694872
@@ -437,7 +445,7 @@ in 0.17720364138228584
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

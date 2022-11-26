@@ -8,36 +8,44 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="ch04 - Modeling Visualisation" />
-<meta property="og:description" content="개요  A picture is worth a thousand words — English Language Adage
-  The simple graph has brought more information to the data analyst’s mind than any other device. — John Tukey
- 한장의 그림이 수천단어보다 가치가 있다는 영어속담과, 명료한 시각화가 데이터분석가에게 다른 어떤 도구보다 더 많은 정보를 제공한다는 유명한 데이터 과학자의 조언. 핵심은 시각화이다.
+<meta property="og:description" content="개요 A picture is worth a thousand words — English Language Adage
+The simple graph has brought more information to the data analyst’s mind than any other device. — John Tukey
+한장의 그림이 수천단어보다 가치가 있다는 영어속담과, 명료한 시각화가 데이터분석가에게 다른 어떤 도구보다 더 많은 정보를 제공한다는 유명한 데이터 과학자의 조언. 핵심은 시각화이다.
 본 장에서는 ggplot2 패키지를 활용한 시각화를 먼저 보여줄 것이다. 먼저 간단하게 ggplot2 패키지에 소개하자면 Grammar of Graphics1의 철학을 담아서 R 생태계에서 유명한 학자 중, Hadley Wickham에 의해 주도적으로 개발되었다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/r/datavisualisation/ch04_modeling_visualisation/" />
+<meta property="og:url" content="https://dschloe.github.io/r/datavisualisation/ch04_modeling_visualisation/" /><meta property="article:section" content="R" />
 <meta property="article:published_time" content="2020-05-15T11:10:39+09:00" />
 <meta property="article:modified_time" content="2020-05-15T11:10:39+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="ch04 - Modeling Visualisation"/>
-<meta name="twitter:description" content="개요  A picture is worth a thousand words — English Language Adage
-  The simple graph has brought more information to the data analyst’s mind than any other device. — John Tukey
- 한장의 그림이 수천단어보다 가치가 있다는 영어속담과, 명료한 시각화가 데이터분석가에게 다른 어떤 도구보다 더 많은 정보를 제공한다는 유명한 데이터 과학자의 조언. 핵심은 시각화이다.
+<meta name="twitter:description" content="개요 A picture is worth a thousand words — English Language Adage
+The simple graph has brought more information to the data analyst’s mind than any other device. — John Tukey
+한장의 그림이 수천단어보다 가치가 있다는 영어속담과, 명료한 시각화가 데이터분석가에게 다른 어떤 도구보다 더 많은 정보를 제공한다는 유명한 데이터 과학자의 조언. 핵심은 시각화이다.
 본 장에서는 ggplot2 패키지를 활용한 시각화를 먼저 보여줄 것이다. 먼저 간단하게 ggplot2 패키지에 소개하자면 Grammar of Graphics1의 철학을 담아서 R 생태계에서 유명한 학자 중, Hadley Wickham에 의해 주도적으로 개발되었다."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -196,27 +204,27 @@
 <p>보통 모델이 <code>true</code> or <code>not true</code> 이렇게 인식될 수도 있다. 그러나, 모델은 <code>true</code> or <code>not true</code>로 인식되기 보다는 <code>useful</code> or <code>not useful</code>로 판단하는 것이 좋다. 즉, 쓸만한 모형을 찾는 과정이 <code>modeling</code>이라고 할 수 있겠다.</p>
 <h2 id="iii-모델링-시각화">III. 모델링 시각화</h2>
 <p>모형 학습을 위해서 필요한 필수 패키지를 설치한다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(tidyverse)
-<span style="color:#a6e22e">library</span>(modelr)
-<span style="color:#a6e22e">library</span>(moderndive)
-<span style="color:#a6e22e">options</span>(na.action <span style="color:#f92672">=</span> na.warn)
-</code></pre></div><h3 id="1-sample-데이터-추출">(1) Sample 데이터 추출</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(tidyverse)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(modelr)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(moderndive)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">options</span>(na.action <span style="color:#f92672">=</span> na.warn)
+</span></span></code></pre></div><h3 id="1-sample-데이터-추출">(1) Sample 데이터 추출</h3>
 <ul>
 <li><code>evals</code> 데이터에서 20개 정도의 데이터만 추출한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">1234</span>) <span style="color:#75715e"># 재현성</span>
-sample_20 <span style="color:#f92672">&lt;-</span> evals <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">sample_n</span>(<span style="color:#ae81ff">20</span>) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">select</span>(bty_avg, score)
-</code></pre></div><h3 id="2-250개의-모형">(2) 250개의 모형</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">1234</span>) <span style="color:#75715e"># 재현성</span>
+</span></span><span style="display:flex;"><span>sample_20 <span style="color:#f92672">&lt;-</span> evals <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">sample_n</span>(<span style="color:#ae81ff">20</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">select</span>(bty_avg, score)
+</span></span></code></pre></div><h3 id="2-250개의-모형">(2) 250개의 모형</h3>
 <p><code>evals</code> 데이터에 있는 2개의 변수를 활용해서 산점도를 그려본다.</p>
 <ul>
 <li>x축은 <code>bty_avg</code></li>
 <li>y축은 <code>score</code></li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">ggplot</span>(sample_20, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> bty_avg, y <span style="color:#f92672">=</span> score)) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">geom_point</span>()
-</code></pre></div><p><img src="/img/datavisualisation/ch04_modeling_visualisation_files/figure-html/unnamed-chunk-3-1.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>(sample_20, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> bty_avg, y <span style="color:#f92672">=</span> score)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_point</span>()
+</span></span></code></pre></div><p><img src="/img/datavisualisation/ch04_modeling_visualisation_files/figure-html/unnamed-chunk-3-1.png" alt=""><!-- raw HTML omitted --></p>
 <ul>
 <li>데이터를 보면, 가운데 기준으로 위쪽으로 데이터가 모여 있는 것을 볼 수 있다.</li>
 <li>이 때, 양변수가 만나는 점을 설명할 수 있는 모형을 만들어보자.</li>
@@ -224,16 +232,16 @@ sample_20 <span style="color:#f92672">&lt;-</span> evals <span style="color:#f92
 $$ y = a_0 + a_x \times x $$</li>
 </ul>
 <p>위 데이터에 접하는 모형 250개를 만들어 보자.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">models <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">tibble</span>(
-  a1 <span style="color:#f92672">=</span> <span style="color:#a6e22e">runif</span>(<span style="color:#ae81ff">250</span>, <span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">4</span>),
-  a2 <span style="color:#f92672">=</span> <span style="color:#a6e22e">runif</span>(<span style="color:#ae81ff">250</span>, <span style="color:#ae81ff">-.5</span>, <span style="color:#ae81ff">1</span>)
-)
-
-<span style="color:#a6e22e">ggplot</span>(sample_20, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> bty_avg, y <span style="color:#f92672">=</span> score)) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">geom_abline</span>(<span style="color:#a6e22e">aes</span>(intercept <span style="color:#f92672">=</span> a1, slope <span style="color:#f92672">=</span> a2), data <span style="color:#f92672">=</span> models, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">4</span>) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">geom_point</span>(color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;blue&#34;</span>, alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">/</span><span style="color:#ae81ff">4</span>) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">theme_bw</span>()
-</code></pre></div><p><img src="/img/datavisualisation/ch04_modeling_visualisation_files/figure-html/unnamed-chunk-4-1.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>models <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">tibble</span>(
+</span></span><span style="display:flex;"><span>  a1 <span style="color:#f92672">=</span> <span style="color:#a6e22e">runif</span>(<span style="color:#ae81ff">250</span>, <span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">4</span>),
+</span></span><span style="display:flex;"><span>  a2 <span style="color:#f92672">=</span> <span style="color:#a6e22e">runif</span>(<span style="color:#ae81ff">250</span>, <span style="color:#ae81ff">-.5</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>(sample_20, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> bty_avg, y <span style="color:#f92672">=</span> score)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_abline</span>(<span style="color:#a6e22e">aes</span>(intercept <span style="color:#f92672">=</span> a1, slope <span style="color:#f92672">=</span> a2), data <span style="color:#f92672">=</span> models, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">/</span><span style="color:#ae81ff">4</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_point</span>(color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;blue&#34;</span>, alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">/</span><span style="color:#ae81ff">4</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme_bw</span>()
+</span></span></code></pre></div><p><img src="/img/datavisualisation/ch04_modeling_visualisation_files/figure-html/unnamed-chunk-4-1.png" alt=""><!-- raw HTML omitted --></p>
 <ul>
 <li>위 그림에서 보는 것처럼 굉장히 다양한 모형을 만들면서 최적의 모형을 찾는 과정이 데이터 분석의 프로세스라고 보면 좋다.</li>
 </ul>
@@ -241,10 +249,10 @@ $$ y = a_0 + a_x \times x $$</li>
 <p>최적의 모형은 어떻게 찾을 수 있을까?</p>
 <p>최적의 모형을 찾으려면 <code>ggplot2</code> 패키지 내 <code>geom_smooth()</code>를 사용할 수 있다. 그러나, 문제는 <code>geom_smooth</code>를 사용하면 시각적으로는 결과적으로는 도움이 되지만, 실제 중간과정은 생략되었기 때문에 설명 부분에서는 조금 아쉬움이 있다.</p>
 <p>이 부분이 오늘 과정의 핵심이며, 1차원 함수의 기울기와 상수를 찾는 것을 <code>ggplot2</code> 패키지를 활용해본다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">ggplot</span>(sample_20, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> bty_avg, y <span style="color:#f92672">=</span> score)) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">geom_point</span>(color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;blue&#34;</span>, alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">/</span><span style="color:#ae81ff">4</span>) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">geom_smooth</span>(method <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;lm&#34;</span>, se<span style="color:#f92672">=</span><span style="color:#66d9ef">FALSE</span>)
-</code></pre></div><pre><code>## `geom_smooth()` using formula 'y ~ x'
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>(sample_20, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> bty_avg, y <span style="color:#f92672">=</span> score)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_point</span>(color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;blue&#34;</span>, alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">/</span><span style="color:#ae81ff">4</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_smooth</span>(method <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;lm&#34;</span>, se<span style="color:#f92672">=</span><span style="color:#66d9ef">FALSE</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## `geom_smooth()` using formula &#39;y ~ x&#39;
 </code></pre><p><img src="/img/datavisualisation/ch04_modeling_visualisation_files/figure-html/unnamed-chunk-5-1.png" alt=""><!-- raw HTML omitted --></p>
 <h3 id="4-computing-distance">(4) Computing Distance</h3>
 <ul>
@@ -264,22 +272,22 @@ $$ y = a_0 + a_x \times x $$</li>
 <p>eval_dist</p>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">model_1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(a, data) {
-  a[1] <span style="color:#f92672">+</span> data<span style="color:#f92672">$</span>bty_avg <span style="color:#f92672">*</span> a[2]
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>model_1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(a, data) {
+</span></span><span style="display:flex;"><span>  a[1] <span style="color:#f92672">+</span> data<span style="color:#f92672">$</span>bty_avg <span style="color:#f92672">*</span> a[2]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>위 함수는 기울기와 상수를 정의하는 단순 회귀 모형 함수를 만든 것이다.</li>
 <li><code>a[1]</code>은 상수를 의미한다.</li>
 <li><code>a[2]</code>은 기울기를 의미한다.</li>
 <li><code>data$bty_avg</code>는 입력값을 의미한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">measure_distance <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(mod, data) {
-  diff <span style="color:#f92672">&lt;-</span> data<span style="color:#f92672">$</span>score <span style="color:#f92672">-</span> <span style="color:#a6e22e">model_1</span>(mod, data)
-  <span style="color:#a6e22e">sqrt</span>(<span style="color:#a6e22e">mean</span>(diff^2))
-}
-
-<span style="color:#a6e22e">measure_distance</span>(<span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>), sample_20)
-</code></pre></div><pre><code>## [1] 7.23253
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>measure_distance <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(mod, data) {
+</span></span><span style="display:flex;"><span>  diff <span style="color:#f92672">&lt;-</span> data<span style="color:#f92672">$</span>score <span style="color:#f92672">-</span> <span style="color:#a6e22e">model_1</span>(mod, data)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">sqrt</span>(<span style="color:#a6e22e">mean</span>(diff^2))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">measure_distance</span>(<span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>), sample_20)
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] 7.23253
 </code></pre><ul>
 <li>
 <p>최적의 모형을 찾을 때 <code>RMSE</code>이라는 평균 제곱근 오차라는 통계적인 평가지표를 활용한다.</p>
@@ -290,15 +298,15 @@ $$ y = a_0 + a_x \times x $$</li>
 </ul>
 <h3 id="5-all-model-dist">(5) All model dist</h3>
 <p>이제 전체 데이터와 모형간의 <code>거리</code>를 계산한다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">all_model_dist <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(a1, a2) {
-  <span style="color:#a6e22e">measure_distance</span>(<span style="color:#a6e22e">c</span>(a1, a2), sample_20)
-}
-
-models2 <span style="color:#f92672">&lt;-</span> models <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">mutate</span>(dist <span style="color:#f92672">=</span> purrr<span style="color:#f92672">::</span><span style="color:#a6e22e">map2_dbl</span>(a1, a2, all_model_dist))
-
-models2 <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">head</span>(<span style="color:#ae81ff">5</span>)
-</code></pre></div><pre><code>## # A tibble: 5 x 3
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>all_model_dist <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(a1, a2) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">measure_distance</span>(<span style="color:#a6e22e">c</span>(a1, a2), sample_20)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>models2 <span style="color:#f92672">&lt;-</span> models <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(dist <span style="color:#f92672">=</span> purrr<span style="color:#f92672">::</span><span style="color:#a6e22e">map2_dbl</span>(a1, a2, all_model_dist))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>models2 <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">head</span>(<span style="color:#ae81ff">5</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 5 x 3
 ##      a1     a2  dist
 ##   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
 ## 1 0.640  0.699 1.42 
@@ -308,13 +316,13 @@ models2 <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">he
 ## 5 3.70   0.317 1.00
 </code></pre><h3 id="6-best-5-model">(6) Best 5 model</h3>
 <p>위 데이터를 근거로 가장 좋은 모델 5개를 찾는 그래프를 작성한다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">ggplot</span>(sample_20, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> bty_avg, y <span style="color:#f92672">=</span> score)) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, colour <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;grey30&#34;</span>) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">geom_abline</span>(
-    <span style="color:#a6e22e">aes</span>(intercept <span style="color:#f92672">=</span> a1, slope <span style="color:#f92672">=</span> a2, colour <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>dist), 
-    data <span style="color:#f92672">=</span> <span style="color:#a6e22e">filter</span>(models2, <span style="color:#a6e22e">rank</span>(dist) <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">5</span>)
-  )
-</code></pre></div><p><img src="/img/datavisualisation/ch04_modeling_visualisation_files/figure-html/unnamed-chunk-9-1.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>(sample_20, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> bty_avg, y <span style="color:#f92672">=</span> score)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, colour <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;grey30&#34;</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_abline</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">aes</span>(intercept <span style="color:#f92672">=</span> a1, slope <span style="color:#f92672">=</span> a2, colour <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>dist), 
+</span></span><span style="display:flex;"><span>    data <span style="color:#f92672">=</span> <span style="color:#a6e22e">filter</span>(models2, <span style="color:#a6e22e">rank</span>(dist) <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">5</span>)
+</span></span><span style="display:flex;"><span>  )
+</span></span></code></pre></div><p><img src="/img/datavisualisation/ch04_modeling_visualisation_files/figure-html/unnamed-chunk-9-1.png" alt=""><!-- raw HTML omitted --></p>
 <ul>
 <li>위 그래프는 주어진 데이터에서 가장 좋은 모형 5개를 확인할 수 있다.</li>
 </ul>
@@ -322,22 +330,22 @@ models2 <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">he
 <ul>
 <li>이제 <code>optim()</code> 함수를 활용해서 최적의 기울기와 상수를 찾아보도록 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">best <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">optim</span>(<span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>), measure_distance, data <span style="color:#f92672">=</span> sample_20)
-
-best<span style="color:#f92672">$</span>par
-</code></pre></div><pre><code>## [1] 3.91539624 0.07585949
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>best <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">optim</span>(<span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>), measure_distance, data <span style="color:#f92672">=</span> sample_20)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>best<span style="color:#f92672">$</span>par
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] 3.91539624 0.07585949
 </code></pre><p>기울기와 상수를 적용하여 다시 <code>ggplot2</code> 그래프를 작성한다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">ggplot</span>(sample_20, <span style="color:#a6e22e">aes</span>(bty_avg, score)) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, colour <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;grey30&#34;</span>) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">geom_abline</span>(intercept <span style="color:#f92672">=</span> best<span style="color:#f92672">$</span>par[1], slope <span style="color:#f92672">=</span> best<span style="color:#f92672">$</span>par[2])
-</code></pre></div><p><img src="/img/datavisualisation/ch04_modeling_visualisation_files/figure-html/unnamed-chunk-11-1.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>(sample_20, <span style="color:#a6e22e">aes</span>(bty_avg, score)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, colour <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;grey30&#34;</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_abline</span>(intercept <span style="color:#f92672">=</span> best<span style="color:#f92672">$</span>par[1], slope <span style="color:#f92672">=</span> best<span style="color:#f92672">$</span>par[2])
+</span></span></code></pre></div><p><img src="/img/datavisualisation/ch04_modeling_visualisation_files/figure-html/unnamed-chunk-11-1.png" alt=""><!-- raw HTML omitted --></p>
 <ul>
 <li>실제로 <code>lm</code> 함수를 활용해여 기울기와 상수를 구해보자.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">lm_mod <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">lm</span>(score <span style="color:#f92672">~</span> bty_avg, data <span style="color:#f92672">=</span> sample_20)
-
-<span style="color:#a6e22e">coef</span>(lm_mod)
-</code></pre></div><pre><code>## (Intercept)     bty_avg 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>lm_mod <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">lm</span>(score <span style="color:#f92672">~</span> bty_avg, data <span style="color:#f92672">=</span> sample_20)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">coef</span>(lm_mod)
+</span></span></code></pre></div><pre tabindex="0"><code>## (Intercept)     bty_avg 
 ##  3.91595907  0.07572129
 </code></pre><ul>
 <li>실제로 <code>best</code>에서 추출한 것과, <code>lm</code> 함수를 사용한 값과 동일한 것을 확인할 수 있다.</li>
@@ -363,14 +371,14 @@ best<span style="color:#f92672">$</span>par
 </ul>
 </li>
 </ul>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
-<p>Hadley Wickham이 작성한 ggplot2 패키지에 관한 논문을 읽어보는 것을 제안한다. “The Layered Grammar of Graphics”, <a href="http://vita.had.co.nz/papers/layered-grammar.pdf">http://vita.had.co.nz/papers/layered-grammar.pdf</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:1">
+<p>Hadley Wickham이 작성한 ggplot2 패키지에 관한 논문을 읽어보는 것을 제안한다. “The Layered Grammar of Graphics”, <a href="http://vita.had.co.nz/papers/layered-grammar.pdf">http://vita.had.co.nz/papers/layered-grammar.pdf</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
 		</div>
 		<footer class="post__footer">
@@ -410,7 +418,7 @@ best<span style="color:#f92672">$</span>par
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

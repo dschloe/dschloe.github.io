@@ -8,36 +8,44 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="Tensorflow 2.0 Tutorial ch9.1-2 - 오토인코더 &amp; MNIST" />
-<meta property="og:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2." />
+<meta property="og:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/python/tensorflow2.0/ch9_1_auto_encoder/" />
+<meta property="og:url" content="https://dschloe.github.io/python/tensorflow2.0/ch9_1_auto_encoder/" /><meta property="article:section" content="Python" />
 <meta property="article:published_time" content="2020-05-03T15:20:30+09:00" />
 <meta property="article:modified_time" content="2020-05-03T15:20:30+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Tensorflow 2.0 Tutorial ch9.1-2 - 오토인코더 &amp; MNIST"/>
-<meta name="twitter:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2."/>
+<meta name="twitter:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -258,33 +266,33 @@
 <li>데이터를 로드한 후에 <code>train_X</code>와 <code>test_X</code>를 255.0으로 나눠서 픽셀 정규화를 하게 됩니다.</li>
 <li>데이터가 잘 불러와졌는지 시각화를 통해 확인합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
-<span style="color:#66d9ef">try</span>:
-    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
-    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
-<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
-    <span style="color:#66d9ef">pass</span>
-<span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
-<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
-<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
-<span style="color:#f92672">import</span> tensorflow_hub <span style="color:#f92672">as</span> hub
-<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-<span style="color:#f92672">import</span> cv2
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">(train_X, train_Y), (test_X, test_Y) <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>datasets<span style="color:#f92672">.</span>mnist<span style="color:#f92672">.</span>load_data()
-<span style="color:#66d9ef">print</span>(train_X<span style="color:#f92672">.</span>shape, train_Y<span style="color:#f92672">.</span>shape)
-</code></pre></div><pre><code>Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow_hub <span style="color:#66d9ef">as</span> hub
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> cv2
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>(train_X, train_Y), (test_X, test_Y) <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>datasets<span style="color:#f92672">.</span>mnist<span style="color:#f92672">.</span>load_data()
+</span></span><span style="display:flex;"><span>print(train_X<span style="color:#f92672">.</span>shape, train_Y<span style="color:#f92672">.</span>shape)
+</span></span></code></pre></div><pre><code>Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz
 11493376/11490434 [==============================] - 0s 0us/step
 (60000, 28, 28) (60000,)
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_X <span style="color:#f92672">=</span> train_X <span style="color:#f92672">/</span> <span style="color:#ae81ff">255.0</span>
-test_X <span style="color:#f92672">=</span> test_X <span style="color:#f92672">/</span> <span style="color:#ae81ff">255.0</span>
-
-plt<span style="color:#f92672">.</span>imshow(train_X[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
-plt<span style="color:#f92672">.</span>colorbar()
-plt<span style="color:#f92672">.</span>show()
-
-<span style="color:#66d9ef">print</span>(train_Y[<span style="color:#ae81ff">0</span>])
-</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_09_01-2/output_7_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train_X <span style="color:#f92672">=</span> train_X <span style="color:#f92672">/</span> <span style="color:#ae81ff">255.0</span>
+</span></span><span style="display:flex;"><span>test_X <span style="color:#f92672">=</span> test_X <span style="color:#f92672">/</span> <span style="color:#ae81ff">255.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(train_X[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>colorbar()
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(train_Y[<span style="color:#ae81ff">0</span>])
+</span></span></code></pre></div><p><img src="/img/tensorflow2.0/tutorial_09_01-2/output_7_0.png" alt="png"></p>
 <pre><code>5
 </code></pre>
 <ul>
@@ -292,20 +300,20 @@ plt<span style="color:#f92672">.</span>show()
 </ul>
 <h3 id="2-dense-오토인코더-모델-정의">(2) Dense 오토인코더 모델 정의</h3>
 <p><code>Dense 오토인코더</code> 모델을 다음과 같이 정의합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_X <span style="color:#f92672">=</span> train_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">28</span>)
-test_X <span style="color:#f92672">=</span> test_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">28</span>)
-<span style="color:#66d9ef">print</span>(train_X<span style="color:#f92672">.</span>shape, train_Y<span style="color:#f92672">.</span>shape)
-</code></pre></div><pre><code>(60000, 784) (60000,)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train_X <span style="color:#f92672">=</span> train_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">28</span>)
+</span></span><span style="display:flex;"><span>test_X <span style="color:#f92672">=</span> test_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">28</span>)
+</span></span><span style="display:flex;"><span>print(train_X<span style="color:#f92672">.</span>shape, train_Y<span style="color:#f92672">.</span>shape)
+</span></span></code></pre></div><pre><code>(60000, 784) (60000,)
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">784</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">784</span>,)),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">784</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sigmoid&#39;</span>)
-])
-
-model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(), loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
-model<span style="color:#f92672">.</span>summary()
-</code></pre></div><pre><code>Model: &quot;sequential_1&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">784</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">784</span>,)),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">784</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sigmoid&#39;</span>)
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(), loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>summary()
+</span></span></code></pre></div><pre><code>Model: &quot;sequential_1&quot;
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
 =================================================================
@@ -328,8 +336,8 @@ _________________________________________________________________
 </ul>
 <h3 id="3-dense-오토-인코더-모델-학습">(3) Dense 오토 인코더 모델 학습</h3>
 <p>이제 모형을 학습시킵니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model<span style="color:#f92672">.</span>fit(train_X, train_X, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">256</span>)
-</code></pre></div><pre><code>Epoch 1/10
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model<span style="color:#f92672">.</span>fit(train_X, train_X, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">256</span>)
+</span></span></code></pre></div><pre><code>Epoch 1/10
 235/235 [==============================] - 1s 5ms/step - loss: 0.0507
 Epoch 2/10
 235/235 [==============================] - 1s 5ms/step - loss: 0.0178
@@ -358,24 +366,24 @@ Epoch 10/10
 </code></pre>
 <h3 id="4-모형-시각화">(4) 모형 시각화</h3>
 <p>실제로 모형이 잘 학습되었는지 시각화를 통해 확인합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> random
-
-plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">8</span>))
-<span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">4</span>):
-    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, c<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
-    rand_index <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>, test_X<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>])
-    plt<span style="color:#f92672">.</span>imshow(test_X[rand_index]<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
-    plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
-    
-    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, c<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>)
-    img <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(test_X[rand_index], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
-    plt<span style="color:#f92672">.</span>imshow(img<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
-    plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
-    
-plt<span style="color:#f92672">.</span>show()
-
-model<span style="color:#f92672">.</span>evaluate(test_X, test_X)
-</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_09_01-2/output_16_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">8</span>))
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">4</span>):
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, c<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    rand_index <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>, test_X<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>imshow(test_X[rand_index]<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, c<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>    img <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(test_X[rand_index], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>imshow(img<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>evaluate(test_X, test_X)
+</span></span></code></pre></div><p><img src="/img/tensorflow2.0/tutorial_09_01-2/output_16_0.png" alt="png"></p>
 <pre><code>313/313 [==============================] - 1s 2ms/step - loss: 0.0063
 
 
@@ -386,23 +394,23 @@ model<span style="color:#f92672">.</span>evaluate(test_X, test_X)
 </code></pre>
 <h3 id="5-cnn-모형-신경망-업데이트">(5) CNN 모형 신경망 업데이트</h3>
 <p>더 좋은 성과를 내기 위해 CNN을 활용하도록 합니다. 모형 정의를 다시 해봅니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_X <span style="color:#f92672">=</span> train_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)
-test_X <span style="color:#f92672">=</span> test_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)
-
-model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Flatten(),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">7</span><span style="color:#f92672">*</span><span style="color:#ae81ff">7</span><span style="color:#f92672">*</span><span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Reshape(target_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">64</span>)),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sigmoid&#39;</span>)
-])
-
-model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(), loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
-model<span style="color:#f92672">.</span>summary()
-</code></pre></div><pre><code>Model: &quot;sequential_2&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train_X <span style="color:#f92672">=</span> train_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>test_X <span style="color:#f92672">=</span> test_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Flatten(),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">7</span><span style="color:#f92672">*</span><span style="color:#ae81ff">7</span><span style="color:#f92672">*</span><span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Reshape(target_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">64</span>)),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sigmoid&#39;</span>)
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(), loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>summary()
+</span></span></code></pre></div><pre><code>Model: &quot;sequential_2&quot;
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
 =================================================================
@@ -428,40 +436,40 @@ Non-trainable params: 0
 _________________________________________________________________
 </code></pre>
 <p>하나씩 살펴보도록 합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_X <span style="color:#f92672">=</span> train_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)
-test_X <span style="color:#f92672">=</span> test_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train_X <span style="color:#f92672">=</span> train_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>test_X <span style="color:#f92672">=</span> test_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><ul>
 <li>먼저, <code>train_X</code>와 <code>train_Y</code>부분에 대한 설명입니다.</li>
 <li>흑백 이미지이기 때문에 마지막 차원의 수는 1입니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)),
-tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
-<span style="color:#f92672">...</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)),
+</span></span><span style="display:flex;"><span>tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>
+</span></span></code></pre></div><ul>
 <li>Conv2D 레이어를 2개 쌓았습니다.</li>
 <li>그런데, 풀링 레이어가 빠져 있습니다. 대신에 <code>kernel_size=2</code>, <code>strides=(2,2)</code>로 설정해서 풀링 레이어를 쓰는 것과 같은 효과를 줍니다.</li>
 <li>Conv2D를 통과할 때마다 50%씩 감소하여 두번째 <code>Conv2D</code>를 통과하면 이미지의 크지는 <code>7X7</code>이 됩니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">...</span>, 
-tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Flatten(),
-tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
-<span style="color:#f92672">...</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">...</span>, 
+</span></span><span style="display:flex;"><span>tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Flatten(),
+</span></span><span style="display:flex;"><span>tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>
+</span></span></code></pre></div><ul>
 <li>3차원의 데이터를 1차원으로 바꿔주기 위해 <code>Flatten()</code>을 통과해야 합니다.</li>
 <li>그 다음에는 잠재 변수를 만들기 위해 <code>Dense</code> 오토인코더와 동일한 크기로 64개의 뉴런을 가지는 <code>Dense</code>레이어를 배치합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">7</span><span style="color:#f92672">*</span><span style="color:#ae81ff">7</span><span style="color:#f92672">*</span><span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">7</span><span style="color:#f92672">*</span><span style="color:#ae81ff">7</span><span style="color:#f92672">*</span><span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>)
+</span></span></code></pre></div><ul>
 <li>잠재 변수를 만든 다음에는 디코더를 만듭니다. 디코더는 인코더와 대칭이 되도록 다시 쌓아올립니다. 잠재변수 레이어와 연결된 레이어는 <code>7X7</code> 이미지를 만들기 위해 64개의 채널만큼 가지고 있는 <code>Conv2D</code>레이어입니다.</li>
 <li>레이어와 뉴런수를 동일하게 만들기 위해서 <code>Dense</code>레이어의 뉴런 수를 <code>7*7*64</code>로 넣습니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Reshape(target_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">64</span>))
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Reshape(target_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">64</span>))
+</span></span></code></pre></div><ul>
 <li>1차원인 데이터를 3차원으로 바꿔주기 위해 64개의 채널만큼 <code>Reshape</code>레이어를 사용합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sigmoid&#39;</span>)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sigmoid&#39;</span>)
+</span></span></code></pre></div><ul>
 <li>마지막으로 이어지는 2개의 레이어는 <code>Conv2DTranspose</code>입니다.</li>
 <li>Conv2D레이어가 하는 일의 반대되는 계산으로 이해하면 됩니다. (즉, 이 함수를 쓰는 이유는 대칭 구조를 만들기 위함입니다.)</li>
 <li>필터의 개수가 1인 것은 흑백이인 출력 이미지와 같습니다.</li>
@@ -470,8 +478,8 @@ tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>l
 <ul>
 <li>이제 모형을 학습시킵니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model<span style="color:#f92672">.</span>fit(train_X, train_X, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">256</span>)
-</code></pre></div><pre><code>Epoch 1/10
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model<span style="color:#f92672">.</span>fit(train_X, train_X, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">256</span>)
+</span></span></code></pre></div><pre><code>Epoch 1/10
 235/235 [==============================] - 2s 9ms/step - loss: 0.0757
 Epoch 2/10
 235/235 [==============================] - 2s 8ms/step - loss: 0.0322
@@ -502,24 +510,24 @@ Epoch 10/10
 <ul>
 <li>얼마나 잘 재현하는지 확인해봅니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> random
-
-plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">8</span>))
-<span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">4</span>):
-    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, c<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
-    rand_index <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>, test_X<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>])
-    plt<span style="color:#f92672">.</span>imshow(test_X[rand_index]<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
-    plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
-    
-    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, c<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>)
-    img <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(test_X[rand_index], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
-    plt<span style="color:#f92672">.</span>imshow(img<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
-    plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
-    
-plt<span style="color:#f92672">.</span>show()
-
-model<span style="color:#f92672">.</span>evaluate(test_X, test_X)
-</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_09_01-2/output_23_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">8</span>))
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">4</span>):
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, c<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    rand_index <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>, test_X<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>imshow(test_X[rand_index]<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, c<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>    img <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(test_X[rand_index], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>imshow(img<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>evaluate(test_X, test_X)
+</span></span></code></pre></div><p><img src="/img/tensorflow2.0/tutorial_09_01-2/output_23_0.png" alt="png"></p>
 <pre><code>313/313 [==============================] - 1s 3ms/step - loss: 0.0188
 
 
@@ -544,43 +552,43 @@ model<span style="color:#f92672">.</span>evaluate(test_X, test_X)
 <li>이제 <code>elu</code>로 바꾼 후 모형을 재학습 시킵니다.</li>
 <li>반복되는 내용이기 때문에 전체 코드로 시각화까지 확인합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_X <span style="color:#f92672">=</span> train_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)
-test_X <span style="color:#f92672">=</span> test_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)
-
-model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;elu&#39;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;elu&#39;</span>),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Flatten(),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;elu&#39;</span>),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">7</span><span style="color:#f92672">*</span><span style="color:#ae81ff">7</span><span style="color:#f92672">*</span><span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;elu&#39;</span>),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Reshape(target_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">64</span>)),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;elu&#39;</span>),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sigmoid&#39;</span>)
-])
-
-model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(), loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
-model<span style="color:#f92672">.</span>summary()
-
-model<span style="color:#f92672">.</span>fit(train_X, train_X, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">256</span>)
-
-<span style="color:#f92672">import</span> random
-
-plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">8</span>))
-<span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">4</span>):
-    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, c<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
-    rand_index <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>, test_X<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>])
-    plt<span style="color:#f92672">.</span>imshow(test_X[rand_index]<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
-    plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
-    
-    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, c<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>)
-    img <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(test_X[rand_index], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
-    plt<span style="color:#f92672">.</span>imshow(img<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
-    plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
-    
-plt<span style="color:#f92672">.</span>show()
-
-model<span style="color:#f92672">.</span>evaluate(test_X, test_X)
-</code></pre></div><pre><code>Model: &quot;sequential_4&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train_X <span style="color:#f92672">=</span> train_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>test_X <span style="color:#f92672">=</span> test_X<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;elu&#39;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">1</span>)),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;elu&#39;</span>),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Flatten(),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;elu&#39;</span>),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">7</span><span style="color:#f92672">*</span><span style="color:#ae81ff">7</span><span style="color:#f92672">*</span><span style="color:#ae81ff">64</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;elu&#39;</span>),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Reshape(target_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">64</span>)),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;elu&#39;</span>),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(filters<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, strides<span style="color:#f92672">=</span>(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>), padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sigmoid&#39;</span>)
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(), loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>summary()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>fit(train_X, train_X, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">256</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">8</span>))
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">4</span>):
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, c<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    rand_index <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>, test_X<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>imshow(test_X[rand_index]<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, c<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>    img <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(test_X[rand_index], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>imshow(img<span style="color:#f92672">.</span>reshape(<span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">28</span>), cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>evaluate(test_X, test_X)
+</span></span></code></pre></div><pre><code>Model: &quot;sequential_4&quot;
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
 =================================================================
@@ -697,7 +705,7 @@ Epoch 10/10
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

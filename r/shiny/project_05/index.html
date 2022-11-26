@@ -11,33 +11,41 @@
 <meta property="og:description" content="공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
 이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
 I. Shiny Tutorial 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard shiny tutorial 07 - flexdashboard shiny tutorial 08 - HTML, CSS 적용  II." />
+shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard shiny tutorial 07 - flexdashboard shiny tutorial 08 - HTML, CSS 적용 II." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/r/shiny/project_05/" />
+<meta property="og:url" content="https://dschloe.github.io/r/shiny/project_05/" /><meta property="article:section" content="R" />
 <meta property="article:published_time" content="2020-04-11T10:15:39+09:00" />
 <meta property="article:modified_time" content="2020-04-11T10:15:39+09:00" />
+
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Corona Shiny Project 5 - Chart with DateInput"/>
 <meta name="twitter:description" content="공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
 이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
 I. Shiny Tutorial 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard shiny tutorial 07 - flexdashboard shiny tutorial 08 - HTML, CSS 적용  II."/>
+shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard shiny tutorial 07 - flexdashboard shiny tutorial 08 - HTML, CSS 적용 II."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -202,88 +210,88 @@ I. Shiny Tutorial 소개 처음 shiny를 접하거나 shiny의 전체 튜토리�
 <p><a href="https://dschloe.github.io/r/shiny/project_03/">project_03</a>에서 확인해야 하는 내용의 소스코드를 그대로 사용해야 하니, <a href="https://dschloe.github.io/r/shiny/project_03/">project_03</a> 내용이 숙지가 되지 않았으면 다시 공부할 것을 권한다. 강사는 글의 편의성을 위해, 나눠서 작성을 했다. 우선 <code>Global Bubble Chart</code>부터 다룬다. 각 코드에 대한 자세한 설명은 여기에서는 생략한다.</p>
 <h3 id="a-global-chunk-code">(A) Global Chunk Code</h3>
 <p><code>Global Chunk Code</code>는 아래와 같이 되어 있을 것이다. 본 포스트에서 필요한 데이터는 <code>corona3</code> 데이터셋이다. 다시 <code>Review</code>하는 마음으로 코드를 작성한다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(plotly)    <span style="color:#75715e"># 동적 시각화</span>
-<span style="color:#a6e22e">library</span>(viridis)   <span style="color:#75715e"># 색상 관련 패키지</span>
-<span style="color:#a6e22e">library</span>(readxl)    <span style="color:#75715e"># 엑셀파일 데이터 수집</span>
-<span style="color:#a6e22e">library</span>(tidyverse) <span style="color:#75715e"># 데이터 가공 및 ggplot2 시각</span>
-
-<span style="color:#75715e"># get code data</span>
-url <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#39;https://pkgstore.datahub.io/JohnSnowLabs/country-and-continent-codes-list/country-and-continent-codes-list-csv_csv/data/b7876b7f496677669644f3d1069d3121/country-and-continent-codes-list-csv_csv.csv&#39;</span>
-
-<span style="color:#75715e"># Country Code 변수명 재정의</span>
-country_code <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read.csv</span>(url, stringsAsFactors <span style="color:#f92672">=</span> <span style="color:#66d9ef">FALSE</span>) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">select</span>(Continent_Name, Three_Letter_Country_Code) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">rename</span>(continent_code <span style="color:#f92672">=</span> Three_Letter_Country_Code)
-
-<span style="color:#75715e"># Covid_19 변수명 재정의</span>
-corona <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">rename</span>(date <span style="color:#f92672">=</span> dateRep, 
-         country <span style="color:#f92672">=</span> countriesAndTerritories, 
-         continent_code <span style="color:#f92672">=</span> countryterritoryCode) <span style="color:#f92672">-&gt;</span> corona2 
-
-<span style="color:#75715e"># continent_code 변수 기준으로 데이터 통합</span>
-corona3 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">left_join</span>(corona2, country_code)
-
-<span style="color:#75715e"># 결과 확인</span>
-<span style="color:#a6e22e">glimpse</span>(corona3)  
-
-Rows<span style="color:#f92672">:</span> <span style="color:#ae81ff">9</span>,<span style="color:#ae81ff">339</span>
-Columns<span style="color:#f92672">:</span> <span style="color:#ae81ff">11</span>
-<span style="color:#f92672">$</span> date           <span style="color:#f92672">&lt;</span>date<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">2020-04-05</span>, <span style="color:#ae81ff">2020-04-04</span>, <span style="color:#ae81ff">2020-04-03</span>, <span style="color:#ae81ff">2020-04-02</span>, <span style="color:#ae81ff">2</span>…
-<span style="color:#f92672">$</span> day            <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">31</span>, <span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">29</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">27</span>, <span style="color:#ae81ff">26</span>, <span style="color:#ae81ff">25</span>, <span style="color:#ae81ff">24</span>, <span style="color:#ae81ff">23</span>,…
-<span style="color:#f92672">$</span> month          <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>,…
-<span style="color:#f92672">$</span> year           <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">20</span>…
-<span style="color:#f92672">$</span> cases          <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">43</span>, <span style="color:#ae81ff">26</span>, <span style="color:#ae81ff">25</span>, <span style="color:#ae81ff">27</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">33</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">10</span>,…
-<span style="color:#f92672">$</span> deaths         <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>,…
-<span style="color:#f92672">$</span> country        <span style="color:#f92672">&lt;</span>chr<span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#34;Afghanistan&#34;</span>, <span style="color:#e6db74">&#34;Afghanistan&#34;</span>, <span style="color:#e6db74">&#34;Afghanistan&#34;</span>, <span style="color:#e6db74">&#34;Afgh…
-</span><span style="color:#e6db74">$ geoId          &lt;chr&gt; &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>A…
-<span style="color:#f92672">$</span> continent_code <span style="color:#f92672">&lt;</span>chr<span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;…
-</span><span style="color:#e6db74">$ popData2018    &lt;dbl&gt; 37172386, 37172386, 37172386, 37172386, 37172386, …
-</span><span style="color:#e6db74">$ Continent_Name &lt;chr&gt; &#34;</span>Asia<span style="color:#e6db74">&#34;, &#34;</span>Asia<span style="color:#e6db74">&#34;, &#34;</span>Asia<span style="color:#e6db74">&#34;, &#34;</span>Asia<span style="color:#e6db74">&#34;, &#34;</span>Asia<span style="color:#e6db74">&#34;, &#34;</span>Asia<span style="color:#e6db74">&#34;, &#34;</span>A…
-</code></pre></div><h3 id="b-slide-bar-chunk-code">(B) Slide Bar Chunk Code</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(plotly)    <span style="color:#75715e"># 동적 시각화</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(viridis)   <span style="color:#75715e"># 색상 관련 패키지</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(readxl)    <span style="color:#75715e"># 엑셀파일 데이터 수집</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(tidyverse) <span style="color:#75715e"># 데이터 가공 및 ggplot2 시각</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># get code data</span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#39;https://pkgstore.datahub.io/JohnSnowLabs/country-and-continent-codes-list/country-and-continent-codes-list-csv_csv/data/b7876b7f496677669644f3d1069d3121/country-and-continent-codes-list-csv_csv.csv&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Country Code 변수명 재정의</span>
+</span></span><span style="display:flex;"><span>country_code <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read.csv</span>(url, stringsAsFactors <span style="color:#f92672">=</span> <span style="color:#66d9ef">FALSE</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">select</span>(Continent_Name, Three_Letter_Country_Code) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">rename</span>(continent_code <span style="color:#f92672">=</span> Three_Letter_Country_Code)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Covid_19 변수명 재정의</span>
+</span></span><span style="display:flex;"><span>corona <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">rename</span>(date <span style="color:#f92672">=</span> dateRep, 
+</span></span><span style="display:flex;"><span>         country <span style="color:#f92672">=</span> countriesAndTerritories, 
+</span></span><span style="display:flex;"><span>         continent_code <span style="color:#f92672">=</span> countryterritoryCode) <span style="color:#f92672">-&gt;</span> corona2 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># continent_code 변수 기준으로 데이터 통합</span>
+</span></span><span style="display:flex;"><span>corona3 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">left_join</span>(corona2, country_code)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 결과 확인</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">glimpse</span>(corona3)  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Rows<span style="color:#f92672">:</span> <span style="color:#ae81ff">9</span>,<span style="color:#ae81ff">339</span>
+</span></span><span style="display:flex;"><span>Columns<span style="color:#f92672">:</span> <span style="color:#ae81ff">11</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">$</span> date           <span style="color:#f92672">&lt;</span>date<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">2020-04-05</span>, <span style="color:#ae81ff">2020-04-04</span>, <span style="color:#ae81ff">2020-04-03</span>, <span style="color:#ae81ff">2020-04-02</span>, <span style="color:#ae81ff">2</span>…
+</span></span><span style="display:flex;"><span><span style="color:#f92672">$</span> day            <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">31</span>, <span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">29</span>, <span style="color:#ae81ff">28</span>, <span style="color:#ae81ff">27</span>, <span style="color:#ae81ff">26</span>, <span style="color:#ae81ff">25</span>, <span style="color:#ae81ff">24</span>, <span style="color:#ae81ff">23</span>,…
+</span></span><span style="display:flex;"><span><span style="color:#f92672">$</span> month          <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>,…
+</span></span><span style="display:flex;"><span><span style="color:#f92672">$</span> year           <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">20</span>…
+</span></span><span style="display:flex;"><span><span style="color:#f92672">$</span> cases          <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">43</span>, <span style="color:#ae81ff">26</span>, <span style="color:#ae81ff">25</span>, <span style="color:#ae81ff">27</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">33</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">10</span>,…
+</span></span><span style="display:flex;"><span><span style="color:#f92672">$</span> deaths         <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>,…
+</span></span><span style="display:flex;"><span><span style="color:#f92672">$</span> country        <span style="color:#f92672">&lt;</span>chr<span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#34;Afghanistan&#34;</span>, <span style="color:#e6db74">&#34;Afghanistan&#34;</span>, <span style="color:#e6db74">&#34;Afghanistan&#34;</span>, <span style="color:#e6db74">&#34;Afgh…
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">$ geoId          &lt;chr&gt; &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>AF<span style="color:#e6db74">&#34;, &#34;</span>A…
+</span></span><span style="display:flex;"><span><span style="color:#f92672">$</span> continent_code <span style="color:#f92672">&lt;</span>chr<span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;AFG&#34;</span>, <span style="color:#e6db74">&#34;…
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">$ popData2018    &lt;dbl&gt; 37172386, 37172386, 37172386, 37172386, 37172386, …
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">$ Continent_Name &lt;chr&gt; &#34;</span>Asia<span style="color:#e6db74">&#34;, &#34;</span>Asia<span style="color:#e6db74">&#34;, &#34;</span>Asia<span style="color:#e6db74">&#34;, &#34;</span>Asia<span style="color:#e6db74">&#34;, &#34;</span>Asia<span style="color:#e6db74">&#34;, &#34;</span>Asia<span style="color:#e6db74">&#34;, &#34;</span>A…
+</span></span></code></pre></div><h3 id="b-slide-bar-chunk-code">(B) Slide Bar Chunk Code</h3>
 <p><code>corona3</code> 데이터셋을 확보했다면, 이제는 <code>Slide Bar</code>를 만들어본다. <code>dateInput</code> 코드를 입력한다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">Inputs {.sidebar data-width=300}
------------------------------------------------------------------------
-원하는 날짜에 놓고 <span style="color:#e6db74">`Button`</span>을 누르세요. 
-
-<span style="color:#e6db74">```r
-</span><span style="color:#e6db74"></span><span style="color:#a6e22e">h4</span>(<span style="color:#e6db74">&#34;Step 1. Click Global Bubble Chart&#34;</span>)
-<span style="color:#a6e22e">h4</span>(<span style="color:#e6db74">&#34;Step 2. Change Date&#34;</span>)
-<span style="color:#a6e22e">dateInput</span>(<span style="color:#e6db74">&#34;bubbleDate&#34;</span>, <span style="color:#e6db74">&#34;Date:&#34;</span>, value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;2020-03-01&#34;</span>)
-
-<span style="color:#a6e22e">h4</span>(<span style="color:#e6db74">&#34;Check if bubble is moving by date&#34;</span>)
-<span style="color:#e6db74">```</span>
-</code></pre></div><h3 id="c-flexdashboard-code">(C) flexdashboard Code</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span>Inputs {.sidebar data-width=300}
+</span></span><span style="display:flex;"><span>-----------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>원하는 날짜에 놓고 <span style="color:#e6db74">`Button`</span>을 누르세요. 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```r
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#a6e22e">h4</span>(<span style="color:#e6db74">&#34;Step 1. Click Global Bubble Chart&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">h4</span>(<span style="color:#e6db74">&#34;Step 2. Change Date&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">dateInput</span>(<span style="color:#e6db74">&#34;bubbleDate&#34;</span>, <span style="color:#e6db74">&#34;Date:&#34;</span>, value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;2020-03-01&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">h4</span>(<span style="color:#e6db74">&#34;Check if bubble is moving by date&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```</span>
+</span></span></code></pre></div><h3 id="c-flexdashboard-code">(C) flexdashboard Code</h3>
 <p>마지막으로 <code>Global Bubble Chart</code> 탭에서 그래프가 출력되는지 확인한다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># Create data Reactive</span>
-corona_bubble_df <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">reactive</span>({
-  corona3 <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">filter</span>(date <span style="color:#f92672">&lt;=</span> <span style="color:#e6db74">&#34;2020-04-05&#34;</span>, <span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(cty_code)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">select</span>(<span style="color:#f92672">-</span><span style="color:#a6e22e">c</span>(day, month, year, geoId)) <span style="color:#f92672">%&gt;%</span>
-  <span style="color:#75715e"># Reorder countries to having big bubbles on top</span>
-  <span style="color:#a6e22e">arrange</span>(date) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">group_by</span>(country) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">mutate</span>(cum_cases <span style="color:#f92672">=</span> <span style="color:#a6e22e">cumsum</span>(cases), 
-         cum_deaths <span style="color:#f92672">=</span> <span style="color:#a6e22e">cumsum</span>(deaths)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#75715e"># prepare text for tooltip</span>
-  <span style="color:#a6e22e">mutate</span>(text <span style="color:#f92672">=</span> <span style="color:#a6e22e">paste</span>(<span style="color:#e6db74">&#34;Country: &#34;</span>, country, <span style="color:#e6db74">&#34;\ntoday cases: &#34;</span>, cases, <span style="color:#e6db74">&#34;\ntoday_deaths: &#34;</span>, deaths, <span style="color:#e6db74">&#34;\ntotal_cases: &#34;</span>, cum_cases, <span style="color:#e6db74">&#34;\ntotal_deaths: &#34;</span>, cum_deaths, sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">filter</span>(date <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;2020-04-05&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">distinct</span>(date, cases, deaths, country, .keep_all <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>)
-})
-
-<span style="color:#a6e22e">renderPlotly</span>({
-  <span style="color:#75715e"># Classic ggplot</span>
-  p <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">ggplot</span>(<span style="color:#a6e22e">corona_bubble_df</span>(), <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>cases, y<span style="color:#f92672">=</span>deaths, size <span style="color:#f92672">=</span> popData2018, color <span style="color:#f92672">=</span> Continent_Name, text<span style="color:#f92672">=</span>text)) <span style="color:#f92672">+</span>
-    <span style="color:#a6e22e">geom_point</span>(alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">0.7</span>) <span style="color:#f92672">+</span> 
-    <span style="color:#a6e22e">scale_x_log10</span>() <span style="color:#f92672">+</span> 
-    <span style="color:#a6e22e">scale_size</span>(range <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1.4</span>, <span style="color:#ae81ff">19</span>), name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Population (M)&#34;</span>) <span style="color:#f92672">+</span>
-    <span style="color:#a6e22e">scale_color_viridis</span>(discrete<span style="color:#f92672">=</span><span style="color:#66d9ef">TRUE</span>, guide<span style="color:#f92672">=</span><span style="color:#66d9ef">FALSE</span>) <span style="color:#f92672">+</span>
-    <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span>
-    <span style="color:#a6e22e">theme</span>(legend.position<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>)
-  
-  <span style="color:#a6e22e">ggplotly</span>(p, tooltip<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text&#34;</span>)
-})
-</code></pre></div><p>위 소스코드를 새로운 <code>flexdashboard template</code> 정상적으로 실행했다면 아래와 같이 나타나면 정상이다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e"># Create data Reactive</span>
+</span></span><span style="display:flex;"><span>corona_bubble_df <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">reactive</span>({
+</span></span><span style="display:flex;"><span>  corona3 <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(date <span style="color:#f92672">&lt;=</span> <span style="color:#e6db74">&#34;2020-04-05&#34;</span>, <span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(cty_code)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">select</span>(<span style="color:#f92672">-</span><span style="color:#a6e22e">c</span>(day, month, year, geoId)) <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Reorder countries to having big bubbles on top</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(date) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(country) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(cum_cases <span style="color:#f92672">=</span> <span style="color:#a6e22e">cumsum</span>(cases), 
+</span></span><span style="display:flex;"><span>         cum_deaths <span style="color:#f92672">=</span> <span style="color:#a6e22e">cumsum</span>(deaths)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># prepare text for tooltip</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(text <span style="color:#f92672">=</span> <span style="color:#a6e22e">paste</span>(<span style="color:#e6db74">&#34;Country: &#34;</span>, country, <span style="color:#e6db74">&#34;\ntoday cases: &#34;</span>, cases, <span style="color:#e6db74">&#34;\ntoday_deaths: &#34;</span>, deaths, <span style="color:#e6db74">&#34;\ntotal_cases: &#34;</span>, cum_cases, <span style="color:#e6db74">&#34;\ntotal_deaths: &#34;</span>, cum_deaths, sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(date <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;2020-04-05&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">distinct</span>(date, cases, deaths, country, .keep_all <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>)
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">renderPlotly</span>({
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Classic ggplot</span>
+</span></span><span style="display:flex;"><span>  p <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">ggplot</span>(<span style="color:#a6e22e">corona_bubble_df</span>(), <span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span>cases, y<span style="color:#f92672">=</span>deaths, size <span style="color:#f92672">=</span> popData2018, color <span style="color:#f92672">=</span> Continent_Name, text<span style="color:#f92672">=</span>text)) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">geom_point</span>(alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">0.7</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">scale_x_log10</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">scale_size</span>(range <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1.4</span>, <span style="color:#ae81ff">19</span>), name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Population (M)&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">scale_color_viridis</span>(discrete<span style="color:#f92672">=</span><span style="color:#66d9ef">TRUE</span>, guide<span style="color:#f92672">=</span><span style="color:#66d9ef">FALSE</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">theme</span>(legend.position<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ggplotly</span>(p, tooltip<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text&#34;</span>)
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div><p>위 소스코드를 새로운 <code>flexdashboard template</code> 정상적으로 실행했다면 아래와 같이 나타나면 정상이다.</p>
 <p><img src="/img/shiny/coronaProject/project_05/project_01.png" alt=""><!-- raw HTML omitted --></p>
 <h3 id="d-날짜-입력값-자동화-코드">(D) 날짜 입력값 자동화 코드</h3>
 <p>문제는 날짜를 바꿔도 그래프는 달라지지 않는다. 왜 그럴까? <code>reactive dataset</code> 코드를 따라 작성했다면, <code>filter(date == 2020-04-05)</code> 이와 같이 입력한 것을 확인할 수 있을 것이다. 즉, <code>2020-04-05</code> 이 부분을 입력값으로 대체를 해야 한다. 아래와 같이 수정한다.</p>
@@ -291,22 +299,22 @@ corona_bubble_df <span style="color:#f92672">&lt;-</span> <span style="color:#a6
 <li><code>filter(date == &quot;2020-04-05&quot;, !is.na(cty_code)</code>를 <code>filter(date &lt;= as.Date(as.character(input$bubbleDate)), !is.na(cty_code))</code> 수정한다.</li>
 <li><code>filter(date == &quot;2020-04-05&quot;)</code>를 <code>filter(date == as.Date(as.character(input$bubbleDate))</code>로 수정한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># Create data Reactive</span>
-corona_bubble_df <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">reactive</span>({
-  corona3 <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">filter</span>(date <span style="color:#f92672">&lt;=</span> <span style="color:#a6e22e">as.Date</span>(<span style="color:#a6e22e">as.character</span>(input<span style="color:#f92672">$</span>bubbleDate)), <span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(cty_code)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">select</span>(<span style="color:#f92672">-</span><span style="color:#a6e22e">c</span>(day, month, year, geoId)) <span style="color:#f92672">%&gt;%</span>
-  <span style="color:#75715e"># Reorder countries to having big bubbles on top</span>
-  <span style="color:#a6e22e">arrange</span>(date) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">group_by</span>(country) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">mutate</span>(cum_cases <span style="color:#f92672">=</span> <span style="color:#a6e22e">cumsum</span>(cases), 
-         cum_deaths <span style="color:#f92672">=</span> <span style="color:#a6e22e">cumsum</span>(deaths)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#75715e"># prepare text for tooltip</span>
-  <span style="color:#a6e22e">mutate</span>(text <span style="color:#f92672">=</span> <span style="color:#a6e22e">paste</span>(<span style="color:#e6db74">&#34;Country: &#34;</span>, country, <span style="color:#e6db74">&#34;\ntoday cases: &#34;</span>, cases, <span style="color:#e6db74">&#34;\ntoday_deaths: &#34;</span>, deaths, <span style="color:#e6db74">&#34;\ntotal_cases: &#34;</span>, cum_cases, <span style="color:#e6db74">&#34;\ntotal_deaths: &#34;</span>, cum_deaths, sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">filter</span>(date <span style="color:#f92672">==</span> <span style="color:#a6e22e">as.Date</span>(<span style="color:#a6e22e">as.character</span>(input<span style="color:#f92672">$</span>bubbleDate))) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">distinct</span>(date, cases, deaths, country, .keep_all <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>)
-})
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e"># Create data Reactive</span>
+</span></span><span style="display:flex;"><span>corona_bubble_df <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">reactive</span>({
+</span></span><span style="display:flex;"><span>  corona3 <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(date <span style="color:#f92672">&lt;=</span> <span style="color:#a6e22e">as.Date</span>(<span style="color:#a6e22e">as.character</span>(input<span style="color:#f92672">$</span>bubbleDate)), <span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(cty_code)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">select</span>(<span style="color:#f92672">-</span><span style="color:#a6e22e">c</span>(day, month, year, geoId)) <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Reorder countries to having big bubbles on top</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(date) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(country) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(cum_cases <span style="color:#f92672">=</span> <span style="color:#a6e22e">cumsum</span>(cases), 
+</span></span><span style="display:flex;"><span>         cum_deaths <span style="color:#f92672">=</span> <span style="color:#a6e22e">cumsum</span>(deaths)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># prepare text for tooltip</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(text <span style="color:#f92672">=</span> <span style="color:#a6e22e">paste</span>(<span style="color:#e6db74">&#34;Country: &#34;</span>, country, <span style="color:#e6db74">&#34;\ntoday cases: &#34;</span>, cases, <span style="color:#e6db74">&#34;\ntoday_deaths: &#34;</span>, deaths, <span style="color:#e6db74">&#34;\ntotal_cases: &#34;</span>, cum_cases, <span style="color:#e6db74">&#34;\ntotal_deaths: &#34;</span>, cum_deaths, sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(date <span style="color:#f92672">==</span> <span style="color:#a6e22e">as.Date</span>(<span style="color:#a6e22e">as.character</span>(input<span style="color:#f92672">$</span>bubbleDate))) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">distinct</span>(date, cases, deaths, country, .keep_all <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>)
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div><ul>
 <li>날짜를 입력받는데, <code>as.character()</code>가 나온 것에 대해 의구심이 생길 수 있는데, 이 부분을 다루려면 R의 Shiny의 <code>Date Input</code> 및 R 프로그래밍에서의 <code>Date Type에</code>값을 처리하는 것에 대한 부가적인 설명이 필요해서 일단 여기에서는 설명하지 않는다. (강사가 이 문제를 푸는데 약 30-40분 시간을 허비했다!)</li>
 <li><code>input$bubbleDate</code>는 뭘까? <code>shiny</code>의 <code>input &amp; output</code> 개념에 대한 이해도가 필요하며, 이 기본적인 개념은 <a href="https://dschloe.github.io/r/shiny/tutorial_02/">shiny tutorial 02 - Shiny Structure</a>에서 확인한다.</li>
 </ul>
@@ -370,7 +378,7 @@ corona_bubble_df <span style="color:#f92672">&lt;-</span> <span style="color:#a6
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

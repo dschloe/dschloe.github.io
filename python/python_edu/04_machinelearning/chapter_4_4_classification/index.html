@@ -8,30 +8,38 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="머신러닝 알고리즘 - 분류 Tutorial" />
-<meta property="og:description" content="개요  Kaggle 대회인 `Titanic&rsquo;대회를 통해 분류 모형을 만들어본다. 본 강의는 수업 자료의 일부로 작성되었다.  I. 사전 준비작업  Kaggle API 설치 및 연동해서 GCP에 데이터를 적재하는 것까지 진행한다.  (1) Kaggle API 설치  구글 코랩에서 API를 불러오려면 다음 소스코드를 실행한다.  !pip install kaggle Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.6) Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.23.0) Requirement already satisfied: urllib3&lt;1.25,&gt;=1.21.1 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1." />
+<meta property="og:description" content="개요 Kaggle 대회인 `Titanic&rsquo;대회를 통해 분류 모형을 만들어본다. 본 강의는 수업 자료의 일부로 작성되었다. I. 사전 준비작업 Kaggle API 설치 및 연동해서 GCP에 데이터를 적재하는 것까지 진행한다. (1) Kaggle API 설치 구글 코랩에서 API를 불러오려면 다음 소스코드를 실행한다. !pip install kaggle Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.6) Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.23.0) Requirement already satisfied: urllib3&lt;1.25,&gt;=1.21.1 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.24.3) Requirement already satisfied: python-slugify in /usr/local/lib/python3." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/python/python_edu/04_machinelearning/chapter_4_4_classification/" />
+<meta property="og:url" content="https://dschloe.github.io/python/python_edu/04_machinelearning/chapter_4_4_classification/" /><meta property="article:section" content="Python" />
 <meta property="article:published_time" content="2020-07-23T10:00:47+09:00" />
 <meta property="article:modified_time" content="2020-07-23T10:00:47+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="머신러닝 알고리즘 - 분류 Tutorial"/>
-<meta name="twitter:description" content="개요  Kaggle 대회인 `Titanic&rsquo;대회를 통해 분류 모형을 만들어본다. 본 강의는 수업 자료의 일부로 작성되었다.  I. 사전 준비작업  Kaggle API 설치 및 연동해서 GCP에 데이터를 적재하는 것까지 진행한다.  (1) Kaggle API 설치  구글 코랩에서 API를 불러오려면 다음 소스코드를 실행한다.  !pip install kaggle Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.6) Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.23.0) Requirement already satisfied: urllib3&lt;1.25,&gt;=1.21.1 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1."/>
+<meta name="twitter:description" content="개요 Kaggle 대회인 `Titanic&rsquo;대회를 통해 분류 모형을 만들어본다. 본 강의는 수업 자료의 일부로 작성되었다. I. 사전 준비작업 Kaggle API 설치 및 연동해서 GCP에 데이터를 적재하는 것까지 진행한다. (1) Kaggle API 설치 구글 코랩에서 API를 불러오려면 다음 소스코드를 실행한다. !pip install kaggle Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.6) Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.23.0) Requirement already satisfied: urllib3&lt;1.25,&gt;=1.21.1 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.24.3) Requirement already satisfied: python-slugify in /usr/local/lib/python3."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -190,8 +198,8 @@
 <ul>
 <li>구글 코랩에서 <code>API</code>를 불러오려면 다음 소스코드를 실행한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>pip install kaggle
-</code></pre></div><pre><code>Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.6)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>pip install kaggle
+</span></span></code></pre></div><pre><code>Requirement already satisfied: kaggle in /usr/local/lib/python3.6/dist-packages (1.5.6)
 Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from kaggle) (2.23.0)
 Requirement already satisfied: urllib3&lt;1.25,&gt;=1.21.1 in /usr/local/lib/python3.6/dist-packages (from kaggle) (1.24.3)
 Requirement already satisfied: python-slugify in /usr/local/lib/python3.6/dist-packages (from kaggle) (4.0.1)
@@ -209,15 +217,15 @@ Requirement already satisfied: text-unidecode&gt;=1.3 in /usr/local/lib/python3.
 <li>[Kaggle]-[My Account]-[API]-[Create New API Token]을 누르면 <code>kaggle.json</code> 파일이 다운로드 된다.</li>
 <li>이 파일을 바탕화면에 옮긴 뒤, 아래 코드를 실행 시킨다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> files
-uploaded <span style="color:#f92672">=</span> files<span style="color:#f92672">.</span>upload()
-<span style="color:#66d9ef">for</span> fn <span style="color:#f92672">in</span> uploaded<span style="color:#f92672">.</span>keys():
-  <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;uploaded file &#34;{name}&#34; with length {length} bytes&#39;</span><span style="color:#f92672">.</span>format(
-      name<span style="color:#f92672">=</span>fn, length<span style="color:#f92672">=</span>len(uploaded[fn])))
-  
-<span style="color:#75715e"># kaggle.json을 아래 폴더로 옮긴 뒤, file을 사용할 수 있도록 권한을 부여한다. </span>
-<span style="color:#960050;background-color:#1e0010">!</span>mkdir <span style="color:#f92672">-</span>p <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span> <span style="color:#f92672">&amp;&amp;</span> mv kaggle<span style="color:#f92672">.</span>json <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span> <span style="color:#f92672">&amp;&amp;</span> chmod <span style="color:#ae81ff">600</span> <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span>kaggle<span style="color:#f92672">.</span>json
-</code></pre></div><p><!-- raw HTML omitted -->
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> files
+</span></span><span style="display:flex;"><span>uploaded <span style="color:#f92672">=</span> files<span style="color:#f92672">.</span>upload()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> fn <span style="color:#f92672">in</span> uploaded<span style="color:#f92672">.</span>keys():
+</span></span><span style="display:flex;"><span>  print(<span style="color:#e6db74">&#39;uploaded file &#34;</span><span style="color:#e6db74">{name}</span><span style="color:#e6db74">&#34; with length </span><span style="color:#e6db74">{length}</span><span style="color:#e6db74"> bytes&#39;</span><span style="color:#f92672">.</span>format(
+</span></span><span style="display:flex;"><span>      name<span style="color:#f92672">=</span>fn, length<span style="color:#f92672">=</span>len(uploaded[fn])))
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># kaggle.json을 아래 폴더로 옮긴 뒤, file을 사용할 수 있도록 권한을 부여한다. </span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>mkdir <span style="color:#f92672">-</span>p <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span> <span style="color:#f92672">&amp;&amp;</span> mv kaggle<span style="color:#f92672">.</span>json <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span> <span style="color:#f92672">&amp;&amp;</span> chmod <span style="color:#ae81ff">600</span> <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span>kaggle<span style="color:#f92672">.</span>json
+</span></span></code></pre></div><p><!-- raw HTML omitted -->
 <!-- raw HTML omitted -->
 Upload widget is only available when the cell has been executed in the
 current browser session. Please rerun this cell to enable.
@@ -229,15 +237,15 @@ uploaded file &quot;kaggle.json&quot; with length 64 bytes
 <ul>
 <li>실제 <code>kaggle.json</code> 파일이 업로드 되었다는 뜻이다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ls <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>ha <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span>kaggle<span style="color:#f92672">.</span>json
-</code></pre></div><pre><code>/root/.kaggle/kaggle.json
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>ls <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>ha <span style="color:#f92672">~/.</span>kaggle<span style="color:#f92672">/</span>kaggle<span style="color:#f92672">.</span>json
+</span></span></code></pre></div><pre><code>/root/.kaggle/kaggle.json
 </code></pre>
 <h3 id="3-kaggle-데이터-불러오기">(3) Kaggle 데이터 불러오기</h3>
 <ul>
 <li><code>Kaggle</code> 대회 리스트를 불러온다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>kaggle competitions list
-</code></pre></div><pre><code>Warning: Looks like you're using an outdated API Version, please consider updating (server 1.5.6 / client 1.5.4)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>kaggle competitions list
+</span></span></code></pre></div><pre><code>Warning: Looks like you're using an outdated API Version, please consider updating (server 1.5.6 / client 1.5.4)
 ref                                            deadline             category            reward  teamCount  userHasEntered  
 ---------------------------------------------  -------------------  ---------------  ---------  ---------  --------------  
 tpu-getting-started                            2030-06-03 23:59:00  Getting Started      Kudos        220           False  
@@ -265,8 +273,8 @@ m5-forecasting-uncertainty                     2020-06-30 23:59:00  Featured    
 <li>여기에서 참여하기 원하는 대회의 데이터셋을 불러오면 된다.</li>
 <li>이번 <code>basic</code>강의에서는 <code>kkbox-churn-prediction-challenge</code> 데이터를 활용한 데이터 가공과 시각화를 연습할 것이기 때문에 아래와 같이 코드를 실행하여 데이터를 불러온다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>kaggle competitions download <span style="color:#f92672">-</span>c titanic
-</code></pre></div><pre><code>Warning: Looks like you're using an outdated API Version, please consider updating (server 1.5.6 / client 1.5.4)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>kaggle competitions download <span style="color:#f92672">-</span>c titanic
+</span></span></code></pre></div><pre><code>Warning: Looks like you're using an outdated API Version, please consider updating (server 1.5.6 / client 1.5.4)
 Downloading train.csv to /content
   0% 0.00/59.8k [00:00&lt;?, ?B/s]
 100% 59.8k/59.8k [00:00&lt;00:00, 58.6MB/s]
@@ -280,8 +288,8 @@ Downloading test.csv to /content
 <ul>
 <li>실제 데이터가 잘 다운로드 받게 되었는지 확인한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>ls
-</code></pre></div><pre><code>gender_submission.csv	       test.csv		    transactions_v2.csv.7z
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>ls
+</span></span></code></pre></div><pre><code>gender_submission.csv	       test.csv		    transactions_v2.csv.7z
 members_v3.csv.7z	       train.csv	    user_logs.csv.7z
 sample_data		       train.csv.7z	    user_logs_v2.csv.7z
 sample_submission_v2.csv.7z    train_v2.csv.7z	    WSDMChurnLabeller.scala
@@ -304,45 +312,45 @@ sample_submission_zero.csv.7z  transactions.csv.7z
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
-<span style="color:#f92672">from</span> pandas.io <span style="color:#f92672">import</span> gbq
-
-<span style="color:#75715e"># import sample_submission file</span>
-gender_submission <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;gender_submission.csv&#39;</span>)
-
-<span style="color:#75715e"># Connect to Google Cloud API and Upload DataFrame</span>
-gender_submission<span style="color:#f92672">.</span>to_gbq(destination_table<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;titanic_classification.gender_submission&#39;</span>, 
-                  project_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bigquerytutorial-274406&#39;</span>, 
-                  if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>)
-</code></pre></div><pre><code>Please visit this URL to authorize this application: https://accounts.google.com/o/oauth2/auth?response_type=code&amp;client_id=725825577420-unm2gnkiprugilg743tkbig250f4sfsj.apps.googleusercontent.com&amp;redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&amp;scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fbigquery&amp;state=6WuVr7UTuUT2xAe1gjci8tyGZ5t46s&amp;prompt=consent&amp;access_type=offline
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> pandas.io <span style="color:#f92672">import</span> gbq
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># import sample_submission file</span>
+</span></span><span style="display:flex;"><span>gender_submission <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;gender_submission.csv&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Connect to Google Cloud API and Upload DataFrame</span>
+</span></span><span style="display:flex;"><span>gender_submission<span style="color:#f92672">.</span>to_gbq(destination_table<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;titanic_classification.gender_submission&#39;</span>, 
+</span></span><span style="display:flex;"><span>                  project_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bigquerytutorial-274406&#39;</span>, 
+</span></span><span style="display:flex;"><span>                  if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>)
+</span></span></code></pre></div><pre><code>Please visit this URL to authorize this application: https://accounts.google.com/o/oauth2/auth?response_type=code&amp;client_id=725825577420-unm2gnkiprugilg743tkbig250f4sfsj.apps.googleusercontent.com&amp;redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&amp;scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fbigquery&amp;state=6WuVr7UTuUT2xAe1gjci8tyGZ5t46s&amp;prompt=consent&amp;access_type=offline
 Enter the authorization code: 4/2QFcBrm2ui5JMeBU3L43UfLheY4LOZG2ZlWZtcZ4_K_kJieLYvmJSk0
 
 
 1it [00:04,  4.43s/it]
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
-<span style="color:#f92672">from</span> pandas.io <span style="color:#f92672">import</span> gbq
-<span style="color:#75715e"># import train file </span>
-train <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;train.csv&#39;</span>)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> pandas.io <span style="color:#f92672">import</span> gbq
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># import train file </span>
+</span></span><span style="display:flex;"><span>train <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;train.csv&#39;</span>)
+</span></span></code></pre></div><ul>
 <li><code>column</code>명을 확인해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(train<span style="color:#f92672">.</span>columns)
-</code></pre></div><pre><code>Index(['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp',
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(train<span style="color:#f92672">.</span>columns)
+</span></span></code></pre></div><pre><code>Index(['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp',
        'Parch', 'Ticket', 'Fare', 'Cabin', 'Embarked'],
       dtype='object')
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train<span style="color:#f92672">.</span>to_gbq(destination_table<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;titanic_classification.train&#39;</span>, 
-                  project_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bigquerytutorial-274406&#39;</span>, 
-                  if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>)
-</code></pre></div><pre><code>1it [00:02,  2.89s/it]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train<span style="color:#f92672">.</span>to_gbq(destination_table<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;titanic_classification.train&#39;</span>, 
+</span></span><span style="display:flex;"><span>                  project_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bigquerytutorial-274406&#39;</span>, 
+</span></span><span style="display:flex;"><span>                  if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>)
+</span></span></code></pre></div><pre><code>1it [00:02,  2.89s/it]
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Connect to Google Cloud API and Upload DataFrame</span>
-test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;test.csv&#39;</span>)
-test<span style="color:#f92672">.</span>to_gbq(destination_table<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;titanic_classification.test&#39;</span>, 
-            project_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bigquerytutorial-274406&#39;</span>, 
-            if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>)
-</code></pre></div><pre><code>1it [00:04,  4.63s/it]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Connect to Google Cloud API and Upload DataFrame</span>
+</span></span><span style="display:flex;"><span>test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;test.csv&#39;</span>)
+</span></span><span style="display:flex;"><span>test<span style="color:#f92672">.</span>to_gbq(destination_table<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;titanic_classification.test&#39;</span>, 
+</span></span><span style="display:flex;"><span>            project_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bigquerytutorial-274406&#39;</span>, 
+</span></span><span style="display:flex;"><span>            if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>)
+</span></span></code></pre></div><pre><code>1it [00:04,  4.63s/it]
 </code></pre>
 <ul>
 <li>실제 데이터가 들어갔는지 빅쿼리에서 확인한다.</li>
@@ -357,68 +365,68 @@ test<span style="color:#f92672">.</span>to_gbq(destination_table<span style="col
 <ul>
 <li>이제 주요 패키지를 불러온다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np 
-<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd 
-
-<span style="color:#f92672">from</span> sklearn <span style="color:#f92672">import</span> preprocessing
-<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt 
-plt<span style="color:#f92672">.</span>rc(<span style="color:#e6db74">&#34;font&#34;</span>, size<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
-<span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
-sns<span style="color:#f92672">.</span>set(style<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;white&#34;</span>) <span style="color:#75715e">#white background style for seaborn plots</span>
-sns<span style="color:#f92672">.</span>set(style<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;whitegrid&#34;</span>, color_codes<span style="color:#f92672">=</span>True)
-
-<span style="color:#f92672">import</span> warnings
-warnings<span style="color:#f92672">.</span>simplefilter(action<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;ignore&#39;</span>)
-</code></pre></div><h3 id="2-데이터-불러오기">(2) 데이터 불러오기</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> auth
-auth<span style="color:#f92672">.</span>authenticate_user()
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Authenticated&#39;</span>)
-</code></pre></div><pre><code>Authenticated
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn <span style="color:#f92672">import</span> preprocessing
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt 
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>rc(<span style="color:#e6db74">&#34;font&#34;</span>, size<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> seaborn <span style="color:#66d9ef">as</span> sns
+</span></span><span style="display:flex;"><span>sns<span style="color:#f92672">.</span>set(style<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;white&#34;</span>) <span style="color:#75715e">#white background style for seaborn plots</span>
+</span></span><span style="display:flex;"><span>sns<span style="color:#f92672">.</span>set(style<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;whitegrid&#34;</span>, color_codes<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> warnings
+</span></span><span style="display:flex;"><span>warnings<span style="color:#f92672">.</span>simplefilter(action<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;ignore&#39;</span>)
+</span></span></code></pre></div><h3 id="2-데이터-불러오기">(2) 데이터 불러오기</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> auth
+</span></span><span style="display:flex;"><span>auth<span style="color:#f92672">.</span>authenticate_user()
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;Authenticated&#39;</span>)
+</span></span></code></pre></div><pre><code>Authenticated
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 구글 인증 라이브러리</span>
-<span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> auth
-
-<span style="color:#75715e"># 빅쿼리 관련 라이브러리</span>
-<span style="color:#f92672">from</span> google.cloud <span style="color:#f92672">import</span> bigquery
-<span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
-<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 구글 인증 라이브러리</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> auth
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 빅쿼리 관련 라이브러리</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> google.cloud <span style="color:#f92672">import</span> bigquery
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span></code></pre></div><ul>
 <li>먼저 훈련 데이터를 불러온다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.cloud <span style="color:#f92672">import</span> bigquery
-<span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
-<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
-
-project_id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;bigquerytutorial-274406&#39;</span>
-client <span style="color:#f92672">=</span> bigquery<span style="color:#f92672">.</span>Client(project<span style="color:#f92672">=</span>project_id)
-
-df_train <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">  SELECT 
-</span><span style="color:#e6db74">      * 
-</span><span style="color:#e6db74">  FROM `bigquerytutorial-274406.titanic_classification.train`
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-df_train<span style="color:#f92672">.</span>shape
-</code></pre></div><pre><code>(891, 12)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> google.cloud <span style="color:#f92672">import</span> bigquery
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>project_id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;bigquerytutorial-274406&#39;</span>
+</span></span><span style="display:flex;"><span>client <span style="color:#f92672">=</span> bigquery<span style="color:#f92672">.</span>Client(project<span style="color:#f92672">=</span>project_id)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>df_train <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  SELECT 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      * 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  FROM `bigquerytutorial-274406.titanic_classification.train`
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>df_train<span style="color:#f92672">.</span>shape
+</span></span></code></pre></div><pre><code>(891, 12)
 </code></pre>
 <ul>
 <li>그 다음은 테스트 데이터를 불러온다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_test <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">  SELECT 
-</span><span style="color:#e6db74">      * 
-</span><span style="color:#e6db74">  FROM `bigquerytutorial-274406.titanic_classification.test`
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-df_test<span style="color:#f92672">.</span>shape
-</code></pre></div><pre><code>(418, 11)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>df_test <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  SELECT 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      * 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  FROM `bigquerytutorial-274406.titanic_classification.test`
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>df_test<span style="color:#f92672">.</span>shape
+</span></span></code></pre></div><pre><code>(418, 11)
 </code></pre>
 <ul>
 <li>아래 코드는 출력 시, 전체 <code>Column</code>에 대해 확인할 수 있음</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">pd<span style="color:#f92672">.</span>options<span style="color:#f92672">.</span>display<span style="color:#f92672">.</span>max_columns <span style="color:#f92672">=</span> None 
-<span style="color:#75715e"># df_train.head()</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>pd<span style="color:#f92672">.</span>options<span style="color:#f92672">.</span>display<span style="color:#f92672">.</span>max_columns <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># df_train.head()</span>
+</span></span></code></pre></div><ul>
 <li>각 데이터에 대한 설명은 다음을 참조한다.
 <ul>
 <li>참조: <a href="https://www.kaggle.com/c/titanic/data">https://www.kaggle.com/c/titanic/data</a></li>
@@ -426,16 +434,16 @@ df_test<span style="color:#f92672">.</span>shape
 </li>
 </ul>
 <h3 id="3-결측-데이터-확인">(3) 결측 데이터 확인</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># data set의 Percent 구하는 함수를 짜보자. </span>
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_fill_na</span>(data):
-  new_df <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>copy()
-  new_df_na <span style="color:#f92672">=</span> (new_df<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> len(new_df)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>
-  new_df_na<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92672">=</span>True)
-  new_df_na <span style="color:#f92672">=</span> new_df_na<span style="color:#f92672">.</span>drop(new_df_na[new_df_na <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>index)<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)
-  <span style="color:#66d9ef">return</span> new_df_na
-
-check_fill_na(df_train)
-</code></pre></div><pre><code>Cabin       77.104377
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># data set의 Percent 구하는 함수를 짜보자. </span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_fill_na</span>(data):
+</span></span><span style="display:flex;"><span>  new_df <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>copy()
+</span></span><span style="display:flex;"><span>  new_df_na <span style="color:#f92672">=</span> (new_df<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> len(new_df)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>  new_df_na<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>  new_df_na <span style="color:#f92672">=</span> new_df_na<span style="color:#f92672">.</span>drop(new_df_na[new_df_na <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>index)<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> new_df_na
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>check_fill_na(df_train)
+</span></span></code></pre></div><pre><code>Cabin       77.104377
 Age         19.865320
 Embarked     0.224467
 dtype: float64
@@ -443,16 +451,16 @@ dtype: float64
 <ul>
 <li>각 데이터에 대한 구체적인 그래프를 작성해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ax <span style="color:#f92672">=</span> train[<span style="color:#e6db74">&#34;Age&#34;</span>]<span style="color:#f92672">.</span>hist(bins<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span>, density<span style="color:#f92672">=</span>True, stacked<span style="color:#f92672">=</span>True, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;teal&#39;</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">0.6</span>)
-train[<span style="color:#e6db74">&#34;Age&#34;</span>]<span style="color:#f92672">.</span>plot(kind<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;density&#39;</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;teal&#39;</span>)
-ax<span style="color:#f92672">.</span>set(xlabel<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Age&#39;</span>)
-plt<span style="color:#f92672">.</span>xlim(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">85</span>)
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="/img/python_edu/04_machineLearning/Chapter_4_4_classification/output_40_0.png" alt="png"></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(train[<span style="color:#e6db74">&#39;Embarked&#39;</span>]<span style="color:#f92672">.</span>value_counts())
-sns<span style="color:#f92672">.</span>countplot(x<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Embarked&#39;</span>, data<span style="color:#f92672">=</span>train, palette<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Set2&#39;</span>)
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><pre><code>S    644
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>ax <span style="color:#f92672">=</span> train[<span style="color:#e6db74">&#34;Age&#34;</span>]<span style="color:#f92672">.</span>hist(bins<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span>, density<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, stacked<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;teal&#39;</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">0.6</span>)
+</span></span><span style="display:flex;"><span>train[<span style="color:#e6db74">&#34;Age&#34;</span>]<span style="color:#f92672">.</span>plot(kind<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;density&#39;</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;teal&#39;</span>)
+</span></span><span style="display:flex;"><span>ax<span style="color:#f92672">.</span>set(xlabel<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Age&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlim(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">85</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img src="/img/python_edu/04_machineLearning/Chapter_4_4_classification/output_40_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(train[<span style="color:#e6db74">&#39;Embarked&#39;</span>]<span style="color:#f92672">.</span>value_counts())
+</span></span><span style="display:flex;"><span>sns<span style="color:#f92672">.</span>countplot(x<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Embarked&#39;</span>, data<span style="color:#f92672">=</span>train, palette<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Set2&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><pre><code>S    644
 C    168
 Q     77
 Name: Embarked, dtype: int64
@@ -467,12 +475,12 @@ Name: Embarked, dtype: int64
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_data <span style="color:#f92672">=</span> train<span style="color:#f92672">.</span>copy()
-train_data[<span style="color:#e6db74">&#34;Age&#34;</span>]<span style="color:#f92672">.</span>fillna(train[<span style="color:#e6db74">&#34;Age&#34;</span>]<span style="color:#f92672">.</span>median(skipna<span style="color:#f92672">=</span>True), inplace<span style="color:#f92672">=</span>True)
-train_data[<span style="color:#e6db74">&#34;Embarked&#34;</span>]<span style="color:#f92672">.</span>fillna(train[<span style="color:#e6db74">&#39;Embarked&#39;</span>]<span style="color:#f92672">.</span>value_counts()<span style="color:#f92672">.</span>idxmax(), inplace<span style="color:#f92672">=</span>True)
-train_data<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Cabin&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">check_fill_na(train_data)
-</code></pre></div><pre><code>Series([], dtype: float64)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train_data <span style="color:#f92672">=</span> train<span style="color:#f92672">.</span>copy()
+</span></span><span style="display:flex;"><span>train_data[<span style="color:#e6db74">&#34;Age&#34;</span>]<span style="color:#f92672">.</span>fillna(train[<span style="color:#e6db74">&#34;Age&#34;</span>]<span style="color:#f92672">.</span>median(skipna<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>), inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>train_data[<span style="color:#e6db74">&#34;Embarked&#34;</span>]<span style="color:#f92672">.</span>fillna(train[<span style="color:#e6db74">&#39;Embarked&#39;</span>]<span style="color:#f92672">.</span>value_counts()<span style="color:#f92672">.</span>idxmax(), inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>train_data<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Cabin&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>check_fill_na(train_data)
+</span></span></code></pre></div><pre><code>Series([], dtype: float64)
 </code></pre>
 <ul>
 <li>위 데이터에 결측치가 없도록 처리하였다.</li>
@@ -481,36 +489,36 @@ train_data<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&
 <ul>
 <li><code>SilSp</code> + <code>Parch</code> 변수를 조합하여 혼자 여행을 온 것인지 아닌지 구분하는 도출 변수를 만든 후, 위 변수는 삭제 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">## Create categorical variable for traveling alone</span>
-train_data[<span style="color:#e6db74">&#39;TravelAlone&#39;</span>]<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>where((train_data[<span style="color:#e6db74">&#34;SibSp&#34;</span>]<span style="color:#f92672">+</span>train_data[<span style="color:#e6db74">&#34;Parch&#34;</span>])<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)
-train_data<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;SibSp&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-train_data<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Parch&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">## Create categorical variable for traveling alone</span>
+</span></span><span style="display:flex;"><span>train_data[<span style="color:#e6db74">&#39;TravelAlone&#39;</span>]<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>where((train_data[<span style="color:#e6db74">&#34;SibSp&#34;</span>]<span style="color:#f92672">+</span>train_data[<span style="color:#e6db74">&#34;Parch&#34;</span>])<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>train_data<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;SibSp&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>train_data<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Parch&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><ul>
 <li><code>Age</code>별 생존여부에 관한 그래프를 작성한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">20</span>,<span style="color:#ae81ff">8</span>))
-avg_survival_byage <span style="color:#f92672">=</span> final_train[[<span style="color:#e6db74">&#34;Age&#34;</span>, <span style="color:#e6db74">&#34;Survived&#34;</span>]]<span style="color:#f92672">.</span>groupby([<span style="color:#e6db74">&#39;Age&#39;</span>], as_index<span style="color:#f92672">=</span>False)<span style="color:#f92672">.</span>mean()
-g <span style="color:#f92672">=</span> sns<span style="color:#f92672">.</span>barplot(x<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Age&#39;</span>, y<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Survived&#39;</span>, data<span style="color:#f92672">=</span>avg_survival_byage, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;LightSeaGreen&#34;</span>)
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="/img/python_edu/04_machineLearning/Chapter_4_4_classification/output_49_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">20</span>,<span style="color:#ae81ff">8</span>))
+</span></span><span style="display:flex;"><span>avg_survival_byage <span style="color:#f92672">=</span> final_train[[<span style="color:#e6db74">&#34;Age&#34;</span>, <span style="color:#e6db74">&#34;Survived&#34;</span>]]<span style="color:#f92672">.</span>groupby([<span style="color:#e6db74">&#39;Age&#39;</span>], as_index<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)<span style="color:#f92672">.</span>mean()
+</span></span><span style="display:flex;"><span>g <span style="color:#f92672">=</span> sns<span style="color:#f92672">.</span>barplot(x<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Age&#39;</span>, y<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Survived&#39;</span>, data<span style="color:#f92672">=</span>avg_survival_byage, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;LightSeaGreen&#34;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img src="/img/python_edu/04_machineLearning/Chapter_4_4_classification/output_49_0.png" alt="png"></p>
 <ul>
 <li>그 후에 <code>under_age</code>에 대한 도출변수를 추가로 만든다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_data[<span style="color:#e6db74">&#39;IsMinor&#39;</span>]<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>where(train_data[<span style="color:#e6db74">&#39;Age&#39;</span>]<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)
-</code></pre></div><h3 id="5-원-핫-인코딩">(5) 원-핫 인코딩</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train_data[<span style="color:#e6db74">&#39;IsMinor&#39;</span>]<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>where(train_data[<span style="color:#e6db74">&#39;Age&#39;</span>]<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)
+</span></span></code></pre></div><h3 id="5-원-핫-인코딩">(5) 원-핫 인코딩</h3>
 <ul>
 <li>각 <code>Column</code> 특히, <code>문자형 변수</code>에 대해 원-핫 인코딩을 진행한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#create categorical variables and drop some variables</span>
-training<span style="color:#f92672">=</span>pd<span style="color:#f92672">.</span>get_dummies(train_data, columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;Pclass&#34;</span>,<span style="color:#e6db74">&#34;Embarked&#34;</span>,<span style="color:#e6db74">&#34;Sex&#34;</span>])
-training<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Sex_female&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-training<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;PassengerId&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-training<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Name&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-training<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Ticket&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-
-final_train <span style="color:#f92672">=</span> training
-final_train<span style="color:#f92672">.</span>info()
-</code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#create categorical variables and drop some variables</span>
+</span></span><span style="display:flex;"><span>training<span style="color:#f92672">=</span>pd<span style="color:#f92672">.</span>get_dummies(train_data, columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;Pclass&#34;</span>,<span style="color:#e6db74">&#34;Embarked&#34;</span>,<span style="color:#e6db74">&#34;Sex&#34;</span>])
+</span></span><span style="display:flex;"><span>training<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Sex_female&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>training<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;PassengerId&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>training<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Name&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>training<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Ticket&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>final_train <span style="color:#f92672">=</span> training
+</span></span><span style="display:flex;"><span>final_train<span style="color:#f92672">.</span>info()
+</span></span></code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
 RangeIndex: 891 entries, 0 to 890
 Data columns (total 12 columns):
  #   Column       Non-Null Count  Dtype  
@@ -533,27 +541,27 @@ memory usage: 41.0 KB
 <ul>
 <li>위에 했던 작업을 동일하게 <code>test</code> 데이터에도 적용한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">test_data <span style="color:#f92672">=</span> test<span style="color:#f92672">.</span>copy()
-test_data[<span style="color:#e6db74">&#34;Age&#34;</span>]<span style="color:#f92672">.</span>fillna(test[<span style="color:#e6db74">&#34;Age&#34;</span>]<span style="color:#f92672">.</span>median(skipna<span style="color:#f92672">=</span>True), inplace<span style="color:#f92672">=</span>True)
-test_data[<span style="color:#e6db74">&#34;Fare&#34;</span>]<span style="color:#f92672">.</span>fillna(test[<span style="color:#e6db74">&#34;Fare&#34;</span>]<span style="color:#f92672">.</span>median(skipna<span style="color:#f92672">=</span>True), inplace<span style="color:#f92672">=</span>True)
-test_data<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Cabin&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-
-test_data[<span style="color:#e6db74">&#39;TravelAlone&#39;</span>]<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>where((test_data[<span style="color:#e6db74">&#34;SibSp&#34;</span>]<span style="color:#f92672">+</span>test_data[<span style="color:#e6db74">&#34;Parch&#34;</span>])<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)
-
-test_data<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;SibSp&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-test_data<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Parch&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-
-test_data[<span style="color:#e6db74">&#39;IsMinor&#39;</span>]<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>where(test_data[<span style="color:#e6db74">&#39;Age&#39;</span>]<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)
-
-testing <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>get_dummies(test_data, columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;Pclass&#34;</span>,<span style="color:#e6db74">&#34;Embarked&#34;</span>,<span style="color:#e6db74">&#34;Sex&#34;</span>])
-testing<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Sex_female&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-testing<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;PassengerId&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-testing<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Name&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-testing<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Ticket&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-
-final_test <span style="color:#f92672">=</span> testing
-final_test<span style="color:#f92672">.</span>info()
-</code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>test_data <span style="color:#f92672">=</span> test<span style="color:#f92672">.</span>copy()
+</span></span><span style="display:flex;"><span>test_data[<span style="color:#e6db74">&#34;Age&#34;</span>]<span style="color:#f92672">.</span>fillna(test[<span style="color:#e6db74">&#34;Age&#34;</span>]<span style="color:#f92672">.</span>median(skipna<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>), inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>test_data[<span style="color:#e6db74">&#34;Fare&#34;</span>]<span style="color:#f92672">.</span>fillna(test[<span style="color:#e6db74">&#34;Fare&#34;</span>]<span style="color:#f92672">.</span>median(skipna<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>), inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>test_data<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Cabin&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test_data[<span style="color:#e6db74">&#39;TravelAlone&#39;</span>]<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>where((test_data[<span style="color:#e6db74">&#34;SibSp&#34;</span>]<span style="color:#f92672">+</span>test_data[<span style="color:#e6db74">&#34;Parch&#34;</span>])<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test_data<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;SibSp&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>test_data<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Parch&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test_data[<span style="color:#e6db74">&#39;IsMinor&#39;</span>]<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>where(test_data[<span style="color:#e6db74">&#39;Age&#39;</span>]<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>testing <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>get_dummies(test_data, columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;Pclass&#34;</span>,<span style="color:#e6db74">&#34;Embarked&#34;</span>,<span style="color:#e6db74">&#34;Sex&#34;</span>])
+</span></span><span style="display:flex;"><span>testing<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Sex_female&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>testing<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;PassengerId&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>testing<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Name&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>testing<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Ticket&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>final_test <span style="color:#f92672">=</span> testing
+</span></span><span style="display:flex;"><span>final_test<span style="color:#f92672">.</span>info()
+</span></span></code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
 RangeIndex: 418 entries, 0 to 417
 Data columns (total 11 columns):
  #   Column       Non-Null Count  Dtype  
@@ -582,43 +590,43 @@ memory usage: 16.0 KB
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.linear_model <span style="color:#f92672">import</span> LogisticRegression
-<span style="color:#f92672">from</span> sklearn.feature_selection <span style="color:#f92672">import</span> RFE
-
-cols <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;Age&#34;</span>,<span style="color:#e6db74">&#34;Fare&#34;</span>,<span style="color:#e6db74">&#34;TravelAlone&#34;</span>,<span style="color:#e6db74">&#34;Pclass_1&#34;</span>,<span style="color:#e6db74">&#34;Pclass_2&#34;</span>,<span style="color:#e6db74">&#34;Embarked_C&#34;</span>,<span style="color:#e6db74">&#34;Embarked_S&#34;</span>,<span style="color:#e6db74">&#34;Sex_male&#34;</span>,<span style="color:#e6db74">&#34;IsMinor&#34;</span>] 
-X <span style="color:#f92672">=</span> final_train[cols]
-y <span style="color:#f92672">=</span> final_train[<span style="color:#e6db74">&#39;Survived&#39;</span>]
-model <span style="color:#f92672">=</span> LogisticRegression()
-rfe <span style="color:#f92672">=</span> RFE(model, <span style="color:#ae81ff">8</span>) <span style="color:#75715e"># 변수 8개만 선택</span>
-rfe <span style="color:#f92672">=</span> rfe<span style="color:#f92672">.</span>fit(X, y)
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Selected features: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> list(X<span style="color:#f92672">.</span>columns[rfe<span style="color:#f92672">.</span>support_]))
-</code></pre></div><pre><code>Selected features: ['Age', 'TravelAlone', 'Pclass_1', 'Pclass_2', 'Embarked_C', 'Embarked_S', 'Sex_male', 'IsMinor']
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.linear_model <span style="color:#f92672">import</span> LogisticRegression
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.feature_selection <span style="color:#f92672">import</span> RFE
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cols <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;Age&#34;</span>,<span style="color:#e6db74">&#34;Fare&#34;</span>,<span style="color:#e6db74">&#34;TravelAlone&#34;</span>,<span style="color:#e6db74">&#34;Pclass_1&#34;</span>,<span style="color:#e6db74">&#34;Pclass_2&#34;</span>,<span style="color:#e6db74">&#34;Embarked_C&#34;</span>,<span style="color:#e6db74">&#34;Embarked_S&#34;</span>,<span style="color:#e6db74">&#34;Sex_male&#34;</span>,<span style="color:#e6db74">&#34;IsMinor&#34;</span>] 
+</span></span><span style="display:flex;"><span>X <span style="color:#f92672">=</span> final_train[cols]
+</span></span><span style="display:flex;"><span>y <span style="color:#f92672">=</span> final_train[<span style="color:#e6db74">&#39;Survived&#39;</span>]
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> LogisticRegression()
+</span></span><span style="display:flex;"><span>rfe <span style="color:#f92672">=</span> RFE(model, <span style="color:#ae81ff">8</span>) <span style="color:#75715e"># 변수 8개만 선택</span>
+</span></span><span style="display:flex;"><span>rfe <span style="color:#f92672">=</span> rfe<span style="color:#f92672">.</span>fit(X, y)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;Selected features: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> list(X<span style="color:#f92672">.</span>columns[rfe<span style="color:#f92672">.</span>support_]))
+</span></span></code></pre></div><pre><code>Selected features: ['Age', 'TravelAlone', 'Pclass_1', 'Pclass_2', 'Embarked_C', 'Embarked_S', 'Sex_male', 'IsMinor']
 </code></pre>
 <ul>
 <li>이번에는 변수의 갯수에 따라 <code>classification</code> 정확도를 시각화 하여 변수의 개수를 정해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.feature_selection <span style="color:#f92672">import</span> RFECV
-rfecv <span style="color:#f92672">=</span> RFECV(estimator<span style="color:#f92672">=</span>LogisticRegression(), step<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, cv<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, scoring<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;accuracy&#39;</span>)
-rfecv<span style="color:#f92672">.</span>fit(X, y)
-
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Optimal number of features: </span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> rfecv<span style="color:#f92672">.</span>n_features_)
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Selected features: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> list(X<span style="color:#f92672">.</span>columns[rfecv<span style="color:#f92672">.</span>support_]))
-
-plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">6</span>))
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#34;Number of features selected&#34;</span>)
-plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#34;Cross validation score (nb of correct classifications)&#34;</span>)
-plt<span style="color:#f92672">.</span>plot(range(<span style="color:#ae81ff">1</span>, len(rfecv<span style="color:#f92672">.</span>grid_scores_) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>), rfecv<span style="color:#f92672">.</span>grid_scores_)
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><pre><code>Optimal number of features: 9
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.feature_selection <span style="color:#f92672">import</span> RFECV
+</span></span><span style="display:flex;"><span>rfecv <span style="color:#f92672">=</span> RFECV(estimator<span style="color:#f92672">=</span>LogisticRegression(), step<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, cv<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, scoring<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;accuracy&#39;</span>)
+</span></span><span style="display:flex;"><span>rfecv<span style="color:#f92672">.</span>fit(X, y)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;Optimal number of features: </span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> rfecv<span style="color:#f92672">.</span>n_features_)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;Selected features: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> list(X<span style="color:#f92672">.</span>columns[rfecv<span style="color:#f92672">.</span>support_]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">6</span>))
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#34;Number of features selected&#34;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#34;Cross validation score (nb of correct classifications)&#34;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(range(<span style="color:#ae81ff">1</span>, len(rfecv<span style="color:#f92672">.</span>grid_scores_) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>), rfecv<span style="color:#f92672">.</span>grid_scores_)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><pre><code>Optimal number of features: 9
 Selected features: ['Age', 'Fare', 'TravelAlone', 'Pclass_1', 'Pclass_2', 'Embarked_C', 'Embarked_S', 'Sex_male', 'IsMinor']
 </code></pre>
 <p><img src="/img/python_edu/04_machineLearning/Chapter_4_4_classification/output_59_1.png" alt="png"></p>
 <ul>
 <li>해당 주요 변수를 <code>Selected_features</code>로 저장한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">Selected_features <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Age&#39;</span>, <span style="color:#e6db74">&#39;TravelAlone&#39;</span>, <span style="color:#e6db74">&#39;Pclass_1&#39;</span>, <span style="color:#e6db74">&#39;Pclass_2&#39;</span>, <span style="color:#e6db74">&#39;Embarked_C&#39;</span>, 
-                     <span style="color:#e6db74">&#39;Embarked_S&#39;</span>, <span style="color:#e6db74">&#39;Sex_male&#39;</span>, <span style="color:#e6db74">&#39;IsMinor&#39;</span>]
-</code></pre></div><h2 id="iii-머신러닝">III. 머신러닝</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>Selected_features <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Age&#39;</span>, <span style="color:#e6db74">&#39;TravelAlone&#39;</span>, <span style="color:#e6db74">&#39;Pclass_1&#39;</span>, <span style="color:#e6db74">&#39;Pclass_2&#39;</span>, <span style="color:#e6db74">&#39;Embarked_C&#39;</span>, 
+</span></span><span style="display:flex;"><span>                     <span style="color:#e6db74">&#39;Embarked_S&#39;</span>, <span style="color:#e6db74">&#39;Sex_male&#39;</span>, <span style="color:#e6db74">&#39;IsMinor&#39;</span>]
+</span></span></code></pre></div><h2 id="iii-머신러닝">III. 머신러닝</h2>
 <ul>
 <li>로지스틱 회귀모형을 통해 머신러닝을 수행한다.</li>
 </ul>
@@ -626,46 +634,46 @@ Selected features: ['Age', 'Fare', 'TravelAlone', 'Pclass_1', 'Pclass_2', 'Embar
 <ul>
 <li>데이터셋 분리 부터 모형 개발까지 진행해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.model_selection <span style="color:#f92672">import</span> train_test_split, cross_val_score
-<span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> accuracy_score, classification_report, precision_score, recall_score 
-<span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> confusion_matrix, precision_recall_curve, roc_curve, auc, log_loss
-
-<span style="color:#75715e"># 데이터 셋 분리 </span>
-X <span style="color:#f92672">=</span> final_train[Selected_features]
-y <span style="color:#f92672">=</span> final_train[<span style="color:#e6db74">&#39;Survived&#39;</span>]
-
-X_train, X_test, y_train, y_test <span style="color:#f92672">=</span> train_test_split(X, y, test_size<span style="color:#f92672">=</span><span style="color:#ae81ff">0.2</span>, random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
-
-<span style="color:#75715e"># 로지스틱 회귀모형</span>
-logreg <span style="color:#f92672">=</span> LogisticRegression()
-logreg<span style="color:#f92672">.</span>fit(X_train, y_train)
-y_pred <span style="color:#f92672">=</span> logreg<span style="color:#f92672">.</span>predict(X_test)
-y_pred_proba <span style="color:#f92672">=</span> logreg<span style="color:#f92672">.</span>predict_proba(X_test)[:, <span style="color:#ae81ff">1</span>]
-[fpr, tpr, thr] <span style="color:#f92672">=</span> roc_curve(y_test, y_pred_proba)
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Train/Test split results:&#39;</span>)
-<span style="color:#66d9ef">print</span>(logreg<span style="color:#f92672">.</span>__class__<span style="color:#f92672">.</span>__name__<span style="color:#f92672">+</span><span style="color:#e6db74">&#34; accuracy is </span><span style="color:#e6db74">%2.3f</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> accuracy_score(y_test, y_pred))
-<span style="color:#66d9ef">print</span>(logreg<span style="color:#f92672">.</span>__class__<span style="color:#f92672">.</span>__name__<span style="color:#f92672">+</span><span style="color:#e6db74">&#34; log_loss is </span><span style="color:#e6db74">%2.3f</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> log_loss(y_test, y_pred_proba))
-<span style="color:#66d9ef">print</span>(logreg<span style="color:#f92672">.</span>__class__<span style="color:#f92672">.</span>__name__<span style="color:#f92672">+</span><span style="color:#e6db74">&#34; auc is </span><span style="color:#e6db74">%2.3f</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> auc(fpr, tpr))
-
-idx <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>min(np<span style="color:#f92672">.</span>where(tpr <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.95</span>)) <span style="color:#75715e"># threshold </span>
-
-plt<span style="color:#f92672">.</span>figure()
-plt<span style="color:#f92672">.</span>plot(fpr, tpr, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;coral&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;ROC curve (area = </span><span style="color:#e6db74">%0.3f</span><span style="color:#e6db74">)&#39;</span> <span style="color:#f92672">%</span> auc(fpr, tpr))
-plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>], [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>], <span style="color:#e6db74">&#39;k--&#39;</span>)
-plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">0</span>,fpr[idx]], [tpr[idx],tpr[idx]], <span style="color:#e6db74">&#39;k--&#39;</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;blue&#39;</span>)
-plt<span style="color:#f92672">.</span>plot([fpr[idx],fpr[idx]], [<span style="color:#ae81ff">0</span>,tpr[idx]], <span style="color:#e6db74">&#39;k--&#39;</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;blue&#39;</span>)
-plt<span style="color:#f92672">.</span>xlim([<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>])
-plt<span style="color:#f92672">.</span>ylim([<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.05</span>])
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;False Positive Rate (1 - specificity)&#39;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
-plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;True Positive Rate (recall)&#39;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
-plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Receiver operating characteristic (ROC) curve&#39;</span>)
-plt<span style="color:#f92672">.</span>legend(loc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;lower right&#34;</span>)
-plt<span style="color:#f92672">.</span>show()
-
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Using a threshold of </span><span style="color:#e6db74">%.3f</span><span style="color:#e6db74"> &#34;</span> <span style="color:#f92672">%</span> thr[idx] <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;guarantees a sensitivity of </span><span style="color:#e6db74">%.3f</span><span style="color:#e6db74"> &#34;</span> <span style="color:#f92672">%</span> tpr[idx] <span style="color:#f92672">+</span>  
-      <span style="color:#e6db74">&#34;and a specificity of </span><span style="color:#e6db74">%.3f</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> (<span style="color:#ae81ff">1</span><span style="color:#f92672">-</span>fpr[idx]) <span style="color:#f92672">+</span> 
-      <span style="color:#e6db74">&#34;, i.e. a false positive rate of </span><span style="color:#e6db74">%.2f%%</span><span style="color:#e6db74">.&#34;</span> <span style="color:#f92672">%</span> (np<span style="color:#f92672">.</span>array(fpr[idx])<span style="color:#f92672">*</span><span style="color:#ae81ff">100</span>))
-</code></pre></div><pre><code>Train/Test split results:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.model_selection <span style="color:#f92672">import</span> train_test_split, cross_val_score
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> accuracy_score, classification_report, precision_score, recall_score 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> confusion_matrix, precision_recall_curve, roc_curve, auc, log_loss
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 데이터 셋 분리 </span>
+</span></span><span style="display:flex;"><span>X <span style="color:#f92672">=</span> final_train[Selected_features]
+</span></span><span style="display:flex;"><span>y <span style="color:#f92672">=</span> final_train[<span style="color:#e6db74">&#39;Survived&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>X_train, X_test, y_train, y_test <span style="color:#f92672">=</span> train_test_split(X, y, test_size<span style="color:#f92672">=</span><span style="color:#ae81ff">0.2</span>, random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 로지스틱 회귀모형</span>
+</span></span><span style="display:flex;"><span>logreg <span style="color:#f92672">=</span> LogisticRegression()
+</span></span><span style="display:flex;"><span>logreg<span style="color:#f92672">.</span>fit(X_train, y_train)
+</span></span><span style="display:flex;"><span>y_pred <span style="color:#f92672">=</span> logreg<span style="color:#f92672">.</span>predict(X_test)
+</span></span><span style="display:flex;"><span>y_pred_proba <span style="color:#f92672">=</span> logreg<span style="color:#f92672">.</span>predict_proba(X_test)[:, <span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>[fpr, tpr, thr] <span style="color:#f92672">=</span> roc_curve(y_test, y_pred_proba)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;Train/Test split results:&#39;</span>)
+</span></span><span style="display:flex;"><span>print(logreg<span style="color:#f92672">.</span>__class__<span style="color:#f92672">.</span>__name__<span style="color:#f92672">+</span><span style="color:#e6db74">&#34; accuracy is </span><span style="color:#e6db74">%2.3f</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> accuracy_score(y_test, y_pred))
+</span></span><span style="display:flex;"><span>print(logreg<span style="color:#f92672">.</span>__class__<span style="color:#f92672">.</span>__name__<span style="color:#f92672">+</span><span style="color:#e6db74">&#34; log_loss is </span><span style="color:#e6db74">%2.3f</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> log_loss(y_test, y_pred_proba))
+</span></span><span style="display:flex;"><span>print(logreg<span style="color:#f92672">.</span>__class__<span style="color:#f92672">.</span>__name__<span style="color:#f92672">+</span><span style="color:#e6db74">&#34; auc is </span><span style="color:#e6db74">%2.3f</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> auc(fpr, tpr))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>idx <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>min(np<span style="color:#f92672">.</span>where(tpr <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.95</span>)) <span style="color:#75715e"># threshold </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure()
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(fpr, tpr, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;coral&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;ROC curve (area = </span><span style="color:#e6db74">%0.3f</span><span style="color:#e6db74">)&#39;</span> <span style="color:#f92672">%</span> auc(fpr, tpr))
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>], [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>], <span style="color:#e6db74">&#39;k--&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">0</span>,fpr[idx]], [tpr[idx],tpr[idx]], <span style="color:#e6db74">&#39;k--&#39;</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;blue&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot([fpr[idx],fpr[idx]], [<span style="color:#ae81ff">0</span>,tpr[idx]], <span style="color:#e6db74">&#39;k--&#39;</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;blue&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlim([<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>])
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>ylim([<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.05</span>])
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;False Positive Rate (1 - specificity)&#39;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;True Positive Rate (recall)&#39;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Receiver operating characteristic (ROC) curve&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>legend(loc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;lower right&#34;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;Using a threshold of </span><span style="color:#e6db74">%.3f</span><span style="color:#e6db74"> &#34;</span> <span style="color:#f92672">%</span> thr[idx] <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;guarantees a sensitivity of </span><span style="color:#e6db74">%.3f</span><span style="color:#e6db74"> &#34;</span> <span style="color:#f92672">%</span> tpr[idx] <span style="color:#f92672">+</span>  
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;and a specificity of </span><span style="color:#e6db74">%.3f</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> (<span style="color:#ae81ff">1</span><span style="color:#f92672">-</span>fpr[idx]) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;, i.e. a false positive rate of </span><span style="color:#e6db74">%.2f%%</span><span style="color:#e6db74">.&#34;</span> <span style="color:#f92672">%</span> (np<span style="color:#f92672">.</span>array(fpr[idx])<span style="color:#f92672">*</span><span style="color:#ae81ff">100</span>))
+</span></span></code></pre></div><pre><code>Train/Test split results:
 LogisticRegression accuracy is 0.782
 LogisticRegression log_loss is 0.504
 LogisticRegression auc is 0.838
@@ -680,12 +688,12 @@ LogisticRegression auc is 0.838
 <ul>
 <li>예측 테이블을 만들어 제출한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">final_test[<span style="color:#e6db74">&#39;Survived&#39;</span>] <span style="color:#f92672">=</span> logreg<span style="color:#f92672">.</span>predict(final_test[Selected_features])
-final_test[<span style="color:#e6db74">&#39;PassengerId&#39;</span>] <span style="color:#f92672">=</span> test[<span style="color:#e6db74">&#39;PassengerId&#39;</span>]
-submission <span style="color:#f92672">=</span> final_test[[<span style="color:#e6db74">&#39;PassengerId&#39;</span>,<span style="color:#e6db74">&#39;Survived&#39;</span>]]
-submission<span style="color:#f92672">.</span>to_csv(<span style="color:#e6db74">&#34;submission.csv&#34;</span>, index<span style="color:#f92672">=</span>False)
-<span style="color:#66d9ef">print</span>(submission<span style="color:#f92672">.</span>tail())
-</code></pre></div><pre><code>     PassengerId  Survived
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>final_test[<span style="color:#e6db74">&#39;Survived&#39;</span>] <span style="color:#f92672">=</span> logreg<span style="color:#f92672">.</span>predict(final_test[Selected_features])
+</span></span><span style="display:flex;"><span>final_test[<span style="color:#e6db74">&#39;PassengerId&#39;</span>] <span style="color:#f92672">=</span> test[<span style="color:#e6db74">&#39;PassengerId&#39;</span>]
+</span></span><span style="display:flex;"><span>submission <span style="color:#f92672">=</span> final_test[[<span style="color:#e6db74">&#39;PassengerId&#39;</span>,<span style="color:#e6db74">&#39;Survived&#39;</span>]]
+</span></span><span style="display:flex;"><span>submission<span style="color:#f92672">.</span>to_csv(<span style="color:#e6db74">&#34;submission.csv&#34;</span>, index<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>print(submission<span style="color:#f92672">.</span>tail())
+</span></span></code></pre></div><pre><code>     PassengerId  Survived
 413         1305         0
 414         1306         1
 415         1307         0
@@ -719,7 +727,7 @@ submission<span style="color:#f92672">.</span>to_csv(<span style="color:#e6db74"
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

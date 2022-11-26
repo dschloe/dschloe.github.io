@@ -10,32 +10,40 @@
 		<meta property="og:title" content="Shiny App Deployment Using GCP" />
 <meta property="og:description" content="I. 개요 Google Data Studio는 놀랍도록 유연한 도구로서 마케팅 대행사 중 Google Analytics를 활용한 업체들은 대부분 항상 사용합니다. 때로는 유연성이 더 필요할 때 R &rsquo;s Shiny 패키지를 사용하여 데이터 시각화 / 대시 보드 앱을 만드는 것이 매우 쉽습니다. 이 옵션을 사용하면 모든 소스의 데이터를 예측 모델링과 함께 사용할 수 있는 장점이 있습니다.
 이 블로그 게시물은 3 부분으로 나누어져 있습니다.
- 먼저 Google Cloud Virtual Machine (VM)을 설정하고 웹 액세스를 허용하도록 방화벽 규칙을 구성합니다." />
+먼저 Google Cloud Virtual Machine (VM)을 설정하고 웹 액세스를 허용하도록 방화벽 규칙을 구성합니다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/r/shiny/applications/gcp_shiny/" />
+<meta property="og:url" content="https://dschloe.github.io/r/shiny/applications/gcp_shiny/" /><meta property="article:section" content="R" />
 <meta property="article:published_time" content="2020-05-10T19:47:18+09:00" />
 <meta property="article:modified_time" content="2020-05-10T19:47:18+09:00" />
+
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Shiny App Deployment Using GCP"/>
 <meta name="twitter:description" content="I. 개요 Google Data Studio는 놀랍도록 유연한 도구로서 마케팅 대행사 중 Google Analytics를 활용한 업체들은 대부분 항상 사용합니다. 때로는 유연성이 더 필요할 때 R &rsquo;s Shiny 패키지를 사용하여 데이터 시각화 / 대시 보드 앱을 만드는 것이 매우 쉽습니다. 이 옵션을 사용하면 모든 소스의 데이터를 예측 모델링과 함께 사용할 수 있는 장점이 있습니다.
 이 블로그 게시물은 3 부분으로 나누어져 있습니다.
- 먼저 Google Cloud Virtual Machine (VM)을 설정하고 웹 액세스를 허용하도록 방화벽 규칙을 구성합니다."/>
+먼저 Google Cloud Virtual Machine (VM)을 설정하고 웹 액세스를 허용하도록 방화벽 규칙을 구성합니다."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -231,12 +239,12 @@
 <img src="/img/shiny/gcp_shiny/external_ip.png" alt="Alt text"></p>
 <h4 id="4단계-apache-웹서버로-외부-접속-되는지-확인하기">4단계: Apache 웹서버로 외부 접속 되는지 확인하기</h4>
 <p>Cloud Shell를 연 다음, 간단하게 아래 코드를 입력하여 웹서버가 정상적으로 열리는지 확인합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo apt-get update
-$ sudo apt-get install apache2
-$ sudo systemctl status apache2
-<span style="color:#960050;background-color:#1e0010">●</span> apache2.service - The Apache HTTP Server
-...
-</code></pre></div><p>여기까지 진행 후, 위 초록색 색상의 <code>apache2.service - The Apache HTTP Server</code> 보이면 서버는 현재 작동중이라는 뜻입니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$ sudo apt-get update
+</span></span><span style="display:flex;"><span>$ sudo apt-get install apache2
+</span></span><span style="display:flex;"><span>$ sudo systemctl status apache2
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">●</span> apache2.service - The Apache HTTP Server
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>여기까지 진행 후, 위 초록색 색상의 <code>apache2.service - The Apache HTTP Server</code> 보이면 서버는 현재 작동중이라는 뜻입니다.</p>
 <p>마지막으로 외부 IP를 활용하여, 확인하겠습니다.</p>
 <p><img src="/img/shiny/gcp_shiny/apache2.png" alt="Alt text"></p>
 <h2 id="iii-가상환경에-r과-rstudio-설치진행하기">III. 가상환경에 R과 RStudio 설치진행하기</h2>
@@ -246,127 +254,127 @@ $ sudo systemctl status apache2
 <p><img src="/img/shiny/gcp_shiny/rshiny_7.png" alt="Alt text"></p>
 <p>이제부터 Terminal 소스 코드를 입력하겠습니다.</p>
 <h3 id="1단계-소프트웨어-업데이트하기">1단계: 소프트웨어 업데이트하기</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">sudo apt-get update 
-sudo apt-get upgrade
-</code></pre></div><p>만약, 중간에  **Do you want to continue? [Y/N]**라는 질문이 나오면 <strong>Y</strong>라고 답하고 계속 진행합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>sudo apt-get update 
+</span></span><span style="display:flex;"><span>sudo apt-get upgrade
+</span></span></code></pre></div><p>만약, 중간에  **Do you want to continue? [Y/N]**라는 질문이 나오면 <strong>Y</strong>라고 답하고 계속 진행합니다.</p>
 <p>성공적으로 끝나면 R 저장소를 sources.list 파일에 추가해야 우분투가 응용 프로그램을 가져올 위치를 알 수 있습니다. 아래의 코드 청크는 저장소 목록에 한 줄을 추가 한 다음 우분투 서버가 R을 다운로드하고 기존 패키지를 업데이트하며 r-base 및 r-base dev를 설치하는 데 필요한 키를 전달합니다.</p>
 <h3 id="2단계-sourceslist-파일에-default-list-설치하기">2단계: Sources.list 파일에 Default List 설치하기</h3>
 <p><code>cd /etc/apt/sources.list</code> 파일을 열어서 아래 코드를 추가합니다. (만약에 없을 경우)</p>
-<pre><code>$ sudo apt-get install emacs ## &lt;- 편집 에디터 설치입니다. (옵션)
+<pre tabindex="0"><code>$ sudo apt-get install emacs ## &lt;- 편집 에디터 설치입니다. (옵션)
 $ sudo emacs sources.list
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">deb http<span style="color:#960050;background-color:#1e0010">:</span>//archive.ubuntu.com/ubuntu bionic universe multiverse
-deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//archive.ubuntu.com/ubuntu bionic universe multiverse
-
-deb http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic universe
-deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic universe
-deb http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic-updates universe
-deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic-updates universe
-
-deb http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic multiverse
-deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic multiverse
-deb http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic-updates multiverse
-deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic-updates multiverse
-
-deb http<span style="color:#960050;background-color:#1e0010">:</span>//security.ubuntu.com/ubuntu bionic-security universe
-deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//security.ubuntu.com/ubuntu bionic-security universe
-deb http<span style="color:#960050;background-color:#1e0010">:</span>//security.ubuntu.com/ubuntu bionic-security multiverse
-deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//security.ubuntu.com/ubuntu bionic-security multiverse
-</code></pre></div><h3 id="3단계-r-설치하기">3단계: R 설치하기</h3>
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>deb http<span style="color:#960050;background-color:#1e0010">:</span>//archive.ubuntu.com/ubuntu bionic universe multiverse
+</span></span><span style="display:flex;"><span>deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//archive.ubuntu.com/ubuntu bionic universe multiverse
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>deb http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic universe
+</span></span><span style="display:flex;"><span>deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic universe
+</span></span><span style="display:flex;"><span>deb http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic-updates universe
+</span></span><span style="display:flex;"><span>deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic-updates universe
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>deb http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic multiverse
+</span></span><span style="display:flex;"><span>deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic multiverse
+</span></span><span style="display:flex;"><span>deb http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic-updates multiverse
+</span></span><span style="display:flex;"><span>deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//us.archive.ubuntu.com/ubuntu/ bionic-updates multiverse
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>deb http<span style="color:#960050;background-color:#1e0010">:</span>//security.ubuntu.com/ubuntu bionic-security universe
+</span></span><span style="display:flex;"><span>deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//security.ubuntu.com/ubuntu bionic-security universe
+</span></span><span style="display:flex;"><span>deb http<span style="color:#960050;background-color:#1e0010">:</span>//security.ubuntu.com/ubuntu bionic-security multiverse
+</span></span><span style="display:flex;"><span>deb-src http<span style="color:#960050;background-color:#1e0010">:</span>//security.ubuntu.com/ubuntu bionic-security multiverse
+</span></span></code></pre></div><h3 id="3단계-r-설치하기">3단계: R 설치하기</h3>
 <p><code>cd /etc/apt/sources.list</code> 파일을 열어서 아래 코드를 추가합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">deb http<span style="color:#960050;background-color:#1e0010">:</span>//cran.rstudio.com/bin/linux/ubuntu xenial/
-</code></pre></div><p>그 다음, CRAN Network와 연결 할 수 있는 Key ID를 입력합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
-$ sudo apt install software-properties-common
-$ sudo apt install apt-transport-https
-$ sudo apt update
-$ sudo apt install r-base
-</code></pre></div><p>만약에 <code>depends: r-commended</code>와 같은 에러가 발생이 되면 다음과 같이 수정을 합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo apt-get install update-manager-core
-$ sudo <span style="color:#66d9ef">do</span>-release-upgrade
-</code></pre></div><p>위 코드에서 만약 에러가 나면 아래 코드에서 <code>Prompt=normal</code>로 되어 있는지 확인합니다. 만약 <code>lts</code>로 등록되어 있으면, <code>normal</code>로 수정 후 다시 <code>sudo do-release-upgrade</code> 명령어를 입력하고 ENTER를 수행합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ cat /etc/update-manager/release-upgrades
-</code></pre></div><h3 id="4단계-r-패키지-설치하기">4단계: R 패키지 설치하기</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo apt-get install libcurl4-openssl-dev libssl-dev libxml2-dev
-</code></pre></div><h3 id="5단계-r-shiny-설치하기">5단계: R Shiny 설치하기</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>deb http<span style="color:#960050;background-color:#1e0010">:</span>//cran.rstudio.com/bin/linux/ubuntu xenial/
+</span></span></code></pre></div><p>그 다음, CRAN Network와 연결 할 수 있는 Key ID를 입력합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+</span></span><span style="display:flex;"><span>$ sudo apt install software-properties-common
+</span></span><span style="display:flex;"><span>$ sudo apt install apt-transport-https
+</span></span><span style="display:flex;"><span>$ sudo apt update
+</span></span><span style="display:flex;"><span>$ sudo apt install r-base
+</span></span></code></pre></div><p>만약에 <code>depends: r-commended</code>와 같은 에러가 발생이 되면 다음과 같이 수정을 합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$ sudo apt-get install update-manager-core
+</span></span><span style="display:flex;"><span>$ sudo do-release-upgrade
+</span></span></code></pre></div><p>위 코드에서 만약 에러가 나면 아래 코드에서 <code>Prompt=normal</code>로 되어 있는지 확인합니다. 만약 <code>lts</code>로 등록되어 있으면, <code>normal</code>로 수정 후 다시 <code>sudo do-release-upgrade</code> 명령어를 입력하고 ENTER를 수행합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$ cat /etc/update-manager/release-upgrades
+</span></span></code></pre></div><h3 id="4단계-r-패키지-설치하기">4단계: R 패키지 설치하기</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$ sudo apt-get install libcurl4-openssl-dev libssl-dev libxml2-dev
+</span></span></code></pre></div><h3 id="5단계-r-shiny-설치하기">5단계: R Shiny 설치하기</h3>
 <h4 id="첫번째-방법-r-프로그램에서-r-shiny-설치하기">첫번째 방법: R 프로그램에서 R Shiny 설치하기</h4>
 <p>먼저 R을 실행하여 정상적으로 프로그램이 열리는지 확인합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo R
-</code></pre></div><p>다음부터는 R 스크립트를 활용하여 몇몇 패키지를 설치합니다. (설치시간 오래 걸립니다!)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">install.packages</span>(<span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#39;shiny&#39;</span>, <span style="color:#e6db74">&#39;rmarkdown&#39;</span>, <span style="color:#e6db74">&#39;dplyr&#39;</span>))
-</code></pre></div><p>패키지 설치 후 <strong>q()</strong> 입력 후 작업공간을 저장합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">(save workspace<span style="color:#f92672">?</span> y for yes.)
-</code></pre></div><h4 id="두번째-방법-터미널에서-r-shiny-설치하기">두번째 방법: 터미널에서 R Shiny 설치하기</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$ sudo R
+</span></span></code></pre></div><p>다음부터는 R 스크립트를 활용하여 몇몇 패키지를 설치합니다. (설치시간 오래 걸립니다!)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">install.packages</span>(<span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#39;shiny&#39;</span>, <span style="color:#e6db74">&#39;rmarkdown&#39;</span>, <span style="color:#e6db74">&#39;dplyr&#39;</span>))
+</span></span></code></pre></div><p>패키지 설치 후 <strong>q()</strong> 입력 후 작업공간을 저장합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>(save workspace<span style="color:#f92672">?</span> y for yes.)
+</span></span></code></pre></div><h4 id="두번째-방법-터미널에서-r-shiny-설치하기">두번째 방법: 터미널에서 R Shiny 설치하기</h4>
 <p><code>install.packages()</code> 함수를 활용하여 shiny 패키지를 설치합니다. (설치시간 오래 걸립니다!)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo su - \
--c <span style="color:#e6db74">&#34;R -e \&#34;</span>install.packages(<span style="color:#e6db74">&#39;shiny&#39;</span>, repos=<span style="color:#e6db74">&#39;https://cran.rstudio.com/&#39;</span>)\<span style="color:#e6db74">&#34;&#34;</span>
-</code></pre></div><p>어떤 방법을 하던 큰 상관은 없습니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$ sudo su - \
+</span></span><span style="display:flex;"><span>-c <span style="color:#e6db74">&#34;R -e \&#34;</span>install.packages(<span style="color:#e6db74">&#39;shiny&#39;</span>, repos=<span style="color:#e6db74">&#39;https://cran.rstudio.com/&#39;</span>)\<span style="color:#e6db74">&#34;&#34;</span>
+</span></span></code></pre></div><p>어떤 방법을 하던 큰 상관은 없습니다.</p>
 <h3 id="6단계-r-studio-서버-설치하기">6단계: R Studio 서버 설치하기</h3>
 <p>RStudio 싸이트에서 직접 참고하였습니다. (Ubuntu 18+)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo apt-get install gdebi-core
-$ sudo wget https<span style="color:#960050;background-color:#1e0010">:</span>//download2.rstudio.org/server/bionic/amd64/rstudio-server-1.2.1335-amd64.deb
-$ sudo gdebi rstudio-server-1.2.1335-amd64.deb
-</code></pre></div><p><img src="/img/shiny/gcp_shiny/rstudio-server.png" alt="Alt text"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$ sudo apt-get install gdebi-core
+</span></span><span style="display:flex;"><span>$ sudo wget https<span style="color:#960050;background-color:#1e0010">:</span>//download2.rstudio.org/server/bionic/amd64/rstudio-server-<span style="color:#ae81ff">1.2</span>.<span style="color:#ae81ff">1335</span>-amd64.deb
+</span></span><span style="display:flex;"><span>$ sudo gdebi rstudio-server-<span style="color:#ae81ff">1.2</span>.<span style="color:#ae81ff">1335</span>-amd64.deb
+</span></span></code></pre></div><p><img src="/img/shiny/gcp_shiny/rstudio-server.png" alt="Alt text"></p>
 <p>위와 같은 형태가 나오면 성공입니다. 사용자(evan)를 추가하여 실제로 접속하도록 하겠습니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo adduser evan
-</code></pre></div><p>http://외부IP:8787를 URL에 접속하면 RStudio Server가 접속이 될 것입니다.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$ sudo adduser evan
+</span></span></code></pre></div><p>http://외부IP:8787를 URL에 접속하면 RStudio Server가 접속이 될 것입니다.
 <img src="/img/shiny/gcp_shiny/rserver.png" alt="Alt text"></p>
 <p>방금전에 만든 사용자 ID와 비번을 입력하여 접속합니다. 제대로 접속되었는지 확인합니다.
 <img src="/img/shiny/gcp_shiny/rserver_main.png" alt="Alt text"></p>
 <h3 id="7단계-r-shiny-서버-설치하기">7단계: R Shiny 서버 설치하기</h3>
 <p>다시 터미널로 가서 아래와 같은 명령어를 입력합니다. 마찬가지로 R Shiny Server 홈페이지에서 직접 참고하였습니다.
 참고: <a href="https://www.rstudio.com/products/shiny/download-server/">https://www.rstudio.com/products/shiny/download-server/</a></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ sudo wget https<span style="color:#960050;background-color:#1e0010">:</span>//download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-1.5.9.923-amd64.deb
-$ sudo gdebi shiny-server-1.5.9.923-amd64.deb
-$ sudo systemctl status shiny-server.service
-</code></pre></div><p>http://외부IP:3838를 URL에 접속하면 RShiny Server가 접속이 될 것입니다.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$ sudo wget https<span style="color:#960050;background-color:#1e0010">:</span>//download3.rstudio.org/ubuntu-<span style="color:#ae81ff">14.04</span>/x86_64/shiny-server-<span style="color:#ae81ff">1.5</span>.9.<span style="color:#ae81ff">923</span>-amd64.deb
+</span></span><span style="display:flex;"><span>$ sudo gdebi shiny-server-<span style="color:#ae81ff">1.5</span>.9.<span style="color:#ae81ff">923</span>-amd64.deb
+</span></span><span style="display:flex;"><span>$ sudo systemctl status shiny-server.service
+</span></span></code></pre></div><p>http://외부IP:3838를 URL에 접속하면 RShiny Server가 접속이 될 것입니다.
 <img src="/img/shiny/gcp_shiny/shinyserveraccess.png" alt="Alt text"></p>
 <p>위와 같이 나왔다면 서버는 정상적으로 작동중입니다.</p>
 <h2 id="iv-shiny-app-배포">IV. Shiny App 배포</h2>
 <p>여기에서는 Shiny App에 관한 내용은 대해서는 생략하겠습니다.</p>
 <h3 id="1-uir">(1) ui.R</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(shiny)
-
-<span style="color:#75715e"># Define UI for application that draws a histogram</span>
-<span style="color:#a6e22e">shinyUI</span>(<span style="color:#a6e22e">fluidPage</span>(
-
-    <span style="color:#75715e"># Application title</span>
-    <span style="color:#a6e22e">titlePanel</span>(<span style="color:#e6db74">&#34;Old Faithful Geyser Data&#34;</span>),
-
-    <span style="color:#75715e"># Sidebar with a slider input for number of bins</span>
-    <span style="color:#a6e22e">sidebarLayout</span>(
-        <span style="color:#a6e22e">sidebarPanel</span>(
-            <span style="color:#a6e22e">sliderInput</span>(<span style="color:#e6db74">&#34;bins&#34;</span>,
-                        <span style="color:#e6db74">&#34;Number of bins:&#34;</span>,
-                        min <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
-                        max <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>,
-                        value <span style="color:#f92672">=</span> <span style="color:#ae81ff">30</span>)
-        ),
-
-        <span style="color:#75715e"># Show a plot of the generated distribution</span>
-        <span style="color:#a6e22e">mainPanel</span>(
-            <span style="color:#a6e22e">plotOutput</span>(<span style="color:#e6db74">&#34;distPlot&#34;</span>)
-        )
-    )
-))
-</code></pre></div><h3 id="2-serverr">(2) server.R</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(shiny)
-
-<span style="color:#75715e"># Define server logic required to draw a histogram</span>
-<span style="color:#a6e22e">shinyServer</span>(<span style="color:#a6e22e">function</span>(input, output) {
-
-    output<span style="color:#f92672">$</span>distPlot <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">renderPlot</span>({
-
-        <span style="color:#75715e"># generate bins based on input$bins from ui.R</span>
-        x    <span style="color:#f92672">&lt;-</span> faithful[, <span style="color:#ae81ff">2</span>]
-        bins <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">seq</span>(<span style="color:#a6e22e">min</span>(x), <span style="color:#a6e22e">max</span>(x), length.out <span style="color:#f92672">=</span> input<span style="color:#f92672">$</span>bins <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
-
-        <span style="color:#75715e"># draw the histogram with the specified number of bins</span>
-        <span style="color:#a6e22e">hist</span>(x, breaks <span style="color:#f92672">=</span> bins, col <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;darkgray&#39;</span>, border <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;white&#39;</span>)
-
-    })
-
-})
-</code></pre></div><p>위와 같이 두개의 파일을 생성 후, 마지막으로 <strong>Run App</strong>을 실행합니다.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(shiny)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Define UI for application that draws a histogram</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">shinyUI</span>(<span style="color:#a6e22e">fluidPage</span>(
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Application title</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">titlePanel</span>(<span style="color:#e6db74">&#34;Old Faithful Geyser Data&#34;</span>),
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Sidebar with a slider input for number of bins</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">sidebarLayout</span>(
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">sidebarPanel</span>(
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">sliderInput</span>(<span style="color:#e6db74">&#34;bins&#34;</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;Number of bins:&#34;</span>,
+</span></span><span style="display:flex;"><span>                        min <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>                        max <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>,
+</span></span><span style="display:flex;"><span>                        value <span style="color:#f92672">=</span> <span style="color:#ae81ff">30</span>)
+</span></span><span style="display:flex;"><span>        ),
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Show a plot of the generated distribution</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">mainPanel</span>(
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">plotOutput</span>(<span style="color:#e6db74">&#34;distPlot&#34;</span>)
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>))
+</span></span></code></pre></div><h3 id="2-serverr">(2) server.R</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(shiny)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Define server logic required to draw a histogram</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">shinyServer</span>(<span style="color:#a6e22e">function</span>(input, output) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    output<span style="color:#f92672">$</span>distPlot <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">renderPlot</span>({
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># generate bins based on input$bins from ui.R</span>
+</span></span><span style="display:flex;"><span>        x    <span style="color:#f92672">&lt;-</span> faithful[, <span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>        bins <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">seq</span>(<span style="color:#a6e22e">min</span>(x), <span style="color:#a6e22e">max</span>(x), length.out <span style="color:#f92672">=</span> input<span style="color:#f92672">$</span>bins <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># draw the histogram with the specified number of bins</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">hist</span>(x, breaks <span style="color:#f92672">=</span> bins, col <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;darkgray&#39;</span>, border <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;white&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div><p>위와 같이 두개의 파일을 생성 후, 마지막으로 <strong>Run App</strong>을 실행합니다.
 <img src="/img/shiny/gcp_shiny/runApp.png" alt="Alt text"></p>
 <p>아래 주소에서도 확인할 수 있습니다.
 <img src="/img/shiny/gcp_shiny/runApp_activation.png" alt="Alt text"></p>
@@ -374,8 +382,8 @@ $ sudo systemctl status shiny-server.service
 <h3 id="1-작업-파일을-ui-파일에-붙이기">(1) 작업 파일을 ui 파일에 붙이기</h3>
 <p>기본값으로, Shiny Server 는 <code>/srv/shiny-server/</code>를 싸이트 디렉토리로 사용합니다. 따라서, R 작업파일 디렉토리를 <code>/srv/shiny-server/</code>에 복사하도록 합니다.</p>
 <p>제 경우는 <code>/home/evan/R/shiny/sample/</code>에 <code>ui.R</code> 파일과 <code>server.R</code>파일이 있기 때문에 아래와 같이 명령어를 통해 파일을 넣어놨습니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo cp -r evan/R/shiny/sample/ /srv/shiny-server/
-</code></pre></div><h3 id="2-웹주소-확인하기">(2) 웹주소 확인하기</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo cp -r evan/R/shiny/sample/ /srv/shiny-server/
+</span></span></code></pre></div><h3 id="2-웹주소-확인하기">(2) 웹주소 확인하기</h3>
 <p>브라우저 주소 입력창에 <strong>http://외부IP주소:3838/sample</strong> 입력합니다. <strong>sample</strong> 폴더명과 똑같다고 생각하면 됩니다.
 <img src="/img/shiny/gcp_shiny/sample.png" alt="Alt text"></p>
 <h2 id="v-reference">V. Reference</h2>
@@ -432,7 +440,7 @@ $ sudo systemctl status shiny-server.service
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

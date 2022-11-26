@@ -8,30 +8,40 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="Python - Pandas 병렬처리" />
-<meta property="og:description" content="강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다." />
+<meta property="og:description" content="강의 홍보 취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다. 스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다. [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기 공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+지난 포스트에서는 lambda의 기본적인 개념에 대해서 익혔다면, 이제 본격적인 데이터 전처리와 관련된 예제를 올리려고 한다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/python/pandas/pandas_lambda_swifter/" />
+<meta property="og:url" content="https://dschloe.github.io/python/pandas/pandas_lambda_swifter/" /><meta property="article:section" content="Python" />
 <meta property="article:published_time" content="2020-05-13T14:15:47+09:00" />
 <meta property="article:modified_time" content="2020-05-13T14:15:47+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Python - Pandas 병렬처리"/>
-<meta name="twitter:description" content="강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다."/>
+<meta name="twitter:description" content="강의 홍보 취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다. 스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다. [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기 공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
+지난 포스트에서는 lambda의 기본적인 개념에 대해서 익혔다면, 이제 본격적인 데이터 전처리와 관련된 예제를 올리려고 한다."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -190,13 +200,13 @@
 <ul>
 <li>25M 행과 5개의 열로 구성된 가상의 숫자 데이터 프레임을 만들어보자.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
-<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
-<span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
-
-pd_temp <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">100</span>, size <span style="color:#f92672">=</span> (<span style="color:#ae81ff">25000000</span>, <span style="color:#ae81ff">5</span>)), columns<span style="color:#f92672">=</span>list(<span style="color:#e6db74">&#39;abcde&#39;</span>))
-<span style="color:#66d9ef">print</span>(tabulate(pd_temp<span style="color:#f92672">.</span>head(), tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
-</code></pre></div><table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pd_temp <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">100</span>, size <span style="color:#f92672">=</span> (<span style="color:#ae81ff">25000000</span>, <span style="color:#ae81ff">5</span>)), columns<span style="color:#f92672">=</span>list(<span style="color:#e6db74">&#39;abcde&#39;</span>))
+</span></span><span style="display:flex;"><span>print(tabulate(pd_temp<span style="color:#f92672">.</span>head(), tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
+</span></span></code></pre></div><table>
 <thead>
 <tr>
 <th style="text-align:right"></th>
@@ -254,23 +264,23 @@ pd_temp <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</sp
 <ul>
 <li>새로운 컬럼(<code>f</code>)을 만드는데, if condition을 적용해서 실험을 해본다. 우선 새로운 컬럼을 만드는 함수는 아래와 같이 작성해보자.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add_col_fun</span>(a,b):
-  <span style="color:#66d9ef">if</span> a <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">50</span>: 
-    <span style="color:#66d9ef">return</span> True
-  <span style="color:#66d9ef">elif</span> b <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">75</span>:
-    <span style="color:#66d9ef">return</span> True
-  <span style="color:#66d9ef">else</span>:
-    <span style="color:#66d9ef">return</span> False
-</code></pre></div><h3 id="1-apply--lambda">(1) apply + lambda</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add_col_fun</span>(a,b):
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> a <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">50</span>: 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">elif</span> b <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">75</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span></code></pre></div><h3 id="1-apply--lambda">(1) apply + lambda</h3>
 <p>보통 <code>pandas</code>를 활용하면 <code>apply + lambda</code> 사용을 권장한다. 이 때 성능 테스트를 위해 <code>%%time</code>을 활용해보자.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># dataframe 복사</span>
-defaul_temp <span style="color:#f92672">=</span> pd_temp
-swfiter_temp <span style="color:#f92672">=</span> pd_temp
-swifter_npartitions_temp <span style="color:#f92672">=</span> pd_temp
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">%%</span>time
-defaul_temp[<span style="color:#e6db74">&#39;f&#39;</span>] <span style="color:#f92672">=</span> defaul_temp<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: add_col_fun(x[<span style="color:#e6db74">&#39;a&#39;</span>], x[<span style="color:#e6db74">&#39;b&#39;</span>]), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-<span style="color:#66d9ef">print</span>(tabulate(defaul_temp<span style="color:#f92672">.</span>head(), tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
-</code></pre></div><p>CPU times: user 12min 3s, sys: 236 ms, total: 12min 3s
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># dataframe 복사</span>
+</span></span><span style="display:flex;"><span>defaul_temp <span style="color:#f92672">=</span> pd_temp
+</span></span><span style="display:flex;"><span>swfiter_temp <span style="color:#f92672">=</span> pd_temp
+</span></span><span style="display:flex;"><span>swifter_npartitions_temp <span style="color:#f92672">=</span> pd_temp
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">%%</span>time
+</span></span><span style="display:flex;"><span>defaul_temp[<span style="color:#e6db74">&#39;f&#39;</span>] <span style="color:#f92672">=</span> defaul_temp<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: add_col_fun(x[<span style="color:#e6db74">&#39;a&#39;</span>], x[<span style="color:#e6db74">&#39;b&#39;</span>]), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>print(tabulate(defaul_temp<span style="color:#f92672">.</span>head(), tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
+</span></span></code></pre></div><p>CPU times: user 12min 3s, sys: 236 ms, total: 12min 3s
 Wall time: 12min 4s</p>
 <ul>
 <li>간단하게 <code>2개</code>의 column을 활용하여 <code>column</code> <code>1개</code>를 추가 하는데도 약 12분 가까이 걸리는 걸 확인할 수 있다. (솔직히 넘 느리다)</li>
@@ -287,18 +297,18 @@ Wall time: 12min 4s</p>
 </blockquote>
 <p>즉, 위 패키지는 판다스의 <code>dataframe</code> 또는 <code>series</code>를 빠르게 사용할 수 있도록 도와주는 일종의 <code>helper</code>패키지 처럼 보인다.</p>
 <p>어떻게 사용할까?</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">pip install swifter
-</code></pre></div><h3 id="1-application-to-swifter">(1) Application to Swifter</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>pip install swifter
+</span></span></code></pre></div><h3 id="1-application-to-swifter">(1) Application to Swifter</h3>
 <ul>
 <li>이번에는 default <code>swifter</code>를 사용하여 <code>f</code> column을 추가해보자.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">%%</span>time
-
-<span style="color:#f92672">import</span> swifter
-
-swfiter_temp[<span style="color:#e6db74">&#39;f&#39;</span>] <span style="color:#f92672">=</span> swfiter_temp<span style="color:#f92672">.</span>swifter<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: add_col_fun(x[<span style="color:#e6db74">&#39;a&#39;</span>], x[<span style="color:#e6db74">&#39;b&#39;</span>]), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-<span style="color:#66d9ef">print</span>(tabulate(swfiter_temp<span style="color:#f92672">.</span>head(), tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
-</code></pre></div><p>CPU times: user 5.4 s, sys: 6.77 s, total: 12.2 s
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">%%</span>time
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> swifter
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>swfiter_temp[<span style="color:#e6db74">&#39;f&#39;</span>] <span style="color:#f92672">=</span> swfiter_temp<span style="color:#f92672">.</span>swifter<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: add_col_fun(x[<span style="color:#e6db74">&#39;a&#39;</span>], x[<span style="color:#e6db74">&#39;b&#39;</span>]), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>print(tabulate(swfiter_temp<span style="color:#f92672">.</span>head(), tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
+</span></span></code></pre></div><p>CPU times: user 5.4 s, sys: 6.77 s, total: 12.2 s
 Wall time: 9min 4s</p>
 <h3 id="2-set_npartitions-적용">(2) set_npartitions 적용</h3>
 <ul>
@@ -317,20 +327,20 @@ Wall time: 9min 4s</p>
 <li>CPU를 2개만 사용한다면 <code>npartitions(8)</code>만 추가하면 된다.</li>
 <li>코드는 아래와 같이 작성할 수 있다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># core 개수 확인</span>
-<span style="color:#f92672">import</span> multiprocessing
-
-multiprocessing<span style="color:#f92672">.</span>cpu_count()
-</code></pre></div><p>2</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># core 개수 확인</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> multiprocessing
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>multiprocessing<span style="color:#f92672">.</span>cpu_count()
+</span></span></code></pre></div><p>2</p>
 <ul>
 <li>구글 코랩에서 구동중이었는데, CPU가 2개였다!</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">%%</span>time
-
-<span style="color:#f92672">import</span> swifter
-swifter_npartitions_temp[<span style="color:#e6db74">&#39;f&#39;</span>] <span style="color:#f92672">=</span> swifter_npartitions_temp<span style="color:#f92672">.</span>swifter<span style="color:#f92672">.</span>set_npartitions(<span style="color:#ae81ff">8</span>)<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: add_col_fun(x[<span style="color:#e6db74">&#39;a&#39;</span>], x[<span style="color:#e6db74">&#39;b&#39;</span>]), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-<span style="color:#66d9ef">print</span>(tabulate(swifter_npartitions_temp<span style="color:#f92672">.</span>head(), tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
-</code></pre></div><p>CPU times: user 4.16 s, sys: 4.89 s, total: 9.05 s
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">%%</span>time
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> swifter
+</span></span><span style="display:flex;"><span>swifter_npartitions_temp[<span style="color:#e6db74">&#39;f&#39;</span>] <span style="color:#f92672">=</span> swifter_npartitions_temp<span style="color:#f92672">.</span>swifter<span style="color:#f92672">.</span>set_npartitions(<span style="color:#ae81ff">8</span>)<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: add_col_fun(x[<span style="color:#e6db74">&#39;a&#39;</span>], x[<span style="color:#e6db74">&#39;b&#39;</span>]), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>print(tabulate(swifter_npartitions_temp<span style="color:#f92672">.</span>head(), tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
+</span></span></code></pre></div><p>CPU times: user 4.16 s, sys: 4.89 s, total: 9.05 s
 Wall time: 8min 36s</p>
 <ul>
 <li><code>swifter</code>에 <code>npartitions(8)</code>에 설정할 때, 속도가 약 30-40% 향상 된 것으로 확인된다. 만약 <code>CPU</code>개수를 추가하면 추가할 수록 연산 속도가 더 빨라질 것으로 기대할 수 있다.</li>
@@ -386,7 +396,7 @@ Wall time: 8min 36s</p>
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

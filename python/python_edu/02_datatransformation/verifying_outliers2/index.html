@@ -8,30 +8,38 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="Verifying Outlier Values" />
-<meta property="og:description" content="이상값의 정의  다소 주관적이며(Somewhat Subjective), 특정 분포의 중심경향성, 퍼진 정도와 형태에 따라 밀접한 관련이 있다.  평균에서 표준편차보다 몇 배 더 떨어져 있다거나, 즉, 정규분포를 이루고 있지 않을 때 왜도 또는 첨도가 발생할 때   균등분포(Uniform Distribution)는, 발생할 확률이 모두 같다.  만약, 확진자수가 최소 1부터 최대 10,000,000까지 균등하게 분포한다면, 어떤 값도 이상값으로 고려하지 않는다.   이상값을 파악하려면, 반드시, 각 변수의 분포를 먼저 이해해야 한다.  라이브러리 및 데이터 불러오기  실습을 위한 데이터를 불러온다." />
+<meta property="og:description" content="이상값의 정의 다소 주관적이며(Somewhat Subjective), 특정 분포의 중심경향성, 퍼진 정도와 형태에 따라 밀접한 관련이 있다. 평균에서 표준편차보다 몇 배 더 떨어져 있다거나, 즉, 정규분포를 이루고 있지 않을 때 왜도 또는 첨도가 발생할 때 균등분포(Uniform Distribution)는, 발생할 확률이 모두 같다. 만약, 확진자수가 최소 1부터 최대 10,000,000까지 균등하게 분포한다면, 어떤 값도 이상값으로 고려하지 않는다. 이상값을 파악하려면, 반드시, 각 변수의 분포를 먼저 이해해야 한다. 라이브러리 및 데이터 불러오기 실습을 위한 데이터를 불러온다. import numpy as np import matplotlib." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/python/python_edu/02_datatransformation/verifying_outliers2/" />
+<meta property="og:url" content="https://dschloe.github.io/python/python_edu/02_datatransformation/verifying_outliers2/" /><meta property="article:section" content="Python" />
 <meta property="article:published_time" content="2021-12-19T11:10:47+09:00" />
 <meta property="article:modified_time" content="2021-12-19T11:10:47+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Verifying Outlier Values"/>
-<meta name="twitter:description" content="이상값의 정의  다소 주관적이며(Somewhat Subjective), 특정 분포의 중심경향성, 퍼진 정도와 형태에 따라 밀접한 관련이 있다.  평균에서 표준편차보다 몇 배 더 떨어져 있다거나, 즉, 정규분포를 이루고 있지 않을 때 왜도 또는 첨도가 발생할 때   균등분포(Uniform Distribution)는, 발생할 확률이 모두 같다.  만약, 확진자수가 최소 1부터 최대 10,000,000까지 균등하게 분포한다면, 어떤 값도 이상값으로 고려하지 않는다.   이상값을 파악하려면, 반드시, 각 변수의 분포를 먼저 이해해야 한다.  라이브러리 및 데이터 불러오기  실습을 위한 데이터를 불러온다."/>
+<meta name="twitter:description" content="이상값의 정의 다소 주관적이며(Somewhat Subjective), 특정 분포의 중심경향성, 퍼진 정도와 형태에 따라 밀접한 관련이 있다. 평균에서 표준편차보다 몇 배 더 떨어져 있다거나, 즉, 정규분포를 이루고 있지 않을 때 왜도 또는 첨도가 발생할 때 균등분포(Uniform Distribution)는, 발생할 확률이 모두 같다. 만약, 확진자수가 최소 1부터 최대 10,000,000까지 균등하게 분포한다면, 어떤 값도 이상값으로 고려하지 않는다. 이상값을 파악하려면, 반드시, 각 변수의 분포를 먼저 이해해야 한다. 라이브러리 및 데이터 불러오기 실습을 위한 데이터를 불러온다. import numpy as np import matplotlib."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -175,20 +183,20 @@
 <ul>
 <li>실습을 위한 데이터를 불러온다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
-<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
-<span style="color:#f92672">import</span> statsmodels.api <span style="color:#f92672">as</span> sm
-<span style="color:#f92672">import</span> scipy.stats <span style="color:#f92672">as</span> scistat
-
-covidtotals <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;data/covidtotals.csv&#34;</span>)
-covidtotals<span style="color:#f92672">.</span>set_index(<span style="color:#e6db74">&#34;iso_code&#34;</span>, inplace <span style="color:#f92672">=</span> True)
-
-case_vars <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;location&#34;</span>, <span style="color:#e6db74">&#34;total_cases&#34;</span>, <span style="color:#e6db74">&#34;total_deaths&#34;</span>, <span style="color:#e6db74">&#34;total_cases_pm&#34;</span>, <span style="color:#e6db74">&#34;total_deaths_pm&#34;</span>]
-demo_vars <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;population&#34;</span>, <span style="color:#e6db74">&#34;pop_density&#34;</span>, <span style="color:#e6db74">&#34;median_age&#34;</span>, <span style="color:#e6db74">&#34;gdp_per_capita&#34;</span>, <span style="color:#e6db74">&#34;hosp_beds&#34;</span>]
-
-<span style="color:#66d9ef">print</span>(covidtotals<span style="color:#f92672">.</span>head())
-</code></pre></div><pre><code>            lastdate     location  total_cases  total_deaths  total_cases_pm  \
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> statsmodels.api <span style="color:#66d9ef">as</span> sm
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> scipy.stats <span style="color:#66d9ef">as</span> scistat
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>covidtotals <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;data/covidtotals.csv&#34;</span>)
+</span></span><span style="display:flex;"><span>covidtotals<span style="color:#f92672">.</span>set_index(<span style="color:#e6db74">&#34;iso_code&#34;</span>, inplace <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>case_vars <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;location&#34;</span>, <span style="color:#e6db74">&#34;total_cases&#34;</span>, <span style="color:#e6db74">&#34;total_deaths&#34;</span>, <span style="color:#e6db74">&#34;total_cases_pm&#34;</span>, <span style="color:#e6db74">&#34;total_deaths_pm&#34;</span>]
+</span></span><span style="display:flex;"><span>demo_vars <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;population&#34;</span>, <span style="color:#e6db74">&#34;pop_density&#34;</span>, <span style="color:#e6db74">&#34;median_age&#34;</span>, <span style="color:#e6db74">&#34;gdp_per_capita&#34;</span>, <span style="color:#e6db74">&#34;hosp_beds&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(covidtotals<span style="color:#f92672">.</span>head())
+</span></span></code></pre></div><pre><code>            lastdate     location  total_cases  total_deaths  total_cases_pm  \
 iso_code                                                                       
 AFG       2020-06-01  Afghanistan        15205           257         390.589   
 ALB       2020-06-01      Albania         1137            33         395.093   
@@ -215,9 +223,9 @@ AGO             5819.495        NaN
 <ul>
 <li>describe() 함수를 통해 수치 데이터의 분포를 확인하도록 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">covid_case_df <span style="color:#f92672">=</span> covidtotals<span style="color:#f92672">.</span>loc[:, case_vars]
-<span style="color:#66d9ef">print</span>(covid_case_df<span style="color:#f92672">.</span>describe())
-</code></pre></div><pre><code>        total_cases   total_deaths  total_cases_pm  total_deaths_pm
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>covid_case_df <span style="color:#f92672">=</span> covidtotals<span style="color:#f92672">.</span>loc[:, case_vars]
+</span></span><span style="display:flex;"><span>print(covid_case_df<span style="color:#f92672">.</span>describe())
+</span></span></code></pre></div><pre><code>        total_cases   total_deaths  total_cases_pm  total_deaths_pm
 count  2.100000e+02     210.000000      210.000000       210.000000
 mean   2.921614e+04    1770.714286     1355.357943        55.659129
 std    1.363978e+05    8705.565857     2625.277497       144.785816
@@ -230,8 +238,8 @@ max    1.790191e+06  104383.000000    19771.348000      1237.551000
 <ul>
 <li>백분위수(quantile)로 데이터를 표시한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(covid_case_df<span style="color:#f92672">.</span>quantile(np<span style="color:#f92672">.</span>arange(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.1</span>, <span style="color:#ae81ff">0.1</span>)))
-</code></pre></div><pre><code>     total_cases  total_deaths  total_cases_pm  total_deaths_pm
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(covid_case_df<span style="color:#f92672">.</span>quantile(np<span style="color:#f92672">.</span>arange(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.1</span>, <span style="color:#ae81ff">0.1</span>)))
+</span></span></code></pre></div><pre><code>     total_cases  total_deaths  total_cases_pm  total_deaths_pm
 0.0          0.0           0.0          0.0000           0.0000
 0.1         22.9           0.0         17.9986           0.0000
 0.2        105.2           2.0         56.2910           0.3752
@@ -248,15 +256,15 @@ max    1.790191e+06  104383.000000    19771.348000      1237.551000
 <li>왜도는 분포가 얼마나 대칭적인지를 나타냄</li>
 <li>왜도와 첨도는 어떻게 대칭적인지를 설명하며, 분포의 꼬리가 각각 얼마나 두꺼운지 나타냄.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">covid_case_df<span style="color:#f92672">.</span>skew(axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, numeric_only <span style="color:#f92672">=</span> True)
-</code></pre></div><pre><code>total_cases        10.804275
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>covid_case_df<span style="color:#f92672">.</span>skew(axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, numeric_only <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><pre><code>total_cases        10.804275
 total_deaths        8.929816
 total_cases_pm      4.396091
 total_deaths_pm     4.674417
 dtype: float64
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">covid_case_df<span style="color:#f92672">.</span>kurtosis(axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, numeric_only <span style="color:#f92672">=</span> True)
-</code></pre></div><pre><code>total_cases        134.979577
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>covid_case_df<span style="color:#f92672">.</span>kurtosis(axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, numeric_only <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><pre><code>total_cases        134.979577
 total_deaths        95.737841
 total_cases_pm      25.242790
 total_deaths_pm     27.238232
@@ -275,37 +283,37 @@ dtype: float64
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">scistat<span style="color:#f92672">.</span>shapiro(covid_case_df[<span style="color:#e6db74">&#39;total_cases&#39;</span>])
-</code></pre></div><pre><code>ShapiroResult(statistic=0.19379639625549316, pvalue=3.753789128593843e-29)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>scistat<span style="color:#f92672">.</span>shapiro(covid_case_df[<span style="color:#e6db74">&#39;total_cases&#39;</span>])
+</span></span></code></pre></div><pre><code>ShapiroResult(statistic=0.19379639625549316, pvalue=3.753789128593843e-29)
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">scistat<span style="color:#f92672">.</span>shapiro(covid_case_df[<span style="color:#e6db74">&#39;total_deaths&#39;</span>])
-</code></pre></div><pre><code>ShapiroResult(statistic=0.19832086563110352, pvalue=4.3427896631016077e-29)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>scistat<span style="color:#f92672">.</span>shapiro(covid_case_df[<span style="color:#e6db74">&#39;total_deaths&#39;</span>])
+</span></span></code></pre></div><pre><code>ShapiroResult(statistic=0.19832086563110352, pvalue=4.3427896631016077e-29)
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">scistat<span style="color:#f92672">.</span>shapiro(covid_case_df[<span style="color:#e6db74">&#39;total_cases_pm&#39;</span>])
-</code></pre></div><pre><code>ShapiroResult(statistic=0.5220695734024048, pvalue=1.3972683006509067e-23)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>scistat<span style="color:#f92672">.</span>shapiro(covid_case_df[<span style="color:#e6db74">&#39;total_cases_pm&#39;</span>])
+</span></span></code></pre></div><pre><code>ShapiroResult(statistic=0.5220695734024048, pvalue=1.3972683006509067e-23)
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">scistat<span style="color:#f92672">.</span>shapiro(covid_case_df[<span style="color:#e6db74">&#39;total_deaths_pm&#39;</span>])
-</code></pre></div><pre><code>ShapiroResult(statistic=0.41877639293670654, pvalue=1.361060423265974e-25)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>scistat<span style="color:#f92672">.</span>shapiro(covid_case_df[<span style="color:#e6db74">&#39;total_deaths_pm&#39;</span>])
+</span></span></code></pre></div><pre><code>ShapiroResult(statistic=0.41877639293670654, pvalue=1.361060423265974e-25)
 </code></pre>
 <ul>
 <li>위 4개의 feature 모두 정규분포를 이루고 있지 않음을 확인할 수 있다.</li>
 <li>이번에는 qqplot을 그린다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">sm<span style="color:#f92672">.</span>qqplot(covid_case_df[[<span style="color:#e6db74">&#34;total_cases&#34;</span>]]<span style="color:#f92672">.</span>sort_values([<span style="color:#e6db74">&#34;total_cases&#34;</span>]), line <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;s&#34;</span>)
-plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;QQ Plot of Total Cases&#34;</span>)
-</code></pre></div><pre><code>Text(0.5, 1.0, 'QQ Plot of Total Cases')
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>sm<span style="color:#f92672">.</span>qqplot(covid_case_df[[<span style="color:#e6db74">&#34;total_cases&#34;</span>]]<span style="color:#f92672">.</span>sort_values([<span style="color:#e6db74">&#34;total_cases&#34;</span>]), line <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;s&#34;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;QQ Plot of Total Cases&#34;</span>)
+</span></span></code></pre></div><pre><code>Text(0.5, 1.0, 'QQ Plot of Total Cases')
 </code></pre>
 <p><img src="/img/python_edu/02_datatransformation/verifying_outliers/output_16_1.png" alt="png"></p>
 <ul>
 <li>이번에는 정규분포를 이루는 샘플 데이터의 shapiro 검정 테스트와 qqplot을 그려본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">random_normal_datapoints <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>Series(np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>normal(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.1</span>, <span style="color:#ae81ff">200</span>))
-<span style="color:#66d9ef">print</span>(scistat<span style="color:#f92672">.</span>shapiro(random_normal_datapoints))
-</code></pre></div><pre><code>ShapiroResult(statistic=0.9939591884613037, pvalue=0.5945821404457092)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>random_normal_datapoints <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>Series(np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>normal(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.1</span>, <span style="color:#ae81ff">200</span>))
+</span></span><span style="display:flex;"><span>print(scistat<span style="color:#f92672">.</span>shapiro(random_normal_datapoints))
+</span></span></code></pre></div><pre><code>ShapiroResult(statistic=0.9939591884613037, pvalue=0.5945821404457092)
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">sm<span style="color:#f92672">.</span>qqplot(random_normal_datapoints, line <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;s&#34;</span>)
-plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;QQ Plot of Normal Datapoints&#34;</span>)
-</code></pre></div><pre><code>Text(0.5, 1.0, 'QQ Plot of Normal Datapoints')
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>sm<span style="color:#f92672">.</span>qqplot(random_normal_datapoints, line <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;s&#34;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;QQ Plot of Normal Datapoints&#34;</span>)
+</span></span></code></pre></div><pre><code>Text(0.5, 1.0, 'QQ Plot of Normal Datapoints')
 </code></pre>
 <p><img src="/img/python_edu/02_datatransformation/verifying_outliers/output_19_1.png" alt="png"></p>
 <h2 id="이상값-범위-나타내기">이상값 범위 나타내기</h2>
@@ -313,21 +321,21 @@ plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;QQ
 <li>정규성 검정을 통해서 각 데이터가 이상값이 있다는 것을 파악했다면, 이번에는 이상값 범위를 정의한다.</li>
 <li>연속형 변수의 이상값 범위는 1사분위-3사분위의 거리를 재는 것이다. 그 거리가 사분위범위의 1.5배를 넘으면 그 값을 이상값으로 간주한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">thirdq <span style="color:#f92672">=</span> covid_case_df[<span style="color:#e6db74">&#34;total_cases&#34;</span>]<span style="color:#f92672">.</span>quantile(<span style="color:#ae81ff">0.75</span>)
-firstq <span style="color:#f92672">=</span> covid_case_df[<span style="color:#e6db74">&#34;total_cases&#34;</span>]<span style="color:#f92672">.</span>quantile(<span style="color:#ae81ff">0.25</span>)
-interquantile_range <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.5</span> <span style="color:#f92672">*</span> (thirdq <span style="color:#f92672">-</span> firstq)
-outlier_high <span style="color:#f92672">=</span> interquantile_range <span style="color:#f92672">+</span> thirdq
-outlier_low <span style="color:#f92672">=</span> firstq <span style="color:#f92672">-</span> interquantile_range
-
-<span style="color:#66d9ef">print</span>(outlier_low, outlier_high, sep <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34; &lt;---&gt; &#34;</span>)
-</code></pre></div><pre><code>-14736.125 &lt;---&gt; 25028.875
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>thirdq <span style="color:#f92672">=</span> covid_case_df[<span style="color:#e6db74">&#34;total_cases&#34;</span>]<span style="color:#f92672">.</span>quantile(<span style="color:#ae81ff">0.75</span>)
+</span></span><span style="display:flex;"><span>firstq <span style="color:#f92672">=</span> covid_case_df[<span style="color:#e6db74">&#34;total_cases&#34;</span>]<span style="color:#f92672">.</span>quantile(<span style="color:#ae81ff">0.25</span>)
+</span></span><span style="display:flex;"><span>interquantile_range <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.5</span> <span style="color:#f92672">*</span> (thirdq <span style="color:#f92672">-</span> firstq)
+</span></span><span style="display:flex;"><span>outlier_high <span style="color:#f92672">=</span> interquantile_range <span style="color:#f92672">+</span> thirdq
+</span></span><span style="display:flex;"><span>outlier_low <span style="color:#f92672">=</span> firstq <span style="color:#f92672">-</span> interquantile_range
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(outlier_low, outlier_high, sep <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34; &lt;---&gt; &#34;</span>)
+</span></span></code></pre></div><pre><code>-14736.125 &lt;---&gt; 25028.875
 </code></pre>
 <ul>
 <li>이상치를 제거한 데이터를 가져온다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">remove_out_lier_df <span style="color:#f92672">=</span> covid_case_df<span style="color:#f92672">.</span>loc[<span style="color:#f92672">~</span>(covid_case_df[<span style="color:#e6db74">&#34;total_cases&#34;</span>] <span style="color:#f92672">&gt;</span> outlier_high) <span style="color:#f92672">|</span> (covid_case_df[<span style="color:#e6db74">&#34;total_cases&#34;</span>] <span style="color:#f92672">&lt;</span> outlier_low)]
-<span style="color:#66d9ef">print</span>(remove_out_lier_df<span style="color:#f92672">.</span>info())
-</code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>remove_out_lier_df <span style="color:#f92672">=</span> covid_case_df<span style="color:#f92672">.</span>loc[<span style="color:#f92672">~</span>(covid_case_df[<span style="color:#e6db74">&#34;total_cases&#34;</span>] <span style="color:#f92672">&gt;</span> outlier_high) <span style="color:#f92672">|</span> (covid_case_df[<span style="color:#e6db74">&#34;total_cases&#34;</span>] <span style="color:#f92672">&lt;</span> outlier_low)]
+</span></span><span style="display:flex;"><span>print(remove_out_lier_df<span style="color:#f92672">.</span>info())
+</span></span></code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
 Index: 177 entries, AFG to ZWE
 Data columns (total 5 columns):
  #   Column           Non-Null Count  Dtype  
@@ -344,17 +352,17 @@ None
 <ul>
 <li>이제 두 데이터의 히스토그램을 비교해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">fig, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(figsize <span style="color:#f92672">=</span> (<span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">6</span>), ncols <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>)
-ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>hist(covid_case_df[<span style="color:#e6db74">&#34;total_cases&#34;</span>]<span style="color:#f92672">/</span><span style="color:#ae81ff">1000</span>, bins <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span>)
-ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#34;Total Covid Cases (thousands) for all&#34;</span>)
-ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#34;Cases&#34;</span>)
-ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#34;Number of Countries&#34;</span>)
-ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>hist(remove_out_lier_df[<span style="color:#e6db74">&#34;total_cases&#34;</span>]<span style="color:#f92672">/</span><span style="color:#ae81ff">1000</span>, bins <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span>)
-ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#34;Total Covid Cases (thousands) for removed outlier&#34;</span>)
-ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#34;Cases&#34;</span>)
-ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#34;Number of Countries&#34;</span>)
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="/img/python_edu/02_datatransformation/verifying_outliers/output_25_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>fig, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(figsize <span style="color:#f92672">=</span> (<span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">6</span>), ncols <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>hist(covid_case_df[<span style="color:#e6db74">&#34;total_cases&#34;</span>]<span style="color:#f92672">/</span><span style="color:#ae81ff">1000</span>, bins <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span>)
+</span></span><span style="display:flex;"><span>ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#34;Total Covid Cases (thousands) for all&#34;</span>)
+</span></span><span style="display:flex;"><span>ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#34;Cases&#34;</span>)
+</span></span><span style="display:flex;"><span>ax[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#34;Number of Countries&#34;</span>)
+</span></span><span style="display:flex;"><span>ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>hist(remove_out_lier_df[<span style="color:#e6db74">&#34;total_cases&#34;</span>]<span style="color:#f92672">/</span><span style="color:#ae81ff">1000</span>, bins <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span>)
+</span></span><span style="display:flex;"><span>ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#34;Total Covid Cases (thousands) for removed outlier&#34;</span>)
+</span></span><span style="display:flex;"><span>ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#34;Cases&#34;</span>)
+</span></span><span style="display:flex;"><span>ax[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#34;Number of Countries&#34;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img src="/img/python_edu/02_datatransformation/verifying_outliers/output_25_0.png" alt="png"></p>
 <h2 id="references">References</h2>
 <p>Walker, M. (2020). Python Data Cleaning Cookbook: Modern techniques and Python tools to detect and remove dirty data and extract key insights. Packt Publishing.</p>
 
@@ -384,7 +392,7 @@ plt<span style="color:#f92672">.</span>show()
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

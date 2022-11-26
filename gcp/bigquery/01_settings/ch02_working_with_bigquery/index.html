@@ -13,9 +13,10 @@
 위 화면에서 아래 소스코드를 입력한다.
 WITH bicycle_rentals AS ( SELECT COUNT(starttime) as num_trips, EXTRACT(DATE from starttime) as trip_date FROM `bigquery-public-data.new_york_citibike.citibike_trips` GROUP BY trip_date ), rainy_days AS ( SELECT date, (MAX(prcp) &gt; 5) AS rainy FROM ( SELECT wx." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/gcp/bigquery/01_settings/ch02_working_with_bigquery/" />
+<meta property="og:url" content="https://dschloe.github.io/gcp/bigquery/01_settings/ch02_working_with_bigquery/" /><meta property="article:section" content="GCP" />
 <meta property="article:published_time" content="2020-04-19T00:13:30+09:00" />
 <meta property="article:modified_time" content="2020-04-19T00:13:30+09:00" />
+
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Ch02 Working with BigQuery"/>
@@ -24,20 +25,27 @@ WITH bicycle_rentals AS ( SELECT COUNT(starttime) as num_trips, EXTRACT(DATE fro
 위 화면에서 아래 소스코드를 입력한다.
 WITH bicycle_rentals AS ( SELECT COUNT(starttime) as num_trips, EXTRACT(DATE from starttime) as trip_date FROM `bigquery-public-data.new_york_citibike.citibike_trips` GROUP BY trip_date ), rainy_days AS ( SELECT date, (MAX(prcp) &gt; 5) AS rainy FROM ( SELECT wx."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -172,36 +180,36 @@ WITH bicycle_rentals AS ( SELECT COUNT(starttime) as num_trips, EXTRACT(DATE fro
 <p><img src="/img/gcp/bigquery/02_Figure.png" alt=""></p>
 <p>뉴욕주의 자전거 렌탈이 비가 올때와 그렇지 않을 때 수치를 비교하고자 않다. 어떻게 해야할까? 일단, 필요한 데이터는 두가지가 될 것이다. 첫번째는 자전거 렌탈 데이터가 필요하고, 두번째는 뉴욕주의 날씨와 관련된 데이터이다. 두개의 데이터를 조인(join)한 후 수치를 구해야 할 것이다.</p>
 <p>위 화면에서 아래 소스코드를 입력한다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">WITH</span> bicycle_rentals <span style="color:#66d9ef">AS</span> (
-  <span style="color:#66d9ef">SELECT</span>
-  <span style="color:#66d9ef">COUNT</span>(starttime) <span style="color:#66d9ef">as</span> num_trips,
-  <span style="color:#66d9ef">EXTRACT</span>(DATE <span style="color:#66d9ef">from</span> starttime) <span style="color:#66d9ef">as</span> trip_date
-  <span style="color:#66d9ef">FROM</span> <span style="color:#f92672">`</span>bigquery<span style="color:#f92672">-</span><span style="color:#66d9ef">public</span><span style="color:#f92672">-</span><span style="color:#66d9ef">data</span>.new_york_citibike.citibike_trips<span style="color:#f92672">`</span> 
-  <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> trip_date
-),
-
-rainy_days <span style="color:#66d9ef">AS</span>
-(
-  <span style="color:#66d9ef">SELECT</span>
-  date,
-  (<span style="color:#66d9ef">MAX</span>(prcp) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">5</span>) <span style="color:#66d9ef">AS</span> rainy
-  <span style="color:#66d9ef">FROM</span> (
-    <span style="color:#66d9ef">SELECT</span> wx.date <span style="color:#66d9ef">AS</span> date,
-    <span style="color:#66d9ef">IF</span> (wx.element <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;PRCP&#39;</span>, wx.value<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>, <span style="color:#66d9ef">NULL</span>) <span style="color:#66d9ef">AS</span> prcp
-    <span style="color:#66d9ef">FROM</span> <span style="color:#f92672">`</span>bigquery<span style="color:#f92672">-</span><span style="color:#66d9ef">public</span><span style="color:#f92672">-</span><span style="color:#66d9ef">data</span>.ghcn_d.ghcnd_2016<span style="color:#f92672">`</span> <span style="color:#66d9ef">AS</span> wx 
-    <span style="color:#66d9ef">WHERE</span> wx.id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;USW00094728&#39;</span>
-)
-<span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span>
-  date
-)
-<span style="color:#66d9ef">SELECT</span> 
-  ROUND(<span style="color:#66d9ef">AVG</span>(bk.num_trips)) <span style="color:#66d9ef">AS</span> num_trips, 
-  wx.rainy
-<span style="color:#66d9ef">FROM</span> bicycle_rentals <span style="color:#66d9ef">AS</span> bk
-<span style="color:#66d9ef">JOIN</span> rainy_days <span style="color:#66d9ef">AS</span> wx
-<span style="color:#66d9ef">ON</span> wx.date <span style="color:#f92672">=</span> bk.trip_date
-<span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> wx.rainy
-</code></pre></div><table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">WITH</span> bicycle_rentals <span style="color:#66d9ef">AS</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">COUNT</span>(starttime) <span style="color:#66d9ef">as</span> num_trips,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">EXTRACT</span>(DATE <span style="color:#66d9ef">from</span> starttime) <span style="color:#66d9ef">as</span> trip_date
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">FROM</span> <span style="color:#f92672">`</span>bigquery<span style="color:#f92672">-</span><span style="color:#66d9ef">public</span><span style="color:#f92672">-</span><span style="color:#66d9ef">data</span>.new_york_citibike.citibike_trips<span style="color:#f92672">`</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> trip_date
+</span></span><span style="display:flex;"><span>),
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rainy_days <span style="color:#66d9ef">AS</span>
+</span></span><span style="display:flex;"><span>(
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">SELECT</span>
+</span></span><span style="display:flex;"><span>  date,
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">MAX</span>(prcp) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">5</span>) <span style="color:#66d9ef">AS</span> rainy
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">FROM</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">SELECT</span> wx.date <span style="color:#66d9ef">AS</span> date,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">IF</span> (wx.element <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;PRCP&#39;</span>, wx.value<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>, <span style="color:#66d9ef">NULL</span>) <span style="color:#66d9ef">AS</span> prcp
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">FROM</span> <span style="color:#f92672">`</span>bigquery<span style="color:#f92672">-</span><span style="color:#66d9ef">public</span><span style="color:#f92672">-</span><span style="color:#66d9ef">data</span>.ghcn_d.ghcnd_2016<span style="color:#f92672">`</span> <span style="color:#66d9ef">AS</span> wx 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">WHERE</span> wx.id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;USW00094728&#39;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span>
+</span></span><span style="display:flex;"><span>  date
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>  ROUND(<span style="color:#66d9ef">AVG</span>(bk.num_trips)) <span style="color:#66d9ef">AS</span> num_trips, 
+</span></span><span style="display:flex;"><span>  wx.rainy
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> bicycle_rentals <span style="color:#66d9ef">AS</span> bk
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">JOIN</span> rainy_days <span style="color:#66d9ef">AS</span> wx
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ON</span> wx.date <span style="color:#f92672">=</span> bk.trip_date
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> wx.rainy
+</span></span></code></pre></div><table>
 <thead>
 <tr>
 <th style="text-align:center">ROW</th>
@@ -308,7 +316,7 @@ rainy_days <span style="color:#66d9ef">AS</span>
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

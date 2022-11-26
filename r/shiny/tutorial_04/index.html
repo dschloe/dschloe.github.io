@@ -11,33 +11,41 @@
 <meta property="og:description" content="공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
 이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
 I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content  II. Layouts의 개요 이번 시간에는 Shiny Layouts 개요에 대한 간략적인 소개를 하려고 한다." />
+shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content II. Layouts의 개요 이번 시간에는 Shiny Layouts 개요에 대한 간략적인 소개를 하려고 한다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/r/shiny/tutorial_04/" />
+<meta property="og:url" content="https://dschloe.github.io/r/shiny/tutorial_04/" /><meta property="article:section" content="R" />
 <meta property="article:published_time" content="2020-03-29T23:50:39+09:00" />
 <meta property="article:modified_time" content="2020-03-29T23:50:39+09:00" />
+
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="shiny tutorial 04 - Layouts"/>
 <meta name="twitter:description" content="공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
 이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
 I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content  II. Layouts의 개요 이번 시간에는 Shiny Layouts 개요에 대한 간략적인 소개를 하려고 한다."/>
+shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content II. Layouts의 개요 이번 시간에는 Shiny Layouts 개요에 대한 간략적인 소개를 하려고 한다."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -183,38 +191,38 @@ I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼�
 <h2 id="iii-main-functions">III. Main Functions</h2>
 <h2 id="예시-1-sidebar-layout">예시 1. Sidebar Layout</h2>
 <p>이러한 <code>Layout</code>은 보통 화면 왼쪽에는 (단, Mobile 화면 위쪽) <code>input</code>에 관한 기능이 나온다면, 화면 오른쪽에는 <code>input</code>에 따라 결과값이 나타나는 <code>output</code>의 그래프, 표 등이 출력된다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># 패키지</span>
-<span style="color:#a6e22e">library</span>(shiny)
-
-<span style="color:#75715e"># ui 정의</span>
-ui <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">fluidPage</span>(
-  <span style="color:#a6e22e">titlePanel</span>(<span style="color:#e6db74">&#34;Sidebar Layout 예시&#34;</span>), <span style="color:#75715e"># 제목 Panel</span>
-
-  <span style="color:#a6e22e">sidebarLayout</span>(
-    <span style="color:#a6e22e">sidebarPanel</span>(
-      <span style="color:#a6e22e">numericInput</span>(
-        inputId <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;n&#34;</span>, label <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;샘플사이즈&#34;</span>,
-        value <span style="color:#f92672">=</span> <span style="color:#ae81ff">25</span>
-      )
-    ),
-
-    <span style="color:#a6e22e">mainPanel</span>(
-      <span style="color:#a6e22e">plotOutput</span>(outputId <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hist&#34;</span>)
-    )
-  )
-)
-
-<span style="color:#75715e"># server 정의</span>
-<span style="color:#75715e"># output will be displayed</span>
-server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(input, output) {
-  output<span style="color:#f92672">$</span>hist <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">renderPlot</span>({
-    <span style="color:#a6e22e">hist</span>(<span style="color:#a6e22e">rnorm</span>(input<span style="color:#f92672">$</span>n))
-  })
-}
-
-<span style="color:#75715e"># shinyApp 실행</span>
-<span style="color:#a6e22e">shinyApp</span>(ui <span style="color:#f92672">=</span> ui, server <span style="color:#f92672">=</span> server)
-</code></pre></div><pre><code>## 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e"># 패키지</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(shiny)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ui 정의</span>
+</span></span><span style="display:flex;"><span>ui <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">fluidPage</span>(
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">titlePanel</span>(<span style="color:#e6db74">&#34;Sidebar Layout 예시&#34;</span>), <span style="color:#75715e"># 제목 Panel</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">sidebarLayout</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">sidebarPanel</span>(
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">numericInput</span>(
+</span></span><span style="display:flex;"><span>        inputId <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;n&#34;</span>, label <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;샘플사이즈&#34;</span>,
+</span></span><span style="display:flex;"><span>        value <span style="color:#f92672">=</span> <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span>      )
+</span></span><span style="display:flex;"><span>    ),
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mainPanel</span>(
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">plotOutput</span>(outputId <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hist&#34;</span>)
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>  )
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># server 정의</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># output will be displayed</span>
+</span></span><span style="display:flex;"><span>server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(input, output) {
+</span></span><span style="display:flex;"><span>  output<span style="color:#f92672">$</span>hist <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">renderPlot</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">hist</span>(<span style="color:#a6e22e">rnorm</span>(input<span style="color:#f92672">$</span>n))
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># shinyApp 실행</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">shinyApp</span>(ui <span style="color:#f92672">=</span> ui, server <span style="color:#f92672">=</span> server)
+</span></span></code></pre></div><pre tabindex="0"><code>## 
 ## Listening on http://127.0.0.1:6286
 </code></pre><p><img src="/img/shiny/tutorial_04/shiny01.png" alt=""><!-- raw HTML omitted --></p>
 <h2 id="예시-2-grid-layout">예시 2. Grid Layout</h2>
@@ -224,91 +232,91 @@ server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">func
 <li><code>column()</code>: 열과 관련이 있다.</li>
 </ul>
 <p>Column의 너비는 은 <a href="https://getbootstrap.com/docs/4.0/layout/grid/">Bootstrp 12-wide grid system</a>에 기초하며, 하나의 <code>fluidRow()</code>안에는 12개의 <code>column()</code>이 존재한다. (다시한번 느끼지만, Shiny를 잘할려면 HTML/CSS/JS를 잘해야 한다!)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(shiny)
-<span style="color:#a6e22e">library</span>(ggplot2)
-
-dataset <span style="color:#f92672">&lt;-</span> diamonds
-
-ui <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">fluidPage</span>(
-
-  title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;다이아몬드 데이터 탐색&#34;</span>,
-  
-  <span style="color:#a6e22e">plotOutput</span>(<span style="color:#e6db74">&#39;plot&#39;</span>),
-  
-  <span style="color:#a6e22e">hr</span>(),
-
-  <span style="color:#a6e22e">fluidRow</span>(
-    <span style="color:#a6e22e">column</span>(<span style="color:#ae81ff">3</span>,
-      <span style="color:#a6e22e">h4</span>(<span style="color:#e6db74">&#34;다이아몬드 데이터 탐색&#34;</span>),
-      <span style="color:#a6e22e">sliderInput</span>(<span style="color:#e6db74">&#39;sampleSize&#39;</span>, <span style="color:#e6db74">&#39;Sample Size&#39;</span>, 
-                  min<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, max<span style="color:#f92672">=</span><span style="color:#a6e22e">nrow</span>(dataset), value<span style="color:#f92672">=</span><span style="color:#a6e22e">min</span>(<span style="color:#ae81ff">1000</span>, <span style="color:#a6e22e">nrow</span>(dataset)), 
-                  step<span style="color:#f92672">=</span><span style="color:#ae81ff">500</span>, round<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>),
-      <span style="color:#a6e22e">br</span>(),
-      <span style="color:#a6e22e">checkboxInput</span>(<span style="color:#e6db74">&#39;jitter&#39;</span>, <span style="color:#e6db74">&#39;Jitter&#39;</span>),
-      <span style="color:#a6e22e">checkboxInput</span>(<span style="color:#e6db74">&#39;smooth&#39;</span>, <span style="color:#e6db74">&#39;Smooth&#39;</span>)
-    ),
-    <span style="color:#a6e22e">column</span>(<span style="color:#ae81ff">4</span>, offset <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
-      <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;x&#39;</span>, <span style="color:#e6db74">&#39;X&#39;</span>, <span style="color:#a6e22e">names</span>(dataset)),
-      <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;y&#39;</span>, <span style="color:#e6db74">&#39;Y&#39;</span>, <span style="color:#a6e22e">names</span>(dataset), <span style="color:#a6e22e">names</span>(dataset)[[2]]),
-      <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;color&#39;</span>, <span style="color:#e6db74">&#39;Color&#39;</span>, <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#39;None&#39;</span>, <span style="color:#a6e22e">names</span>(dataset)))
-    ),
-    <span style="color:#a6e22e">column</span>(<span style="color:#ae81ff">4</span>,
-      <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;facet_row&#39;</span>, <span style="color:#e6db74">&#39;Facet Row&#39;</span>, <span style="color:#a6e22e">c</span>(None<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>, <span style="color:#a6e22e">names</span>(dataset))),
-      <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;facet_col&#39;</span>, <span style="color:#e6db74">&#39;Facet Column&#39;</span>, <span style="color:#a6e22e">c</span>(None<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>, <span style="color:#a6e22e">names</span>(dataset)))
-    )
-  )
-)
-
-server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(input, output){    
-
-  dataset <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">reactive</span>({
-    diamonds<span style="color:#a6e22e">[sample</span>(<span style="color:#a6e22e">nrow</span>(diamonds), input<span style="color:#f92672">$</span>sampleSize),]
-  })
-
-  output<span style="color:#f92672">$</span>plot <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">renderPlot</span>({
-    
-    p <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">ggplot</span>(<span style="color:#a6e22e">dataset</span>(), <span style="color:#a6e22e">aes_string</span>(x<span style="color:#f92672">=</span>input<span style="color:#f92672">$</span>x, y<span style="color:#f92672">=</span>input<span style="color:#f92672">$</span>y)) <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_point</span>()
-    
-    <span style="color:#a6e22e">if </span>(input<span style="color:#f92672">$</span>color <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;None&#39;</span>)
-      p <span style="color:#f92672">&lt;-</span> p <span style="color:#f92672">+</span> <span style="color:#a6e22e">aes_string</span>(color<span style="color:#f92672">=</span>input<span style="color:#f92672">$</span>color)
-    
-    facets <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">paste</span>(input<span style="color:#f92672">$</span>facet_row, <span style="color:#e6db74">&#39;~&#39;</span>, input<span style="color:#f92672">$</span>facet_col)
-    <span style="color:#a6e22e">if </span>(facets <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;. ~ .&#39;</span>)
-      p <span style="color:#f92672">&lt;-</span> p <span style="color:#f92672">+</span> <span style="color:#a6e22e">facet_grid</span>(facets)
-    
-    <span style="color:#a6e22e">if </span>(input<span style="color:#f92672">$</span>jitter)
-      p <span style="color:#f92672">&lt;-</span> p <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_jitter</span>()
-    <span style="color:#a6e22e">if </span>(input<span style="color:#f92672">$</span>smooth)
-      p <span style="color:#f92672">&lt;-</span> p <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_smooth</span>()
-    
-    <span style="color:#a6e22e">print</span>(p)
-    
-  }, height<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span>, width <span style="color:#f92672">=</span> <span style="color:#ae81ff">700</span>)
-}
-
-<span style="color:#a6e22e">shinyApp</span>(ui <span style="color:#f92672">=</span> ui, server <span style="color:#f92672">=</span> server)
-</code></pre></div><pre><code>## 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(shiny)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(ggplot2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dataset <span style="color:#f92672">&lt;-</span> diamonds
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ui <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">fluidPage</span>(
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;다이아몬드 데이터 탐색&#34;</span>,
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">plotOutput</span>(<span style="color:#e6db74">&#39;plot&#39;</span>),
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">hr</span>(),
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fluidRow</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">column</span>(<span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">h4</span>(<span style="color:#e6db74">&#34;다이아몬드 데이터 탐색&#34;</span>),
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">sliderInput</span>(<span style="color:#e6db74">&#39;sampleSize&#39;</span>, <span style="color:#e6db74">&#39;Sample Size&#39;</span>, 
+</span></span><span style="display:flex;"><span>                  min<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, max<span style="color:#f92672">=</span><span style="color:#a6e22e">nrow</span>(dataset), value<span style="color:#f92672">=</span><span style="color:#a6e22e">min</span>(<span style="color:#ae81ff">1000</span>, <span style="color:#a6e22e">nrow</span>(dataset)), 
+</span></span><span style="display:flex;"><span>                  step<span style="color:#f92672">=</span><span style="color:#ae81ff">500</span>, round<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>),
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">br</span>(),
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">checkboxInput</span>(<span style="color:#e6db74">&#39;jitter&#39;</span>, <span style="color:#e6db74">&#39;Jitter&#39;</span>),
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">checkboxInput</span>(<span style="color:#e6db74">&#39;smooth&#39;</span>, <span style="color:#e6db74">&#39;Smooth&#39;</span>)
+</span></span><span style="display:flex;"><span>    ),
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">column</span>(<span style="color:#ae81ff">4</span>, offset <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;x&#39;</span>, <span style="color:#e6db74">&#39;X&#39;</span>, <span style="color:#a6e22e">names</span>(dataset)),
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;y&#39;</span>, <span style="color:#e6db74">&#39;Y&#39;</span>, <span style="color:#a6e22e">names</span>(dataset), <span style="color:#a6e22e">names</span>(dataset)[[2]]),
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;color&#39;</span>, <span style="color:#e6db74">&#39;Color&#39;</span>, <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#39;None&#39;</span>, <span style="color:#a6e22e">names</span>(dataset)))
+</span></span><span style="display:flex;"><span>    ),
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">column</span>(<span style="color:#ae81ff">4</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;facet_row&#39;</span>, <span style="color:#e6db74">&#39;Facet Row&#39;</span>, <span style="color:#a6e22e">c</span>(None<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>, <span style="color:#a6e22e">names</span>(dataset))),
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;facet_col&#39;</span>, <span style="color:#e6db74">&#39;Facet Column&#39;</span>, <span style="color:#a6e22e">c</span>(None<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>, <span style="color:#a6e22e">names</span>(dataset)))
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>  )
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(input, output){    
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  dataset <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">reactive</span>({
+</span></span><span style="display:flex;"><span>    diamonds<span style="color:#a6e22e">[sample</span>(<span style="color:#a6e22e">nrow</span>(diamonds), input<span style="color:#f92672">$</span>sampleSize),]
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  output<span style="color:#f92672">$</span>plot <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">renderPlot</span>({
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    p <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">ggplot</span>(<span style="color:#a6e22e">dataset</span>(), <span style="color:#a6e22e">aes_string</span>(x<span style="color:#f92672">=</span>input<span style="color:#f92672">$</span>x, y<span style="color:#f92672">=</span>input<span style="color:#f92672">$</span>y)) <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_point</span>()
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">if </span>(input<span style="color:#f92672">$</span>color <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;None&#39;</span>)
+</span></span><span style="display:flex;"><span>      p <span style="color:#f92672">&lt;-</span> p <span style="color:#f92672">+</span> <span style="color:#a6e22e">aes_string</span>(color<span style="color:#f92672">=</span>input<span style="color:#f92672">$</span>color)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    facets <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">paste</span>(input<span style="color:#f92672">$</span>facet_row, <span style="color:#e6db74">&#39;~&#39;</span>, input<span style="color:#f92672">$</span>facet_col)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">if </span>(facets <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;. ~ .&#39;</span>)
+</span></span><span style="display:flex;"><span>      p <span style="color:#f92672">&lt;-</span> p <span style="color:#f92672">+</span> <span style="color:#a6e22e">facet_grid</span>(facets)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">if </span>(input<span style="color:#f92672">$</span>jitter)
+</span></span><span style="display:flex;"><span>      p <span style="color:#f92672">&lt;-</span> p <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_jitter</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">if </span>(input<span style="color:#f92672">$</span>smooth)
+</span></span><span style="display:flex;"><span>      p <span style="color:#f92672">&lt;-</span> p <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_smooth</span>()
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">print</span>(p)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>  }, height<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span>, width <span style="color:#f92672">=</span> <span style="color:#ae81ff">700</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">shinyApp</span>(ui <span style="color:#f92672">=</span> ui, server <span style="color:#f92672">=</span> server)
+</span></span></code></pre></div><pre tabindex="0"><code>## 
 ## Listening on http://127.0.0.1:4447
 </code></pre><p><img src="/img/shiny/tutorial_04/shiny02.png" alt=""><!-- raw HTML omitted --></p>
 <h2 id="예시-3-navbar-pages">예시 3. Navbar Pages</h2>
 <p>일반적인 웹사이트 메뉴 구성도와 큰 차이가 없다. 메뉴를 구성하는데, Top 메뉴와 Secondary Navigation까지 지원이 가능하다.</p>
 <p>이 기능을 구현할 때는 사실상의 <code>Shiny Project</code> 단계로 진입하기 때문에, 이 때에는 메뉴 구성도와 같은 <code>웹사이트 개발 지식</code>이 수반되어야 한다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(shiny)
-
-ui <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">navbarPage</span>(<span style="color:#e6db74">&#34;My Application&#34;</span>,
-  <span style="color:#a6e22e">tabPanel</span>(<span style="color:#e6db74">&#34;Component 1&#34;</span>),
-  <span style="color:#a6e22e">tabPanel</span>(<span style="color:#e6db74">&#34;Component 2&#34;</span>),
-  <span style="color:#a6e22e">navbarMenu</span>(<span style="color:#e6db74">&#34;More&#34;</span>,
-    <span style="color:#a6e22e">tabPanel</span>(<span style="color:#e6db74">&#34;Sub-Component A&#34;</span>),
-    <span style="color:#a6e22e">tabPanel</span>(<span style="color:#e6db74">&#34;Sub-Component B&#34;</span>))
-)
-
-server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(input, output) {
-  
-}
-
-<span style="color:#a6e22e">shinyApp</span>(ui <span style="color:#f92672">=</span> ui, server <span style="color:#f92672">=</span> server)
-</code></pre></div><pre><code>## 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(shiny)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ui <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">navbarPage</span>(<span style="color:#e6db74">&#34;My Application&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">tabPanel</span>(<span style="color:#e6db74">&#34;Component 1&#34;</span>),
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">tabPanel</span>(<span style="color:#e6db74">&#34;Component 2&#34;</span>),
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">navbarMenu</span>(<span style="color:#e6db74">&#34;More&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">tabPanel</span>(<span style="color:#e6db74">&#34;Sub-Component A&#34;</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">tabPanel</span>(<span style="color:#e6db74">&#34;Sub-Component B&#34;</span>))
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(input, output) {
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">shinyApp</span>(ui <span style="color:#f92672">=</span> ui, server <span style="color:#f92672">=</span> server)
+</span></span></code></pre></div><pre tabindex="0"><code>## 
 ## Listening on http://127.0.0.1:7782
 </code></pre><p><img src="/img/shiny/tutorial_04/shiny03.png" alt=""><!-- raw HTML omitted --></p>
 <p>지금까지 <code>Layouts</code>의 기본 개요와 함께 주요 <code>Functions</code>에 대해 간단하게 학습하는 시간을 가졌다. 여기에서는 <code>Layouts</code>의 기본 개념만 알고 있으면 추후에 <code>Shiny</code> 대시보드 디자인을 할 때, 보다 쉽게 구현이 가능하다.</p>
@@ -356,7 +364,7 @@ server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">func
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

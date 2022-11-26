@@ -8,30 +8,38 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="xgboost and kaggle with R" />
-<meta property="og:description" content="개요  R 강의를 진행하면서 xgboost를 R로 구현하고 싶었다. kaggle에 있는 데이터를 불러와서 제출까지 가는 과정을 담았으니 입문자들에게 작은 도움이 되기를 바란다.  XGBoost 개요  논문 제목 - XGBoost: A Scalable Tree Boosting System 논문 게재일: Wed, 9 Mar 2016 01:11:51 UTC (592 KB) 논문 저자: Tianqi Chen, Carlos Guestrin 논문 소개   Tree boosting is a highly effective and widely used machine learning method. In this paper, we describe a scalable end-to-end tree boosting system called XGBoost, which is used widely by data scientists to achieve state-of-the-art results on many machine learning challenges." />
+<meta property="og:description" content="개요 R 강의를 진행하면서 xgboost를 R로 구현하고 싶었다. kaggle에 있는 데이터를 불러와서 제출까지 가는 과정을 담았으니 입문자들에게 작은 도움이 되기를 바란다. XGBoost 개요 논문 제목 - XGBoost: A Scalable Tree Boosting System 논문 게재일: Wed, 9 Mar 2016 01:11:51 UTC (592 KB) 논문 저자: Tianqi Chen, Carlos Guestrin 논문 소개 Tree boosting is a highly effective and widely used machine learning method. In this paper, we describe a scalable end-to-end tree boosting system called XGBoost, which is used widely by data scientists to achieve state-of-the-art results on many machine learning challenges." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/r/machine_learning/3_6_xgboost/" />
+<meta property="og:url" content="https://dschloe.github.io/r/machine_learning/3_6_xgboost/" /><meta property="article:section" content="R" />
 <meta property="article:published_time" content="2020-08-10T11:00:00+09:00" />
 <meta property="article:modified_time" content="2020-08-10T11:00:00+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="xgboost and kaggle with R"/>
-<meta name="twitter:description" content="개요  R 강의를 진행하면서 xgboost를 R로 구현하고 싶었다. kaggle에 있는 데이터를 불러와서 제출까지 가는 과정을 담았으니 입문자들에게 작은 도움이 되기를 바란다.  XGBoost 개요  논문 제목 - XGBoost: A Scalable Tree Boosting System 논문 게재일: Wed, 9 Mar 2016 01:11:51 UTC (592 KB) 논문 저자: Tianqi Chen, Carlos Guestrin 논문 소개   Tree boosting is a highly effective and widely used machine learning method. In this paper, we describe a scalable end-to-end tree boosting system called XGBoost, which is used widely by data scientists to achieve state-of-the-art results on many machine learning challenges."/>
+<meta name="twitter:description" content="개요 R 강의를 진행하면서 xgboost를 R로 구현하고 싶었다. kaggle에 있는 데이터를 불러와서 제출까지 가는 과정을 담았으니 입문자들에게 작은 도움이 되기를 바란다. XGBoost 개요 논문 제목 - XGBoost: A Scalable Tree Boosting System 논문 게재일: Wed, 9 Mar 2016 01:11:51 UTC (592 KB) 논문 저자: Tianqi Chen, Carlos Guestrin 논문 소개 Tree boosting is a highly effective and widely used machine learning method. In this paper, we describe a scalable end-to-end tree boosting system called XGBoost, which is used widely by data scientists to achieve state-of-the-art results on many machine learning challenges."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -239,9 +247,9 @@ each individual tree and leaves space for future trees to improve the model.</li
 <ul>
 <li>우선 패키지부터 설치한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(tidyverse)
-<span style="color:#a6e22e">library</span>(xgboost)
-</code></pre></div><h3 id="1-kaggle-api-with-r">(1) Kaggle API with R</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(tidyverse)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(xgboost)
+</span></span></code></pre></div><h3 id="1-kaggle-api-with-r">(1) Kaggle API with R</h3>
 <ul>
 <li>먼저 <code>[Kaggle]</code>에 회원 가입을 한다.</li>
 <li>회원 가입 진행 후, <code>Kaggle</code>에서 <code>kaggle.json</code> 파일을 다운로드 받는다.</li>
@@ -250,10 +258,10 @@ each individual tree and leaves space for future trees to improve the model.</li
 <ul>
 <li>그리고 아래와 같이 <code>kaggle.json</code>을 <code>RStudio</code>에 등록한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># install.packages(&#34;pins&#34;)</span>
-<span style="color:#a6e22e">library</span>(pins)
-<span style="color:#a6e22e">board_register_kaggle</span>(token <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;kaggle.json&#34;</span>)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e"># install.packages(&#34;pins&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(pins)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">board_register_kaggle</span>(token <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;kaggle.json&#34;</span>)
+</span></span></code></pre></div><ul>
 <li>
 <p><a href="http://pins.rstudio.com/">pins</a>는 일종의 <code>cache</code>를 이용한 자원 관리 패키지이다.</p>
 <ul>
@@ -277,8 +285,8 @@ each individual tree and leaves space for future trees to improve the model.</li
 </li>
 <li>소스코드로 확인해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">pin_find</span>(<span style="color:#e6db74">&#34;titanic&#34;</span>, board<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;kaggle&#34;</span>)
-</code></pre></div><pre><code>## # A tibble: 21 x 4
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">pin_find</span>(<span style="color:#e6db74">&#34;titanic&#34;</span>, board<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;kaggle&#34;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 21 x 4
 ##    name                               description                    type  board
 ##    &lt;chr&gt;                              &lt;chr&gt;                          &lt;chr&gt; &lt;chr&gt;
 ##  1 abhinavralhan/titanic              titanic                        files kagg…
@@ -290,7 +298,7 @@ each individual tree and leaves space for future trees to improve the model.</li
 ##  7 davorbudimir/titanic               Titanic                        files kagg…
 ##  8 dushyantkhinchi/titanic-survival   Titanic survival               files kagg…
 ##  9 fossouodonald/titaniccsv           Titanic csv                    files kagg…
-## 10 harunshimanto/titanic-solution-a-… Titanic Solution: A Beginner'… files kagg…
+## 10 harunshimanto/titanic-solution-a-… Titanic Solution: A Beginner&#39;… files kagg…
 ## # … with 11 more rows
 </code></pre><ul>
 <li>캐글에서 검색된 <code>titanic</code>과 관련된 내용이 이렇게 있다.
@@ -301,10 +309,10 @@ each individual tree and leaves space for future trees to improve the model.</li
 </li>
 <li>이번에는 <code>pin_get()</code> 함수를 활용하여 데이터를 불러온다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">pin_get</span>(<span style="color:#e6db74">&#34;c/titanic&#34;</span>)
-</code></pre></div><pre><code>## [1] &quot;/Users/username/Library/Caches/pins/kaggle/titanic/gender_submission.csv&quot;
-## [2] &quot;/Users/username/Library/Caches/pins/kaggle/titanic/test.csv&quot;             
-## [3] &quot;/Users/username/Library/Caches/pins/kaggle/titanic/train.csv&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">pin_get</span>(<span style="color:#e6db74">&#34;c/titanic&#34;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] &#34;/Users/username/Library/Caches/pins/kaggle/titanic/gender_submission.csv&#34;
+## [2] &#34;/Users/username/Library/Caches/pins/kaggle/titanic/test.csv&#34;             
+## [3] &#34;/Users/username/Library/Caches/pins/kaggle/titanic/train.csv&#34;
 </code></pre><ul>
 <li>출력된 경로에 이미 데이터가 다운받아진 것이다.</li>
 <li>이제 데이터를 불러온다.
@@ -314,14 +322,14 @@ each individual tree and leaves space for future trees to improve the model.</li
 </li>
 <li>위 경로는 Mac 사용자에 해당되니 참고하기를 바란다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(readr)
-dataset <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">pin_get</span>(<span style="color:#e6db74">&#34;c/titanic&#34;</span>)
-train <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read_csv</span>(dataset[3])
-test <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read_csv</span>(dataset[2])
-
-<span style="color:#a6e22e">dim</span>(train); <span style="color:#a6e22e">dim</span>(test)
-</code></pre></div><pre><code>## [1] 891  12
-</code></pre><pre><code>## [1] 418  11
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(readr)
+</span></span><span style="display:flex;"><span>dataset <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">pin_get</span>(<span style="color:#e6db74">&#34;c/titanic&#34;</span>)
+</span></span><span style="display:flex;"><span>train <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read_csv</span>(dataset[3])
+</span></span><span style="display:flex;"><span>test <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read_csv</span>(dataset[2])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">dim</span>(train); <span style="color:#a6e22e">dim</span>(test)
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] 891  12
+</code></pre><pre tabindex="0"><code>## [1] 418  11
 </code></pre><ul>
 <li>데이터가 정상적으로 불러와진 것을 확인할 수 있다.</li>
 <li>간단한 시각화, 데이터 가공 후, 모형 생성 및 제출까지 진행하도록 해본다.</li>
@@ -348,32 +356,32 @@ test <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read_c
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">temp <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">data.frame</span>(a <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>), 
-                   b <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;a&#34;</span>, <span style="color:#e6db74">&#34;a&#34;</span>, <span style="color:#e6db74">&#34;b&#34;</span>, <span style="color:#e6db74">&#34;c&#34;</span>))
-
-<span style="color:#a6e22e">sum</span>(<span style="color:#a6e22e">duplicated</span>(temp))
-</code></pre></div><pre><code>## [1] 1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>temp <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">data.frame</span>(a <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>), 
+</span></span><span style="display:flex;"><span>                   b <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;a&#34;</span>, <span style="color:#e6db74">&#34;a&#34;</span>, <span style="color:#e6db74">&#34;b&#34;</span>, <span style="color:#e6db74">&#34;c&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">sum</span>(<span style="color:#a6e22e">duplicated</span>(temp))
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] 1
 </code></pre><ul>
 <li>이와 같은 방식으로 계산할 수 있다.</li>
 <li>중복값을 제거할 때는 <code>dplyr</code> 패키지 내에 있는 <code>distinct()</code> 사용한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">dplyr<span style="color:#f92672">::</span><span style="color:#a6e22e">distinct</span>(temp)
-</code></pre></div><pre><code>##   a b
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>dplyr<span style="color:#f92672">::</span><span style="color:#a6e22e">distinct</span>(temp)
+</span></span></code></pre></div><pre tabindex="0"><code>##   a b
 ## 1 1 a
 ## 2 2 b
 ## 3 3 c
 </code></pre><ul>
 <li>이제 본 데이터에 적용한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">train <span style="color:#f92672">&lt;-</span> dplyr<span style="color:#f92672">::</span><span style="color:#a6e22e">distinct</span>(train); <span style="color:#a6e22e">dim</span>(train)
-</code></pre></div><pre><code>## [1] 891  12
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">test <span style="color:#f92672">&lt;-</span> dplyr<span style="color:#f92672">::</span><span style="color:#a6e22e">distinct</span>(test); <span style="color:#a6e22e">dim</span>(test)
-</code></pre></div><pre><code>## [1] 418  11
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>train <span style="color:#f92672">&lt;-</span> dplyr<span style="color:#f92672">::</span><span style="color:#a6e22e">distinct</span>(train); <span style="color:#a6e22e">dim</span>(train)
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] 891  12
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>test <span style="color:#f92672">&lt;-</span> dplyr<span style="color:#f92672">::</span><span style="color:#a6e22e">distinct</span>(test); <span style="color:#a6e22e">dim</span>(test)
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] 418  11
 </code></pre><ul>
 <li>train 데이터의 결측치의 개수를 확인해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">colSums</span>(<span style="color:#a6e22e">is.na</span>(train))
-</code></pre></div><pre><code>## PassengerId    Survived      Pclass        Name         Sex         Age 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">colSums</span>(<span style="color:#a6e22e">is.na</span>(train))
+</span></span></code></pre></div><pre tabindex="0"><code>## PassengerId    Survived      Pclass        Name         Sex         Age 
 ##           0           0           0           0           0         177 
 ##       SibSp       Parch      Ticket        Fare       Cabin    Embarked 
 ##           0           0           0           0         687           2
@@ -381,8 +389,8 @@ test <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read_c
 <li>훈련데이터에서 결측치가 있는 변수는 <code>Cabin</code>, <code>Age</code>, <code>Embarked</code>로 확인되었다.</li>
 <li>test 데이터의 결측치의 개수를 확인해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">colSums</span>(<span style="color:#a6e22e">is.na</span>(test))
-</code></pre></div><pre><code>## PassengerId      Pclass        Name         Sex         Age       SibSp 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">colSums</span>(<span style="color:#a6e22e">is.na</span>(test))
+</span></span></code></pre></div><pre tabindex="0"><code>## PassengerId      Pclass        Name         Sex         Age       SibSp 
 ##           0           0           0           0          86           0 
 ##       Parch      Ticket        Fare       Cabin    Embarked 
 ##           0           0           1         327           0
@@ -402,15 +410,15 @@ test <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read_c
 <li>Note: 결측치 처리는 하나의 예시이기 때문에 모든 경우에 적용할 수 있는 것은 아니다. 위 처리 또한 필자의 주관적인 판단이므로, 그저 참고만 해주기를 바란다.</li>
 <li>우선 <code>Age</code>부터 처리하자.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">class</span>(train<span style="color:#f92672">$</span>Age)
-</code></pre></div><pre><code>## [1] &quot;numeric&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">class</span>(train<span style="color:#f92672">$</span>Age)
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] &#34;numeric&#34;
 </code></pre><ul>
 <li>우선 히스토그램으로 데이터의 분포를 확인해보자.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(ggplot2)
-<span style="color:#a6e22e">ggplot</span>(train, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> Age)) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">geom_histogram</span>()
-</code></pre></div><p><img src="/img/r/ml/3_6_xgboost_files/figure-html/unnamed-chunk-12-1.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(ggplot2)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>(train, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> Age)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_histogram</span>()
+</span></span></code></pre></div><p><img src="/img/r/ml/3_6_xgboost_files/figure-html/unnamed-chunk-12-1.png" alt=""><!-- raw HTML omitted --></p>
 <ul>
 <li>숫자를 재 범주화 할 필요가 있다.</li>
 </ul>
@@ -437,39 +445,39 @@ test <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read_c
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">age_cut <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(x) {
-  
-  data <span style="color:#f92672">&lt;-</span> x[<span style="color:#e6db74">&#34;Age&#34;</span>]
-  <span style="color:#75715e"># 지역변수 할당</span>
-  age_labels <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;children&#34;</span>, <span style="color:#e6db74">&#34;teenagers&#34;</span>, <span style="color:#e6db74">&#34;adults&#34;</span>, <span style="color:#e6db74">&#34;senior&#34;</span>)
-  
-  <span style="color:#a6e22e">if</span>(<span style="color:#a6e22e">sum</span>(<span style="color:#a6e22e">is.na</span>(x)) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) {
-    <span style="color:#75715e"># 결측치가 있는 경우 추가</span>
-    <span style="color:#a6e22e">print</span>(<span style="color:#e6db74">&#34;결측치가 존재합니다.&#34;</span>)   
-    int2cat <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">cut</span>(<span style="color:#a6e22e">as.integer</span>(data<span style="color:#f92672">$</span>Age), 
-                 breaks<span style="color:#f92672">=</span><span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">13</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">64</span>, 
-                          <span style="color:#a6e22e">max</span>(data<span style="color:#f92672">$</span>Age, na.rm <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>)), 
-                 labels<span style="color:#f92672">=</span>age_labels)
-    int2cat <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">addNA</span>(int2cat)
-    <span style="color:#a6e22e">cat</span>(<span style="color:#e6db74">&#34;The levels are:&#34;</span>, <span style="color:#a6e22e">levels</span>(int2cat))
-  } else {
-    <span style="color:#a6e22e">print</span>(<span style="color:#e6db74">&#34;결측치가 존재 하지 않습니다.&#34;</span>)
-    int2cat <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">cut</span>(<span style="color:#a6e22e">as.integer</span>(data<span style="color:#f92672">$</span>Age), 
-                 breaks<span style="color:#f92672">=</span><span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">13</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">64</span>, 
-                          <span style="color:#a6e22e">max</span>(data<span style="color:#f92672">$</span>Age, na.rm <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>)), 
-                 labels<span style="color:#f92672">=</span>age_labels)
-    <span style="color:#a6e22e">cat</span>(<span style="color:#e6db74">&#34;The levels are:&#34;</span>, <span style="color:#a6e22e">levels</span>(int2cat))
-  }
-
-  <span style="color:#a6e22e">return</span>(int2cat)
-}
-
-<span style="color:#75715e"># 이제 변환을 시도한다. </span>
-train<span style="color:#f92672">$</span>Age <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">age_cut</span>(train)
-</code></pre></div><pre><code>## [1] &quot;결측치가 존재합니다.&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>age_cut <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(x) {
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  data <span style="color:#f92672">&lt;-</span> x[<span style="color:#e6db74">&#34;Age&#34;</span>]
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 지역변수 할당</span>
+</span></span><span style="display:flex;"><span>  age_labels <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;children&#34;</span>, <span style="color:#e6db74">&#34;teenagers&#34;</span>, <span style="color:#e6db74">&#34;adults&#34;</span>, <span style="color:#e6db74">&#34;senior&#34;</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">if</span>(<span style="color:#a6e22e">sum</span>(<span style="color:#a6e22e">is.na</span>(x)) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 결측치가 있는 경우 추가</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">print</span>(<span style="color:#e6db74">&#34;결측치가 존재합니다.&#34;</span>)   
+</span></span><span style="display:flex;"><span>    int2cat <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">cut</span>(<span style="color:#a6e22e">as.integer</span>(data<span style="color:#f92672">$</span>Age), 
+</span></span><span style="display:flex;"><span>                 breaks<span style="color:#f92672">=</span><span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">13</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">64</span>, 
+</span></span><span style="display:flex;"><span>                          <span style="color:#a6e22e">max</span>(data<span style="color:#f92672">$</span>Age, na.rm <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>)), 
+</span></span><span style="display:flex;"><span>                 labels<span style="color:#f92672">=</span>age_labels)
+</span></span><span style="display:flex;"><span>    int2cat <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">addNA</span>(int2cat)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">cat</span>(<span style="color:#e6db74">&#34;The levels are:&#34;</span>, <span style="color:#a6e22e">levels</span>(int2cat))
+</span></span><span style="display:flex;"><span>  } else {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">print</span>(<span style="color:#e6db74">&#34;결측치가 존재 하지 않습니다.&#34;</span>)
+</span></span><span style="display:flex;"><span>    int2cat <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">cut</span>(<span style="color:#a6e22e">as.integer</span>(data<span style="color:#f92672">$</span>Age), 
+</span></span><span style="display:flex;"><span>                 breaks<span style="color:#f92672">=</span><span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">13</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">64</span>, 
+</span></span><span style="display:flex;"><span>                          <span style="color:#a6e22e">max</span>(data<span style="color:#f92672">$</span>Age, na.rm <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>)), 
+</span></span><span style="display:flex;"><span>                 labels<span style="color:#f92672">=</span>age_labels)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">cat</span>(<span style="color:#e6db74">&#34;The levels are:&#34;</span>, <span style="color:#a6e22e">levels</span>(int2cat))
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">return</span>(int2cat)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 이제 변환을 시도한다. </span>
+</span></span><span style="display:flex;"><span>train<span style="color:#f92672">$</span>Age <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">age_cut</span>(train)
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] &#34;결측치가 존재합니다.&#34;
 ## The levels are: children teenagers adults senior NA
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">test<span style="color:#f92672">$</span>Age <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">age_cut</span>(test)
-</code></pre></div><pre><code>## [1] &quot;결측치가 존재합니다.&quot;
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>test<span style="color:#f92672">$</span>Age <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">age_cut</span>(test)
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] &#34;결측치가 존재합니다.&#34;
 ## The levels are: children teenagers adults senior NA
 </code></pre><ul>
 <li>동일 작업을 해야했기 때문에 함수를 만들었다.
@@ -489,8 +497,8 @@ train<span style="color:#f92672">$</span>Age <span style="color:#f92672">&lt;-</
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">summary</span>(train)
-</code></pre></div><pre><code>##   PassengerId       Survived          Pclass          Name          
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">summary</span>(train)
+</span></span></code></pre></div><pre tabindex="0"><code>##   PassengerId       Survived          Pclass          Name          
 ##  Min.   :  1.0   Min.   :0.0000   Min.   :1.000   Length:891        
 ##  1st Qu.:223.5   1st Qu.:0.0000   1st Qu.:2.000   Class :character  
 ##  Median :446.0   Median :0.0000   Median :3.000   Mode  :character  
@@ -525,8 +533,8 @@ train<span style="color:#f92672">$</span>Age <span style="color:#f92672">&lt;-</
 </li>
 <li>간단하게 예시만 확인해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">prop.table</span>(<span style="color:#a6e22e">table</span>(train<span style="color:#f92672">$</span>Sex,train<span style="color:#f92672">$</span>Survived),<span style="color:#ae81ff">1</span>)
-</code></pre></div><pre><code>##         
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">prop.table</span>(<span style="color:#a6e22e">table</span>(train<span style="color:#f92672">$</span>Sex,train<span style="color:#f92672">$</span>Survived),<span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>##         
 ##                  0         1
 ##   female 0.2579618 0.7420382
 ##   male   0.8110919 0.1889081
@@ -537,32 +545,32 @@ train<span style="color:#f92672">$</span>Age <span style="color:#f92672">&lt;-</
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(gridExtra)
-<span style="color:#a6e22e">library</span>(ggplot2)
-<span style="color:#a6e22e">library</span>(dplyr)
-
-<span style="color:#75715e"># 성별 막대그래프</span>
-p1 <span style="color:#f92672">&lt;-</span> train <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">group_by</span>(Sex) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">summarise</span>(N <span style="color:#f92672">=</span> <span style="color:#a6e22e">n</span>(), .groups <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;drop&#39;</span>) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">ggplot</span>(<span style="color:#a6e22e">aes</span>(Sex, N)) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">geom_col</span>() <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">geom_text</span>(<span style="color:#a6e22e">aes</span>(label <span style="color:#f92672">=</span> N), size <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>, vjust <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;#FFFFFF&#34;</span>) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">ggtitle</span>(<span style="color:#e6db74">&#34;Bar plot of Sex&#34;</span>) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">labs</span>(x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Sex&#34;</span>, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Count&#34;</span>)
-
-<span style="color:#75715e"># 성별에 따른 Survived 막대그래프</span>
-p2 <span style="color:#f92672">&lt;-</span> train<span style="color:#f92672">%&gt;%</span>
-  dplyr<span style="color:#f92672">::</span><span style="color:#a6e22e">filter</span>(<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(Survived)) <span style="color:#f92672">%&gt;%</span>
-  <span style="color:#a6e22e">ggplot</span>(<span style="color:#a6e22e">aes</span>(<span style="color:#a6e22e">factor</span>(Sex), fill <span style="color:#f92672">=</span> <span style="color:#a6e22e">factor</span>(Survived))) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">geom_bar</span>(position <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;fill&#34;</span>) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">scale_y_continuous</span>(labels <span style="color:#f92672">=</span> scales<span style="color:#f92672">::</span>percent) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">scale_fill_brewer</span>(palette <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Set1&#34;</span>) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">ggtitle</span>(<span style="color:#e6db74">&#34;Survival Rate by Sex&#34;</span>) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">labs</span>(x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Sex&#34;</span>, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Rate&#34;</span>)
-
-<span style="color:#a6e22e">grid.arrange</span>(p1, p2, ncol<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
-</code></pre></div><p><img src="/img/r/ml/3_6_xgboost_files/figure-html/unnamed-chunk-16-1.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(gridExtra)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(ggplot2)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(dplyr)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 성별 막대그래프</span>
+</span></span><span style="display:flex;"><span>p1 <span style="color:#f92672">&lt;-</span> train <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Sex) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarise</span>(N <span style="color:#f92672">=</span> <span style="color:#a6e22e">n</span>(), .groups <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;drop&#39;</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ggplot</span>(<span style="color:#a6e22e">aes</span>(Sex, N)) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_col</span>() <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_text</span>(<span style="color:#a6e22e">aes</span>(label <span style="color:#f92672">=</span> N), size <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>, vjust <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.2</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;#FFFFFF&#34;</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ggtitle</span>(<span style="color:#e6db74">&#34;Bar plot of Sex&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">labs</span>(x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Sex&#34;</span>, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Count&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 성별에 따른 Survived 막대그래프</span>
+</span></span><span style="display:flex;"><span>p2 <span style="color:#f92672">&lt;-</span> train<span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  dplyr<span style="color:#f92672">::</span><span style="color:#a6e22e">filter</span>(<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(Survived)) <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ggplot</span>(<span style="color:#a6e22e">aes</span>(<span style="color:#a6e22e">factor</span>(Sex), fill <span style="color:#f92672">=</span> <span style="color:#a6e22e">factor</span>(Survived))) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_bar</span>(position <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;fill&#34;</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">scale_y_continuous</span>(labels <span style="color:#f92672">=</span> scales<span style="color:#f92672">::</span>percent) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">scale_fill_brewer</span>(palette <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Set1&#34;</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ggtitle</span>(<span style="color:#e6db74">&#34;Survival Rate by Sex&#34;</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">labs</span>(x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Sex&#34;</span>, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Rate&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">grid.arrange</span>(p1, p2, ncol<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</span></span></code></pre></div><p><img src="/img/r/ml/3_6_xgboost_files/figure-html/unnamed-chunk-16-1.png" alt=""><!-- raw HTML omitted --></p>
 <ul>
 <li>교차분석을 통해 확인된 사항을 시각적으로 한번 더 증명하면 된다.</li>
 <li>Note: <code>summarize</code> 함수가 <code>dplyr version 1.0.0</code>과 함께 업데이트 되었다.
@@ -571,8 +579,8 @@ p2 <span style="color:#f92672">&lt;-</span> train<span style="color:#f92672">%&g
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">options</span>(dplyr.summarise.inform <span style="color:#f92672">=</span> <span style="color:#66d9ef">FALSE</span>)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">options</span>(dplyr.summarise.inform <span style="color:#f92672">=</span> <span style="color:#66d9ef">FALSE</span>)
+</span></span></code></pre></div><ul>
 <li>시각화는 위와 같은 방식으로 하는 것이 적정하다.</li>
 <li>통계적 분석 + 시각적 분석 동시에 수행할 때, 보다 데이터가 잘 보인다.</li>
 </ul>
@@ -581,21 +589,21 @@ p2 <span style="color:#f92672">&lt;-</span> train<span style="color:#f92672">%&g
 <li>변수 선택 시, 기본은 ID와 이름은 제거 한다.</li>
 <li>또한, 모든 변수가 수치형 또는 <code>factor</code>로 변환 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">dplyr<span style="color:#f92672">::</span><span style="color:#a6e22e">glimpse</span>(train) <span style="color:#75715e"># test</span>
-</code></pre></div><pre><code>## Rows: 891
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>dplyr<span style="color:#f92672">::</span><span style="color:#a6e22e">glimpse</span>(train) <span style="color:#75715e"># test</span>
+</span></span></code></pre></div><pre tabindex="0"><code>## Rows: 891
 ## Columns: 12
 ## $ PassengerId &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17…
 ## $ Survived    &lt;dbl&gt; 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, …
 ## $ Pclass      &lt;dbl&gt; 3, 1, 3, 1, 3, 3, 1, 3, 3, 2, 3, 1, 3, 3, 3, 2, 3, 2, 3, …
-## $ Name        &lt;chr&gt; &quot;Braund, Mr. Owen Harris&quot;, &quot;Cumings, Mrs. John Bradley (F…
-## $ Sex         &lt;chr&gt; &quot;male&quot;, &quot;female&quot;, &quot;female&quot;, &quot;female&quot;, &quot;male&quot;, &quot;male&quot;, &quot;ma…
+## $ Name        &lt;chr&gt; &#34;Braund, Mr. Owen Harris&#34;, &#34;Cumings, Mrs. John Bradley (F…
+## $ Sex         &lt;chr&gt; &#34;male&#34;, &#34;female&#34;, &#34;female&#34;, &#34;female&#34;, &#34;male&#34;, &#34;male&#34;, &#34;ma…
 ## $ Age         &lt;fct&gt; adults, adults, adults, adults, adults, NA, adults, child…
 ## $ SibSp       &lt;dbl&gt; 1, 1, 0, 1, 0, 0, 0, 3, 0, 1, 1, 0, 0, 1, 0, 0, 4, 0, 1, …
 ## $ Parch       &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 5, 0, 0, 1, 0, 0, …
-## $ Ticket      &lt;chr&gt; &quot;A/5 21171&quot;, &quot;PC 17599&quot;, &quot;STON/O2. 3101282&quot;, &quot;113803&quot;, &quot;3…
+## $ Ticket      &lt;chr&gt; &#34;A/5 21171&#34;, &#34;PC 17599&#34;, &#34;STON/O2. 3101282&#34;, &#34;113803&#34;, &#34;3…
 ## $ Fare        &lt;dbl&gt; 7.2500, 71.2833, 7.9250, 53.1000, 8.0500, 8.4583, 51.8625…
-## $ Cabin       &lt;chr&gt; NA, &quot;C85&quot;, NA, &quot;C123&quot;, NA, NA, &quot;E46&quot;, NA, NA, NA, &quot;G6&quot;, &quot;…
-## $ Embarked    &lt;chr&gt; &quot;S&quot;, &quot;C&quot;, &quot;S&quot;, &quot;S&quot;, &quot;S&quot;, &quot;Q&quot;, &quot;S&quot;, &quot;S&quot;, &quot;S&quot;, &quot;C&quot;, &quot;S&quot;, &quot;S…
+## $ Cabin       &lt;chr&gt; NA, &#34;C85&#34;, NA, &#34;C123&#34;, NA, NA, &#34;E46&#34;, NA, NA, NA, &#34;G6&#34;, &#34;…
+## $ Embarked    &lt;chr&gt; &#34;S&#34;, &#34;C&#34;, &#34;S&#34;, &#34;S&#34;, &#34;S&#34;, &#34;Q&#34;, &#34;S&#34;, &#34;S&#34;, &#34;S&#34;, &#34;C&#34;, &#34;S&#34;, &#34;S…
 </code></pre><ul>
 <li>먼저, <code>train</code> &amp; <code>test</code>를 각각 <code>rbind()</code> 활용해 합친다.</li>
 <li>변수 선택을 하도록 하는데, 여기에서는 <code>PassengerId</code>, <code>Name</code>, <code>Ticket</code>은 제거한다.
@@ -608,32 +616,32 @@ p2 <span style="color:#f92672">&lt;-</span> train<span style="color:#f92672">%&g
 <li>이 때, <code>combi_df$Fare[1044]</code>의 결측치는 하나이기 때문에 중간값으로 대치한다.</li>
 <li>마지막으로 <code>Embarked</code>는 <code>addNA()</code> 함수를 활용하여 저장한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">feature_df <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(train, test) {
-  
-  <span style="color:#75715e"># 데이터셋 합치기</span>
-  test<span style="color:#f92672">$</span>Survived <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">NA</span>
-  combi_df <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rbind</span>(train, test)
-  
-  del_vars <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;PassengerId&#34;</span>, <span style="color:#e6db74">&#34;Name&#34;</span>, <span style="color:#e6db74">&#34;Ticket&#34;</span>, <span style="color:#e6db74">&#34;Cabin&#34;</span>)
-  fct_vars <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;Survived&#34;</span>, <span style="color:#e6db74">&#34;Pclass&#34;</span>, <span style="color:#e6db74">&#34;Sex&#34;</span>, <span style="color:#e6db74">&#34;SibSp&#34;</span>, <span style="color:#e6db74">&#34;Parch&#34;</span>, <span style="color:#e6db74">&#34;Embarked&#34;</span>)
-  
-  <span style="color:#75715e"># which(is.na(combi_df)) = 1044</span>
-  combi_df<span style="color:#f92672">$</span>Fare[1044] <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">median</span>(combi_df<span style="color:#f92672">$</span>Fare, na.rm<span style="color:#f92672">=</span><span style="color:#66d9ef">TRUE</span>)
-  
-  combi_df <span style="color:#f92672">&lt;-</span> combi_df <span style="color:#f92672">%&gt;%</span> 
-    <span style="color:#a6e22e">select</span>(<span style="color:#f92672">-</span>del_vars) <span style="color:#f92672">%&gt;%</span> 
-     <span style="color:#a6e22e">mutate_at</span>(.vars <span style="color:#f92672">=</span> fct_vars, .funs <span style="color:#f92672">=</span> as.factor)
-
-  combi_df<span style="color:#f92672">$</span>Embarked <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">addNA</span>(combi_df<span style="color:#f92672">$</span>Embarked)
-  <span style="color:#a6e22e">return</span>(combi_df)
-}
-
-master <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">feature_df</span>(train, test)
-<span style="color:#a6e22e">summary</span>(master)
-</code></pre></div><pre><code>##  Survived   Pclass      Sex             Age      SibSp       Parch     
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>feature_df <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(train, test) {
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 데이터셋 합치기</span>
+</span></span><span style="display:flex;"><span>  test<span style="color:#f92672">$</span>Survived <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">NA</span>
+</span></span><span style="display:flex;"><span>  combi_df <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rbind</span>(train, test)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  del_vars <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;PassengerId&#34;</span>, <span style="color:#e6db74">&#34;Name&#34;</span>, <span style="color:#e6db74">&#34;Ticket&#34;</span>, <span style="color:#e6db74">&#34;Cabin&#34;</span>)
+</span></span><span style="display:flex;"><span>  fct_vars <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;Survived&#34;</span>, <span style="color:#e6db74">&#34;Pclass&#34;</span>, <span style="color:#e6db74">&#34;Sex&#34;</span>, <span style="color:#e6db74">&#34;SibSp&#34;</span>, <span style="color:#e6db74">&#34;Parch&#34;</span>, <span style="color:#e6db74">&#34;Embarked&#34;</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># which(is.na(combi_df)) = 1044</span>
+</span></span><span style="display:flex;"><span>  combi_df<span style="color:#f92672">$</span>Fare[1044] <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">median</span>(combi_df<span style="color:#f92672">$</span>Fare, na.rm<span style="color:#f92672">=</span><span style="color:#66d9ef">TRUE</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  combi_df <span style="color:#f92672">&lt;-</span> combi_df <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">select</span>(<span style="color:#f92672">-</span>del_vars) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">mutate_at</span>(.vars <span style="color:#f92672">=</span> fct_vars, .funs <span style="color:#f92672">=</span> as.factor)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  combi_df<span style="color:#f92672">$</span>Embarked <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">addNA</span>(combi_df<span style="color:#f92672">$</span>Embarked)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">return</span>(combi_df)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>master <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">feature_df</span>(train, test)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">summary</span>(master)
+</span></span></code></pre></div><pre tabindex="0"><code>##  Survived   Pclass      Sex             Age      SibSp       Parch     
 ##  0   :549   1:323   female:466   children : 87   0:891   0      :1002  
 ##  1   :342   2:277   male  :843   teenagers: 97   1:319   1      : 170  
-##  NA's:418   3:709                adults   :837   2: 42   2      : 113  
+##  NA&#39;s:418   3:709                adults   :837   2: 42   2      : 113  
 ##                                  senior   : 13   3: 20   3      :   8  
 ##                                  NA       :275   4: 22   4      :   6  
 ##                                                  5:  6   5      :   6  
@@ -650,9 +658,9 @@ master <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">feat
 <ul>
 <li>머신러닝 수행 전, xgboost에 맞도록 <code>matrix</code>로 변환해줘야 한다. - 우선 <code>Survived</code> 값 기준으로 분리 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">train <span style="color:#f92672">&lt;-</span> master <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">is.na</span>(Survived)<span style="color:#f92672">==</span><span style="color:#66d9ef">FALSE</span>)
-test <span style="color:#f92672">&lt;-</span> master <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">is.na</span>(Survived)<span style="color:#f92672">==</span><span style="color:#66d9ef">TRUE</span>)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>train <span style="color:#f92672">&lt;-</span> master <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">is.na</span>(Survived)<span style="color:#f92672">==</span><span style="color:#66d9ef">FALSE</span>)
+</span></span><span style="display:flex;"><span>test <span style="color:#f92672">&lt;-</span> master <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">is.na</span>(Survived)<span style="color:#f92672">==</span><span style="color:#66d9ef">TRUE</span>)
+</span></span></code></pre></div><ul>
 <li>다음 <code>xgboost</code> 모형에 적합하도록 데이터를 변형한다.
 <ul>
 <li><code>data.frame</code>에서 <code>DMatrix</code> 계열로 변경해줘야 한다.</li>
@@ -665,16 +673,16 @@ test <span style="color:#f92672">&lt;-</span> master <span style="color:#f92672"
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">train_label <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">as.numeric</span>(train<span style="color:#f92672">$</span>Survived)<span style="color:#ae81ff">-1</span>
-test_label <span style="color:#f92672">&lt;-</span> test<span style="color:#f92672">$</span>Survived
-
-x_train<span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">model.matrix</span>(<span style="color:#f92672">~</span>.-1, data <span style="color:#f92672">=</span> train[,<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">%&gt;%</span> data.frame
-x_test <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">model.matrix</span>(<span style="color:#f92672">~</span>.-1, data <span style="color:#f92672">=</span> test[,<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">%&gt;%</span> data.frame
-
-dtrain <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">xgb.DMatrix</span>(data <span style="color:#f92672">=</span> <span style="color:#a6e22e">as.matrix</span>(x_train),
-                      label<span style="color:#f92672">=</span>train_label)
-dtest <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">xgb.DMatrix</span>(data <span style="color:#f92672">=</span> <span style="color:#a6e22e">as.matrix</span>(x_test))
-</code></pre></div><h3 id="9-모형-적합">(9) 모형 적합</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>train_label <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">as.numeric</span>(train<span style="color:#f92672">$</span>Survived)<span style="color:#ae81ff">-1</span>
+</span></span><span style="display:flex;"><span>test_label <span style="color:#f92672">&lt;-</span> test<span style="color:#f92672">$</span>Survived
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>x_train<span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">model.matrix</span>(<span style="color:#f92672">~</span>.-1, data <span style="color:#f92672">=</span> train[,<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">%&gt;%</span> data.frame
+</span></span><span style="display:flex;"><span>x_test <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">model.matrix</span>(<span style="color:#f92672">~</span>.-1, data <span style="color:#f92672">=</span> test[,<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">%&gt;%</span> data.frame
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dtrain <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">xgb.DMatrix</span>(data <span style="color:#f92672">=</span> <span style="color:#a6e22e">as.matrix</span>(x_train),
+</span></span><span style="display:flex;"><span>                      label<span style="color:#f92672">=</span>train_label)
+</span></span><span style="display:flex;"><span>dtest <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">xgb.DMatrix</span>(data <span style="color:#f92672">=</span> <span style="color:#a6e22e">as.matrix</span>(x_test))
+</span></span></code></pre></div><h3 id="9-모형-적합">(9) 모형 적합</h3>
 <ul>
 <li>이제 모형 적합을 진행한다.
 <ul>
@@ -694,32 +702,32 @@ dtest <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">xgb.D
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">2020</span>)
-param <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">list</span>(objective   <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;binary:logistic&#34;</span>,
-              eval_metric <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;error&#34;</span>,
-              max_depth   <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>,
-              eta         <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.01</span>,
-              subsample <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.8</span>,
-              min_child_weight <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
-
-xgb <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">xgb.train</span>(params  <span style="color:#f92672">=</span> param,
-                 data    <span style="color:#f92672">=</span> dtrain,
-                 nrounds <span style="color:#f92672">=</span> <span style="color:#ae81ff">500</span>,
-                 print_every_n <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
-                 verbose <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>)
-</code></pre></div><h3 id="10-모형-예측">(10) 모형 예측</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">2020</span>)
+</span></span><span style="display:flex;"><span>param <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">list</span>(objective   <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;binary:logistic&#34;</span>,
+</span></span><span style="display:flex;"><span>              eval_metric <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;error&#34;</span>,
+</span></span><span style="display:flex;"><span>              max_depth   <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>              eta         <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.01</span>,
+</span></span><span style="display:flex;"><span>              subsample <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.8</span>,
+</span></span><span style="display:flex;"><span>              min_child_weight <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>xgb <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">xgb.train</span>(params  <span style="color:#f92672">=</span> param,
+</span></span><span style="display:flex;"><span>                 data    <span style="color:#f92672">=</span> dtrain,
+</span></span><span style="display:flex;"><span>                 nrounds <span style="color:#f92672">=</span> <span style="color:#ae81ff">500</span>,
+</span></span><span style="display:flex;"><span>                 print_every_n <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>                 verbose <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>)
+</span></span></code></pre></div><h3 id="10-모형-예측">(10) 모형 예측</h3>
 <ul>
 <li>이제 모형을 예측하자.</li>
 <li>모형 예측 후에는 확률값으로 떨어지기 때문에, <code>threshold</code>값을 지정하도록 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">XGB_pred <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">predict</span>(xgb, dtest)
-XGB_pred <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">ifelse</span>(XGB_pred <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>XGB_pred <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">predict</span>(xgb, dtest)
+</span></span><span style="display:flex;"><span>XGB_pred <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">ifelse</span>(XGB_pred <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)
+</span></span></code></pre></div><ul>
 <li>해당 모형에 대한 중요 변수도를 확인해보자.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">xgb.importance</span>(<span style="color:#a6e22e">colnames</span>(dtrain), model <span style="color:#f92672">=</span> xgb) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">xgb.plot.importance</span>(top_n <span style="color:#f92672">=</span> <span style="color:#ae81ff">30</span>)
-</code></pre></div><p><img src="/img/r/ml/3_6_xgboost_files/figure-html/unnamed-chunk-23-1.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">xgb.importance</span>(<span style="color:#a6e22e">colnames</span>(dtrain), model <span style="color:#f92672">=</span> xgb) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">xgb.plot.importance</span>(top_n <span style="color:#f92672">=</span> <span style="color:#ae81ff">30</span>)
+</span></span></code></pre></div><p><img src="/img/r/ml/3_6_xgboost_files/figure-html/unnamed-chunk-23-1.png" alt=""><!-- raw HTML omitted --></p>
 <ul>
 <li><code>feature</code> 중요도를 그래프를 통해 분류모형에 직접적인 영향을 주는 요인을 확인할 수 있다.</li>
 </ul>
@@ -727,10 +735,10 @@ XGB_pred <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">if
 <ul>
 <li>최종적인 모형 결과를 제출한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">submission_titanic <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read_csv</span>(dataset[1])
-submission_titanic<span style="color:#f92672">$</span>Survived <span style="color:#f92672">&lt;-</span> XGB_pred
-<span style="color:#a6e22e">write.csv</span>(submission_titanic, file<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;~/Desktop/submission_titanic.csv&#39;</span>, row.names <span style="color:#f92672">=</span> F)
-</code></pre></div><p><img src="/img/r/ml/3_6_xgboost_files/submission.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>submission_titanic <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read_csv</span>(dataset[1])
+</span></span><span style="display:flex;"><span>submission_titanic<span style="color:#f92672">$</span>Survived <span style="color:#f92672">&lt;-</span> XGB_pred
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">write.csv</span>(submission_titanic, file<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;~/Desktop/submission_titanic.csv&#39;</span>, row.names <span style="color:#f92672">=</span> F)
+</span></span></code></pre></div><p><img src="/img/r/ml/3_6_xgboost_files/submission.png" alt=""></p>
 <h2 id="the-more">The More</h2>
 <ul>
 <li>위 코드는 모형 개발 후 바로 <code>Test</code> 데이터를 진행한 것이기 때문에 <code>train</code>데이터를 다시 분할하여 <code>validation</code> 데이터를 만들어 검증하는 단계가 필요하다.
@@ -777,7 +785,7 @@ submission_titanic<span style="color:#f92672">$</span>Survived <span style="colo
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

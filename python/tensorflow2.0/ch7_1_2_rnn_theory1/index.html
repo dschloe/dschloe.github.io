@@ -8,36 +8,44 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="Tensorflow 2.0 Tutorial ch7.1 - RNN 이론 (1)" />
-<meta property="og:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2." />
+<meta property="og:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/python/tensorflow2.0/ch7_1_2_rnn_theory1/" />
+<meta property="og:url" content="https://dschloe.github.io/python/tensorflow2.0/ch7_1_2_rnn_theory1/" /><meta property="article:section" content="Python" />
 <meta property="article:published_time" content="2020-04-22T15:08:30+09:00" />
 <meta property="article:modified_time" content="2020-04-22T15:08:30+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Tensorflow 2.0 Tutorial ch7.1 - RNN 이론 (1)"/>
-<meta name="twitter:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2.0 Installation Tensorflow 2."/>
+<meta name="twitter:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -225,39 +233,39 @@
 <h3 id="1-simplernn-레이어">(1) SimpleRNN 레이어</h3>
 <p><code>SimpleRNN</code>레이어는 가장 간단한 형태의 <code>RNN</code>레이업니다. 수식에 대한 설명은 교재(<code>p. 176</code>)를 참고합니다. 이 때 주로 사용되는 활성화 함수로는 <code>tanh</code>가 사용됩니다. <code>tanh</code>는 실수 입력을 받아 -1에서 1사이의 출력 값을 반환하는 활성하 함수이며, 이 활성화 함수 자리에 <code>ReLU</code>같은 다른 활성화함수를 쓸 수도 있습니다.</p>
 <p><code>SimpleRNN</code> 레이어는 <code>tf.keras</code>에서 한 줄로 간단하게 생성이 가능합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">rnn1 <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>SimpleRNN(units<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;tanh&#39;</span>, return_sequences<span style="color:#f92672">=</span>True)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>rnn1 <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>SimpleRNN(units<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;tanh&#39;</span>, return_sequences<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><ul>
 <li><code>units</code>는 <code>SimpleRNN</code>의 레이어에 존재하는 뉴런의 수를 의미합니다. <code>return_sequences</code>는 출력으로 시퀀스 전체를 출력할지 여부를 나타내는 옵션이며, 여러 개의 <code>RNN 레이어</code>를 쌓을 때 쓰입니다.</li>
 </ul>
 <p>간단한 예제를 통해서 학습을 해봅니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
-<span style="color:#66d9ef">try</span>:
-    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
-    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
-<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
-    <span style="color:#66d9ef">pass</span>
-<span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
-<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X <span style="color:#f92672">=</span> []
-Y <span style="color:#f92672">=</span> []
-
-<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">6</span>):
-  <span style="color:#75715e"># [0, 1, 2, 3], [1, 2, 3, 4]</span>
-  lst <span style="color:#f92672">=</span> list(range(i,i<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>))
-
-  <span style="color:#75715e"># 위에서 구한 시퀀스의 숫자들을 각각 10으로 나눈 다음 저장합니다. </span>
-  <span style="color:#75715e"># SimpleRNN에 각 타임스텝에 하나씩 숫자가 들어가기 때문에 여기서도 하나씩 분리해서 배열에 저장합니다. </span>
-  X<span style="color:#f92672">.</span>append(list(map(<span style="color:#66d9ef">lambda</span> c:[c<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>], lst)))
-
-  <span style="color:#75715e"># 정답에 해당하는 4, 5 등의 정수 역시 앞에서처럼 10으로 나눠서 저장합니다. </span>
-  Y<span style="color:#f92672">.</span>append((i<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>)
-
-X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(X)
-Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(Y)
-
-<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(X)): 
-  <span style="color:#66d9ef">print</span>(X[i], Y[i])
-</code></pre></div><pre><code>[[0. ]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>X <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>Y <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">6</span>):
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># [0, 1, 2, 3], [1, 2, 3, 4]</span>
+</span></span><span style="display:flex;"><span>  lst <span style="color:#f92672">=</span> list(range(i,i<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 위에서 구한 시퀀스의 숫자들을 각각 10으로 나눈 다음 저장합니다. </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># SimpleRNN에 각 타임스텝에 하나씩 숫자가 들어가기 때문에 여기서도 하나씩 분리해서 배열에 저장합니다. </span>
+</span></span><span style="display:flex;"><span>  X<span style="color:#f92672">.</span>append(list(map(<span style="color:#66d9ef">lambda</span> c:[c<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>], lst)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 정답에 해당하는 4, 5 등의 정수 역시 앞에서처럼 10으로 나눠서 저장합니다. </span>
+</span></span><span style="display:flex;"><span>  Y<span style="color:#f92672">.</span>append((i<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(X)
+</span></span><span style="display:flex;"><span>Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(Y)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(X)): 
+</span></span><span style="display:flex;"><span>  print(X[i], Y[i])
+</span></span></code></pre></div><pre><code>[[0. ]
  [0.1]
  [0.2]
  [0.3]] 0.4
@@ -283,15 +291,15 @@ Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>arr
  [0.8]] 0.9
 </code></pre>
 <p>이제 <code>SimpleRNN</code> 레이어를 사용한 네트워크를 정의합니다. 모델 구조는 지금까지 계속 봐온 시퀀셜 모델이고, 출력을 위한 <code>Dense</code> 레이어가 뒤에 추가되어 있습니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 7.3 시퀀스 예측 모델 정의</span>
-model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>SimpleRNN(units<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, return_sequences<span style="color:#f92672">=</span>False, input_shape<span style="color:#f92672">=</span>[<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">1</span>]),
-    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">1</span>)
-])
-
-model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
-model<span style="color:#f92672">.</span>summary()
-</code></pre></div><pre><code>Model: &quot;sequential_1&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 7.3 시퀀스 예측 모델 정의</span>
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>SimpleRNN(units<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, return_sequences<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>, input_shape<span style="color:#f92672">=</span>[<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">1</span>]),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>summary()
+</span></span></code></pre></div><pre><code>Model: &quot;sequential_1&quot;
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
 =================================================================
@@ -305,16 +313,16 @@ Non-trainable params: 0
 _________________________________________________________________
 </code></pre>
 <p>여기에서 주목해야 하는 코드는 <code>input_shape</code>입니다. 여기에서 <code>[4,1]</code>은 각각 <code>timesteps</code>, <code>input_dim</code>을 나타냅니다. 타입스텝은(timesteps)이란 순환 신경망이 입력에 대해 계산을 반복하는 횟수를 말하고, <code>input_dim</code>은 벡터의 크기를 나타냅니다.</p>
-<pre><code>[[0. ]
+<pre tabindex="0"><code>[[0. ]
  [0.1]
  [0.2]
  [0.3]] 0.4
 </code></pre><p>두번째의 4는 타임스텝, 세번째의 1은 <code>input_dim</code>이 됩니다. 그림을 참조하면 훨씬 이해하기 쉽습니다. (교재, p.180)</p>
 <p>시퀀스 예측 모델은 4 타임스텝에 걸쳐 입력을 받고, 마지막에 출력값을 다음 레이어로 반환합니다. 우리가 추가한 <code>Dense</code>레이어에는 별도의 활성화함수가 없기 때문에 $h_{3}$는 바로 $y_{3}$이 됩니다. 그리고 이 값과 0.4와의 차이가 <code>mse</code>, 즉 평균 제곱 오차(<code>Mean Squared Error</code>)가 됩니다.</p>
 <p>이제 훈련을 시킵니다. 이 때, <code>verbose</code>값을 0으로 놓으면 훈련 과정에서의 출력이 나오지 않습니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model<span style="color:#f92672">.</span>fit(X, Y, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
-<span style="color:#66d9ef">print</span>(model<span style="color:#f92672">.</span>predict(X))
-</code></pre></div><pre><code>[[0.37582147]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model<span style="color:#f92672">.</span>fit(X, Y, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>print(model<span style="color:#f92672">.</span>predict(X))
+</span></span></code></pre></div><pre><code>[[0.37582147]
  [0.5110225 ]
  [0.6267948 ]
  [0.72202194]
@@ -322,9 +330,9 @@ _________________________________________________________________
  [0.86209536]]
 </code></pre>
 <p>X가 주어졌을 때 학습된 모델이 시퀀스를 어떻게 예측하는지 확인해보면 얼추 비슷하게 예측하고 있음을 확인할 수 있습니다. 그렇다면 학습과정에서 본 적이 없는 테스트 데이터를 넣으면 어떨까요? <code>X</code>의 범위가 0.0~0.9 였으니, 양쪽으로 한 칸씩 더 나간 데이터를 입력합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>array([[[<span style="color:#ae81ff">0.6</span>], [<span style="color:#ae81ff">0.7</span>], [<span style="color:#ae81ff">0.8</span>], [<span style="color:#ae81ff">0.9</span>]]])))
-<span style="color:#66d9ef">print</span>(model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>array([[[<span style="color:#f92672">-</span><span style="color:#ae81ff">0.1</span>], [<span style="color:#ae81ff">0.0</span>], [<span style="color:#ae81ff">0.1</span>], [<span style="color:#ae81ff">0.2</span>]]])))
-</code></pre></div><pre><code>[[0.9137889]]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>array([[[<span style="color:#ae81ff">0.6</span>], [<span style="color:#ae81ff">0.7</span>], [<span style="color:#ae81ff">0.8</span>], [<span style="color:#ae81ff">0.9</span>]]])))
+</span></span><span style="display:flex;"><span>print(model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>array([[[<span style="color:#f92672">-</span><span style="color:#ae81ff">0.1</span>], [<span style="color:#ae81ff">0.0</span>], [<span style="color:#ae81ff">0.1</span>], [<span style="color:#ae81ff">0.2</span>]]])))
+</span></span></code></pre></div><pre><code>[[0.9137889]]
 [[0.22816285]]
 </code></pre>
 <p>1을 예측하기를 원한 데이터의 출력으로는 0.91을 0.3을 예측하기 원한 데이터의 출력으로는 0.22의 값을 반환했습니다.</p>
@@ -343,34 +351,34 @@ _________________________________________________________________
 <p>그런데, 여기에서는 셀 상테인 $c_{t}$가 평생선을 그리며 함께 전달되고 있습니다. 이처럼 타임스텝을 가로지르며 <code>LSTM</code> 셀 상태가 보존되기 때문에 장기의존성 문제를 해결할 수 있다는 것이 <code>LSTM</code>의 핵심 아이디어입니다.</p>
 <p>교재 184페이지를 보면 위 셀에 대한 수식이 존재합니다만, 수식에 대한 구체적인 이해가 자료가 필요하다면 크리스토퍼 올라(<code>Christopher Olah</code>)의 블로그 글을 참고합니다.<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
 <p><code>LSTM</code>의 학습 능력을 확인하기 위한 예제는 <code>LSTM</code>을 처음 제안한 논문에 나온 실험 여섯개 중 다섯 번째인 곱셈 문제(<code>Multiplication Problem</code>)입니다. 이 문제는 말 그대로 실수에 대해 곱셈을 하는 문제인데, 고려해야 할 실수의 범위가 100개이고 그 중에서 마킹된 두개의 숫자만 곱해야 한다는 특이한 문제입니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
-<span style="color:#66d9ef">try</span>:
-    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
-    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
-<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
-    <span style="color:#66d9ef">pass</span>
-<span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
-<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X <span style="color:#f92672">=</span> []
-Y <span style="color:#f92672">=</span> []
-<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">3000</span>): 
-  <span style="color:#75715e"># 0 ~ 1 범위의 랜덤한 숫자 100개를 만듭니다. </span>
-  lst <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>rand(<span style="color:#ae81ff">100</span>)
-
-  <span style="color:#75715e"># 마킹할 숫자 2개의 인덱스를 뽑습니다. </span>
-  idx <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>choice(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">2</span>, replace<span style="color:#f92672">=</span>False)
-
-  <span style="color:#75715e"># 마킹 인덱스가 저장된 원-핫 인코딩 벡터를 만듭니다. </span>
-  zeros<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>zeros(<span style="color:#ae81ff">100</span>)
-  zeros[idx]<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
-  
-  <span style="color:#75715e"># 마킹 인덱스와 랜덤한 숫자를 합쳐서 X에 저장합니다. </span>
-  X<span style="color:#f92672">.</span>append(np<span style="color:#f92672">.</span>array(list(zip(zeros, lst))))
-  <span style="color:#75715e"># 마킹 인덱스가 1인 값만 서로 곱해서 Y에 저장합니다. </span>
-  Y<span style="color:#f92672">.</span>append(np<span style="color:#f92672">.</span>prod(lst[idx]))
-
-<span style="color:#66d9ef">print</span>(X[<span style="color:#ae81ff">0</span>], Y[<span style="color:#ae81ff">0</span>])
-</code></pre></div><pre><code>[[0.         0.56858055]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>X <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>Y <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">3000</span>): 
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 0 ~ 1 범위의 랜덤한 숫자 100개를 만듭니다. </span>
+</span></span><span style="display:flex;"><span>  lst <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>rand(<span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 마킹할 숫자 2개의 인덱스를 뽑습니다. </span>
+</span></span><span style="display:flex;"><span>  idx <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>choice(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">2</span>, replace<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 마킹 인덱스가 저장된 원-핫 인코딩 벡터를 만듭니다. </span>
+</span></span><span style="display:flex;"><span>  zeros<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>zeros(<span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>  zeros[idx]<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 마킹 인덱스와 랜덤한 숫자를 합쳐서 X에 저장합니다. </span>
+</span></span><span style="display:flex;"><span>  X<span style="color:#f92672">.</span>append(np<span style="color:#f92672">.</span>array(list(zip(zeros, lst))))
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 마킹 인덱스가 1인 값만 서로 곱해서 Y에 저장합니다. </span>
+</span></span><span style="display:flex;"><span>  Y<span style="color:#f92672">.</span>append(np<span style="color:#f92672">.</span>prod(lst[idx]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(X[<span style="color:#ae81ff">0</span>], Y[<span style="color:#ae81ff">0</span>])
+</span></span></code></pre></div><pre><code>[[0.         0.56858055]
 ..
  [0.         0.12100308]
  [1.         0.14539513]
@@ -385,15 +393,15 @@ Y <span style="color:#f92672">=</span> []
 </code></pre>
 <p>입력된 값이 길지만, 1은 두번만 들어가 있기 때문에, 1이 찍인 원소를 찾습니다. <code>[1.    0.08361932]</code>과 <code>[1.         0.66439549]</code>이 확인이 됩니다.</p>
 <p><code>0.08361932</code>와 <code>0.66439549</code>를 곱하면 <code>0.055556298045436</code>값이 나옵니다. <code>SimpleRNN</code> 레이어를 이용한 곱셈 문제 모델을 정의합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
-  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>SimpleRNN(units<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>, return_sequences<span style="color:#f92672">=</span>True, input_shape<span style="color:#f92672">=</span>[<span style="color:#ae81ff">100</span>,<span style="color:#ae81ff">2</span>]), 
-  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>SimpleRNN(units<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>), 
-  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">1</span>)
-])
-
-model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
-model<span style="color:#f92672">.</span>summary()
-</code></pre></div><pre><code>Model: &quot;sequential&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>SimpleRNN(units<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>, return_sequences<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, input_shape<span style="color:#f92672">=</span>[<span style="color:#ae81ff">100</span>,<span style="color:#ae81ff">2</span>]), 
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>SimpleRNN(units<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>), 
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>summary()
+</span></span></code></pre></div><pre><code>Model: &quot;sequential&quot;
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
 =================================================================
@@ -410,12 +418,12 @@ _________________________________________________________________
 </code></pre>
 <p><code>RNN</code> 레이어를 겹치기 위해 첫 번째 <code>SimpleRNN</code>레이어에서 <code>return_sequences=True</code>로 설정된 것을 확인할 수 있습니다. <code>return_sequences</code>는 레이어의 출력을 다음 레이어로 그대로 넘겨주게 됩니다.</p>
 <p>겹치는 레이어의 구조에 대한 이론 설명은 교재 <code>188페이지</code>를 참조하시기를 바랍니다. <code>RNN</code>은 <code>CNN</code>보다 학습 시간이 오래 걸리는 편이기 때문에 반드시 가속기를 <code>GPU</code>로 바꿔줍니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(X)
-Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(Y)
-
-<span style="color:#75715e"># 2560개의 데이터만 학습시킵니다. 검증 데이터는 20%로 저장합니다. </span>
-history<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>fit(X[:<span style="color:#ae81ff">2560</span>], Y[:<span style="color:#ae81ff">2560</span>], epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, validation_split<span style="color:#f92672">=</span><span style="color:#ae81ff">0.2</span>)
-</code></pre></div><pre><code>Epoch 1/100
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(X)
+</span></span><span style="display:flex;"><span>Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(Y)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 2560개의 데이터만 학습시킵니다. 검증 데이터는 20%로 저장합니다. </span>
+</span></span><span style="display:flex;"><span>history<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>fit(X[:<span style="color:#ae81ff">2560</span>], Y[:<span style="color:#ae81ff">2560</span>], epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, validation_split<span style="color:#f92672">=</span><span style="color:#ae81ff">0.2</span>)
+</span></span></code></pre></div><pre><code>Epoch 1/100
 64/64 [==============================] - 8s 118ms/step - loss: 0.0559 - val_loss: 0.0494
 Epoch 2/100
 64/64 [==============================] - 8s 119ms/step - loss: 0.0493 - val_loss: 0.0480
@@ -617,30 +625,30 @@ Epoch 100/100
 64/64 [==============================] - 7s 113ms/step - loss: 0.0216 - val_loss: 0.0664
 </code></pre>
 <p>훈련 데이터의 손실(<code>loss</code>)과 검증 데이터의 손실(<code>var_loss</code>)는 감소하지 않고 오히려 증가하는 것 같습니다. 경향을 직관적으로 파악하기 위해 <code>history</code> 변수에 저장된 값으로 그래프를 그려봅니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;loss&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;loss&#39;</span>)
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_loss&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_loss&#39;</span>)
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
-plt<span style="color:#f92672">.</span>legend()
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_07_01_2/output_18_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;loss&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;loss&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_loss&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_loss&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>legend()
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img src="/img/tensorflow2.0/tutorial_07_01_2/output_18_0.png" alt="png"></p>
 <p>학습 결과는 전형적인 과적합 그래프를 보여줍니다. 테스트 데이터에 대한 예측은 어떨까요? 논문에서는 오차가 0.04 이상일 때 오답으로 처리합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model<span style="color:#f92672">.</span>evaluate(X[<span style="color:#ae81ff">2560</span>:], Y[<span style="color:#ae81ff">2560</span>:])
-prediction<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>predict(X[<span style="color:#ae81ff">2560</span>:<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span><span style="color:#ae81ff">5</span>])
-
-<span style="color:#75715e"># 5개 테스트 데이터에 대한 예측을 표시합니다. </span>
-<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>): 
-  <span style="color:#66d9ef">print</span>(Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i], <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>, prediction[i][<span style="color:#ae81ff">0</span>], <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">diff:&#39;</span>, abs(prediction[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i]))
-
-prediction <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(X[<span style="color:#ae81ff">2560</span>:])
-fail <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(prediction)):
-  <span style="color:#75715e"># 오차가 0.04 이상이면 오답입니다. </span>
-  <span style="color:#66d9ef">if</span> abs(prediction[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i]) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.04</span>:
-    fail <span style="color:#f92672">+=</span><span style="color:#ae81ff">1</span>
-
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;correctness:&#39;</span>, (<span style="color:#ae81ff">440</span><span style="color:#f92672">-</span>fail)<span style="color:#f92672">/</span><span style="color:#ae81ff">440</span><span style="color:#f92672">*</span><span style="color:#ae81ff">100</span>, <span style="color:#e6db74">&#39;%&#39;</span>)
-</code></pre></div><pre><code>14/14 [==============================] - 0s 16ms/step - loss: 0.0667
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model<span style="color:#f92672">.</span>evaluate(X[<span style="color:#ae81ff">2560</span>:], Y[<span style="color:#ae81ff">2560</span>:])
+</span></span><span style="display:flex;"><span>prediction<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>predict(X[<span style="color:#ae81ff">2560</span>:<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span><span style="color:#ae81ff">5</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 5개 테스트 데이터에 대한 예측을 표시합니다. </span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>): 
+</span></span><span style="display:flex;"><span>  print(Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i], <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>, prediction[i][<span style="color:#ae81ff">0</span>], <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">diff:&#39;</span>, abs(prediction[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>prediction <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(X[<span style="color:#ae81ff">2560</span>:])
+</span></span><span style="display:flex;"><span>fail <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(prediction)):
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 오차가 0.04 이상이면 오답입니다. </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> abs(prediction[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i]) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.04</span>:
+</span></span><span style="display:flex;"><span>    fail <span style="color:#f92672">+=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;correctness:&#39;</span>, (<span style="color:#ae81ff">440</span><span style="color:#f92672">-</span>fail)<span style="color:#f92672">/</span><span style="color:#ae81ff">440</span><span style="color:#f92672">*</span><span style="color:#ae81ff">100</span>, <span style="color:#e6db74">&#39;%&#39;</span>)
+</span></span></code></pre></div><pre><code>14/14 [==============================] - 0s 16ms/step - loss: 0.0667
 0.009316712705671063 	 -0.05508966 	diff: 0.06440637269455123
 0.1595728709352136 	 0.051416673 	diff: 0.10815619816900496
 0.343633615267837 	 0.27744463 	diff: 0.06618898440655463
@@ -650,15 +658,15 @@ correctness: 12.727272727272727 %
 </code></pre>
 <p>먼저 전체에 대한 평가는 <code>0.0667</code>의 <code>loss</code>가 나왔습니다. 위에서 본 100번째의 에포크의 <code>val_loss</code>인 <code>0.0664</code>보다도 높은 값으로, 네트워크가 학습 과정에서 한번도 못 본 테스트 데이터에 대해서는 잘 예측하지 못합니다. 5개의 테스트 데이터에 대한 샘플은 오차가 <code>0.01</code>에서 <code>0.18</code>까지 다양하게 나타나며, 가장 중요한 정확도는 <code>12.72</code>로 확인 됩니다.</p>
 <p>그렇다면 <code>LSTM</code>레이어는 어떨까요? 이 문제를 풀기 위해 시퀀셜 모델을 정의합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
-  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>LSTM(units<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>, return_sequences<span style="color:#f92672">=</span>True, input_shape<span style="color:#f92672">=</span>[<span style="color:#ae81ff">100</span>,<span style="color:#ae81ff">2</span>]), 
-  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>LSTM(units<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>), 
-  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">1</span>)
-])
-
-model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
-model<span style="color:#f92672">.</span>summary()
-</code></pre></div><pre><code>Model: &quot;sequential_1&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>LSTM(units<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>, return_sequences<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, input_shape<span style="color:#f92672">=</span>[<span style="color:#ae81ff">100</span>,<span style="color:#ae81ff">2</span>]), 
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>LSTM(units<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>), 
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>summary()
+</span></span></code></pre></div><pre><code>Model: &quot;sequential_1&quot;
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
 =================================================================
@@ -674,19 +682,19 @@ Non-trainable params: 0
 _________________________________________________________________
 </code></pre>
 <p>차이점은 <code>SimpleRNN</code>을 <code>LSTM</code>으로 바꾼 것 뿐입니다. 네트워크의 학습코드도 동일합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(X)
-Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(Y)
-
-<span style="color:#75715e"># 2560개의 데이터만 학습시킵니다. 검증 데이터는 20%로 저장합니다. </span>
-history<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>fit(X[:<span style="color:#ae81ff">2560</span>], Y[:<span style="color:#ae81ff">2560</span>], epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, validation_split<span style="color:#f92672">=</span><span style="color:#ae81ff">0.2</span>)
-
-<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;loss&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;loss&#39;</span>)
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_loss&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_loss&#39;</span>)
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
-plt<span style="color:#f92672">.</span>legend()
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><pre><code>Epoch 1/100
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(X)
+</span></span><span style="display:flex;"><span>Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(Y)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 2560개의 데이터만 학습시킵니다. 검증 데이터는 20%로 저장합니다. </span>
+</span></span><span style="display:flex;"><span>history<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>fit(X[:<span style="color:#ae81ff">2560</span>], Y[:<span style="color:#ae81ff">2560</span>], epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, validation_split<span style="color:#f92672">=</span><span style="color:#ae81ff">0.2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;loss&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;loss&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_loss&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_loss&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>legend()
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><pre><code>Epoch 1/100
 64/64 [==============================] - 3s 54ms/step - loss: 0.0507 - val_loss: 0.0470
 Epoch 2/100
 64/64 [==============================] - 3s 43ms/step - loss: 0.0472 - val_loss: 0.0469
@@ -890,22 +898,22 @@ Epoch 100/100
 <p><img src="/img/tensorflow2.0/tutorial_07_01_2/output_24_1.png" alt="png"></p>
 <p><code>loss</code>와 <code>val_loss</code>는 40에포크를 넘어가면서 매우 가파르게 줄어들어 0에 가까워집니다. <code>val_loss</code>는 변동폭이 <code>loss</code>보다 크지만 전체적으로는 계속 감소하는 경향을 보입니다. 학습이 매우 잘 된 것으로 보입니다.</p>
 <p>이번에는 실제로 테스트 데이터에 얼마나 정확하게 값을 예측하는지 확인해봅니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model<span style="color:#f92672">.</span>evaluate(X[<span style="color:#ae81ff">2560</span>:], Y[<span style="color:#ae81ff">2560</span>:])
-prediction<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>predict(X[<span style="color:#ae81ff">2560</span>:<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span><span style="color:#ae81ff">5</span>])
-
-<span style="color:#75715e"># 5개 테스트 데이터에 대한 예측을 표시합니다. </span>
-<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>): 
-  <span style="color:#66d9ef">print</span>(Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i], <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>, prediction[i][<span style="color:#ae81ff">0</span>], <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">diff:&#39;</span>, abs(prediction[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i]))
-
-prediction <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(X[<span style="color:#ae81ff">2560</span>:])
-fail <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(prediction)):
-  <span style="color:#75715e"># 오차가 0.04 이상이면 오답입니다. </span>
-  <span style="color:#66d9ef">if</span> abs(prediction[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i]) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.04</span>:
-    fail <span style="color:#f92672">+=</span><span style="color:#ae81ff">1</span>
-
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;correctness:&#39;</span>, (<span style="color:#ae81ff">440</span><span style="color:#f92672">-</span>fail)<span style="color:#f92672">/</span><span style="color:#ae81ff">440</span><span style="color:#f92672">*</span><span style="color:#ae81ff">100</span>, <span style="color:#e6db74">&#39;%&#39;</span>)
-</code></pre></div><pre><code>14/14 [==============================] - 0s 13ms/step - loss: 3.9453e-04
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model<span style="color:#f92672">.</span>evaluate(X[<span style="color:#ae81ff">2560</span>:], Y[<span style="color:#ae81ff">2560</span>:])
+</span></span><span style="display:flex;"><span>prediction<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>predict(X[<span style="color:#ae81ff">2560</span>:<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span><span style="color:#ae81ff">5</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 5개 테스트 데이터에 대한 예측을 표시합니다. </span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>): 
+</span></span><span style="display:flex;"><span>  print(Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i], <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>, prediction[i][<span style="color:#ae81ff">0</span>], <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">diff:&#39;</span>, abs(prediction[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>prediction <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(X[<span style="color:#ae81ff">2560</span>:])
+</span></span><span style="display:flex;"><span>fail <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(prediction)):
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 오차가 0.04 이상이면 오답입니다. </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> abs(prediction[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i]) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.04</span>:
+</span></span><span style="display:flex;"><span>    fail <span style="color:#f92672">+=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;correctness:&#39;</span>, (<span style="color:#ae81ff">440</span><span style="color:#f92672">-</span>fail)<span style="color:#f92672">/</span><span style="color:#ae81ff">440</span><span style="color:#f92672">*</span><span style="color:#ae81ff">100</span>, <span style="color:#e6db74">&#39;%&#39;</span>)
+</span></span></code></pre></div><pre><code>14/14 [==============================] - 0s 13ms/step - loss: 3.9453e-04
 0.009316712705671063 	 0.02192213 	diff: 0.012605417432010898
 0.1595728709352136 	 0.15154022 	diff: 0.008032651151430648
 0.343633615267837 	 0.33932722 	diff: 0.004306399119460513
@@ -922,20 +930,20 @@ correctness: 95.9090909090909 %
 </ul>
 <h2 id="vi-reference">VI. Reference</h2>
 <p>김환희. (2020). 시작하세요! 텐서플로 2.0 프로그래밍: 기초 이론부터 실전 예제까지 한번에 끝내는 머신러닝, 딥러닝 핵심 가이드. 서울: 위키북스.</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
-<p>Different between CNN，RNN（Quote） Retrieved from <a href="https://medium.com/@Aj.Cheng/different-between-cnn-rnn-quote-7c224795db58">https://medium.com/@Aj.Cheng/different-between-cnn-rnn-quote-7c224795db58</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:1">
+<p>Different between CNN，RNN（Quote） Retrieved from <a href="https://medium.com/@Aj.Cheng/different-between-cnn-rnn-quote-7c224795db58">https://medium.com/@Aj.Cheng/different-between-cnn-rnn-quote-7c224795db58</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
-<p>1997년 셉 호흐라이터(Sepp Hochreiter) 유르겐 슈미트후버(Jurgen Schmidhuber)에 의해 제안됨, (S. Hochreiter and J. Schmidhuber. Long short-term memory. Neural Computation, 1997. <a href="https://www.bioinf.jku.at/publications/older/2604.pdf">https://www.bioinf.jku.at/publications/older/2604.pdf</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:2">
+<p>1997년 셉 호흐라이터(Sepp Hochreiter) 유르겐 슈미트후버(Jurgen Schmidhuber)에 의해 제안됨, (S. Hochreiter and J. Schmidhuber. Long short-term memory. Neural Computation, 1997. <a href="https://www.bioinf.jku.at/publications/older/2604.pdf">https://www.bioinf.jku.at/publications/older/2604.pdf</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
-<p>Olah, Christopher. “Understanding LSTM Networks.” Understanding LSTM Networks &ndash; Colah&rsquo;s Blog, colah.github.io/posts/2015-08-Understanding-LSTMs/ <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:3">
+<p>Olah, Christopher. “Understanding LSTM Networks.” Understanding LSTM Networks &ndash; Colah&rsquo;s Blog, colah.github.io/posts/2015-08-Understanding-LSTMs/&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
 		</div>
 		<footer class="post__footer">
@@ -1002,7 +1010,7 @@ correctness: 95.9090909090909 %
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

@@ -8,30 +8,38 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="GCP Kubernetes Engine을 통한 배포(2)" />
-<meta property="og:description" content="인프런 강의  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   1줄 요약  (GCP) GKE를 활용하여 nginx를 실행해보자.  Step 1. GCP Shell 활성화  You can list the active account name with this command:  (your_project_id)$ gcloud auth list Credentialed Accounts ACTIVE ACCOUNT * student-04-e46af1f1cd7b@qwiklabs." />
+<meta property="og:description" content="인프런 강의 취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다. 스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다. [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기 1줄 요약 (GCP) GKE를 활용하여 nginx를 실행해보자. Step 1. GCP Shell 활성화 You can list the active account name with this command: (your_project_id)$ gcloud auth list Credentialed Accounts ACTIVE ACCOUNT * student-04-e46af1f1cd7b@qwiklabs.net To set the active account, run: $ gcloud config set account `ACCOUNT` You can list the project ID with this command: (your_project_id)$ gcloud config list project [core] project = qwiklabs-gcp-04-79efc1e4ae0f Your active configuration is: [cloudshell-24251] Step 2." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/mlops/ch02_kubernetes/ch02_creating_kubernetes_engine_deployments/" />
+<meta property="og:url" content="https://dschloe.github.io/mlops/ch02_kubernetes/ch02_creating_kubernetes_engine_deployments/" /><meta property="article:section" content="MLOps" />
 <meta property="article:published_time" content="2021-04-13T19:30:47+09:00" />
 <meta property="article:modified_time" content="2021-04-13T19:30:47+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="GCP Kubernetes Engine을 통한 배포(2)"/>
-<meta name="twitter:description" content="인프런 강의  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   1줄 요약  (GCP) GKE를 활용하여 nginx를 실행해보자.  Step 1. GCP Shell 활성화  You can list the active account name with this command:  (your_project_id)$ gcloud auth list Credentialed Accounts ACTIVE ACCOUNT * student-04-e46af1f1cd7b@qwiklabs."/>
+<meta name="twitter:description" content="인프런 강의 취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다. 스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다. [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기 1줄 요약 (GCP) GKE를 활용하여 nginx를 실행해보자. Step 1. GCP Shell 활성화 You can list the active account name with this command: (your_project_id)$ gcloud auth list Credentialed Accounts ACTIVE ACCOUNT * student-04-e46af1f1cd7b@qwiklabs.net To set the active account, run: $ gcloud config set account `ACCOUNT` You can list the project ID with this command: (your_project_id)$ gcloud config list project [core] project = qwiklabs-gcp-04-79efc1e4ae0f Your active configuration is: [cloudshell-24251] Step 2."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -201,22 +209,22 @@
 <ul>
 <li>You can list the active account name with this command:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ gcloud auth list
-           Credentialed Accounts
-ACTIVE  ACCOUNT
-*       student-04-e46af1f1cd7b@qwiklabs.net
-
-To set the active account, run:
-    $ gcloud config set account <span style="color:#e6db74">`</span>ACCOUNT<span style="color:#e6db74">`</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ gcloud auth list
+</span></span><span style="display:flex;"><span>           Credentialed Accounts
+</span></span><span style="display:flex;"><span>ACTIVE  ACCOUNT
+</span></span><span style="display:flex;"><span>*       student-04-e46af1f1cd7b@qwiklabs.net
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>To set the active account, run:
+</span></span><span style="display:flex;"><span>    $ gcloud config set account <span style="color:#e6db74">`</span>ACCOUNT<span style="color:#e6db74">`</span>
+</span></span></code></pre></div><ul>
 <li>You can list the project ID with this command:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ gcloud config list project
-<span style="color:#f92672">[</span>core<span style="color:#f92672">]</span>
-project <span style="color:#f92672">=</span> qwiklabs-gcp-04-79efc1e4ae0f
-
-Your active configuration is: <span style="color:#f92672">[</span>cloudshell-24251<span style="color:#f92672">]</span>
-</code></pre></div><h2 id="step-2-create-deployment-manifests">Step 2. Create Deployment manifests</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ gcloud config list project
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>core<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>project <span style="color:#f92672">=</span> qwiklabs-gcp-04-79efc1e4ae0f
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Your active configuration is: <span style="color:#f92672">[</span>cloudshell-24251<span style="color:#f92672">]</span>
+</span></span></code></pre></div><h2 id="step-2-create-deployment-manifests">Step 2. Create Deployment manifests</h2>
 <ul>
 <li>Task 1. Create deployment manifests and deploy to the cluster</li>
 </ul>
@@ -224,32 +232,32 @@ Your active configuration is: <span style="color:#f92672">[</span>cloudshell-242
 <ul>
 <li>In Cloud Shell, type the following command to set the environment variable for the zone and cluster name.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ export my_zone<span style="color:#f92672">=</span>us-central1-a
-<span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ export my_cluster<span style="color:#f92672">=</span>standard-cluster-1
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ export my_zone<span style="color:#f92672">=</span>us-central1-a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ export my_cluster<span style="color:#f92672">=</span>standard-cluster-1
+</span></span></code></pre></div><ul>
 <li>Configure kubectl tab completion in Cloud Shell.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ source &lt;<span style="color:#f92672">(</span>kubectl completion bash<span style="color:#f92672">)</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ source &lt;<span style="color:#f92672">(</span>kubectl completion bash<span style="color:#f92672">)</span>
+</span></span></code></pre></div><ul>
 <li>In Cloud Shell, configure access to your cluster for the kubectl command-line tool, using the following command:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ gcloud container clusters get-credentials $my_cluster --zone $my_zone
-Fetching cluster endpoint and auth data.
-kubeconfig entry generated <span style="color:#66d9ef">for</span> standard-cluster-1.
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ gcloud container clusters get-credentials $my_cluster --zone $my_zone
+</span></span><span style="display:flex;"><span>Fetching cluster endpoint and auth data.
+</span></span><span style="display:flex;"><span>kubeconfig entry generated <span style="color:#66d9ef">for</span> standard-cluster-1.
+</span></span></code></pre></div><ul>
 <li>In Cloud Shell enter the following command to clone the repository to the lab Cloud Shell.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ git clone https://github.com/GoogleCloudPlatform/training-data-analyst
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ git clone https://github.com/GoogleCloudPlatform/training-data-analyst
+</span></span></code></pre></div><ul>
 <li>Create a soft link as a shortcut to the working directory.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ ln -s ~/training-data-analyst/courses/ak8s/v1.1 ~/ak8s
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ ln -s ~/training-data-analyst/courses/ak8s/v1.1 ~/ak8s
+</span></span></code></pre></div><ul>
 <li>Change to the directory that contains the sample files for this lab.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ cd ~/ak8s/Deployments/
-your_id@cloudshell:~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$
-</code></pre></div><h3 id="2-create-a-deployment-manifest">(2) Create a deployment manifest</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ cd ~/ak8s/Deployments/
+</span></span><span style="display:flex;"><span>your_id@cloudshell:~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$
+</span></span></code></pre></div><h3 id="2-create-a-deployment-manifest">(2) Create a deployment manifest</h3>
 <ul>
 <li>You will create a deployment using a sample deployment manifest called <code>nginx-deployment.yaml</code> that has been provided for you. This deployment is configured to run three Pod replicas with a single nginx container in each Pod listening on TCP port 80.
 <ul>
@@ -257,38 +265,38 @@ your_id@cloudshell:~/ak8s/Deployments <span style="color:#f92672">(</span>your_p
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx-deployment</span>
-  <span style="color:#f92672">labels</span>:
-    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">3</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">matchLabels</span>:
-      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
-  <span style="color:#f92672">template</span>:
-    <span style="color:#f92672">metadata</span>:
-      <span style="color:#f92672">labels</span>:
-        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
-    <span style="color:#f92672">spec</span>:
-      <span style="color:#f92672">containers</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
-        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx:1.7.9</span>
-        <span style="color:#f92672">ports</span>:
-        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx-deployment</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">matchLabels</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx:1.7.9</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
+</span></span></code></pre></div><ul>
 <li>To deploy your manifest, execute the following command:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl apply -f ./nginx-deployment.yaml
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl apply -f ./nginx-deployment.yaml
+</span></span></code></pre></div><ul>
 <li>To view a list of deployments, execute the following command:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get deployments
-NAME               READY   UP-TO-DATE   AVAILABLE   AGE
-nginx-deployment   3/3     <span style="color:#ae81ff">3</span>            <span style="color:#ae81ff">3</span>           24s
-</code></pre></div><h2 id="step-3manually-scale-up-and-down-the-number-of-pods-in-deployments">Step 3.Manually scale up and down the number of Pods in deployments</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get deployments
+</span></span><span style="display:flex;"><span>NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span style="display:flex;"><span>nginx-deployment   3/3     <span style="color:#ae81ff">3</span>            <span style="color:#ae81ff">3</span>           24s
+</span></span></code></pre></div><h2 id="step-3manually-scale-up-and-down-the-number-of-pods-in-deployments">Step 3.Manually scale up and down the number of Pods in deployments</h2>
 <p>Sometimes, you want to shut down a Pod instance. Other times, you want ten Pods running. In Kubernetes, you can scale a specific Pod to the desired number of instances. To shut them down, you scale to zero. In this task, you scale Pods up and down in the Google Cloud Console and Cloud Shell.</p>
 <h3 id="1-scale-pods-up-and-down-in-the-console">(1) Scale Pods up and down in the console</h3>
 <ol>
@@ -308,77 +316,77 @@ nginx-deployment   3/3     <span style="color:#ae81ff">3</span>            <span
 <ul>
 <li>In the Cloud Shell, to view a list of Pods in the deployments, execute the following command:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get deployments
-NAME               READY   UP-TO-DATE   AVAILABLE   AGE
-nginx-deployment   1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           8m59s
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get deployments
+</span></span><span style="display:flex;"><span>NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span style="display:flex;"><span>nginx-deployment   1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           8m59s
+</span></span></code></pre></div><ul>
 <li>To scale the Pod back up to three replicas, execute the following command:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl scale --replicas<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> deployment nginx-deployment
-deployment.apps/nginx-deployment scaled
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl scale --replicas<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> deployment nginx-deployment
+</span></span><span style="display:flex;"><span>deployment.apps/nginx-deployment scaled
+</span></span></code></pre></div><ul>
 <li>To view a list of Pods in the deployments, execute the following command:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get deployments
-NAME               READY   UP-TO-DATE   AVAILABLE   AGE
-nginx-deployment   3/3     <span style="color:#ae81ff">3</span>            <span style="color:#ae81ff">3</span>           10m
-</code></pre></div><h2 id="step-4-trigger-a-deployment-rollout-and-a-deployment-rollback">Step 4. Trigger a deployment rollout and a deployment rollback</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get deployments
+</span></span><span style="display:flex;"><span>NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span style="display:flex;"><span>nginx-deployment   3/3     <span style="color:#ae81ff">3</span>            <span style="color:#ae81ff">3</span>           10m
+</span></span></code></pre></div><h2 id="step-4-trigger-a-deployment-rollout-and-a-deployment-rollback">Step 4. Trigger a deployment rollout and a deployment rollback</h2>
 <p>A deployment&rsquo;s rollout is triggered if and only if the deployment&rsquo;s Pod template (that is, .spec.template) is changed, for example, if the labels or container images of the template are updated. Other updates, such as scaling the deployment, do not trigger a rollout. In this task, you trigger deployment rollout, and then you trigger deployment rollback.</p>
 <h3 id="1-trigger-a-deployment-rollout">(1) Trigger a deployment rollout</h3>
 <ul>
 <li>To update the version of nginx in the deployment, execute the following command:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl set image deployment.v1.apps/nginx-deployment nginx<span style="color:#f92672">=</span>nginx:1.9.1 --record
-deployment.apps/nginx-deployment image updated
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl set image deployment.v1.apps/nginx-deployment nginx<span style="color:#f92672">=</span>nginx:1.9.1 --record
+</span></span><span style="display:flex;"><span>deployment.apps/nginx-deployment image updated
+</span></span></code></pre></div><ul>
 <li>To view the rollout status, execute the following command:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl rollout status deployment.v1.apps/nginx-deployment
-deployment <span style="color:#e6db74">&#34;nginx-deployment&#34;</span> successfully rolled out
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl rollout status deployment.v1.apps/nginx-deployment
+</span></span><span style="display:flex;"><span>deployment <span style="color:#e6db74">&#34;nginx-deployment&#34;</span> successfully rolled out
+</span></span></code></pre></div><ul>
 <li>To verify the change, get the list of deployments.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get deployments
-NAME               READY   UP-TO-DATE   AVAILABLE   AGE
-nginx-deployment   3/3     <span style="color:#ae81ff">3</span>            <span style="color:#ae81ff">3</span>           13m
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get deployments
+</span></span><span style="display:flex;"><span>NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span style="display:flex;"><span>nginx-deployment   3/3     <span style="color:#ae81ff">3</span>            <span style="color:#ae81ff">3</span>           13m
+</span></span></code></pre></div><ul>
 <li>View the rollout history of the deployment.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl rollout history deployment nginx-deployment
-deployment.apps/nginx-deployment
-REVISION  CHANGE-CAUSE
-<span style="color:#ae81ff">1</span>         &lt;none&gt;
-<span style="color:#ae81ff">2</span>         kubectl set image deployment.v1.apps/nginx-deployment nginx<span style="color:#f92672">=</span>nginx:1.9.1 --record<span style="color:#f92672">=</span>true
-</code></pre></div><h3 id="2-trigger-a-deployment-rollback">(2) Trigger a deployment rollback</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl rollout history deployment nginx-deployment
+</span></span><span style="display:flex;"><span>deployment.apps/nginx-deployment
+</span></span><span style="display:flex;"><span>REVISION  CHANGE-CAUSE
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span>         &lt;none&gt;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span>         kubectl set image deployment.v1.apps/nginx-deployment nginx<span style="color:#f92672">=</span>nginx:1.9.1 --record<span style="color:#f92672">=</span>true
+</span></span></code></pre></div><h3 id="2-trigger-a-deployment-rollback">(2) Trigger a deployment rollback</h3>
 <ul>
 <li>To roll back to the previous version of the nginx deployment, execute the following command:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl rollout undo deployments nginx-deployment
-deployment.apps/nginx-deployment rolled back
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl rollout undo deployments nginx-deployment
+</span></span><span style="display:flex;"><span>deployment.apps/nginx-deployment rolled back
+</span></span></code></pre></div><ul>
 <li>View the updated rollout history of the deployment.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl rollout history deployment nginx-deployment
-deployment.apps/nginx-deployment
-REVISION  CHANGE-CAUSE
-<span style="color:#ae81ff">2</span>         kubectl set image deployment.v1.apps/nginx-deployment nginx<span style="color:#f92672">=</span>nginx:1.9.1 --record<span style="color:#f92672">=</span>true
-<span style="color:#ae81ff">3</span>         &lt;none&gt;
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl rollout history deployment nginx-deployment
+</span></span><span style="display:flex;"><span>deployment.apps/nginx-deployment
+</span></span><span style="display:flex;"><span>REVISION  CHANGE-CAUSE
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span>         kubectl set image deployment.v1.apps/nginx-deployment nginx<span style="color:#f92672">=</span>nginx:1.9.1 --record<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span>         &lt;none&gt;
+</span></span></code></pre></div><ul>
 <li>View the details of the latest deployment revision</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl rollout history deployment/nginx-deployment --revision<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>
-Pod Template:
-  Labels:       app<span style="color:#f92672">=</span>nginx
-        pod-template-hash<span style="color:#f92672">=</span>5bf87f5f59
-  Containers:
-   nginx:
-    Image:      nginx:1.7.9
-    Port:       80/TCP
-    Host Port:  0/TCP
-    Environment:        &lt;none&gt;
-    Mounts:     &lt;none&gt;
-  Volumes:      &lt;none&gt;
-</code></pre></div><h2 id="step-5-define-the-service-type-in-the-manifest">Step 5. Define the service type in the manifest</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl rollout history deployment/nginx-deployment --revision<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>Pod Template:
+</span></span><span style="display:flex;"><span>  Labels:       app<span style="color:#f92672">=</span>nginx
+</span></span><span style="display:flex;"><span>        pod-template-hash<span style="color:#f92672">=</span>5bf87f5f59
+</span></span><span style="display:flex;"><span>  Containers:
+</span></span><span style="display:flex;"><span>   nginx:
+</span></span><span style="display:flex;"><span>    Image:      nginx:1.7.9
+</span></span><span style="display:flex;"><span>    Port:       80/TCP
+</span></span><span style="display:flex;"><span>    Host Port:  0/TCP
+</span></span><span style="display:flex;"><span>    Environment:        &lt;none&gt;
+</span></span><span style="display:flex;"><span>    Mounts:     &lt;none&gt;
+</span></span><span style="display:flex;"><span>  Volumes:      &lt;none&gt;
+</span></span></code></pre></div><h2 id="step-5-define-the-service-type-in-the-manifest">Step 5. Define the service type in the manifest</h2>
 <ul>
 <li>In this task, you create and verify a service that controls inbound traffic to an application. Services can be configured as ClusterIP, NodePort or LoadBalancer types. In this lab, you configure a LoadBalancer.</li>
 </ul>
@@ -386,34 +394,34 @@ Pod Template:
 <ul>
 <li>A manifest file called service-nginx.yaml that deploys a LoadBalancer service type has been provided for you. This service is configured to distribute inbound traffic on TCP port 60000 to port 80 on any containers that have the label app: nginx.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">LoadBalancer</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
-  <span style="color:#f92672">ports</span>:
-  - <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
-    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">60000</span>
-    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">80</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">LoadBalancer</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">60000</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">80</span>
+</span></span></code></pre></div><ul>
 <li>In the Cloud Shell, to deploy your manifest, execute the following command:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl apply -f ./service-nginx.yaml
-service/nginx created
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl apply -f ./service-nginx.yaml
+</span></span><span style="display:flex;"><span>service/nginx created
+</span></span></code></pre></div><ul>
 <li>This manifest defines a service and applies it to Pods that correspond to the selector. In this case, the manifest is applied to the nginx container that you deployed in task 1. This service also applies to any other Pods with the app: nginx label, including any that are created after the service.</li>
 </ul>
 <h3 id="2-verify-the-loadbalancer-creation">(2) Verify the LoadBalancer creation</h3>
 <ul>
 <li>To view the details of the nginx service, execute the following command:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get service nginx
-NAME    TYPE           CLUSTER-IP      EXTERNAL-IP   PORT<span style="color:#f92672">(</span>S<span style="color:#f92672">)</span>           AGE
-nginx   LoadBalancer   10.11.254.246   &lt;pending&gt;     60000:32437/TCP   39s
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get service nginx
+</span></span><span style="display:flex;"><span>NAME    TYPE           CLUSTER-IP      EXTERNAL-IP   PORT<span style="color:#f92672">(</span>S<span style="color:#f92672">)</span>           AGE
+</span></span><span style="display:flex;"><span>nginx   LoadBalancer   10.11.254.246   &lt;pending&gt;     60000:32437/TCP   39s
+</span></span></code></pre></div><ul>
 <li>When the external IP appears, open http://[EXTERNAL_IP]:60000/ in a new browser tab to see the server being served through network load balancing.</li>
 </ul>
 <blockquote>
@@ -423,30 +431,30 @@ nginx   LoadBalancer   10.11.254.246   &lt;pending&gt;     60000:32437/TCP   39s
 <ul>
 <li>A canary deployment is a separate deployment used to test a new version of your application. A single service targets both the canary and the normal deployments. And it can direct a subset of users to the canary version to mitigate the risk of new releases. The manifest file nginx-canary.yaml that is provided for you deploys a single pod running a newer version of nginx than your main deployment. In this task, you create a canary deployment using this new deployment file.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx-canary</span>
-  <span style="color:#f92672">labels</span>:
-    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">matchLabels</span>:
-      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
-  <span style="color:#f92672">template</span>:
-    <span style="color:#f92672">metadata</span>:
-      <span style="color:#f92672">labels</span>:
-        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
-        <span style="color:#f92672">track</span>: <span style="color:#ae81ff">canary</span>
-        <span style="color:#f92672">Version</span>: <span style="color:#ae81ff">1.9.1</span>
-    <span style="color:#f92672">spec</span>:
-      <span style="color:#f92672">containers</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
-        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx:1.9.1</span>
-        <span style="color:#f92672">ports</span>:
-        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx-canary</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">matchLabels</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">track</span>: <span style="color:#ae81ff">canary</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Version</span>: <span style="color:#ae81ff">1.9.1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx:1.9.1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
+</span></span></code></pre></div><ul>
 <li>
 <p>The manifest for the nginx Service you deployed in the previous task uses a label selector to target the Pods with the app: nginx label. Both the normal deployment and this new canary deployment have the app: nginx label. Inbound connections will be distributed by the service to both the normal and canary deployment Pods. The canary deployment has fewer replicas (Pods) than the normal deployment, and thus it is available to fewer users than the normal deployment.</p>
 </li>
@@ -454,16 +462,16 @@ nginx   LoadBalancer   10.11.254.246   &lt;pending&gt;     60000:32437/TCP   39s
 <p>Create the canary deployment based on the configuration file.</p>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl apply -f nginx-canary.yaml
-deployment.apps/nginx-canary created
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl apply -f nginx-canary.yaml
+</span></span><span style="display:flex;"><span>deployment.apps/nginx-canary created
+</span></span></code></pre></div><ul>
 <li>When the deployment is complete, verify that both the nginx and the nginx-canary deployments are present.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get deployments
-NAME               READY   UP-TO-DATE   AVAILABLE   AGE
-nginx-canary       1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           24s
-nginx-deployment   3/3     <span style="color:#ae81ff">3</span>            <span style="color:#ae81ff">3</span>           21m
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get deployments
+</span></span><span style="display:flex;"><span>NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span style="display:flex;"><span>nginx-canary       1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           24s
+</span></span><span style="display:flex;"><span>nginx-deployment   3/3     <span style="color:#ae81ff">3</span>            <span style="color:#ae81ff">3</span>           21m
+</span></span></code></pre></div><ul>
 <li>
 <p>Switch back to the browser tab that is connected to the external LoadBalancer service ip and refresh the page. You should continue to see the standard Welcome to nginx page.</p>
 </li>
@@ -471,34 +479,34 @@ nginx-deployment   3/3     <span style="color:#ae81ff">3</span>            <span
 <p>Switch back to the Cloud Shell and scale down the primary deployment to 0 replicas.</p>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl scale --replicas<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> deployment nginx-deployment
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl scale --replicas<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> deployment nginx-deployment
+</span></span></code></pre></div><ul>
 <li>Verify that the only running replica is now the Canary deployment:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get deployments
-NAME               READY   UP-TO-DATE   AVAILABLE   AGE
-nginx-canary       1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           104s
-nginx-deployment   0/0     <span style="color:#ae81ff">0</span>            <span style="color:#ae81ff">0</span>           22m
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>~/ak8s/Deployments <span style="color:#f92672">(</span>your_project_id<span style="color:#f92672">)</span>$ kubectl get deployments
+</span></span><span style="display:flex;"><span>NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span style="display:flex;"><span>nginx-canary       1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           104s
+</span></span><span style="display:flex;"><span>nginx-deployment   0/0     <span style="color:#ae81ff">0</span>            <span style="color:#ae81ff">0</span>           22m
+</span></span></code></pre></div><ul>
 <li>Switch back to the browser tab that is connected to the external LoadBalancer service ip and refresh the page. You should continue to see the standard Welcome to nginx page showing that the Service is automatically balancing traffic to the canary deployment.</li>
 </ul>
 <h2 id="session-affinity">Session affinity</h2>
 <p>The service configuration used in the lab does not ensure that all requests from a single client will always connect to the same Pod. Each request is treated separately and can connect to either the normal nginx deployment or to the nginx-canary deployment. This potential to switch between different versions may cause problems if there are significant changes in functionality in the canary release. To prevent this you can set the <code>sessionAffinity</code> field to <code>ClientIP</code> in the specification of the service if you need a client&rsquo;s first request to determine which Pod will be used for all subsequent connections.</p>
 <p>For example:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">LoadBalancer</span>
-  <span style="color:#f92672">sessionAffinity</span>: <span style="color:#ae81ff">ClientIP</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
-  <span style="color:#f92672">ports</span>:
-  - <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
-    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">60000</span>
-    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">80</span>
-</code></pre></div><h2 id="reference">Reference</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">LoadBalancer</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">sessionAffinity</span>: <span style="color:#ae81ff">ClientIP</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">60000</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">80</span>
+</span></span></code></pre></div><h2 id="reference">Reference</h2>
 <ul>
 <li><a href="https://www.coursera.org/learn/mlops-fundamentals/home/welcome">https://www.coursera.org/learn/mlops-fundamentals/home/welcome</a></li>
 </ul>
@@ -529,7 +537,7 @@ nginx-deployment   0/0     <span style="color:#ae81ff">0</span>            <span
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

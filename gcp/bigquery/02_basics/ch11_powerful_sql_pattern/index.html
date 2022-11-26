@@ -9,31 +9,39 @@
 	<meta name="description" content="">
 		<meta property="og:title" content="Ch11 Powerful SQL Pattern" />
 <meta property="og:description" content="1. 구글 클라우드 설정 본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.
- 만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery  위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다." />
+만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery 위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 BigQuery 권장사항: 비용 관리에서 확인하기를 바란다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/gcp/bigquery/02_basics/ch11_powerful_sql_pattern/" />
+<meta property="og:url" content="https://dschloe.github.io/gcp/bigquery/02_basics/ch11_powerful_sql_pattern/" /><meta property="article:section" content="GCP" />
 <meta property="article:published_time" content="2020-05-03T13:30:30+09:00" />
 <meta property="article:modified_time" content="2020-05-03T13:30:30+09:00" />
+
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Ch11 Powerful SQL Pattern"/>
 <meta name="twitter:description" content="1. 구글 클라우드 설정 본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.
- 만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery  위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다."/>
+만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery 위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 BigQuery 권장사항: 비용 관리에서 확인하기를 바란다."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -178,10 +186,10 @@
 <p>위 API를 이용하지 않으면 <code>Python</code> 또는 <code>R</code>과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 <a href="https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko">BigQuery 권장사항: 비용 관리</a>에서 확인하기를 바란다.</p>
 <h2 id="2-사용자-계정-인증">2. 사용자 계정 인증</h2>
 <p>구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. <code>Gmail</code> 인증 절차와 비슷하다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> auth
-auth<span style="color:#f92672">.</span>authenticate_user()
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Authenticated&#39;</span>)
-</code></pre></div><pre><code>Authenticated
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> auth
+</span></span><span style="display:flex;"><span>auth<span style="color:#f92672">.</span>authenticate_user()
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;Authenticated&#39;</span>)
+</span></span></code></pre></div><pre><code>Authenticated
 </code></pre>
 <h2 id="3-쿼리-기본">3. 쿼리 기본</h2>
 <p>빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.</p>
@@ -206,22 +214,22 @@ auth<span style="color:#f92672">.</span>authenticate_user()
 <blockquote>
 <p>위 결과물을 조금 더 시각적으로 보고 싶다면, 꼭 자신의 <a href="https://console.cloud.google.com/bigquery">빅쿼리 콘솔</a>에서 확인하는 것을 권합니다.</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.cloud <span style="color:#f92672">import</span> bigquery
-<span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
-
-project_id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;your_project_id&#39;</span>
-client <span style="color:#f92672">=</span> bigquery<span style="color:#f92672">.</span>Client(project<span style="color:#f92672">=</span>project_id)
-
-temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">  SELECT 
-</span><span style="color:#e6db74">    sid, season, number, basin, subbasin, name, iso_time, nature, latitude, longitude
-</span><span style="color:#e6db74">  FROM `bigquery-public-data.noaa_hurricanes.hurricanes` 
-</span><span style="color:#e6db74">  WHERE season = &#34;1971&#34; and basin = &#34;WP&#34;
-</span><span style="color:#e6db74">  LIMIT 4
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-<span style="color:#66d9ef">print</span>(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
-</code></pre></div><pre><code>|    | sid           |   season |   number | basin   | subbasin   | name   | iso_time                  | nature   |   latitude |   longitude |
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> google.cloud <span style="color:#f92672">import</span> bigquery
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>project_id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;your_project_id&#39;</span>
+</span></span><span style="display:flex;"><span>client <span style="color:#f92672">=</span> bigquery<span style="color:#f92672">.</span>Client(project<span style="color:#f92672">=</span>project_id)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  SELECT 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    sid, season, number, basin, subbasin, name, iso_time, nature, latitude, longitude
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  FROM `bigquery-public-data.noaa_hurricanes.hurricanes` 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  WHERE season = &#34;1971&#34; and basin = &#34;WP&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  LIMIT 4
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
+</span></span></code></pre></div><pre><code>|    | sid           |   season |   number | basin   | subbasin   | name   | iso_time                  | nature   |   latitude |   longitude |
 |---:|:--------------|---------:|---------:|:--------|:-----------|:-------|:--------------------------|:---------|-----------:|------------:|
 |  0 | 1971141N07156 |     1971 |       49 | WP      | MM         | DINAH  | 1971-05-29 00:00:00+00:00 | TS       |    18.9143 |     110.643 |
 |  1 | 1971160N10135 |     1971 |       54 | WP      | MM         | FREDA  | 1971-06-17 00:00:00+00:00 | TS       |    20.4    |     115.586 |
@@ -250,16 +258,16 @@ temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</s
 <p>조건은 2010년 기준이다.</p>
 <h3 id="방법-1-try-group-by">방법 1. Try Group By</h3>
 <p>우선, <code>basin</code>과 <code>season</code>을 기준으로 필터링을 한다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">  SELECT 
-</span><span style="color:#e6db74">    NAME, iso_time, latitude, longitude, usa_sshs
-</span><span style="color:#e6db74">  FROM `bigquery-public-data.noaa_hurricanes.hurricanes` 
-</span><span style="color:#e6db74">  WHERE season = &#34;2010&#34; and basin = &#34;NA&#34;
-</span><span style="color:#e6db74">  LIMIT 4
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-<span style="color:#66d9ef">print</span>(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
-</code></pre></div><pre><code>|    | NAME   | iso_time                  |   latitude |   longitude |   usa_sshs |
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  SELECT 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    NAME, iso_time, latitude, longitude, usa_sshs
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  FROM `bigquery-public-data.noaa_hurricanes.hurricanes` 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  WHERE season = &#34;2010&#34; and basin = &#34;NA&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  LIMIT 4
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
+</span></span></code></pre></div><pre><code>|    | NAME   | iso_time                  |   latitude |   longitude |   usa_sshs |
 |---:|:-------|:--------------------------|-----------:|------------:|-----------:|
 |  0 | OTTO   | 2010-10-07 06:00:00+00:00 |       23.4 |       -68.3 |         -2 |
 |  1 | OTTO   | 2010-10-06 12:00:00+00:00 |       22.6 |       -67.8 |         -2 |
@@ -276,18 +284,18 @@ temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</s
 </ul>
 <h3 id="방법-2-array_agg와-struct">방법 2. ARRAY_AGG와 STRUCT</h3>
 <p>이번에는 Powerful한 <code>ARRAY_AGG</code>와 <code>STRUCT</code>를 사용했다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">  SELECT 
-</span><span style="color:#e6db74">    MIN(NAME) AS name, 
-</span><span style="color:#e6db74">    ARRAY_AGG(STRUCT(iso_time, latitude, longitude, usa_sshs) ORDER BY iso_time ASC) as track
-</span><span style="color:#e6db74">  FROM `bigquery-public-data.noaa_hurricanes.hurricanes` 
-</span><span style="color:#e6db74">  WHERE season = &#34;2010&#34; and basin = &#34;NA&#34;
-</span><span style="color:#e6db74">  GROUP BY sid
-</span><span style="color:#e6db74">  LIMIT 5
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-<span style="color:#66d9ef">print</span>(temp)
-</code></pre></div><pre><code>       name                                              track
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  SELECT 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    MIN(NAME) AS name, 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    ARRAY_AGG(STRUCT(iso_time, latitude, longitude, usa_sshs) ORDER BY iso_time ASC) as track
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  FROM `bigquery-public-data.noaa_hurricanes.hurricanes` 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  WHERE season = &#34;2010&#34; and basin = &#34;NA&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  GROUP BY sid
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  LIMIT 5
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(temp)
+</span></span></code></pre></div><pre><code>       name                                              track
 0      OTTO  [{'iso_time': 2010-10-06 06:00:00+00:00, 'lati...
 1     COLIN  [{'iso_time': 2010-08-02 12:00:00+00:00, 'lati...
 2      EARL  [{'iso_time': 2010-08-24 00:00:00+00:00, 'lati...
@@ -304,27 +312,27 @@ temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</s
 </ul>
 <h2 id="step-2-maximum-category">Step 2. Maximum Category</h2>
 <p>이제 임시 저장된 <code>hurricanes</code>를 사용하여 우선 <code>category</code> field를 만들어야 한다. 이 때 <code>UNNEST</code>가 사용될 것이다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">  with hurricanes AS (
-</span><span style="color:#e6db74">    SELECT 
-</span><span style="color:#e6db74">      MIN(NAME) AS name
-</span><span style="color:#e6db74">      , ARRAY_AGG(STRUCT(iso_time, latitude, longitude, usa_sshs) ORDER BY iso_time ASC) as track
-</span><span style="color:#e6db74">    FROM `bigquery-public-data.noaa_hurricanes.hurricanes` 
-</span><span style="color:#e6db74">    WHERE season = &#34;2010&#34; and basin = &#34;NA&#34;
-</span><span style="color:#e6db74">    GROUP BY sid
-</span><span style="color:#e6db74">  )
-</span><span style="color:#e6db74">
-</span><span style="color:#e6db74">  SELECT 
-</span><span style="color:#e6db74">    name
-</span><span style="color:#e6db74">    , track
-</span><span style="color:#e6db74">    , (SELECT MAX(usa_sshs) FROM UNNEST(track)) AS category
-</span><span style="color:#e6db74">  FROM 
-</span><span style="color:#e6db74">    hurricanes
-</span><span style="color:#e6db74">  ORDER BY category DESC
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-<span style="color:#66d9ef">print</span>(temp)
-</code></pre></div><pre><code>         name                                              track  category
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  with hurricanes AS (
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    SELECT 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      MIN(NAME) AS name
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      , ARRAY_AGG(STRUCT(iso_time, latitude, longitude, usa_sshs) ORDER BY iso_time ASC) as track
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    FROM `bigquery-public-data.noaa_hurricanes.hurricanes` 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    WHERE season = &#34;2010&#34; and basin = &#34;NA&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    GROUP BY sid
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  )
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  SELECT 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    name
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    , track
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    , (SELECT MAX(usa_sshs) FROM UNNEST(track)) AS category
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  FROM 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    hurricanes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  ORDER BY category DESC
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(temp)
+</span></span></code></pre></div><pre><code>         name                                              track  category
 0        EARL  [{'iso_time': 2010-08-24 00:00:00+00:00, 'lati...         4
 1        IGOR  [{'iso_time': 2010-09-08 06:00:00+00:00, 'lati...         4
 2    DANIELLE  [{'iso_time': 2010-08-21 12:00:00+00:00, 'lati...         4
@@ -354,48 +362,48 @@ temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</s
 </ul>
 <h2 id="step-3-최종-결과물-출력">Step 3. 최종 결과물 출력</h2>
 <p>마찬가지로, Step 2의 결과물을 다시 <code>category_hurricanes</code>라고 저장한뒤 재 사용하도록 한다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">WITH hurricanes AS (
-</span><span style="color:#e6db74">SELECT
-</span><span style="color:#e6db74">  MIN(NAME) AS name,
-</span><span style="color:#e6db74">  ARRAY_AGG(STRUCT(iso_time, latitude, longitude, usa_sshs) ORDER BY iso_time ASC) AS track
-</span><span style="color:#e6db74">FROM
-</span><span style="color:#e6db74">  `bigquery-public-data.noaa_hurricanes.hurricanes`
-</span><span style="color:#e6db74">WHERE
-</span><span style="color:#e6db74">  season = &#39;2010&#39; AND basin = &#39;NA&#39;
-</span><span style="color:#e6db74">GROUP BY
-</span><span style="color:#e6db74">  sid
-</span><span style="color:#e6db74">),
-</span><span style="color:#e6db74">
-</span><span style="color:#e6db74">cat_hurricane AS (
-</span><span style="color:#e6db74">SELECT name, track, (SELECT MAX(usa_sshs) FROM UNNEST(track))  AS category
-</span><span style="color:#e6db74">from hurricanes
-</span><span style="color:#e6db74">ORDER BY category DESC
-</span><span style="color:#e6db74">)
-</span><span style="color:#e6db74">
-</span><span style="color:#e6db74">SELECT 
-</span><span style="color:#e6db74">  name
-</span><span style="color:#e6db74">  , category
-</span><span style="color:#e6db74">  , (SELECT AS STRUCT iso_time, latitude, longitude
-</span><span style="color:#e6db74">   FROM UNNEST(track) 
-</span><span style="color:#e6db74">   WHERE usa_sshs = category ORDER BY iso_time LIMIT 1).*
-</span><span style="color:#e6db74">FROM cat_hurricane
-</span><span style="color:#e6db74">ORDER BY category DESC, name ASC
-</span><span style="color:#e6db74">LIMIT 5
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-<span style="color:#66d9ef">print</span>(temp)
-</code></pre></div><pre><code>       name  category                  iso_time  latitude  longitude
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">WITH hurricanes AS (
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SELECT
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  MIN(NAME) AS name,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  ARRAY_AGG(STRUCT(iso_time, latitude, longitude, usa_sshs) ORDER BY iso_time ASC) AS track
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">FROM
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  `bigquery-public-data.noaa_hurricanes.hurricanes`
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">WHERE
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  season = &#39;2010&#39; AND basin = &#39;NA&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">GROUP BY
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  sid
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">),
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">cat_hurricane AS (
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SELECT name, track, (SELECT MAX(usa_sshs) FROM UNNEST(track))  AS category
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">from hurricanes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ORDER BY category DESC
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SELECT 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  name
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  , category
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  , (SELECT AS STRUCT iso_time, latitude, longitude
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">   FROM UNNEST(track) 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">   WHERE usa_sshs = category ORDER BY iso_time LIMIT 1).*
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">FROM cat_hurricane
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ORDER BY category DESC, name ASC
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">LIMIT 5
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(temp)
+</span></span></code></pre></div><pre><code>       name  category                  iso_time  latitude  longitude
 0  DANIELLE         4 2010-08-27 18:00:00+00:00   27.1000   -60.1000
 1      EARL         4 2010-08-30 18:00:00+00:00   19.0000   -64.2000
 2      IGOR         4 2010-09-12 18:00:00+00:00   17.7000   -46.1000
 3     JULIA         4 2010-09-15 09:00:00+00:00   17.2549   -31.8002
 4      KARL         3 2010-09-17 09:00:00+00:00   19.6874   -95.2465
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">(<span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">AS</span> STRUCT iso_time, latitude, longitude
-   <span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">UNNEST</span>(track) 
-   <span style="color:#66d9ef">WHERE</span> usa_sshs <span style="color:#f92672">=</span> category <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> iso_time <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">1</span>).<span style="color:#f92672">*</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>(<span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">AS</span> STRUCT iso_time, latitude, longitude
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">UNNEST</span>(track) 
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">WHERE</span> usa_sshs <span style="color:#f92672">=</span> category <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> iso_time <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">1</span>).<span style="color:#f92672">*</span>
+</span></span></code></pre></div><ul>
 <li>위 구문에서 <code>.*</code>을 사용하지 않으면 <code>ARRAY</code> 형태로 출력된다.</li>
 <li>만약에 <code>LIMIT 1</code>로 지정하지 않으면 에러가 난다.</li>
 </ul>
@@ -453,7 +461,7 @@ temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</s
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

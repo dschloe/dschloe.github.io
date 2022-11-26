@@ -11,33 +11,41 @@
 <meta property="og:description" content="공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
 이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
 I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard  II." />
+shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard II." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/r/shiny/tutorial_07/" />
+<meta property="og:url" content="https://dschloe.github.io/r/shiny/tutorial_07/" /><meta property="article:section" content="R" />
 <meta property="article:published_time" content="2020-04-02T21:10:39+09:00" />
 <meta property="article:modified_time" content="2020-04-02T21:10:39+09:00" />
+
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="shiny tutorial 07 - flexdashboard package"/>
 <meta name="twitter:description" content="공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
 이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
 I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard  II."/>
+shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts shiny tutorial 05 - Sharing Apps shiny tutorial 06 - shinydashboard II."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -194,74 +202,74 @@ I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼�
 </ul>
 <h2 id="iii-get-started">III. Get Started</h2>
 <p>다른 R의 패키지처럼, <code>flexdashboard</code> 패키지를 설치한다.</p>
-<pre><code>install.packages(&quot;flexdashboard&quot;)
+<pre tabindex="0"><code>install.packages(&#34;flexdashboard&#34;)
 </code></pre><p>패키지를 설치하고 나면, [<code>File</code>] - [<code>New File</code>] - [<code>R Markdown</code>] - [<code>From Template</code>] 순서대로 클릭하면 아래와 같이 <code>Flex Dashboard</code> 파일이 활성화 되는데, 이 파일을 클릭한다.</p>
 <p><img src="/img/shiny/tutorial_07/shiny01.png" alt=""><!-- raw HTML omitted --></p>
 <p>클릭과 함께 아래와 같은 형태의 코드가 준비된 것을 확인할 수 있다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown"><span style="color:#e6db74">```yaml
-</span><span style="color:#e6db74"></span><span style="color:#f92672">title</span>: <span style="color:#e6db74">&#34;Single Column (Scrolling)&#34;</span>
-<span style="color:#f92672">output</span>: 
-  <span style="color:#f92672">flexdashboard::flex_dashboard</span>:
-    <span style="color:#f92672">vertical_layout</span>: <span style="color:#ae81ff">scroll</span>
-<span style="color:#e6db74">```</span>
-</code></pre></div><p>여기에서 <code>shiny dashboard</code> 형태로 구현하려면 간단하게 <code>runtime: shiny</code>를 <code>YAML header</code>에 추가하면 된다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown"><span style="color:#e6db74">```yaml
-</span><span style="color:#e6db74"></span><span style="color:#f92672">title</span>: <span style="color:#e6db74">&#34;Single Column (Scrolling)&#34;</span>
-<span style="color:#f92672">output</span>: 
-  <span style="color:#f92672">flexdashboard::flex_dashboard</span>:
-    <span style="color:#f92672">vertical_layout</span>: <span style="color:#ae81ff">scroll</span>
-<span style="color:#f92672">runtime</span>: <span style="color:#ae81ff">shiny</span>
-<span style="color:#e6db74">```</span>
-</code></pre></div><h2 id="1-sample">(1) Sample</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span><span style="color:#e6db74">```yaml
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#f92672">title</span>: <span style="color:#e6db74">&#34;Single Column (Scrolling)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">output</span>: 
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">flexdashboard::flex_dashboard</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">vertical_layout</span>: <span style="color:#ae81ff">scroll</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```</span>
+</span></span></code></pre></div><p>여기에서 <code>shiny dashboard</code> 형태로 구현하려면 간단하게 <code>runtime: shiny</code>를 <code>YAML header</code>에 추가하면 된다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span><span style="color:#e6db74">```yaml
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#f92672">title</span>: <span style="color:#e6db74">&#34;Single Column (Scrolling)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">output</span>: 
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">flexdashboard::flex_dashboard</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">vertical_layout</span>: <span style="color:#ae81ff">scroll</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">runtime</span>: <span style="color:#ae81ff">shiny</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```</span>
+</span></span></code></pre></div><h2 id="1-sample">(1) Sample</h2>
 <p>아래 샘플 소스코드를 작성하여 실행한다. 아래 소스 코드 실행의 주요 목적은 <code>R Markdown</code>과 <code>R Shiny</code>가 어떻게 조금씩 다른지 확인하는 차원의 소스 코드이다. Sample 코드는 <a href="https://beta.rstudioconnect.com/jjallaire/shiny-embedding/">flexdashboard: Shiny Embedding</a> 에서 가져와서 응용 했다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
-title: &#34;flexdashboard: Shiny Embedding&#34;
-output: 
-  flexdashboard::flex_dashboard:
-    vertical_layout: scroll
-runtime: shiny
----
-
-```{r global, include=FALSE}
-# 데이터를 &#39;global&#39; chunk에 넣고, 대시보드의 모든 사용자가 데이터를 공유할 수 있도록 지원하는 소스 코드
-library(datasets)
-data(WorldPhones)
-<span style="color:#e6db74">```
-</span><span style="color:#e6db74"></span>
-Module
-=======================================================================
-
-### Embedding a Shiny Module
-
-```{r, include=FALSE}
-# Shiny module definition (would typically be defined in a separate R script)
-
-# UI function
-worldPhonesUI &lt;- function(id) {
-  ns &lt;- NS(id)
-  fillCol(height = 600, flex = c(NA, 1), 
-    inputPanel(
-      selectInput(ns(&#34;region&#34;), &#34;Region:&#34;, choices = colnames(WorldPhones))
-    ),
-    plotOutput(ns(&#34;phonePlot&#34;), height = &#34;100%&#34;)
-  )
-}
-
-# Server function
-worldPhones &lt;- function(input, output, session) {
-  output$phonePlot &lt;- renderPlot({
-    barplot(WorldPhones[,input$region]*1000, 
-            ylab = &#34;Number of Telephones&#34;, xlab = &#34;Year&#34;)
-  })
-}
-<span style="color:#e6db74">```</span>
-
-```{r}
-# Include the module
-worldPhonesUI(&#34;phones&#34;)
-callModule(worldPhones, &#34;phones&#34;)
-```
-</code></pre></div><p>위 파일을 실행하면 아래와 같이 화면이 구성되면 완성이다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>title: &#34;flexdashboard: Shiny Embedding&#34;
+</span></span><span style="display:flex;"><span>output: 
+</span></span><span style="display:flex;"><span>  flexdashboard::flex_dashboard:
+</span></span><span style="display:flex;"><span>    vertical_layout: scroll
+</span></span><span style="display:flex;"><span>runtime: shiny
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>```{r global, include=FALSE}
+</span></span><span style="display:flex;"><span># 데이터를 &#39;global&#39; chunk에 넣고, 대시보드의 모든 사용자가 데이터를 공유할 수 있도록 지원하는 소스 코드
+</span></span><span style="display:flex;"><span>library(datasets)
+</span></span><span style="display:flex;"><span>data(WorldPhones)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>
+</span></span><span style="display:flex;"><span>Module
+</span></span><span style="display:flex;"><span>=======================================================================
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>### Embedding a Shiny Module
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>```{r, include=FALSE}
+</span></span><span style="display:flex;"><span># Shiny module definition (would typically be defined in a separate R script)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># UI function
+</span></span><span style="display:flex;"><span>worldPhonesUI &lt;- function(id) {
+</span></span><span style="display:flex;"><span>  ns &lt;- NS(id)
+</span></span><span style="display:flex;"><span>  fillCol(height = 600, flex = c(NA, 1), 
+</span></span><span style="display:flex;"><span>    inputPanel(
+</span></span><span style="display:flex;"><span>      selectInput(ns(&#34;region&#34;), &#34;Region:&#34;, choices = colnames(WorldPhones))
+</span></span><span style="display:flex;"><span>    ),
+</span></span><span style="display:flex;"><span>    plotOutput(ns(&#34;phonePlot&#34;), height = &#34;100%&#34;)
+</span></span><span style="display:flex;"><span>  )
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># Server function
+</span></span><span style="display:flex;"><span>worldPhones &lt;- function(input, output, session) {
+</span></span><span style="display:flex;"><span>  output$phonePlot &lt;- renderPlot({
+</span></span><span style="display:flex;"><span>    barplot(WorldPhones[,input$region]*1000, 
+</span></span><span style="display:flex;"><span>            ylab = &#34;Number of Telephones&#34;, xlab = &#34;Year&#34;)
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>```{r}
+</span></span><span style="display:flex;"><span># Include the module
+</span></span><span style="display:flex;"><span>worldPhonesUI(&#34;phones&#34;)
+</span></span><span style="display:flex;"><span>callModule(worldPhones, &#34;phones&#34;)
+</span></span><span style="display:flex;"><span>```
+</span></span></code></pre></div><p>위 파일을 실행하면 아래와 같이 화면이 구성되면 완성이다.</p>
 <p><img src="/img/shiny/tutorial_07/shiny02.png" alt=""><!-- raw HTML omitted --></p>
 <p>기본적으로 <code>flexdashabord</code>의 구조는<code>R Markdown</code>의 목차 및 내용을 구성하는 방식과 비슷하다. 차이점이 있다면, R chunk <code>{r, include=FALSE} </code>안에 <code>shiny code</code>를 진행할 수 있다는 장점이 있다.</p>
 <p>본 소스코드에서는 <code>Modularizing</code>이 적용되었는데, 튜토리얼의 마지막 즈음에 복잡한 <code>shiny app</code>을 만들기 위한 가이드라인의 차원에서 다루도록 한다.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></p>
@@ -278,205 +286,202 @@ callModule(worldPhones, &#34;phones&#34;)
 <p>There is no free lunch, Open Source is free but hardworking is required. - ChloEvan -</p>
 </blockquote>
 <h2 id="1-column">(1) Column</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
-title: &#34;name_of_your_project&#34;
-output: 
-  flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
----
-
-```{r setup, include=FALSE}
-library(flexdashboard)
-library(shiny)
-<span style="color:#e6db74">```
-</span><span style="color:#e6db74"></span>
----
-title: &#34;Tabset Column&#34;
-output: flexdashboard::flex_dashboard
----
-    
-Column 
--------------------------------------
-    
-### Chart 1
-    
-```{r}
-h1(&#39;Chart 1&#39;)
-<span style="color:#e6db74">```</span>
-   
-Column {.tabset}
--------------------------------------
-   
-<span style="color:#75715e">### Chart 2
-</span><span style="color:#75715e"></span>
-```{r}
-h1(&#39;Chart 2&#39;)
-```   
- 
-<span style="color:#75715e">### Chart 3
-</span><span style="color:#75715e"></span>    
-```{r}
-h1(&#39;Chart 3&#39;)
-```
-
-</code></pre></div><p><img src="/img/shiny/tutorial_07/shiny03.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>title: &#34;name_of_your_project&#34;
+</span></span><span style="display:flex;"><span>output: 
+</span></span><span style="display:flex;"><span>  flexdashboard::flex_dashboard:
+</span></span><span style="display:flex;"><span>    orientation: columns
+</span></span><span style="display:flex;"><span>    vertical_layout: fill
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>```{r setup, include=FALSE}
+</span></span><span style="display:flex;"><span>library(flexdashboard)
+</span></span><span style="display:flex;"><span>library(shiny)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>title: &#34;Tabset Column&#34;
+</span></span><span style="display:flex;"><span>output: flexdashboard::flex_dashboard
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>Column 
+</span></span><span style="display:flex;"><span>-------------------------------------
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>### Chart 1
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>```{r}
+</span></span><span style="display:flex;"><span>h1(&#39;Chart 1&#39;)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```</span>
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>Column {.tabset}
+</span></span><span style="display:flex;"><span>-------------------------------------
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### Chart 2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>```{r}
+</span></span><span style="display:flex;"><span>h1(&#39;Chart 2&#39;)
+</span></span><span style="display:flex;"><span>```   
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### Chart 3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>```{r}
+</span></span><span style="display:flex;"><span>h1(&#39;Chart 3&#39;)
+</span></span><span style="display:flex;"><span>```
+</span></span></code></pre></div><p><img src="/img/shiny/tutorial_07/shiny03.png" alt=""><!-- raw HTML omitted --></p>
 <p>실행된 화면에서 <code>Chart 2</code>와 <code>Chart 3</code>를 교대로 클릭하며 내용을 확인해본다. 이번에는 Rows를 기준으로 작업하는데, 사실상 달라지는 건 기존의 소스코드와 없다.</p>
 <h2 id="2-rows">(2) Rows</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
-title: &#34;name_of_your_project&#34;
-output: 
-  flexdashboard::flex_dashboard:
-    orientation: rows
-    vertical_layout: fill
----
-
-```{r setup, include=FALSE}
-library(flexdashboard)
-library(shiny)
-<span style="color:#e6db74">```
-</span><span style="color:#e6db74"></span>
----
-title: &#34;Tabset Rows&#34;
-output: flexdashboard::flex_dashboard:
-    orientation: rows
----
-    
-Row 
--------------------------------------
-    
-### Chart 1
-    
-```{r}
-h1(&#39;Chart 1&#39;)
-<span style="color:#e6db74">```</span>
-   
-Row {.tabset .tabset-fade}
--------------------------------------
-   
-<span style="color:#75715e">### Chart 2
-</span><span style="color:#75715e"></span>
-```{r}
-h1(&#39;Chart 2&#39;)
-```   
- 
-<span style="color:#75715e">### Chart 3
-</span><span style="color:#75715e"></span>    
-```{r}
-h1(&#39;Chart 3&#39;)
-```
-
-</code></pre></div><p><code>{.tabset-fade}</code> 속성값은 탭이 변환될 때마다 Fade in/out 효과를 적용하여 준다. 실제로 아래와 같이 나오는지 코드 작성을 통해 확인해본다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>title: &#34;name_of_your_project&#34;
+</span></span><span style="display:flex;"><span>output: 
+</span></span><span style="display:flex;"><span>  flexdashboard::flex_dashboard:
+</span></span><span style="display:flex;"><span>    orientation: rows
+</span></span><span style="display:flex;"><span>    vertical_layout: fill
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>```{r setup, include=FALSE}
+</span></span><span style="display:flex;"><span>library(flexdashboard)
+</span></span><span style="display:flex;"><span>library(shiny)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>title: &#34;Tabset Rows&#34;
+</span></span><span style="display:flex;"><span>output: flexdashboard::flex_dashboard:
+</span></span><span style="display:flex;"><span>    orientation: rows
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>Row 
+</span></span><span style="display:flex;"><span>-------------------------------------
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>### Chart 1
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>```{r}
+</span></span><span style="display:flex;"><span>h1(&#39;Chart 1&#39;)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```</span>
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>Row {.tabset .tabset-fade}
+</span></span><span style="display:flex;"><span>-------------------------------------
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### Chart 2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>```{r}
+</span></span><span style="display:flex;"><span>h1(&#39;Chart 2&#39;)
+</span></span><span style="display:flex;"><span>```   
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### Chart 3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>```{r}
+</span></span><span style="display:flex;"><span>h1(&#39;Chart 3&#39;)
+</span></span><span style="display:flex;"><span>```
+</span></span></code></pre></div><p><code>{.tabset-fade}</code> 속성값은 탭이 변환될 때마다 Fade in/out 효과를 적용하여 준다. 실제로 아래와 같이 나오는지 코드 작성을 통해 확인해본다.</p>
 <p><img src="/img/shiny/tutorial_07/shiny04.png" alt=""><!-- raw HTML omitted --></p>
 <h2 id="v-components">V. Components</h2>
 <p>개요 페이지에서 언급했던 것처럼 <code>flexdashboard</code>는 다양한 <code>Componets</code>를 제공한다. <code>shiny</code>와 <code>R Markdown</code> 내용과 중복되는 예를 들면, <code>R graphics</code>, <code>Tabular Data</code> 등은 생략한다. 즉, 기존에 알고 있는 코드 문법과 차이가 없다는 뜻이기도 하다. 본 포스트에서는 <code>HTML Widgets</code>(사실, 이것도 shiny &amp; shinydashboard에서도 사용은 가능하다!) <code>Navigation Bar</code>만 언급하도록 한다.</p>
 <h2 id="1-html-widgets">(1) HTML Widgets</h2>
 <p><code>CRAN</code>에 등록되어 있는 <code>30</code>개 이상의 패키지는 <code>HTML Widgets</code>을 제공한다. 즉, 이러한 <code>Widgets</code>들은 모두 본 패키지에서 작성이 가능하다. 향후 코로나 프로젝트를 위해 지도 패키지인 <code>leaflets</code>의 간단 예제로 간단하게 소스 코드를 구현해본다. 소스코드보다는 어떻게 대시보드화가 되는지 결과 위주로 보기를 바란다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
-title: &#34;name_of_your_project&#34;
-output: 
-  flexdashboard::flex_dashboard:
-    orientation: rows
-    vertical_layout: fill
----
-
-```{r setup, include=FALSE}
-library(flexdashboard)
-library(shiny)
-<span style="color:#e6db74">```
-</span><span style="color:#e6db74"></span>
----
-title: &#34;Tabset Rows&#34;
-output: flexdashboard::flex_dashboard:
-    orientation: rows
----
-    
-Row 
--------------------------------------
-    
-### Chart 1
-    
-```{r}
-h1(&#39;Chart 1&#39;)
-<span style="color:#e6db74">```</span>
-   
-Row {.tabset .tabset-fade}
--------------------------------------
-   
-<span style="color:#75715e">### Chart 2
-</span><span style="color:#75715e"></span>
-```{r}
-h1(&#39;Chart 2&#39;)
-
-library(leaflet)
-leaflet() %&gt;%
-  addTiles() %&gt;%
-  addMarkers(lng=174.768, lat=-36.852, popup=&#34;The birthplace of R&#34;)
-```   
-
-<span style="color:#75715e">### Chart 3
-</span><span style="color:#75715e"></span>    
-```{r}
-h1(&#39;Chart 3&#39;)
-```
-
-</code></pre></div><p><img src="/img/shiny/tutorial_07/shiny05.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>title: &#34;name_of_your_project&#34;
+</span></span><span style="display:flex;"><span>output: 
+</span></span><span style="display:flex;"><span>  flexdashboard::flex_dashboard:
+</span></span><span style="display:flex;"><span>    orientation: rows
+</span></span><span style="display:flex;"><span>    vertical_layout: fill
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>```{r setup, include=FALSE}
+</span></span><span style="display:flex;"><span>library(flexdashboard)
+</span></span><span style="display:flex;"><span>library(shiny)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>title: &#34;Tabset Rows&#34;
+</span></span><span style="display:flex;"><span>output: flexdashboard::flex_dashboard:
+</span></span><span style="display:flex;"><span>    orientation: rows
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>Row 
+</span></span><span style="display:flex;"><span>-------------------------------------
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>### Chart 1
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>```{r}
+</span></span><span style="display:flex;"><span>h1(&#39;Chart 1&#39;)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```</span>
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>Row {.tabset .tabset-fade}
+</span></span><span style="display:flex;"><span>-------------------------------------
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### Chart 2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>```{r}
+</span></span><span style="display:flex;"><span>h1(&#39;Chart 2&#39;)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>library(leaflet)
+</span></span><span style="display:flex;"><span>leaflet() %&gt;%
+</span></span><span style="display:flex;"><span>  addTiles() %&gt;%
+</span></span><span style="display:flex;"><span>  addMarkers(lng=174.768, lat=-36.852, popup=&#34;The birthplace of R&#34;)
+</span></span><span style="display:flex;"><span>```   
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### Chart 3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>```{r}
+</span></span><span style="display:flex;"><span>h1(&#39;Chart 3&#39;)
+</span></span><span style="display:flex;"><span>```
+</span></span></code></pre></div><p><img src="/img/shiny/tutorial_07/shiny05.png" alt=""><!-- raw HTML omitted --></p>
 <p><code>Chart 2</code> 섹션에 지도화면이 정상적으로 출력된다면 완성이다. <code>Chart 1</code>에는 어떤 내용을 추가할지, <code>Chart 3</code>에는 어떤 내용을 추가할지 보여줘야 할지 고민해야 하며, Dynamic하게 모든 차트가 동시에 적용되게 하려면, 결국엔 <code>데이터셋</code>이 모듈화처럼 움직여야 한다 (일단, Pass!!, 본 프로젝트에 들어가면 자세히 소개하기로 한다!)</p>
 <h2 id="2-navigation-bar">(2) Navigation Bar</h2>
 <p><code>Navigation Bar</code>는 다중페이지가 만들어질 때 보통 사용된다. 대시 보드에 다중 페이지가 있으면 <code>Navigation Bar</code>의 왼쪽에 다중 페이지와 링크로 연결되게 되며, 이 때에는 소셜 링크와 대시 보드의 소스 코드를 볼 수 있다는 장점이 있다.</p>
 <p><code>leaflet</code>을 활용하여 만들었던 기존 소스코드에 <code>Navigation Bar</code>, <code>social</code>, <code>source code</code> 기능을 추가 하도록 하겠다. 어디에 어떻게 구현이 되는지 확인해보자.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">---
-title: &#34;name_of_your_project&#34;
-output: 
-  flexdashboard::flex_dashboard:
-    orientation: rows
-    vertical_layout: fill
-    navbar:
-      <span style="color:#66d9ef">-</span> { title: &#34;About&#34;, href: &#34;https://chloevan.github.io/about/&#34; }
-    social: [ &#34;twitter&#34;, &#34;facebook&#34;, &#34;menu&#34;, &#34;linkedin&#34; ]
-    source_code: embed
----
-
-```{r setup, include=FALSE}
-library(flexdashboard)
-library(shiny)
-<span style="color:#e6db74">```
-</span><span style="color:#e6db74"></span>
----
-title: &#34;Tabset Rows&#34;
-output: flexdashboard::flex_dashboard:
-    orientation: rows
----
-    
-Row 
--------------------------------------
-    
-### Chart 1
-    
-```{r}
-h1(&#39;Chart 1&#39;)
-<span style="color:#e6db74">```</span>
-   
-Row {.tabset .tabset-fade}
--------------------------------------
-   
-<span style="color:#75715e">### Chart 2
-</span><span style="color:#75715e"></span>
-```{r}
-h1(&#39;Chart 2&#39;)
-
-library(leaflet)
-leaflet() %&gt;%
-  addTiles() %&gt;%
-  addMarkers(lng=174.768, lat=-36.852, popup=&#34;The birthplace of R&#34;)
-```   
-
-<span style="color:#75715e">### Chart 3
-</span><span style="color:#75715e"></span>    
-```{r}
-h1(&#39;Chart 3&#39;)
-```
-</code></pre></div><p><img src="/img/shiny/tutorial_07/shiny06.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>title: &#34;name_of_your_project&#34;
+</span></span><span style="display:flex;"><span>output: 
+</span></span><span style="display:flex;"><span>  flexdashboard::flex_dashboard:
+</span></span><span style="display:flex;"><span>    orientation: rows
+</span></span><span style="display:flex;"><span>    vertical_layout: fill
+</span></span><span style="display:flex;"><span>    navbar:
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">-</span> { title: &#34;About&#34;, href: &#34;https://chloevan.github.io/about/&#34; }
+</span></span><span style="display:flex;"><span>    social: [ &#34;twitter&#34;, &#34;facebook&#34;, &#34;menu&#34;, &#34;linkedin&#34; ]
+</span></span><span style="display:flex;"><span>    source_code: embed
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>```{r setup, include=FALSE}
+</span></span><span style="display:flex;"><span>library(flexdashboard)
+</span></span><span style="display:flex;"><span>library(shiny)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>title: &#34;Tabset Rows&#34;
+</span></span><span style="display:flex;"><span>output: flexdashboard::flex_dashboard:
+</span></span><span style="display:flex;"><span>    orientation: rows
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>Row 
+</span></span><span style="display:flex;"><span>-------------------------------------
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>### Chart 1
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>```{r}
+</span></span><span style="display:flex;"><span>h1(&#39;Chart 1&#39;)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```</span>
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>Row {.tabset .tabset-fade}
+</span></span><span style="display:flex;"><span>-------------------------------------
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### Chart 2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>```{r}
+</span></span><span style="display:flex;"><span>h1(&#39;Chart 2&#39;)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>library(leaflet)
+</span></span><span style="display:flex;"><span>leaflet() %&gt;%
+</span></span><span style="display:flex;"><span>  addTiles() %&gt;%
+</span></span><span style="display:flex;"><span>  addMarkers(lng=174.768, lat=-36.852, popup=&#34;The birthplace of R&#34;)
+</span></span><span style="display:flex;"><span>```   
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### Chart 3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>```{r}
+</span></span><span style="display:flex;"><span>h1(&#39;Chart 3&#39;)
+</span></span><span style="display:flex;"><span>```
+</span></span></code></pre></div><p><img src="/img/shiny/tutorial_07/shiny06.png" alt=""><!-- raw HTML omitted --></p>
 <p>우측 상단에 보면, <code>About</code> 버튼, 각각의 <code>Social Network</code> 기능, 특히 <code>Facebook</code>, <code>Twitter</code>, <code>Linkedin</code>과 같이 대시보드를 공유할 수 있는 기능들이 있는 것을 볼 수 있다. 이러한 기능들은 현재  <code>Corona-19</code> 대시보드와 같이 빅데이터를 활용하여 시각화로 <code>Insight</code>를 줄 때, 매우 유용한 기능이다.</p>
 <p>마지막으로 <code>source code</code>는 현재 보고 있는 화면에 대한 전체 <code>source code</code>를 보여주는 기능인데, 이 부분 역시 소스코드 공유를 통해 커뮤니티에 기여하고 싶을 때 넣어주면 좋다.</p>
 <p><img src="/img/shiny/tutorial_07/shiny07.png" alt=""><!-- raw HTML omitted --></p>
@@ -491,17 +496,17 @@ h1(&#39;Chart 3&#39;)
 <h2 id="ix-reference">IX. Reference</h2>
 <p>flexdashboard, (2020). flexdashboard Retrieved April 2, 2020, from <a href="https://rmarkdown.rstudio.com/flexdashboard/index.html">https://rmarkdown.rstudio.com/flexdashboard/index.html</a></p>
 <p>Congratulation! You Mastered flexdashboard in Shiny</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
-<p>ChloEvan. (2020, March 18). R Markdown Introduction. Retrieved April 2, 2020, from <a href="https://chloevan.github.io/r/rmarkdown/rmarkdownintro/">https://chloevan.github.io/r/rmarkdown/rmarkdownintro/</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:1">
+<p>ChloEvan. (2020, March 18). R Markdown Introduction. Retrieved April 2, 2020, from <a href="https://chloevan.github.io/r/rmarkdown/rmarkdownintro/">https://chloevan.github.io/r/rmarkdown/rmarkdownintro/</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
-<p>웹개발 개발경력이 되신 분들은 shiny 홈페이지에 게재된 <a href="https://shiny.rstudio.com/articles/modules.html">Modularizing Shiny app code</a>을 자세히 읽어보기를 권한다. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:2">
+<p>웹개발 개발경력이 되신 분들은 shiny 홈페이지에 게재된 <a href="https://shiny.rstudio.com/articles/modules.html">Modularizing Shiny app code</a>을 자세히 읽어보기를 권한다.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
 		</div>
 		<footer class="post__footer">
@@ -541,7 +546,7 @@ h1(&#39;Chart 3&#39;)
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

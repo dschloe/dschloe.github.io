@@ -9,31 +9,39 @@
 	<meta name="description" content="">
 		<meta property="og:title" content="Ch17 Types of Functions" />
 <meta property="og:description" content="I. 구글 클라우드 설정 본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.
- 만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery  위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다." />
+만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery 위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 BigQuery 권장사항: 비용 관리에서 확인하기를 바란다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/gcp/bigquery/02_basics/ch17_types_of_functions/" />
+<meta property="og:url" content="https://dschloe.github.io/gcp/bigquery/02_basics/ch17_types_of_functions/" /><meta property="article:section" content="GCP" />
 <meta property="article:published_time" content="2020-05-22T17:30:30+09:00" />
 <meta property="article:modified_time" content="2020-05-22T17:30:30+09:00" />
+
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Ch17 Types of Functions"/>
 <meta name="twitter:description" content="I. 구글 클라우드 설정 본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.
- 만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery  위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다."/>
+만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery 위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 BigQuery 권장사항: 비용 관리에서 확인하기를 바란다."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -177,10 +185,10 @@
 <p>위 API를 이용하지 않으면 <code>Python</code> 또는 <code>R</code>과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 <a href="https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko">BigQuery 권장사항: 비용 관리</a>에서 확인하기를 바란다.</p>
 <h2 id="ii-사용자-계정-인증">II. 사용자 계정 인증</h2>
 <p>구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. <code>Gmail</code> 인증 절차와 비슷하다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> auth
-auth<span style="color:#f92672">.</span>authenticate_user()
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Authenticated&#39;</span>)
-</code></pre></div><pre><code>Authenticated
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> auth
+</span></span><span style="display:flex;"><span>auth<span style="color:#f92672">.</span>authenticate_user()
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;Authenticated&#39;</span>)
+</span></span></code></pre></div><pre><code>Authenticated
 </code></pre>
 <h2 id="iii-types-of-functions">III. Types of Functions</h2>
 <ul>
@@ -215,9 +223,9 @@ auth<span style="color:#f92672">.</span>authenticate_user()
 <li>기본 제공되지 않지만 사용자가 구현을 지정하는 기능. 사용자 정의 함수는 SQL(또는 JavaScript)로 작성될 수 있으며, 앞서 언급한 유형 중 하나를 반환할 수 있다.</li>
 <li>예를 들면 다음과 같이 작성이 가능하다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">CREATE</span> TEMP <span style="color:#66d9ef">FUNCTION</span> lastElement(arr <span style="color:#66d9ef">ANY</span> <span style="color:#66d9ef">TYPE</span>) 
-  <span style="color:#66d9ef">AS</span> (arr[ORDINAL(ARRAY_LENGTH(arr))]);
-</code></pre></div><h2 id="iv-결론">IV. 결론</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> TEMP <span style="color:#66d9ef">FUNCTION</span> lastElement(arr <span style="color:#66d9ef">ANY</span> <span style="color:#66d9ef">TYPE</span>) 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">AS</span> (arr[ORDINAL(ARRAY_LENGTH(arr))]);
+</span></span></code></pre></div><h2 id="iv-결론">IV. 결론</h2>
 <ul>
 <li>빅쿼리의 <code>Functions</code>에 관한 기본적인 이론에 대해 익혔다.</li>
 <li>본장에서 실제 <code>Numeric Types</code>를 가지고 활용하는 방법에 대해 익히도록 한다.</li>
@@ -266,7 +274,7 @@ auth<span style="color:#f92672">.</span>authenticate_user()
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

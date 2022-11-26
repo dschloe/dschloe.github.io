@@ -8,30 +8,38 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="머신러닝 데이터 전처리 1 - 결측치 처리" />
-<meta property="og:description" content="개요  EDA를 진행할 때, 결측치가 있는 데이터를 시각화 하여 결측치 유무를 파악하였다.  참조: EDA with Housing Price Prediction - Handling Missing Values   이번 포스트에서는 결측치를 처리하는 코드를 작성할 것이다.  I. 구글 드라이브 연동  구글 코랩을 시작하면 언제든지 가장 먼저 해야 하는 것은 드라이브 연동이다.  from google.colab import drive # 패키지 불러오기  from os.path import join ROOT = &#34;/content/drive&#34; # 드라이브 기본 경로 print(ROOT) # print content of ROOT (Optional) drive." />
+<meta property="og:description" content="개요 EDA를 진행할 때, 결측치가 있는 데이터를 시각화 하여 결측치 유무를 파악하였다. 참조: EDA with Housing Price Prediction - Handling Missing Values 이번 포스트에서는 결측치를 처리하는 코드를 작성할 것이다. I. 구글 드라이브 연동 구글 코랩을 시작하면 언제든지 가장 먼저 해야 하는 것은 드라이브 연동이다. from google.colab import drive # 패키지 불러오기 from os.path import join ROOT = &#34;/content/drive&#34; # 드라이브 기본 경로 print(ROOT) # print content of ROOT (Optional) drive.mount(ROOT) # 드라이브 기본 경로 Mount MY_GOOGLE_DRIVE_PATH = &#39;My Drive/Colab Notebooks/inflearn_kaggle/&#39; # 프로젝트 경로 PROJECT_PATH = join(ROOT, MY_GOOGLE_DRIVE_PATH) # 프로젝트 경로 print(PROJECT_PATH) /content/drive Drive already mounted at /content/drive; to attempt to forcibly remount, call drive." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/python/python_edu/04_machinelearning/chapter_4_1_handling_missing_values/" />
+<meta property="og:url" content="https://dschloe.github.io/python/python_edu/04_machinelearning/chapter_4_1_handling_missing_values/" /><meta property="article:section" content="Python" />
 <meta property="article:published_time" content="2020-07-08T18:00:47+09:00" />
 <meta property="article:modified_time" content="2020-07-08T18:00:47+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="머신러닝 데이터 전처리 1 - 결측치 처리"/>
-<meta name="twitter:description" content="개요  EDA를 진행할 때, 결측치가 있는 데이터를 시각화 하여 결측치 유무를 파악하였다.  참조: EDA with Housing Price Prediction - Handling Missing Values   이번 포스트에서는 결측치를 처리하는 코드를 작성할 것이다.  I. 구글 드라이브 연동  구글 코랩을 시작하면 언제든지 가장 먼저 해야 하는 것은 드라이브 연동이다.  from google.colab import drive # 패키지 불러오기  from os.path import join ROOT = &#34;/content/drive&#34; # 드라이브 기본 경로 print(ROOT) # print content of ROOT (Optional) drive."/>
+<meta name="twitter:description" content="개요 EDA를 진행할 때, 결측치가 있는 데이터를 시각화 하여 결측치 유무를 파악하였다. 참조: EDA with Housing Price Prediction - Handling Missing Values 이번 포스트에서는 결측치를 처리하는 코드를 작성할 것이다. I. 구글 드라이브 연동 구글 코랩을 시작하면 언제든지 가장 먼저 해야 하는 것은 드라이브 연동이다. from google.colab import drive # 패키지 불러오기 from os.path import join ROOT = &#34;/content/drive&#34; # 드라이브 기본 경로 print(ROOT) # print content of ROOT (Optional) drive.mount(ROOT) # 드라이브 기본 경로 Mount MY_GOOGLE_DRIVE_PATH = &#39;My Drive/Colab Notebooks/inflearn_kaggle/&#39; # 프로젝트 경로 PROJECT_PATH = join(ROOT, MY_GOOGLE_DRIVE_PATH) # 프로젝트 경로 print(PROJECT_PATH) /content/drive Drive already mounted at /content/drive; to attempt to forcibly remount, call drive."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -177,25 +185,25 @@
 <ul>
 <li>구글 코랩을 시작하면 언제든지 가장 먼저 해야 하는 것은 드라이브 연동이다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> drive <span style="color:#75715e"># 패키지 불러오기 </span>
-<span style="color:#f92672">from</span> os.path <span style="color:#f92672">import</span> join  
-
-ROOT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/content/drive&#34;</span>     <span style="color:#75715e"># 드라이브 기본 경로</span>
-<span style="color:#66d9ef">print</span>(ROOT)                 <span style="color:#75715e"># print content of ROOT (Optional)</span>
-drive<span style="color:#f92672">.</span>mount(ROOT)           <span style="color:#75715e"># 드라이브 기본 경로 Mount</span>
-
-MY_GOOGLE_DRIVE_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;My Drive/Colab Notebooks/inflearn_kaggle/&#39;</span> <span style="color:#75715e"># 프로젝트 경로</span>
-PROJECT_PATH <span style="color:#f92672">=</span> join(ROOT, MY_GOOGLE_DRIVE_PATH) <span style="color:#75715e"># 프로젝트 경로</span>
-<span style="color:#66d9ef">print</span>(PROJECT_PATH)
-</code></pre></div><pre><code>/content/drive
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> drive <span style="color:#75715e"># 패키지 불러오기 </span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> os.path <span style="color:#f92672">import</span> join  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ROOT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/content/drive&#34;</span>     <span style="color:#75715e"># 드라이브 기본 경로</span>
+</span></span><span style="display:flex;"><span>print(ROOT)                 <span style="color:#75715e"># print content of ROOT (Optional)</span>
+</span></span><span style="display:flex;"><span>drive<span style="color:#f92672">.</span>mount(ROOT)           <span style="color:#75715e"># 드라이브 기본 경로 Mount</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>MY_GOOGLE_DRIVE_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;My Drive/Colab Notebooks/inflearn_kaggle/&#39;</span> <span style="color:#75715e"># 프로젝트 경로</span>
+</span></span><span style="display:flex;"><span>PROJECT_PATH <span style="color:#f92672">=</span> join(ROOT, MY_GOOGLE_DRIVE_PATH) <span style="color:#75715e"># 프로젝트 경로</span>
+</span></span><span style="display:flex;"><span>print(PROJECT_PATH)
+</span></span></code></pre></div><pre><code>/content/drive
 Drive already mounted at /content/drive; to attempt to forcibly remount, call drive.mount(&quot;/content/drive&quot;, force_remount=True).
 /content/drive/My Drive/Colab Notebooks/inflearn_kaggle/
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">%</span>cd <span style="color:#e6db74">&#34;{PROJECT_PATH}&#34;</span>
-</code></pre></div><pre><code>/content/drive/My Drive/Colab Notebooks/inflearn_kaggle
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">%</span>cd <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{PROJECT_PATH}</span><span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div><pre><code>/content/drive/My Drive/Colab Notebooks/inflearn_kaggle
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>ls
-</code></pre></div><pre><code>data  docs  source
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>ls
+</span></span></code></pre></div><pre><code>data  docs  source
 </code></pre>
 <ul>
 <li>필자는 inflearn_kaggle 폴더안에 data, docs, source 등의 하위 폴더를 추가로 만들었다.</li>
@@ -205,39 +213,39 @@ Drive already mounted at /content/drive; to attempt to forcibly remount, call dr
 <ul>
 <li>데이터 과학 관련 패키지들을 불러온다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
-<span style="color:#f92672">import</span> pandas_profiling
-<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
-<span style="color:#f92672">import</span> matplotlib <span style="color:#f92672">as</span> mpl
-<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-<span style="color:#f92672">from</span> matplotlib.pyplot <span style="color:#f92672">import</span> figure
-<span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
-
-<span style="color:#f92672">from</span> IPython.core.display <span style="color:#f92672">import</span> display, HTML
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas_profiling
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib <span style="color:#66d9ef">as</span> mpl
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> matplotlib.pyplot <span style="color:#f92672">import</span> figure
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> seaborn <span style="color:#66d9ef">as</span> sns
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> IPython.core.display <span style="color:#f92672">import</span> display, HTML
+</span></span></code></pre></div><ul>
 <li>시각화 진행 시, 일정한 <code>Template</code>을 작성한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">%</span>matplotlib inline
-<span style="color:#f92672">import</span> matplotlib.pylab <span style="color:#f92672">as</span> plt
-
-plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#34;figure.figsize&#34;</span>] <span style="color:#f92672">=</span> (<span style="color:#ae81ff">14</span>,<span style="color:#ae81ff">4</span>)
-plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;lines.linewidth&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
-plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;lines.color&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;r&#39;</span>
-plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;axes.grid&#39;</span>] <span style="color:#f92672">=</span> True 
-</code></pre></div><h2 id="iii-데이터-불러오기">III. 데이터 불러오기</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">%</span>matplotlib inline
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pylab <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#34;figure.figsize&#34;</span>] <span style="color:#f92672">=</span> (<span style="color:#ae81ff">14</span>,<span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;lines.linewidth&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;lines.color&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;r&#39;</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;axes.grid&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span> 
+</span></span></code></pre></div><h2 id="iii-데이터-불러오기">III. 데이터 불러오기</h2>
 <ul>
 <li><code>train.csv</code>와 <code>test.csv</code> 데이터를 불러와서 확인해보는 소스코드를 작성한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;data/train.csv&#39;</span>)
-test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;data/test.csv&#39;</span>)
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;data import is done&#34;</span>)
-</code></pre></div><pre><code>data import is done
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;data/train.csv&#39;</span>)
+</span></span><span style="display:flex;"><span>test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;data/test.csv&#39;</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;data import is done&#34;</span>)
+</span></span></code></pre></div><pre><code>data import is done
 </code></pre>
 <ul>
 <li>실제로 데이터가 잘 불러와졌는지 다시한번 확인해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train<span style="color:#f92672">.</span>shape, test<span style="color:#f92672">.</span>shape
-</code></pre></div><pre><code>((1460, 81), (1459, 80))
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train<span style="color:#f92672">.</span>shape, test<span style="color:#f92672">.</span>shape
+</span></span></code></pre></div><pre><code>((1460, 81), (1459, 80))
 </code></pre>
 <ul>
 <li>이제 데이터 전처리를 위한 사적 작업이 모두 종료된 것이다.</li>
@@ -260,13 +268,13 @@ test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>
 <ul>
 <li>전체 데이터 결측치를 확인하는 방법은 아래와 같다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">new_df <span style="color:#f92672">=</span> train<span style="color:#f92672">.</span>copy()
-
-new_df_na <span style="color:#f92672">=</span> (new_df<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> len(new_df)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>
-new_df_na<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92672">=</span>True)
-new_df_na <span style="color:#f92672">=</span> new_df_na<span style="color:#f92672">.</span>drop(new_df_na[new_df_na <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>index)<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)[:<span style="color:#ae81ff">30</span>]
-new_df_na
-</code></pre></div><pre><code>PoolQC          99.520548
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>new_df <span style="color:#f92672">=</span> train<span style="color:#f92672">.</span>copy()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>new_df_na <span style="color:#f92672">=</span> (new_df<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> len(new_df)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>new_df_na<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>new_df_na <span style="color:#f92672">=</span> new_df_na<span style="color:#f92672">.</span>drop(new_df_na[new_df_na <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>index)<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)[:<span style="color:#ae81ff">30</span>]
+</span></span><span style="display:flex;"><span>new_df_na
+</span></span></code></pre></div><pre><code>PoolQC          99.520548
 MiscFeature     96.301370
 Alley           93.767123
 Fence           80.753425
@@ -290,14 +298,14 @@ dtype: float64
 <ul>
 <li>위 데이터를 가지고 시각화를 진행한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">f, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">12</span>))
-plt<span style="color:#f92672">.</span>xticks(rotation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;90&#39;</span>)
-sns<span style="color:#f92672">.</span>barplot(x<span style="color:#f92672">=</span>new_df_na<span style="color:#f92672">.</span>index, y<span style="color:#f92672">=</span>new_df_na)
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Variables&#39;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">24</span>)
-plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Percent of missing values&#39;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">24</span>)
-plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Percent missing data by Variable&#39;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>)
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="/img/python_edu/04_machineLearning/Chapter_4_1_handling_missing_values/output_21_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>f, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">12</span>))
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xticks(rotation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;90&#39;</span>)
+</span></span><span style="display:flex;"><span>sns<span style="color:#f92672">.</span>barplot(x<span style="color:#f92672">=</span>new_df_na<span style="color:#f92672">.</span>index, y<span style="color:#f92672">=</span>new_df_na)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Variables&#39;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">24</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Percent of missing values&#39;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">24</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Percent missing data by Variable&#39;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img src="/img/python_edu/04_machineLearning/Chapter_4_1_handling_missing_values/output_21_0.png" alt="png"></p>
 <ul>
 <li>위 그래프를 본 후 데이터를 채운다.</li>
 <li>우선 각각의 데이터를 모두 &ldquo;None&rdquo; 또는 0으로 채운다.
@@ -311,9 +319,9 @@ plt<span style="color:#f92672">.</span>show()
 <ul>
 <li>이 때, 메서드는 fillna(&ldquo;None&rdquo;)을 사용한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">new_df[<span style="color:#e6db74">&#34;PoolQC&#34;</span>] <span style="color:#f92672">=</span> new_df[<span style="color:#e6db74">&#34;PoolQC&#34;</span>]<span style="color:#f92672">.</span>fillna(<span style="color:#e6db74">&#34;None&#34;</span>)
-new_df[<span style="color:#e6db74">&#34;MiscFeature&#34;</span>] <span style="color:#f92672">=</span> new_df[<span style="color:#e6db74">&#34;MiscFeature&#34;</span>]<span style="color:#f92672">.</span>fillna(<span style="color:#e6db74">&#34;None&#34;</span>)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>new_df[<span style="color:#e6db74">&#34;PoolQC&#34;</span>] <span style="color:#f92672">=</span> new_df[<span style="color:#e6db74">&#34;PoolQC&#34;</span>]<span style="color:#f92672">.</span>fillna(<span style="color:#e6db74">&#34;None&#34;</span>)
+</span></span><span style="display:flex;"><span>new_df[<span style="color:#e6db74">&#34;MiscFeature&#34;</span>] <span style="color:#f92672">=</span> new_df[<span style="color:#e6db74">&#34;MiscFeature&#34;</span>]<span style="color:#f92672">.</span>fillna(<span style="color:#e6db74">&#34;None&#34;</span>)
+</span></span></code></pre></div><ul>
 <li>자주 반복되는 것 같을 것 같아서, <code>for-loop</code>로 데이터를 처리하도록 한다.
 <ul>
 <li>우선, 전체 데이터에서 <code>categorical features</code>를 추출한다 <code>(List)</code>로 반환한다.</li>
@@ -321,11 +329,11 @@ new_df[<span style="color:#e6db74">&#34;MiscFeature&#34;</span>] <span style="co
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Categorical List 추출</span>
-categorical_features <span style="color:#f92672">=</span> new_df<span style="color:#f92672">.</span>select_dtypes(exclude<span style="color:#f92672">=</span>[np<span style="color:#f92672">.</span>number])
-<span style="color:#66d9ef">print</span>(categorical_features<span style="color:#f92672">.</span>columns)
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;The total number of categorical features are: &#34;</span>, len(categorical_features<span style="color:#f92672">.</span>columns))
-</code></pre></div><pre><code>Index(['MSZoning', 'Street', 'Alley', 'LotShape', 'LandContour', 'Utilities',
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Categorical List 추출</span>
+</span></span><span style="display:flex;"><span>categorical_features <span style="color:#f92672">=</span> new_df<span style="color:#f92672">.</span>select_dtypes(exclude<span style="color:#f92672">=</span>[np<span style="color:#f92672">.</span>number])
+</span></span><span style="display:flex;"><span>print(categorical_features<span style="color:#f92672">.</span>columns)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;The total number of categorical features are: &#34;</span>, len(categorical_features<span style="color:#f92672">.</span>columns))
+</span></span></code></pre></div><pre><code>Index(['MSZoning', 'Street', 'Alley', 'LotShape', 'LandContour', 'Utilities',
        'LotConfig', 'LandSlope', 'Neighborhood', 'Condition1', 'Condition2',
        'BldgType', 'HouseStyle', 'RoofStyle', 'RoofMatl', 'Exterior1st',
        'Exterior2nd', 'MasVnrType', 'ExterQual', 'ExterCond', 'Foundation',
@@ -337,14 +345,14 @@ categorical_features <span style="color:#f92672">=</span> new_df<span style="col
       dtype='object')
 The total number of categorical features are:  43
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">for</span> cat_fea <span style="color:#f92672">in</span> categorical_features:
-  new_df[cat_fea] <span style="color:#f92672">=</span> new_df[cat_fea]<span style="color:#f92672">.</span>fillna(<span style="color:#e6db74">&#34;None&#34;</span>)
-
-new_df_na <span style="color:#f92672">=</span> (new_df<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> len(new_df)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>
-new_df_na<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92672">=</span>True)
-new_df_na <span style="color:#f92672">=</span> new_df_na<span style="color:#f92672">.</span>drop(new_df_na[new_df_na <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>index)<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)[:<span style="color:#ae81ff">30</span>]
-new_df_na
-</code></pre></div><pre><code>LotFrontage    17.739726
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> cat_fea <span style="color:#f92672">in</span> categorical_features:
+</span></span><span style="display:flex;"><span>  new_df[cat_fea] <span style="color:#f92672">=</span> new_df[cat_fea]<span style="color:#f92672">.</span>fillna(<span style="color:#e6db74">&#34;None&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>new_df_na <span style="color:#f92672">=</span> (new_df<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> len(new_df)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>new_df_na<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>new_df_na <span style="color:#f92672">=</span> new_df_na<span style="color:#f92672">.</span>drop(new_df_na[new_df_na <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>index)<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)[:<span style="color:#ae81ff">30</span>]
+</span></span><span style="display:flex;"><span>new_df_na
+</span></span></code></pre></div><pre><code>LotFrontage    17.739726
 GarageYrBlt     5.547945
 MasVnrArea      0.547945
 dtype: float64
@@ -353,21 +361,21 @@ dtype: float64
 <ul>
 <li>위 결과값으로 수치형 데이터는 3개의 데이터에서만 0으로 처리하면 되기 때문에, 강제적으로 <code>List</code> 변수를 만든 후 작업을 진행한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">numerical_na_features <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;LotFrontage&#39;</span>, <span style="color:#e6db74">&#39;GarageYrBlt&#39;</span>, <span style="color:#e6db74">&#39;MasVnrArea&#39;</span>]
-<span style="color:#66d9ef">for</span> num_fea <span style="color:#f92672">in</span> numerical_na_features:
-  new_df[num_fea] <span style="color:#f92672">=</span> new_df[num_fea]<span style="color:#f92672">.</span>fillna(<span style="color:#ae81ff">0</span>)
-
-new_df_na <span style="color:#f92672">=</span> (new_df<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> len(new_df)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>
-new_df_na<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92672">=</span>True)
-new_df_na <span style="color:#f92672">=</span> new_df_na<span style="color:#f92672">.</span>drop(new_df_na[new_df_na <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>index)<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span>False)[:<span style="color:#ae81ff">30</span>]
-new_df_na
-</code></pre></div><pre><code>Series([], dtype: float64)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>numerical_na_features <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;LotFrontage&#39;</span>, <span style="color:#e6db74">&#39;GarageYrBlt&#39;</span>, <span style="color:#e6db74">&#39;MasVnrArea&#39;</span>]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> num_fea <span style="color:#f92672">in</span> numerical_na_features:
+</span></span><span style="display:flex;"><span>  new_df[num_fea] <span style="color:#f92672">=</span> new_df[num_fea]<span style="color:#f92672">.</span>fillna(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>new_df_na <span style="color:#f92672">=</span> (new_df<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> len(new_df)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>new_df_na<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)<span style="color:#f92672">.</span>reset_index(drop<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>new_df_na <span style="color:#f92672">=</span> new_df_na<span style="color:#f92672">.</span>drop(new_df_na[new_df_na <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>index)<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)[:<span style="color:#ae81ff">30</span>]
+</span></span><span style="display:flex;"><span>new_df_na
+</span></span></code></pre></div><pre><code>Series([], dtype: float64)
 </code></pre>
 <ul>
 <li>실제 <code>new_df</code>에 <code>NA</code>가 있는지 확인한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">new_df<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum()
-</code></pre></div><pre><code>Id               0
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>new_df<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>sum()
+</span></span></code></pre></div><pre><code>Id               0
 MSSubClass       0
 MSZoning         0
 LotFrontage      0
@@ -420,7 +428,7 @@ Length: 81, dtype: int64
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

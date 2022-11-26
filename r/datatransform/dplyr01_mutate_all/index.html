@@ -13,9 +13,10 @@
 그래서 가급적, stackoverflow에 나와 있는 문제 중 재미있는 해결법 등을 소개하며 연재하려고 한다.
 제 강의를 들으신 분들에게 작은 도움이 되기를 바랍니다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/r/datatransform/dplyr01_mutate_all/" />
+<meta property="og:url" content="https://dschloe.github.io/r/datatransform/dplyr01_mutate_all/" /><meta property="article:section" content="R" />
 <meta property="article:published_time" content="2020-04-30T10:20:39+09:00" />
 <meta property="article:modified_time" content="2020-04-30T10:20:39+09:00" />
+
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="stackoverflow with dplyr 01 - mutate_all"/>
@@ -24,20 +25,27 @@
 그래서 가급적, stackoverflow에 나와 있는 문제 중 재미있는 해결법 등을 소개하며 연재하려고 한다.
 제 강의를 들으신 분들에게 작은 도움이 되기를 바랍니다."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -184,23 +192,23 @@
 <ul>
 <li>패키지 버전</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># devtools::install_github(&#34;hadley/dplyr&#34;)</span>
-<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">packageVersion</span>(<span style="color:#e6db74">&#34;dplyr&#34;</span>)
-[1] ‘<span style="color:#ae81ff">0.5.0.9001</span>’
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e"># devtools::install_github(&#34;hadley/dplyr&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">packageVersion</span>(<span style="color:#e6db74">&#34;dplyr&#34;</span>)
+</span></span><span style="display:flex;"><span>[1] ‘<span style="color:#ae81ff">0.5.0.9001</span>’
+</span></span></code></pre></div><ul>
 <li>데이터</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#f92672">&gt;</span> df
-<span style="color:#75715e"># A tibble: 6 × 7</span>
-    gene_symbol fold_change  pvalue ctr.mean_exp tre.mean_exp  ctr.cv  tre.cv
-         <span style="color:#f92672">&lt;</span>fctr<span style="color:#f92672">&gt;</span>       <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span>   <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span>        <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span>        <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span>   <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span>   <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span>
-<span style="color:#ae81ff">1</span> <span style="color:#ae81ff">0610005</span>C13Rik     <span style="color:#ae81ff">1.54037</span> <span style="color:#ae81ff">0.53120</span>      <span style="color:#ae81ff">0.00583</span>      <span style="color:#ae81ff">0.00899</span> <span style="color:#ae81ff">5.49291</span> <span style="color:#ae81ff">6.06505</span>
-<span style="color:#ae81ff">2</span> <span style="color:#ae81ff">0610007</span>P14Rik     <span style="color:#ae81ff">1.10976</span> <span style="color:#ae81ff">0.00033</span>     <span style="color:#ae81ff">59.67286</span>     <span style="color:#ae81ff">66.22232</span> <span style="color:#ae81ff">0.20263</span> <span style="color:#ae81ff">0.28827</span>
-<span style="color:#ae81ff">3</span> <span style="color:#ae81ff">0610009</span>B22Rik     <span style="color:#ae81ff">0.78500</span> <span style="color:#ae81ff">0.00000</span>     <span style="color:#ae81ff">83.28470</span>     <span style="color:#ae81ff">65.37819</span> <span style="color:#ae81ff">0.17445</span> <span style="color:#ae81ff">0.33958</span>
-<span style="color:#ae81ff">4</span> <span style="color:#ae81ff">0610009L18</span>Rik     <span style="color:#ae81ff">0.79852</span> <span style="color:#ae81ff">0.00011</span>      <span style="color:#ae81ff">6.88321</span>      <span style="color:#ae81ff">5.49638</span> <span style="color:#ae81ff">0.46288</span> <span style="color:#ae81ff">0.53295</span>
-<span style="color:#ae81ff">5</span> <span style="color:#ae81ff">0610009</span>O20Rik     <span style="color:#ae81ff">0.91615</span> <span style="color:#ae81ff">0.00387</span>     <span style="color:#ae81ff">14.67696</span>     <span style="color:#ae81ff">13.44630</span> <span style="color:#ae81ff">0.25430</span> <span style="color:#ae81ff">0.26679</span>
-<span style="color:#ae81ff">6</span> <span style="color:#ae81ff">0610010</span>B08Rik     <span style="color:#ae81ff">0.87931</span> <span style="color:#ae81ff">0.01455</span>      <span style="color:#ae81ff">1.10363</span>      <span style="color:#ae81ff">0.97043</span> <span style="color:#ae81ff">0.39564</span> <span style="color:#ae81ff">0.52364</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> df
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># A tibble: 6 × 7</span>
+</span></span><span style="display:flex;"><span>    gene_symbol fold_change  pvalue ctr.mean_exp tre.mean_exp  ctr.cv  tre.cv
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">&lt;</span>fctr<span style="color:#f92672">&gt;</span>       <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span>   <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span>        <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span>        <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span>   <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span>   <span style="color:#f92672">&lt;</span>dbl<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span> <span style="color:#ae81ff">0610005</span>C13Rik     <span style="color:#ae81ff">1.54037</span> <span style="color:#ae81ff">0.53120</span>      <span style="color:#ae81ff">0.00583</span>      <span style="color:#ae81ff">0.00899</span> <span style="color:#ae81ff">5.49291</span> <span style="color:#ae81ff">6.06505</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span> <span style="color:#ae81ff">0610007</span>P14Rik     <span style="color:#ae81ff">1.10976</span> <span style="color:#ae81ff">0.00033</span>     <span style="color:#ae81ff">59.67286</span>     <span style="color:#ae81ff">66.22232</span> <span style="color:#ae81ff">0.20263</span> <span style="color:#ae81ff">0.28827</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span> <span style="color:#ae81ff">0610009</span>B22Rik     <span style="color:#ae81ff">0.78500</span> <span style="color:#ae81ff">0.00000</span>     <span style="color:#ae81ff">83.28470</span>     <span style="color:#ae81ff">65.37819</span> <span style="color:#ae81ff">0.17445</span> <span style="color:#ae81ff">0.33958</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4</span> <span style="color:#ae81ff">0610009L18</span>Rik     <span style="color:#ae81ff">0.79852</span> <span style="color:#ae81ff">0.00011</span>      <span style="color:#ae81ff">6.88321</span>      <span style="color:#ae81ff">5.49638</span> <span style="color:#ae81ff">0.46288</span> <span style="color:#ae81ff">0.53295</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">5</span> <span style="color:#ae81ff">0610009</span>O20Rik     <span style="color:#ae81ff">0.91615</span> <span style="color:#ae81ff">0.00387</span>     <span style="color:#ae81ff">14.67696</span>     <span style="color:#ae81ff">13.44630</span> <span style="color:#ae81ff">0.25430</span> <span style="color:#ae81ff">0.26679</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">6</span> <span style="color:#ae81ff">0610010</span>B08Rik     <span style="color:#ae81ff">0.87931</span> <span style="color:#ae81ff">0.01455</span>      <span style="color:#ae81ff">1.10363</span>      <span style="color:#ae81ff">0.97043</span> <span style="color:#ae81ff">0.39564</span> <span style="color:#ae81ff">0.52364</span>
+</span></span></code></pre></div><ul>
 <li>하고 싶었던 것</li>
 </ul>
 <blockquote>
@@ -210,28 +218,28 @@
 <ul>
 <li>시도했던 것</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">cols <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">names</span>(df)[2<span style="color:#f92672">:</span><span style="color:#ae81ff">7</span>]
-<span style="color:#75715e"># df &lt;- df %&gt;% mutate_each_(funs(round(.,3)), cols)</span>
-<span style="color:#75715e"># Warning message:</span>
-<span style="color:#75715e">#&#39;mutate_each_&#39; is deprecated.</span>
-<span style="color:#75715e"># Use &#39;mutate_all&#39; instead.</span>
-<span style="color:#75715e"># See help(&#34;Deprecated&#34;) </span>
-
-df <span style="color:#f92672">&lt;-</span> df <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate_all</span>(<span style="color:#a6e22e">funs</span>(<span style="color:#a6e22e">round</span>(.,3)), cols)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>cols <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">names</span>(df)[2<span style="color:#f92672">:</span><span style="color:#ae81ff">7</span>]
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># df &lt;- df %&gt;% mutate_each_(funs(round(.,3)), cols)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Warning message:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#&#39;mutate_each_&#39; is deprecated.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Use &#39;mutate_all&#39; instead.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># See help(&#34;Deprecated&#34;) </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>df <span style="color:#f92672">&lt;-</span> df <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate_all</span>(<span style="color:#a6e22e">funs</span>(<span style="color:#a6e22e">round</span>(.,3)), cols)
+</span></span></code></pre></div><ul>
 <li>에러 메시지</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">Error in <span style="color:#a6e22e">mutate_impl</span>(.data, dots) <span style="color:#f92672">:</span> 
-  <span style="color:#ae81ff">3</span> arguments passed to <span style="color:#e6db74">&#39;round&#39;</span>which requires <span style="color:#ae81ff">1</span> or <span style="color:#ae81ff">2</span> arguments
-</code></pre></div><p>우선, 프로그래밍 입문자들에게 위 에러의 공유는 매우 좋은 본보기가 될 것 같다. 프로그래밍과 관련된 업무를 하는 사람에게 에러는 사실 좋은 것이다. 수정하면서 조금 더 나은 결과물이 나오는 하나의 과정이기 때문에 그렇다. (여담이지만, 처음 자바를 배울 때 이게 너무 힘들어서 포기했다. 에러를 잡는데 많은 시간이 걸려서 포기했던 지난날을 떠올리며..)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>Error in <span style="color:#a6e22e">mutate_impl</span>(.data, dots) <span style="color:#f92672">:</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">3</span> arguments passed to <span style="color:#e6db74">&#39;round&#39;</span>which requires <span style="color:#ae81ff">1</span> or <span style="color:#ae81ff">2</span> arguments
+</span></span></code></pre></div><p>우선, 프로그래밍 입문자들에게 위 에러의 공유는 매우 좋은 본보기가 될 것 같다. 프로그래밍과 관련된 업무를 하는 사람에게 에러는 사실 좋은 것이다. 수정하면서 조금 더 나은 결과물이 나오는 하나의 과정이기 때문에 그렇다. (여담이지만, 처음 자바를 배울 때 이게 너무 힘들어서 포기했다. 에러를 잡는데 많은 시간이 걸려서 포기했던 지난날을 떠올리며..)</p>
 <p>그런데, 실무에서 신입이 가장 어려운 부분은 에러가 난 것을 어떻게 공유하고 전달해야 할지 모르는데 있다. 신입 뿐만 아니라 모든 사람들이 에러와 시간을 보내고 있는데, 위 에러 메시지만 던져주면 당연히 상사도 모른다!</p>
 <p>위와 같이 전체적인 맥락과 무엇을 하려는지 명시해주면, 에러를 이해하기도 그리고 수정하기가 훨씬 수월해진다.</p>
 <h2 id="iii-understanding">III. Understanding</h2>
 <p>그렇다면 무엇이 문제일까? 결론적으로 말하면 문법이 맞지 않은 거다. 왜 문법이 맞지 않은 것일까?</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># install.packages(&#34;dplyr&#34;)</span>
-<span style="color:#a6e22e">library</span>(dplyr)
-<span style="color:#a6e22e">packageVersion</span>(<span style="color:#e6db74">&#34;dplyr&#34;</span>)
-</code></pre></div><pre><code>## [1] '0.8.5'
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e"># install.packages(&#34;dplyr&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(dplyr)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">packageVersion</span>(<span style="color:#e6db74">&#34;dplyr&#34;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] &#39;0.8.5&#39;
 </code></pre><h3 id="1-mutate_all-vs-mutate_if-or-mutate_at">(1) mutate_all Vs. mutate_if or mutate_at</h3>
 <p>mutate_all과 mutate_if는 다르다. 7개의 변수 모두가 변환하는 건 아니다. 그중에서 일부 <code>double</code> 형태만 바꾸는 것이다. 즉, 애초에 함수를 잘못 쓴것이다.</p>
 <p>따라서, 관련 답지를 봐도, <code>mutate_all</code>로 추천하기 보다는 <code>mutate_if</code>나 <code>mutate_at</code>으로 추천하는 것을 볼 수 있다.</p>
@@ -244,28 +252,28 @@ df <span style="color:#f92672">&lt;-</span> df <span style="color:#f92672">%&gt;
 <ul>
 <li>데이터 생성</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(dplyr)
-df  <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">structure</span>(<span style="color:#a6e22e">list</span>(gene_symbol <span style="color:#f92672">=</span> <span style="color:#a6e22e">structure</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">6</span>, .Label <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;0610005C13Rik&#34;</span>, 
-<span style="color:#e6db74">&#34;0610007P14Rik&#34;</span>, <span style="color:#e6db74">&#34;0610009B22Rik&#34;</span>, <span style="color:#e6db74">&#34;0610009L18Rik&#34;</span>, <span style="color:#e6db74">&#34;0610009O20Rik&#34;</span>, 
-<span style="color:#e6db74">&#34;0610010B08Rik&#34;</span>), class <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;factor&#34;</span>), fold_change <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1.54037</span>, 
-<span style="color:#ae81ff">1.10976</span>, <span style="color:#ae81ff">0.785</span>, <span style="color:#ae81ff">0.79852</span>, <span style="color:#ae81ff">0.91615</span>, <span style="color:#ae81ff">0.87931</span>), pvalue <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.5312</span>, 
-<span style="color:#ae81ff">0.00033</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.00011</span>, <span style="color:#ae81ff">0.00387</span>, <span style="color:#ae81ff">0.01455</span>), ctr.mean_exp <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.00583</span>, 
-<span style="color:#ae81ff">59.67286</span>, <span style="color:#ae81ff">83.2847</span>, <span style="color:#ae81ff">6.88321</span>, <span style="color:#ae81ff">14.67696</span>, <span style="color:#ae81ff">1.10363</span>), tre.mean_exp <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.00899</span>, 
-<span style="color:#ae81ff">66.22232</span>, <span style="color:#ae81ff">65.37819</span>, <span style="color:#ae81ff">5.49638</span>, <span style="color:#ae81ff">13.4463</span>, <span style="color:#ae81ff">0.97043</span>), ctr.cv <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">5.49291</span>, 
-<span style="color:#ae81ff">0.20263</span>, <span style="color:#ae81ff">0.17445</span>, <span style="color:#ae81ff">0.46288</span>, <span style="color:#ae81ff">0.2543</span>, <span style="color:#ae81ff">0.39564</span>), tre.cv <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">6.06505</span>, 
-<span style="color:#ae81ff">0.28827</span>, <span style="color:#ae81ff">0.33958</span>, <span style="color:#ae81ff">0.53295</span>, <span style="color:#ae81ff">0.26679</span>, <span style="color:#ae81ff">0.52364</span>)), .Names <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;gene_symbol&#34;</span>, 
-<span style="color:#e6db74">&#34;fold_change&#34;</span>, <span style="color:#e6db74">&#34;pvalue&#34;</span>, <span style="color:#e6db74">&#34;ctr.mean_exp&#34;</span>, <span style="color:#e6db74">&#34;tre.mean_exp&#34;</span>, <span style="color:#e6db74">&#34;ctr.cv&#34;</span>, 
-<span style="color:#e6db74">&#34;tre.cv&#34;</span>), row.names <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#ae81ff">-6L</span>), class <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;tbl_df&#34;</span>, <span style="color:#e6db74">&#34;tbl&#34;</span>, 
-<span style="color:#e6db74">&#34;data.frame&#34;</span>))
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(dplyr)
+</span></span><span style="display:flex;"><span>df  <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">structure</span>(<span style="color:#a6e22e">list</span>(gene_symbol <span style="color:#f92672">=</span> <span style="color:#a6e22e">structure</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">6</span>, .Label <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;0610005C13Rik&#34;</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;0610007P14Rik&#34;</span>, <span style="color:#e6db74">&#34;0610009B22Rik&#34;</span>, <span style="color:#e6db74">&#34;0610009L18Rik&#34;</span>, <span style="color:#e6db74">&#34;0610009O20Rik&#34;</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;0610010B08Rik&#34;</span>), class <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;factor&#34;</span>), fold_change <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1.54037</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1.10976</span>, <span style="color:#ae81ff">0.785</span>, <span style="color:#ae81ff">0.79852</span>, <span style="color:#ae81ff">0.91615</span>, <span style="color:#ae81ff">0.87931</span>), pvalue <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.5312</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0.00033</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.00011</span>, <span style="color:#ae81ff">0.00387</span>, <span style="color:#ae81ff">0.01455</span>), ctr.mean_exp <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.00583</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">59.67286</span>, <span style="color:#ae81ff">83.2847</span>, <span style="color:#ae81ff">6.88321</span>, <span style="color:#ae81ff">14.67696</span>, <span style="color:#ae81ff">1.10363</span>), tre.mean_exp <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.00899</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">66.22232</span>, <span style="color:#ae81ff">65.37819</span>, <span style="color:#ae81ff">5.49638</span>, <span style="color:#ae81ff">13.4463</span>, <span style="color:#ae81ff">0.97043</span>), ctr.cv <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">5.49291</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0.20263</span>, <span style="color:#ae81ff">0.17445</span>, <span style="color:#ae81ff">0.46288</span>, <span style="color:#ae81ff">0.2543</span>, <span style="color:#ae81ff">0.39564</span>), tre.cv <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">6.06505</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0.28827</span>, <span style="color:#ae81ff">0.33958</span>, <span style="color:#ae81ff">0.53295</span>, <span style="color:#ae81ff">0.26679</span>, <span style="color:#ae81ff">0.52364</span>)), .Names <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;gene_symbol&#34;</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;fold_change&#34;</span>, <span style="color:#e6db74">&#34;pvalue&#34;</span>, <span style="color:#e6db74">&#34;ctr.mean_exp&#34;</span>, <span style="color:#e6db74">&#34;tre.mean_exp&#34;</span>, <span style="color:#e6db74">&#34;ctr.cv&#34;</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;tre.cv&#34;</span>), row.names <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#ae81ff">-6L</span>), class <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;tbl_df&#34;</span>, <span style="color:#e6db74">&#34;tbl&#34;</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;data.frame&#34;</span>))
+</span></span></code></pre></div><ul>
 <li>예시답안을 활용한 적용
 <ul>
 <li><code>mutate_at</code> 함수를 활용해서 적용했다.</li>
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">df <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate_at</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#ae81ff">7</span>, round, <span style="color:#ae81ff">3</span>)
-</code></pre></div><pre><code>## # A tibble: 6 x 7
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>df <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate_at</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#ae81ff">7</span>, round, <span style="color:#ae81ff">3</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 6 x 7
 ##   gene_symbol   fold_change pvalue ctr.mean_exp tre.mean_exp ctr.cv tre.cv
 ##   &lt;fct&gt;               &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
 ## 1 0610005C13Rik       1.54   0.531        0.006        0.009  5.49   6.06 
@@ -284,21 +292,21 @@ df  <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">structu
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">df  <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">structure</span>(<span style="color:#a6e22e">list</span>(fold_change <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1.54037</span>, 
-<span style="color:#ae81ff">1.10976</span>, <span style="color:#ae81ff">0.785</span>, <span style="color:#ae81ff">0.79852</span>, <span style="color:#ae81ff">0.91615</span>, <span style="color:#ae81ff">0.87931</span>), pvalue <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.5312</span>, 
-<span style="color:#ae81ff">0.00033</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.00011</span>, <span style="color:#ae81ff">0.00387</span>, <span style="color:#ae81ff">0.01455</span>), ctr.mean_exp <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.00583</span>, 
-<span style="color:#ae81ff">59.67286</span>, <span style="color:#ae81ff">83.2847</span>, <span style="color:#ae81ff">6.88321</span>, <span style="color:#ae81ff">14.67696</span>, <span style="color:#ae81ff">1.10363</span>), tre.mean_exp <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.00899</span>, 
-<span style="color:#ae81ff">66.22232</span>, <span style="color:#ae81ff">65.37819</span>, <span style="color:#ae81ff">5.49638</span>, <span style="color:#ae81ff">13.4463</span>, <span style="color:#ae81ff">0.97043</span>), gene_symbol <span style="color:#f92672">=</span> <span style="color:#a6e22e">structure</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">6</span>, .Label <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;0610005C13Rik&#34;</span>, 
-<span style="color:#e6db74">&#34;0610007P14Rik&#34;</span>, <span style="color:#e6db74">&#34;0610009B22Rik&#34;</span>, <span style="color:#e6db74">&#34;0610009L18Rik&#34;</span>, <span style="color:#e6db74">&#34;0610009O20Rik&#34;</span>, 
-<span style="color:#e6db74">&#34;0610010B08Rik&#34;</span>), class <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;factor&#34;</span>), ctr.cv <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">5.49291</span>, 
-<span style="color:#ae81ff">0.20263</span>, <span style="color:#ae81ff">0.17445</span>, <span style="color:#ae81ff">0.46288</span>, <span style="color:#ae81ff">0.2543</span>, <span style="color:#ae81ff">0.39564</span>), tre.cv <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">6.06505</span>, 
-<span style="color:#ae81ff">0.28827</span>, <span style="color:#ae81ff">0.33958</span>, <span style="color:#ae81ff">0.53295</span>, <span style="color:#ae81ff">0.26679</span>, <span style="color:#ae81ff">0.52364</span>)), .Names <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>( 
-<span style="color:#e6db74">&#34;fold_change&#34;</span>, <span style="color:#e6db74">&#34;pvalue&#34;</span>, <span style="color:#e6db74">&#34;ctr.mean_exp&#34;</span>, <span style="color:#e6db74">&#34;tre.mean_exp&#34;</span>, <span style="color:#e6db74">&#34;gene_symbol&#34;</span>, <span style="color:#e6db74">&#34;ctr.cv&#34;</span>, 
-<span style="color:#e6db74">&#34;tre.cv&#34;</span>), row.names <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#ae81ff">-6L</span>), class <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;tbl_df&#34;</span>, <span style="color:#e6db74">&#34;tbl&#34;</span>, 
-<span style="color:#e6db74">&#34;data.frame&#34;</span>))
-
-<span style="color:#a6e22e">head</span>(df)
-</code></pre></div><pre><code>## # A tibble: 6 x 7
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>df  <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">structure</span>(<span style="color:#a6e22e">list</span>(fold_change <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1.54037</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1.10976</span>, <span style="color:#ae81ff">0.785</span>, <span style="color:#ae81ff">0.79852</span>, <span style="color:#ae81ff">0.91615</span>, <span style="color:#ae81ff">0.87931</span>), pvalue <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.5312</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0.00033</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.00011</span>, <span style="color:#ae81ff">0.00387</span>, <span style="color:#ae81ff">0.01455</span>), ctr.mean_exp <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.00583</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">59.67286</span>, <span style="color:#ae81ff">83.2847</span>, <span style="color:#ae81ff">6.88321</span>, <span style="color:#ae81ff">14.67696</span>, <span style="color:#ae81ff">1.10363</span>), tre.mean_exp <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.00899</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">66.22232</span>, <span style="color:#ae81ff">65.37819</span>, <span style="color:#ae81ff">5.49638</span>, <span style="color:#ae81ff">13.4463</span>, <span style="color:#ae81ff">0.97043</span>), gene_symbol <span style="color:#f92672">=</span> <span style="color:#a6e22e">structure</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">6</span>, .Label <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;0610005C13Rik&#34;</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;0610007P14Rik&#34;</span>, <span style="color:#e6db74">&#34;0610009B22Rik&#34;</span>, <span style="color:#e6db74">&#34;0610009L18Rik&#34;</span>, <span style="color:#e6db74">&#34;0610009O20Rik&#34;</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;0610010B08Rik&#34;</span>), class <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;factor&#34;</span>), ctr.cv <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">5.49291</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0.20263</span>, <span style="color:#ae81ff">0.17445</span>, <span style="color:#ae81ff">0.46288</span>, <span style="color:#ae81ff">0.2543</span>, <span style="color:#ae81ff">0.39564</span>), tre.cv <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">6.06505</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0.28827</span>, <span style="color:#ae81ff">0.33958</span>, <span style="color:#ae81ff">0.53295</span>, <span style="color:#ae81ff">0.26679</span>, <span style="color:#ae81ff">0.52364</span>)), .Names <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>( 
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;fold_change&#34;</span>, <span style="color:#e6db74">&#34;pvalue&#34;</span>, <span style="color:#e6db74">&#34;ctr.mean_exp&#34;</span>, <span style="color:#e6db74">&#34;tre.mean_exp&#34;</span>, <span style="color:#e6db74">&#34;gene_symbol&#34;</span>, <span style="color:#e6db74">&#34;ctr.cv&#34;</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;tre.cv&#34;</span>), row.names <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#ae81ff">-6L</span>), class <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;tbl_df&#34;</span>, <span style="color:#e6db74">&#34;tbl&#34;</span>, 
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;data.frame&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">head</span>(df)
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 6 x 7
 ##   fold_change  pvalue ctr.mean_exp tre.mean_exp gene_symbol   ctr.cv tre.cv
 ##         &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt; &lt;fct&gt;          &lt;dbl&gt;  &lt;dbl&gt;
 ## 1       1.54  0.531        0.00583      0.00899 0610005C13Rik  5.49   6.07 
@@ -310,14 +318,14 @@ df  <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">structu
 </code></pre><ul>
 <li>mutate_at를 활용해보자.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">df <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate_at</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#ae81ff">7</span>, round, <span style="color:#ae81ff">3</span>)
-Error in <span style="color:#a6e22e">Math.factor</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">3</span>) <span style="color:#f92672">:</span> ‘round’ not meaningful for factors
-</code></pre></div><p>보시다시피, <code>round()</code>함수는 당연한 말이지만, <code>factors</code>에는 적용되지 않는다. 이제 <code>mutate_if</code>를 적용해보자.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>df <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate_at</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#ae81ff">7</span>, round, <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>Error in <span style="color:#a6e22e">Math.factor</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">3</span>) <span style="color:#f92672">:</span> ‘round’ not meaningful for factors
+</span></span></code></pre></div><p>보시다시피, <code>round()</code>함수는 당연한 말이지만, <code>factors</code>에는 적용되지 않는다. 이제 <code>mutate_if</code>를 적용해보자.</p>
 <ul>
 <li></li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">df <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate_if</span>(is.numeric, round, <span style="color:#ae81ff">3</span>)
-</code></pre></div><pre><code>## # A tibble: 6 x 7
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>df <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate_if</span>(is.numeric, round, <span style="color:#ae81ff">3</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 6 x 7
 ##   fold_change pvalue ctr.mean_exp tre.mean_exp gene_symbol   ctr.cv tre.cv
 ##         &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt; &lt;fct&gt;          &lt;dbl&gt;  &lt;dbl&gt;
 ## 1       1.54   0.531        0.006        0.009 0610005C13Rik  5.49   6.06 
@@ -369,7 +377,7 @@ Error in <span style="color:#a6e22e">Math.factor</span>(<span style="color:#ae81
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

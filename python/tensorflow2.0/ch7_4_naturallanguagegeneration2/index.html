@@ -8,36 +8,44 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="Tensorflow 2.0 Tutorial ch7.4 - (2) 단어 단위 생성" />
-<meta property="og:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2." />
+<meta property="og:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/python/tensorflow2.0/ch7_4_naturallanguagegeneration2/" />
+<meta property="og:url" content="https://dschloe.github.io/python/tensorflow2.0/ch7_4_naturallanguagegeneration2/" /><meta property="article:section" content="Python" />
 <meta property="article:published_time" content="2020-04-27T14:20:30+09:00" />
 <meta property="article:modified_time" content="2020-04-27T14:20:30+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Tensorflow 2.0 Tutorial ch7.4 - (2) 단어 단위 생성"/>
-<meta name="twitter:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2."/>
+<meta name="twitter:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -216,8 +224,8 @@
 <h2 id="ii-자소-단위-생성">II. 자소 단위 생성</h2>
 <p>자소 단위 생성을 하기 위해서는 한글을 자소 단위로 분리하고 다시 합칠 수 있는 라이브러리가 필요합니다. 이러한 작업을 할 수 있도록 신해빈 님이 만든 <a href="https://github.com/HaebinShin/jamotools">jamotools</a>가 있습니다.</p>
 <p>구글 코랩에서 배시 셀 명령어를 이용해 라이브러리를 설치합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>pip install jamotools
-</code></pre></div><pre><code>Collecting jamotools
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>pip install jamotools
+</span></span></code></pre></div><pre><code>Collecting jamotools
   Downloading https://files.pythonhosted.org/packages/3d/d6/ec13c68f7ea6a8085966390d256d183bf8488f8b9770028359acb86df643/jamotools-0.1.10-py2.py3-none-any.whl
 Requirement already satisfied: numpy in /usr/local/lib/python3.6/dist-packages (from jamotools) (1.18.3)
 Requirement already satisfied: six in /usr/local/lib/python3.6/dist-packages (from jamotools) (1.12.0)
@@ -228,38 +236,38 @@ Successfully installed jamotools-0.1.10
 <p>jamotools의 기능을 테스트하기 위해 조선왕조실록 텍스트를 다시 사용합니다.</p>
 <h3 id="1-데이터-로드">(1) 데이터 로드</h3>
 <p>데이터 파일은 약 62MB 정도입니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
-<span style="color:#66d9ef">try</span>:
-    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
-    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
-<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
-    <span style="color:#66d9ef">pass</span>
-<span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
-<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
-<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
-<span style="color:#f92672">import</span> jamotools
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">path_to_train_file <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;input.txt&#39;</span>, <span style="color:#e6db74">&#39;https://raw.githubusercontent.com/greentec/greentec.github.io/master/public/other/data/chosundynasty/corpus.txt&#39;</span>)
-</code></pre></div><pre><code>Downloading data from https://raw.githubusercontent.com/greentec/greentec.github.io/master/public/other/data/chosundynasty/corpus.txt
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> jamotools
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>path_to_train_file <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;input.txt&#39;</span>, <span style="color:#e6db74">&#39;https://raw.githubusercontent.com/greentec/greentec.github.io/master/public/other/data/chosundynasty/corpus.txt&#39;</span>)
+</span></span></code></pre></div><pre><code>Downloading data from https://raw.githubusercontent.com/greentec/greentec.github.io/master/public/other/data/chosundynasty/corpus.txt
 62013440/62012502 [==============================] - 1s 0us/step
 </code></pre>
 <p>데이터를 메모리에 불러옵니다. 인코딩 형식으로 <code>utf-8</code>을 지정한 뒤 텍스트가 총 몇 자인지 확인해봅니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_text <span style="color:#f92672">=</span> open(path_to_train_file, <span style="color:#e6db74">&#39;rb&#39;</span>)<span style="color:#f92672">.</span>read()<span style="color:#f92672">.</span>decode(encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;utf-8&#39;</span>)
-s <span style="color:#f92672">=</span> train_text[:<span style="color:#ae81ff">100</span>]
-<span style="color:#66d9ef">print</span>(s)
-
-<span style="color:#75715e"># 한글 텍스트를 자모 단위로 분리합니다. 한자 등에는 영향이 없습니다. </span>
-s_split <span style="color:#f92672">=</span> jamotools<span style="color:#f92672">.</span>split_syllables(s)
-<span style="color:#66d9ef">print</span>(s_split)
-</code></pre></div><pre><code>﻿태조 이성계 선대의 가계. 목조 이안사가 전주에서 삼척·의주를 거쳐 알동에 정착하다 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train_text <span style="color:#f92672">=</span> open(path_to_train_file, <span style="color:#e6db74">&#39;rb&#39;</span>)<span style="color:#f92672">.</span>read()<span style="color:#f92672">.</span>decode(encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;utf-8&#39;</span>)
+</span></span><span style="display:flex;"><span>s <span style="color:#f92672">=</span> train_text[:<span style="color:#ae81ff">100</span>]
+</span></span><span style="display:flex;"><span>print(s)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 한글 텍스트를 자모 단위로 분리합니다. 한자 등에는 영향이 없습니다. </span>
+</span></span><span style="display:flex;"><span>s_split <span style="color:#f92672">=</span> jamotools<span style="color:#f92672">.</span>split_syllables(s)
+</span></span><span style="display:flex;"><span>print(s_split)
+</span></span></code></pre></div><pre><code>﻿태조 이성계 선대의 가계. 목조 이안사가 전주에서 삼척·의주를 거쳐 알동에 정착하다 
 태조 강헌 지인 계운 성문 신무 대왕(太祖康獻至仁啓運聖文神武大王)의 성은 이씨(李氏)요, 휘
 ﻿ㅌㅐㅈㅗ ㅇㅣㅅㅓㅇㄱㅖ ㅅㅓㄴㄷㅐㅇㅢ ㄱㅏㄱㅖ. ㅁㅗㄱㅈㅗ ㅇㅣㅇㅏㄴㅅㅏㄱㅏ ㅈㅓㄴㅈㅜㅇㅔㅅㅓ ㅅㅏㅁㅊㅓㄱ·ㅇㅢㅈㅜㄹㅡㄹ ㄱㅓㅊㅕ ㅇㅏㄹㄷㅗㅇㅇㅔ ㅈㅓㅇㅊㅏㄱㅎㅏㄷㅏ 
 ㅌㅐㅈㅗ ㄱㅏㅇㅎㅓㄴ ㅈㅣㅇㅣㄴ ㄱㅖㅇㅜㄴ ㅅㅓㅇㅁㅜㄴ ㅅㅣㄴㅁㅜ ㄷㅐㅇㅘㅇ(太祖康獻至仁啓運聖文神武大王)ㅇㅢ ㅅㅓㅇㅇㅡㄴ ㅇㅣㅆㅣ(李氏)ㅇㅛ, ㅎㅟ
 </code></pre>
 <p><code>split_syllables()</code>함수를 이용해서 100글자의 한글이 자모 단위로 정상적으로 분리되는 것을 확인할 수 있습니다. <code>jamotools</code>는 영문이나 한자 등에는 영향을 주지 않습니다. 분리한 자모를 다시 합칠 수도 있습니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">s2 <span style="color:#f92672">=</span> jamotools<span style="color:#f92672">.</span>join_jamos(s_split)
-<span style="color:#66d9ef">print</span>(s2)
-<span style="color:#66d9ef">print</span>(s <span style="color:#f92672">==</span> s2)
-</code></pre></div><pre><code>﻿태조 이성계 선대의 가계. 목조 이안사가 전주에서 삼척·의주를 거쳐 알동에 정착하다 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>s2 <span style="color:#f92672">=</span> jamotools<span style="color:#f92672">.</span>join_jamos(s_split)
+</span></span><span style="display:flex;"><span>print(s2)
+</span></span><span style="display:flex;"><span>print(s <span style="color:#f92672">==</span> s2)
+</span></span></code></pre></div><pre><code>﻿태조 이성계 선대의 가계. 목조 이안사가 전주에서 삼척·의주를 거쳐 알동에 정착하다 
 태조 강헌 지인 계운 성문 신무 대왕(太祖康獻至仁啓運聖文神武大王)의 성은 이씨(李氏)요, 휘
 True
 </code></pre>
@@ -269,30 +277,30 @@ True
 <ul>
 <li>텍스트를 자모 단위로 나눕니다. 데이터가 크기 때문에 약간 시간이 걸립니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_text_X <span style="color:#f92672">=</span> jamotools<span style="color:#f92672">.</span>split_syllables(train_text)
-vocab <span style="color:#f92672">=</span> sorted(set(train_text_X))
-vocab<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;UNK&#39;</span>)
-
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;{} unique characters&#39;</span><span style="color:#f92672">.</span>format(len(vocab)))
-</code></pre></div><pre><code>6198 unique characters
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train_text_X <span style="color:#f92672">=</span> jamotools<span style="color:#f92672">.</span>split_syllables(train_text)
+</span></span><span style="display:flex;"><span>vocab <span style="color:#f92672">=</span> sorted(set(train_text_X))
+</span></span><span style="display:flex;"><span>vocab<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#39;UNK&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> unique characters&#39;</span><span style="color:#f92672">.</span>format(len(vocab)))
+</span></span></code></pre></div><pre><code>6198 unique characters
 </code></pre>
 <ul>
 <li>이제, vocal list를 숫자로 매핑하고, 반대도 실행합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">char2idx <span style="color:#f92672">=</span> {u:i <span style="color:#66d9ef">for</span> i, u <span style="color:#f92672">in</span> enumerate(vocab)}
-idx2char <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(vocab)
-
-test_as_int <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([char2idx[c] <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> train_text_X])
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>char2idx <span style="color:#f92672">=</span> {u:i <span style="color:#66d9ef">for</span> i, u <span style="color:#f92672">in</span> enumerate(vocab)}
+</span></span><span style="display:flex;"><span>idx2char <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(vocab)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test_as_int <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([char2idx[c] <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> train_text_X])
+</span></span></code></pre></div><ul>
 <li>이제 word2idx의 일부를 알아보기 쉽게 출력합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;{&#39;</span>)
-<span style="color:#66d9ef">for</span> char, _ <span style="color:#f92672">in</span> zip(char2idx, range(<span style="color:#ae81ff">10</span>)):
-  <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39; {:4s}: {:3d}, &#39;</span><span style="color:#f92672">.</span>format(repr(char), char2idx[char]))
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;   ...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">}&#39;</span>)
-
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;index of UNK: {}&#39;</span><span style="color:#f92672">.</span>format(char2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>]))
-</code></pre></div><pre><code>{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;{&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> char, _ <span style="color:#f92672">in</span> zip(char2idx, range(<span style="color:#ae81ff">10</span>)):
+</span></span><span style="display:flex;"><span>  print(<span style="color:#e6db74">&#39; </span><span style="color:#e6db74">{:4s}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{:3d}</span><span style="color:#e6db74">, &#39;</span><span style="color:#f92672">.</span>format(repr(char), char2idx[char]))
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;   ...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">}&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;index of UNK: </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(char2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>]))
+</span></span></code></pre></div><pre><code>{
  '\n':   0, 
  ' ' :   1, 
  '!' :   2, 
@@ -309,9 +317,9 @@ index of UNK: 6197
 </code></pre>
 <p>자모를 토큰화하고 혹시 사전에 정의되지 않은 기호를 만날수도 있으므로 <code>UNK</code>도 사전에 추가합니다. 이렇게 중복되 않은 자모는 총 <code>6197</code>개가 나옵니다. 단어에 비해 매우 적은 숫자임을 알 수 있습니다.</p>
 <p>이제 토큰 데이터를 출력합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(train_text_X[:<span style="color:#ae81ff">20</span>])
-<span style="color:#66d9ef">print</span>(test_as_int[:<span style="color:#ae81ff">20</span>])
-</code></pre></div><pre><code>﻿ㅌㅐㅈㅗ ㅇㅣㅅㅓㅇㄱㅖ ㅅㅓㄴㄷㅐㅇ
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(train_text_X[:<span style="color:#ae81ff">20</span>])
+</span></span><span style="display:flex;"><span>print(test_as_int[:<span style="color:#ae81ff">20</span>])
+</span></span></code></pre></div><pre><code>﻿ㅌㅐㅈㅗ ㅇㅣㅅㅓㅇㄱㅖ ㅅㅓㄴㄷㅐㅇ
 [6158   83   87   79   94    1   78  106   76   90   78   56   93    1
    76   90   59   62   87   78]
 </code></pre>
@@ -322,31 +330,31 @@ index of UNK: 6197
 <li><code>sentence_dataet</code>에서 <code>char_dataset</code>으로 변동하시면 됩니다.</li>
 <li><code>idx2word</code>에서 <code>idx2char</code>으로 변동하시면 됩니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">seq_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">80</span>
-examples_per_epoch <span style="color:#f92672">=</span> len(test_as_int) <span style="color:#f92672">//</span> seq_length
-char_dataset <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>Dataset<span style="color:#f92672">.</span>from_tensor_slices(test_as_int)
-
-char_dataset <span style="color:#f92672">=</span> char_dataset<span style="color:#f92672">.</span>batch(seq_length<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, drop_remainder<span style="color:#f92672">=</span>True)
-<span style="color:#66d9ef">for</span> item <span style="color:#f92672">in</span> char_dataset<span style="color:#f92672">.</span>take(<span style="color:#ae81ff">1</span>):
-    <span style="color:#66d9ef">print</span>(idx2char[item<span style="color:#f92672">.</span>numpy()])
-    <span style="color:#66d9ef">print</span>(item<span style="color:#f92672">.</span>numpy())
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">split_input_target</span>(chunk):
-    <span style="color:#66d9ef">return</span> [chunk[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], chunk[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]]
-
-train_dataset <span style="color:#f92672">=</span> char_dataset<span style="color:#f92672">.</span>map(split_input_target)
-<span style="color:#66d9ef">for</span> x,y <span style="color:#f92672">in</span> train_dataset<span style="color:#f92672">.</span>take(<span style="color:#ae81ff">1</span>):
-    <span style="color:#66d9ef">print</span>(idx2char[x<span style="color:#f92672">.</span>numpy()])
-    <span style="color:#66d9ef">print</span>(x<span style="color:#f92672">.</span>numpy())
-    <span style="color:#66d9ef">print</span>(idx2char[y<span style="color:#f92672">.</span>numpy()])
-    <span style="color:#66d9ef">print</span>(y<span style="color:#f92672">.</span>numpy())
-
-BATCH_SIZE <span style="color:#f92672">=</span> <span style="color:#ae81ff">256</span>
-steps_per_epoch <span style="color:#f92672">=</span> examples_per_epoch <span style="color:#f92672">//</span> BATCH_SIZE
-BUFFER_SIZE <span style="color:#f92672">=</span> <span style="color:#ae81ff">10000</span>
-
-train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>shuffle(BUFFER_SIZE)<span style="color:#f92672">.</span>batch(BATCH_SIZE, drop_remainder<span style="color:#f92672">=</span>True)
-</code></pre></div><pre><code>['\ufeff' 'ㅌ' 'ㅐ' 'ㅈ' 'ㅗ' ' ' 'ㅇ' 'ㅣ' 'ㅅ' 'ㅓ' 'ㅇ' 'ㄱ' 'ㅖ' ' ' 'ㅅ' 'ㅓ' 'ㄴ'
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>seq_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>examples_per_epoch <span style="color:#f92672">=</span> len(test_as_int) <span style="color:#f92672">//</span> seq_length
+</span></span><span style="display:flex;"><span>char_dataset <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>Dataset<span style="color:#f92672">.</span>from_tensor_slices(test_as_int)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>char_dataset <span style="color:#f92672">=</span> char_dataset<span style="color:#f92672">.</span>batch(seq_length<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, drop_remainder<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> item <span style="color:#f92672">in</span> char_dataset<span style="color:#f92672">.</span>take(<span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>    print(idx2char[item<span style="color:#f92672">.</span>numpy()])
+</span></span><span style="display:flex;"><span>    print(item<span style="color:#f92672">.</span>numpy())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">split_input_target</span>(chunk):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> [chunk[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], chunk[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>train_dataset <span style="color:#f92672">=</span> char_dataset<span style="color:#f92672">.</span>map(split_input_target)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> x,y <span style="color:#f92672">in</span> train_dataset<span style="color:#f92672">.</span>take(<span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>    print(idx2char[x<span style="color:#f92672">.</span>numpy()])
+</span></span><span style="display:flex;"><span>    print(x<span style="color:#f92672">.</span>numpy())
+</span></span><span style="display:flex;"><span>    print(idx2char[y<span style="color:#f92672">.</span>numpy()])
+</span></span><span style="display:flex;"><span>    print(y<span style="color:#f92672">.</span>numpy())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BATCH_SIZE <span style="color:#f92672">=</span> <span style="color:#ae81ff">256</span>
+</span></span><span style="display:flex;"><span>steps_per_epoch <span style="color:#f92672">=</span> examples_per_epoch <span style="color:#f92672">//</span> BATCH_SIZE
+</span></span><span style="display:flex;"><span>BUFFER_SIZE <span style="color:#f92672">=</span> <span style="color:#ae81ff">10000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>shuffle(BUFFER_SIZE)<span style="color:#f92672">.</span>batch(BATCH_SIZE, drop_remainder<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><pre><code>['\ufeff' 'ㅌ' 'ㅐ' 'ㅈ' 'ㅗ' ' ' 'ㅇ' 'ㅣ' 'ㅅ' 'ㅓ' 'ㅇ' 'ㄱ' 'ㅖ' ' ' 'ㅅ' 'ㅓ' 'ㄴ'
  'ㄷ' 'ㅐ' 'ㅇ' 'ㅢ' ' ' 'ㄱ' 'ㅏ' 'ㄱ' 'ㅖ' '.' ' ' 'ㅁ' 'ㅗ' 'ㄱ' 'ㅈ' 'ㅗ' ' ' 'ㅇ'
  'ㅣ' 'ㅇ' 'ㅏ' 'ㄴ' 'ㅅ' 'ㅏ' 'ㄱ' 'ㅏ' ' ' 'ㅈ' 'ㅓ' 'ㄴ' 'ㅈ' 'ㅜ' 'ㅇ' 'ㅔ' 'ㅅ' 'ㅓ'
  ' ' 'ㅅ' 'ㅏ' 'ㅁ' 'ㅊ' 'ㅓ' 'ㄱ' '·' 'ㅇ' 'ㅢ' 'ㅈ' 'ㅜ' 'ㄹ' 'ㅡ' 'ㄹ' ' ' 'ㄱ' 'ㅓ'
@@ -376,16 +384,16 @@ train_dataset <span style="color:#f92672">=</span> train_dataset<span style="col
 </ul>
 <h3 id="4-자소-단위-생성-모델-정의-및-학습">(4) 자소 단위 생성 모델 정의 및 학습</h3>
 <p>자소 단위 생성 모델에서는 겹쳐진 순환 신경망을 사용하지 않고 <code>LSTM</code>레이어를 하나만 사용했습니다. 대신 하나의 <code>LSTM</code>레이어에서는 사용하는 뉴런의 수를 4배로 늘렸습니다. 또 단어의 수보다 자소의 수가 훨씬 적기 때문에 마지막 <code>Dense</code>레이어의 뉴런 수가 적어집니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">total_chars <span style="color:#f92672">=</span> len(vocab)
-model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
-  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Embedding(total_chars, <span style="color:#ae81ff">100</span>, input_length<span style="color:#f92672">=</span>seq_length), 
-  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>LSTM(units<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span>), 
-  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(total_chars, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;softmax&#39;</span>)
-])
-
-model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sparse_categorical_crossentropy&#39;</span>, metrics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;accuracy&#39;</span>])
-model<span style="color:#f92672">.</span>summary()
-</code></pre></div><pre><code>Model: &quot;sequential&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>total_chars <span style="color:#f92672">=</span> len(vocab)
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Embedding(total_chars, <span style="color:#ae81ff">100</span>, input_length<span style="color:#f92672">=</span>seq_length), 
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>LSTM(units<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span>), 
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(total_chars, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;softmax&#39;</span>)
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sparse_categorical_crossentropy&#39;</span>, metrics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;accuracy&#39;</span>])
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>summary()
+</span></span></code></pre></div><pre><code>Model: &quot;sequential&quot;
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
 =================================================================
@@ -401,30 +409,30 @@ Non-trainable params: 0
 _________________________________________________________________
 </code></pre>
 <p>모형을 학습시킵니다. 이 때 주의해야 하는 것은 <code>testmodel</code> 함수에서, <code>jamotools</code> 입력 부분을 추가해야 합니다. 이 소스코드의 위치를 살펴보시기를 바랍니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> tensorflow.keras.preprocessing.sequence <span style="color:#f92672">import</span> pad_sequences
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">testmodel</span>(epoch, logs):
-    <span style="color:#66d9ef">if</span> epoch <span style="color:#f92672">%</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> epoch <span style="color:#f92672">!=</span> <span style="color:#ae81ff">49</span>:
-        <span style="color:#66d9ef">return</span>
-    test_sentence <span style="color:#f92672">=</span> train_text[<span style="color:#ae81ff">0</span>]
-    test_sentence <span style="color:#f92672">=</span> jamotools<span style="color:#f92672">.</span>split_syllables(test_sentence)
-
-    next_chars <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
-    <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(next_chars):
-        test_text_X <span style="color:#f92672">=</span> test_sentence<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>)[<span style="color:#f92672">-</span>seq_length:]
-        test_text_X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([char2idx[c] <span style="color:#66d9ef">if</span> c <span style="color:#f92672">in</span> char2idx <span style="color:#66d9ef">else</span> char2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>] <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> test_text_X])
-        test_text_X <span style="color:#f92672">=</span> pad_sequences([test_text_X], maxlen<span style="color:#f92672">=</span>seq_length, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pre&#39;</span>, value<span style="color:#f92672">=</span>char2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>])
-
-        output_idx <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict_classes(test_text_X)
-        test_sentence <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">+</span> idx2char[output_idx[<span style="color:#ae81ff">0</span>]]
-    
-    <span style="color:#66d9ef">print</span>()
-    <span style="color:#66d9ef">print</span>(test_sentence)
-    <span style="color:#66d9ef">print</span>()
-
-testmodelcb <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>callbacks<span style="color:#f92672">.</span>LambdaCallback(on_epoch_end<span style="color:#f92672">=</span>testmodel)
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">history <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>fit(train_dataset<span style="color:#f92672">.</span>repeat(), epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, steps_per_epoch<span style="color:#f92672">=</span>steps_per_epoch, callbacks<span style="color:#f92672">=</span>[testmodelcb], verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
-</code></pre></div><p>Epoch 1/100</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> tensorflow.keras.preprocessing.sequence <span style="color:#f92672">import</span> pad_sequences
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">testmodel</span>(epoch, logs):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> epoch <span style="color:#f92672">%</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> epoch <span style="color:#f92672">!=</span> <span style="color:#ae81ff">49</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>    test_sentence <span style="color:#f92672">=</span> train_text[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    test_sentence <span style="color:#f92672">=</span> jamotools<span style="color:#f92672">.</span>split_syllables(test_sentence)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    next_chars <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(next_chars):
+</span></span><span style="display:flex;"><span>        test_text_X <span style="color:#f92672">=</span> test_sentence<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>)[<span style="color:#f92672">-</span>seq_length:]
+</span></span><span style="display:flex;"><span>        test_text_X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([char2idx[c] <span style="color:#66d9ef">if</span> c <span style="color:#f92672">in</span> char2idx <span style="color:#66d9ef">else</span> char2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>] <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> test_text_X])
+</span></span><span style="display:flex;"><span>        test_text_X <span style="color:#f92672">=</span> pad_sequences([test_text_X], maxlen<span style="color:#f92672">=</span>seq_length, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pre&#39;</span>, value<span style="color:#f92672">=</span>char2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        output_idx <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict_classes(test_text_X)
+</span></span><span style="display:flex;"><span>        test_sentence <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">+</span> idx2char[output_idx[<span style="color:#ae81ff">0</span>]]
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    print()
+</span></span><span style="display:flex;"><span>    print(test_sentence)
+</span></span><span style="display:flex;"><span>    print()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>testmodelcb <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>callbacks<span style="color:#f92672">.</span>LambdaCallback(on_epoch_end<span style="color:#f92672">=</span>testmodel)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>history <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>fit(train_dataset<span style="color:#f92672">.</span>repeat(), epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, steps_per_epoch<span style="color:#f92672">=</span>steps_per_epoch, callbacks<span style="color:#f92672">=</span>[testmodelcb], verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</span></span></code></pre></div><p>Epoch 1/100</p>
 <p>﻿태조 이성계 선대의 가계. 목조 이안사가 전주에서 삼척·의주를 거쳐 알동에 정착하다 이를 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을 것을</p>
 <p>2364/2364 - 270s - loss: 2.5904 - accuracy: 0.3065
 Epoch 2/100
@@ -748,22 +756,22 @@ Epoch 100/100</p>
 <li>word2idx에서 char2idx로 변경</li>
 <li>idx2word에서 idx2char로 변경</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> tensorflow.keras.preprocessing.sequence <span style="color:#f92672">import</span> pad_sequences
-test_sentence <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;동헌에 나가 공무를 본 후 활 십오 순을 쏘았다&#39;</span>
-test_sentence <span style="color:#f92672">=</span> jamotools<span style="color:#f92672">.</span>split_syllables(test_sentence)
-
-next_chars <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
-<span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(next_chars):
-    test_text_X <span style="color:#f92672">=</span> test_sentence[<span style="color:#f92672">-</span>seq_length:]
-    test_text_X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([char2idx[c] <span style="color:#66d9ef">if</span> c <span style="color:#f92672">in</span> char2idx <span style="color:#66d9ef">else</span> char2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>] <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> test_text_X])
-    test_text_X <span style="color:#f92672">=</span> pad_sequences([test_text_X], maxlen<span style="color:#f92672">=</span>seq_length, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pre&#39;</span>, value<span style="color:#f92672">=</span>char2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>])
-    
-    output_idx <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict_classes(test_text_X)
-    test_sentence <span style="color:#f92672">+=</span> idx2char[output_idx[<span style="color:#ae81ff">0</span>]]
-    
-
-<span style="color:#66d9ef">print</span>(jamotools<span style="color:#f92672">.</span>join_jamos(test_sentence))
-</code></pre></div><p>동헌에 나가 공무를 본 후 활 십오 순을 쏘았다. 임금이 말하기를,
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> tensorflow.keras.preprocessing.sequence <span style="color:#f92672">import</span> pad_sequences
+</span></span><span style="display:flex;"><span>test_sentence <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;동헌에 나가 공무를 본 후 활 십오 순을 쏘았다&#39;</span>
+</span></span><span style="display:flex;"><span>test_sentence <span style="color:#f92672">=</span> jamotools<span style="color:#f92672">.</span>split_syllables(test_sentence)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>next_chars <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(next_chars):
+</span></span><span style="display:flex;"><span>    test_text_X <span style="color:#f92672">=</span> test_sentence[<span style="color:#f92672">-</span>seq_length:]
+</span></span><span style="display:flex;"><span>    test_text_X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([char2idx[c] <span style="color:#66d9ef">if</span> c <span style="color:#f92672">in</span> char2idx <span style="color:#66d9ef">else</span> char2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>] <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> test_text_X])
+</span></span><span style="display:flex;"><span>    test_text_X <span style="color:#f92672">=</span> pad_sequences([test_text_X], maxlen<span style="color:#f92672">=</span>seq_length, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pre&#39;</span>, value<span style="color:#f92672">=</span>char2idx[<span style="color:#e6db74">&#39;UNK&#39;</span>])
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    output_idx <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict_classes(test_text_X)
+</span></span><span style="display:flex;"><span>    test_sentence <span style="color:#f92672">+=</span> idx2char[output_idx[<span style="color:#ae81ff">0</span>]]
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(jamotools<span style="color:#f92672">.</span>join_jamos(test_sentence))
+</span></span></code></pre></div><p>동헌에 나가 공무를 본 후 활 십오 순을 쏘았다. 임금이 말하기를,
 &ldquo;이보다 큰 공상은 그 집에 돌아오다
 정사를 보았다. 임금이 말하기를,
 &ldquo;이방성을 아뢰다
@@ -836,7 +844,7 @@ next_chars <span style="color:#f92672">=</span> <span style="color:#ae81ff">300<
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

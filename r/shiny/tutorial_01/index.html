@@ -13,9 +13,10 @@
 I. Shiny 소개 Shiny는 R에서 제공하는 일종의 Web Framework이다. 기존 웹사이트와 다르게, 주요 목적은 데이터를 활용해서 대시보드를 만드는 것에 초점이 맞춰져 있다.
 가장 큰 장점은 무료로 빠른 프로토타입을 만들 수 있고, HTML, CSS, Javascript와 직접적으로 호환이 되기 때문에 무한한 확장성이 있다. 바로 중급 레벨에서 배우고 싶으시다면 Intermediate Level을 클릭한다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/r/shiny/tutorial_01/" />
+<meta property="og:url" content="https://dschloe.github.io/r/shiny/tutorial_01/" /><meta property="article:section" content="R" />
 <meta property="article:published_time" content="2020-03-21T12:33:39+09:00" />
 <meta property="article:modified_time" content="2020-03-21T12:33:39+09:00" />
+
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="shiny tutorial 01 - get started"/>
@@ -24,20 +25,27 @@ I. Shiny 소개 Shiny는 R에서 제공하는 일종의 Web Framework이다. 기
 I. Shiny 소개 Shiny는 R에서 제공하는 일종의 Web Framework이다. 기존 웹사이트와 다르게, 주요 목적은 데이터를 활용해서 대시보드를 만드는 것에 초점이 맞춰져 있다.
 가장 큰 장점은 무료로 빠른 프로토타입을 만들 수 있고, HTML, CSS, Javascript와 직접적으로 호환이 되기 때문에 무한한 확장성이 있다. 바로 중급 레벨에서 배우고 싶으시다면 Intermediate Level을 클릭한다."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -196,60 +204,60 @@ I. Shiny 소개 Shiny는 R에서 제공하는 일종의 Web Framework이다. 기
 <p>Shiny 프로젝트를 시작하는 것은 간단하다.</p>
 <p>[File] - [New Directory] - [Shiny Web Application] - [Working Directory] 순서대로 작업하면 된다.</p>
 <p>그러면 아래와 같은 폴더 구조(tree)가 되어 있을 것이다.</p>
-<pre><code>.
+<pre tabindex="0"><code>.
 ├── app.R
 └── test.Rproj
 </code></pre><p><code>app.R</code> 파일을 열면 아래와 같은 Sample 소스코드가 있을 것이다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e">#</span>
-<span style="color:#75715e"># This is a Shiny web application. You can run the application by clicking</span>
-<span style="color:#75715e"># the &#39;Run App&#39; button above.</span>
-<span style="color:#75715e">#</span>
-<span style="color:#75715e"># Find out more about building applications with Shiny here:</span>
-<span style="color:#75715e">#</span>
-<span style="color:#75715e">#    http://shiny.rstudio.com/</span>
-<span style="color:#75715e">#</span>
-
-<span style="color:#a6e22e">library</span>(shiny)
-
-<span style="color:#75715e"># Define UI for application that draws a histogram</span>
-ui <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">fluidPage</span>(
-
-    <span style="color:#75715e"># Application title</span>
-    <span style="color:#a6e22e">titlePanel</span>(<span style="color:#e6db74">&#34;Old Faithful Geyser Data&#34;</span>),
-
-    <span style="color:#75715e"># Sidebar with a slider input for number of bins </span>
-    <span style="color:#a6e22e">sidebarLayout</span>(
-        <span style="color:#a6e22e">sidebarPanel</span>(
-            <span style="color:#a6e22e">sliderInput</span>(<span style="color:#e6db74">&#34;bins&#34;</span>,
-                        <span style="color:#e6db74">&#34;Number of bins:&#34;</span>,
-                        min <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
-                        max <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>,
-                        value <span style="color:#f92672">=</span> <span style="color:#ae81ff">30</span>)
-        ),
-
-        <span style="color:#75715e"># Show a plot of the generated distribution</span>
-        <span style="color:#a6e22e">mainPanel</span>(
-           <span style="color:#a6e22e">plotOutput</span>(<span style="color:#e6db74">&#34;distPlot&#34;</span>)
-        )
-    )
-)
-
-<span style="color:#75715e"># Define server logic required to draw a histogram</span>
-server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(input, output) {
-
-    output<span style="color:#f92672">$</span>distPlot <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">renderPlot</span>({
-        <span style="color:#75715e"># generate bins based on input$bins from ui.R</span>
-        x    <span style="color:#f92672">&lt;-</span> faithful[, <span style="color:#ae81ff">2</span>]
-        bins <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">seq</span>(<span style="color:#a6e22e">min</span>(x), <span style="color:#a6e22e">max</span>(x), length.out <span style="color:#f92672">=</span> input<span style="color:#f92672">$</span>bins <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
-
-        <span style="color:#75715e"># draw the histogram with the specified number of bins</span>
-        <span style="color:#a6e22e">hist</span>(x, breaks <span style="color:#f92672">=</span> bins, col <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;darkgray&#39;</span>, border <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;white&#39;</span>)
-    })
-}
-
-<span style="color:#75715e"># Run the application </span>
-<span style="color:#a6e22e">shinyApp</span>(ui <span style="color:#f92672">=</span> ui, server <span style="color:#f92672">=</span> server)
-</code></pre></div><pre><code>## 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># This is a Shiny web application. You can run the application by clicking</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># the &#39;Run App&#39; button above.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Find out more about building applications with Shiny here:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    http://shiny.rstudio.com/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(shiny)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Define UI for application that draws a histogram</span>
+</span></span><span style="display:flex;"><span>ui <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">fluidPage</span>(
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Application title</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">titlePanel</span>(<span style="color:#e6db74">&#34;Old Faithful Geyser Data&#34;</span>),
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Sidebar with a slider input for number of bins </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">sidebarLayout</span>(
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">sidebarPanel</span>(
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">sliderInput</span>(<span style="color:#e6db74">&#34;bins&#34;</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;Number of bins:&#34;</span>,
+</span></span><span style="display:flex;"><span>                        min <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>                        max <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>,
+</span></span><span style="display:flex;"><span>                        value <span style="color:#f92672">=</span> <span style="color:#ae81ff">30</span>)
+</span></span><span style="display:flex;"><span>        ),
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Show a plot of the generated distribution</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">mainPanel</span>(
+</span></span><span style="display:flex;"><span>           <span style="color:#a6e22e">plotOutput</span>(<span style="color:#e6db74">&#34;distPlot&#34;</span>)
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Define server logic required to draw a histogram</span>
+</span></span><span style="display:flex;"><span>server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(input, output) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    output<span style="color:#f92672">$</span>distPlot <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">renderPlot</span>({
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># generate bins based on input$bins from ui.R</span>
+</span></span><span style="display:flex;"><span>        x    <span style="color:#f92672">&lt;-</span> faithful[, <span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>        bins <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">seq</span>(<span style="color:#a6e22e">min</span>(x), <span style="color:#a6e22e">max</span>(x), length.out <span style="color:#f92672">=</span> input<span style="color:#f92672">$</span>bins <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># draw the histogram with the specified number of bins</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">hist</span>(x, breaks <span style="color:#f92672">=</span> bins, col <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;darkgray&#39;</span>, border <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;white&#39;</span>)
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Run the application </span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">shinyApp</span>(ui <span style="color:#f92672">=</span> ui, server <span style="color:#f92672">=</span> server)
+</span></span></code></pre></div><pre tabindex="0"><code>## 
 ## Listening on http://127.0.0.1:3205
 </code></pre><p>전체 소스코드를 실행하면 아래와 같은 이미지 형태의 그래프가 나오면 이제 여러분들도 Shiny App을 만든 것이다.</p>
 <p><img src="/img/shiny/tutorial_01/shiny01.png" alt=""><!-- raw HTML omitted --></p>
@@ -290,7 +298,7 @@ server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">func
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

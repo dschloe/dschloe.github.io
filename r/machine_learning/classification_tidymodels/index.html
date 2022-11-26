@@ -8,34 +8,42 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="Classification with Tidymodels" />
-<meta property="og:description" content="개요  새로운 ML 라이브러리인 tidymodels를 활용하여 분류 모델을 개발해본다.  데이터   데이터는 Loan Prediction Practice Problem에서 가져왔다.
- URL: https://datahack.analyticsvidhya.com/contest/practice-problem-loan-prediction-iii/#ProblemStatement    회원가입 후, 대회 참여를 하면 3개의 파일을 다운로드 받을 수 있다.
- Train file, Test file, Submission File    Data Dictionary   Train 파일의 데이터 명세서는 다음과 같다.   Test 파일의 데이터 명세서는 다음과 같다.   Submission 파일의 데이터 명세서는 다음과 같다." />
+<meta property="og:description" content="개요 새로운 ML 라이브러리인 tidymodels를 활용하여 분류 모델을 개발해본다. 데이터 데이터는 Loan Prediction Practice Problem에서 가져왔다.
+URL: https://datahack.analyticsvidhya.com/contest/practice-problem-loan-prediction-iii/#ProblemStatement 회원가입 후, 대회 참여를 하면 3개의 파일을 다운로드 받을 수 있다.
+Train file, Test file, Submission File Data Dictionary Train 파일의 데이터 명세서는 다음과 같다. Test 파일의 데이터 명세서는 다음과 같다. Submission 파일의 데이터 명세서는 다음과 같다. 대회목적 대출 승인 여부를 결정하는 모델을 만드는 것이 대회의 주 목적이며. 평가지표는 분류모형의 Accurarcy로 결정한다. 패키지 및 데이터 불러오기 먼저 필수 패키지를 불러온다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/r/machine_learning/classification_tidymodels/" />
+<meta property="og:url" content="https://dschloe.github.io/r/machine_learning/classification_tidymodels/" /><meta property="article:section" content="R" />
 <meta property="article:published_time" content="2021-09-28T10:00:00+09:00" />
 <meta property="article:modified_time" content="2021-09-28T10:00:00+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Classification with Tidymodels"/>
-<meta name="twitter:description" content="개요  새로운 ML 라이브러리인 tidymodels를 활용하여 분류 모델을 개발해본다.  데이터   데이터는 Loan Prediction Practice Problem에서 가져왔다.
- URL: https://datahack.analyticsvidhya.com/contest/practice-problem-loan-prediction-iii/#ProblemStatement    회원가입 후, 대회 참여를 하면 3개의 파일을 다운로드 받을 수 있다.
- Train file, Test file, Submission File    Data Dictionary   Train 파일의 데이터 명세서는 다음과 같다.   Test 파일의 데이터 명세서는 다음과 같다.   Submission 파일의 데이터 명세서는 다음과 같다."/>
+<meta name="twitter:description" content="개요 새로운 ML 라이브러리인 tidymodels를 활용하여 분류 모델을 개발해본다. 데이터 데이터는 Loan Prediction Practice Problem에서 가져왔다.
+URL: https://datahack.analyticsvidhya.com/contest/practice-problem-loan-prediction-iii/#ProblemStatement 회원가입 후, 대회 참여를 하면 3개의 파일을 다운로드 받을 수 있다.
+Train file, Test file, Submission File Data Dictionary Train 파일의 데이터 명세서는 다음과 같다. Test 파일의 데이터 명세서는 다음과 같다. Submission 파일의 데이터 명세서는 다음과 같다. 대회목적 대출 승인 여부를 결정하는 모델을 만드는 것이 대회의 주 목적이며. 평가지표는 분류모형의 Accurarcy로 결정한다. 패키지 및 데이터 불러오기 먼저 필수 패키지를 불러온다."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -226,63 +234,63 @@
 <ul>
 <li>먼저 필수 패키지를 불러온다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># 데이터 수집</span>
-<span style="color:#a6e22e">library</span>(readr)
-
-<span style="color:#75715e"># 데이터 가공</span>
-<span style="color:#a6e22e">library</span>(dplyr) <span style="color:#75715e"># 데이터 가공</span>
-<span style="color:#a6e22e">library</span>(tidyr) <span style="color:#75715e"># 컬럼 변경</span>
-<span style="color:#a6e22e">library</span>(stringr) <span style="color:#75715e"># 문자열 데이터 다루기 </span>
-<span style="color:#a6e22e">library</span>(forcats) <span style="color:#75715e"># 범주형 데이터 다루기</span>
-<span style="color:#a6e22e">library</span>(skimr) <span style="color:#75715e"># 데이터 요약</span>
-<span style="color:#a6e22e">library</span>(magrittr) <span style="color:#75715e"># 파이프라인 작성</span>
-
-
-<span style="color:#75715e"># 데이터 시각화</span>
-<span style="color:#a6e22e">library</span>(ggplot2) <span style="color:#75715e"># 데이터 시각화 </span>
-<span style="color:#a6e22e">library</span>(corrr) <span style="color:#75715e"># 상관관계 시각화</span>
-<span style="color:#a6e22e">library</span>(skimr) <span style="color:#75715e"># 데이터 요약</span>
-<span style="color:#a6e22e">library</span>(patchwork) <span style="color:#75715e"># 데이터 시각화 분할</span>
-<span style="color:#a6e22e">library</span>(GGally) <span style="color:#75715e"># 산점도</span>
-
-<span style="color:#75715e"># 데이터 모델링</span>
-<span style="color:#a6e22e">library</span>(tidymodels) <span style="color:#75715e"># ML Packages </span>
-<span style="color:#a6e22e">library</span>(themis) <span style="color:#75715e"># class imbalance 처리</span>
-<span style="color:#a6e22e">library</span>(discrim) <span style="color:#75715e"># 베이지안 모델링</span>
-<span style="color:#a6e22e">library</span>(tidyposterior) <span style="color:#75715e"># 베이지안 모델링 성능 비교</span>
-<span style="color:#a6e22e">library</span>(doParallel) <span style="color:#75715e"># CPU cores 확인</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e"># 데이터 수집</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(readr)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 데이터 가공</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(dplyr) <span style="color:#75715e"># 데이터 가공</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(tidyr) <span style="color:#75715e"># 컬럼 변경</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(stringr) <span style="color:#75715e"># 문자열 데이터 다루기 </span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(forcats) <span style="color:#75715e"># 범주형 데이터 다루기</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(skimr) <span style="color:#75715e"># 데이터 요약</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(magrittr) <span style="color:#75715e"># 파이프라인 작성</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 데이터 시각화</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(ggplot2) <span style="color:#75715e"># 데이터 시각화 </span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(corrr) <span style="color:#75715e"># 상관관계 시각화</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(skimr) <span style="color:#75715e"># 데이터 요약</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(patchwork) <span style="color:#75715e"># 데이터 시각화 분할</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(GGally) <span style="color:#75715e"># 산점도</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 데이터 모델링</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(tidymodels) <span style="color:#75715e"># ML Packages </span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(themis) <span style="color:#75715e"># class imbalance 처리</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(discrim) <span style="color:#75715e"># 베이지안 모델링</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(tidyposterior) <span style="color:#75715e"># 베이지안 모델링 성능 비교</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(doParallel) <span style="color:#75715e"># CPU cores 확인</span>
+</span></span></code></pre></div><ul>
 <li>이번에는 데이터를 불러오도록 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">train <span style="color:#f92672">=</span> <span style="color:#a6e22e">read_csv</span>(<span style="color:#e6db74">&#34;data/train_ctrUa4K.csv&#34;</span>)
-</code></pre></div><pre><code>## Rows: 614 Columns: 13
-</code></pre><pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>train <span style="color:#f92672">=</span> <span style="color:#a6e22e">read_csv</span>(<span style="color:#e6db74">&#34;data/train_ctrUa4K.csv&#34;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## Rows: 614 Columns: 13
+</code></pre><pre tabindex="0"><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &#34;,&#34;
 ## chr (8): Loan_ID, Gender, Married, Dependents, Education, Self_Employed, Pro...
 ## dbl (5): ApplicantIncome, CoapplicantIncome, LoanAmount, Loan_Amount_Term, C...
-</code></pre><pre><code>## 
+</code></pre><pre tabindex="0"><code>## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">train <span style="color:#f92672">%&lt;&gt;%</span> <span style="color:#a6e22e">rename</span>(Applicant_Income <span style="color:#f92672">=</span> ApplicantIncome,
-                  CoApplicant_Income <span style="color:#f92672">=</span> CoapplicantIncome,
-                  Loan_Amount <span style="color:#f92672">=</span> LoanAmount) 
-
-loan_id <span style="color:#f92672">=</span> train<span style="color:#f92672">$</span>Loan_ID
-train <span style="color:#f92672">%&lt;&gt;%</span> <span style="color:#a6e22e">select</span>(<span style="color:#f92672">-</span>Loan_ID) <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate</span>(Credit_History <span style="color:#f92672">=</span> <span style="color:#a6e22e">as.character</span>(Credit_History))
-<span style="color:#a6e22e">str</span>(train)
-</code></pre></div><pre><code>## tibble [614 × 12] (S3: tbl_df/tbl/data.frame)
-##  $ Gender            : chr [1:614] &quot;Male&quot; &quot;Male&quot; &quot;Male&quot; &quot;Male&quot; ...
-##  $ Married           : chr [1:614] &quot;No&quot; &quot;Yes&quot; &quot;Yes&quot; &quot;Yes&quot; ...
-##  $ Dependents        : chr [1:614] &quot;0&quot; &quot;1&quot; &quot;0&quot; &quot;0&quot; ...
-##  $ Education         : chr [1:614] &quot;Graduate&quot; &quot;Graduate&quot; &quot;Graduate&quot; &quot;Not Graduate&quot; ...
-##  $ Self_Employed     : chr [1:614] &quot;No&quot; &quot;No&quot; &quot;Yes&quot; &quot;No&quot; ...
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>train <span style="color:#f92672">%&lt;&gt;%</span> <span style="color:#a6e22e">rename</span>(Applicant_Income <span style="color:#f92672">=</span> ApplicantIncome,
+</span></span><span style="display:flex;"><span>                  CoApplicant_Income <span style="color:#f92672">=</span> CoapplicantIncome,
+</span></span><span style="display:flex;"><span>                  Loan_Amount <span style="color:#f92672">=</span> LoanAmount) 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>loan_id <span style="color:#f92672">=</span> train<span style="color:#f92672">$</span>Loan_ID
+</span></span><span style="display:flex;"><span>train <span style="color:#f92672">%&lt;&gt;%</span> <span style="color:#a6e22e">select</span>(<span style="color:#f92672">-</span>Loan_ID) <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate</span>(Credit_History <span style="color:#f92672">=</span> <span style="color:#a6e22e">as.character</span>(Credit_History))
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">str</span>(train)
+</span></span></code></pre></div><pre tabindex="0"><code>## tibble [614 × 12] (S3: tbl_df/tbl/data.frame)
+##  $ Gender            : chr [1:614] &#34;Male&#34; &#34;Male&#34; &#34;Male&#34; &#34;Male&#34; ...
+##  $ Married           : chr [1:614] &#34;No&#34; &#34;Yes&#34; &#34;Yes&#34; &#34;Yes&#34; ...
+##  $ Dependents        : chr [1:614] &#34;0&#34; &#34;1&#34; &#34;0&#34; &#34;0&#34; ...
+##  $ Education         : chr [1:614] &#34;Graduate&#34; &#34;Graduate&#34; &#34;Graduate&#34; &#34;Not Graduate&#34; ...
+##  $ Self_Employed     : chr [1:614] &#34;No&#34; &#34;No&#34; &#34;Yes&#34; &#34;No&#34; ...
 ##  $ Applicant_Income  : num [1:614] 5849 4583 3000 2583 6000 ...
 ##  $ CoApplicant_Income: num [1:614] 0 1508 0 2358 0 ...
 ##  $ Loan_Amount       : num [1:614] NA 128 66 120 141 267 95 158 168 349 ...
 ##  $ Loan_Amount_Term  : num [1:614] 360 360 360 360 360 360 360 360 360 360 ...
-##  $ Credit_History    : chr [1:614] &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; ...
-##  $ Property_Area     : chr [1:614] &quot;Urban&quot; &quot;Rural&quot; &quot;Urban&quot; &quot;Urban&quot; ...
-##  $ Loan_Status       : chr [1:614] &quot;Y&quot; &quot;N&quot; &quot;Y&quot; &quot;Y&quot; ...
+##  $ Credit_History    : chr [1:614] &#34;1&#34; &#34;1&#34; &#34;1&#34; &#34;1&#34; ...
+##  $ Property_Area     : chr [1:614] &#34;Urban&#34; &#34;Rural&#34; &#34;Urban&#34; &#34;Urban&#34; ...
+##  $ Loan_Status       : chr [1:614] &#34;Y&#34; &#34;N&#34; &#34;Y&#34; &#34;Y&#34; ...
 </code></pre><ul>
 <li>총 614개의 데이터에 13개의 컬럼이 있다.</li>
 </ul>
@@ -290,8 +298,8 @@ train <span style="color:#f92672">%&lt;&gt;%</span> <span style="color:#a6e22e">
 <ul>
 <li>우선 skim() 함수를 활용하도록 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">skim</span>(train)
-</code></pre></div><p>Table: Data summary</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">skim</span>(train)
+</span></span></code></pre></div><p>Table: Data summary</p>
 <table>
 <thead>
 <tr>
@@ -521,49 +529,49 @@ train <span style="color:#f92672">%&lt;&gt;%</span> <span style="color:#a6e22e">
 <ul>
 <li>각 개별적인 컬럼에 대해 시각화를 자동으로 할 수 있는 코드를 작성해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">plot_by_column_type <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(x, y) {
-  <span style="color:#75715e"># cat(&#34;y is:&#34;, y)</span>
-  viz_title <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">str_replace_all</span>(y, <span style="color:#e6db74">&#34;_&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>) <span style="color:#f92672">%&gt;%</span> 
-    <span style="color:#a6e22e">str_to_title</span>()
-  
-  <span style="color:#a6e22e">if </span>(<span style="color:#e6db74">&#34;factor&#34;</span> <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">class</span>(x)) {
-    <span style="color:#a6e22e">ggplot</span>(train, <span style="color:#a6e22e">aes</span>(x, fill <span style="color:#f92672">=</span> x)) <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">geom_bar</span>() <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">theme</span>(legend.position <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;none&#34;</span>, 
-            axis.text.x <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(angle <span style="color:#f92672">=</span> <span style="color:#ae81ff">45</span>, hjust <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>), 
-            axis.text <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>)) <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">scale_fill_viridis_d</span>() <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">labs</span>(title <span style="color:#f92672">=</span> viz_title, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>, x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>)
-  } else <span style="color:#a6e22e">if </span>(<span style="color:#e6db74">&#34;numeric&#34;</span> <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">class</span>(x)) {
-    <span style="color:#a6e22e">ggplot</span>(train, <span style="color:#a6e22e">aes</span>(x)) <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">geom_histogram</span>() <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">scale_fill_viridis_d</span>() <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">labs</span>(title <span style="color:#f92672">=</span> viz_title, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>, x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>)
-  } else <span style="color:#a6e22e">if </span>(<span style="color:#e6db74">&#34;integer&#34;</span> <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">class</span>(x)) {
-    <span style="color:#a6e22e">ggplot</span>(train, <span style="color:#a6e22e">aes</span>(x)) <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">geom_histogram</span>() <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">scale_fill_viridis_d</span>() <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">labs</span>(title <span style="color:#f92672">=</span> viz_title, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>, x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>)
-  } else <span style="color:#a6e22e">if </span>(<span style="color:#e6db74">&#34;character&#34;</span> <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">class</span>(x)) {
-    <span style="color:#a6e22e">ggplot</span>(train, <span style="color:#a6e22e">aes</span>(x, fill <span style="color:#f92672">=</span> x)) <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">geom_bar</span>() <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">theme</span>(legend.position <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;none&#34;</span>, 
-            axis.text.x <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(angle <span style="color:#f92672">=</span> <span style="color:#ae81ff">45</span>, hjust <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>), 
-            axis.text <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>)) <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">scale_fill_viridis_d</span>() <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
-      <span style="color:#a6e22e">labs</span>(title <span style="color:#f92672">=</span> viz_title, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>, x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>)
-  }
-}
-
-multiple_plots <span style="color:#f92672">=</span> <span style="color:#a6e22e">map2</span>(train, <span style="color:#a6e22e">colnames</span>(train), plot_by_column_type) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">wrap_plots</span>(ncol <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>, nrow <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>)
-
-multiple_plots
-</code></pre></div><p><img src="/img/r/machine_learning/classification_tidymodels/unnamed-chunk-4-1.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>plot_by_column_type <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(x, y) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># cat(&#34;y is:&#34;, y)</span>
+</span></span><span style="display:flex;"><span>  viz_title <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">str_replace_all</span>(y, <span style="color:#e6db74">&#34;_&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">str_to_title</span>()
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">if </span>(<span style="color:#e6db74">&#34;factor&#34;</span> <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">class</span>(x)) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ggplot</span>(train, <span style="color:#a6e22e">aes</span>(x, fill <span style="color:#f92672">=</span> x)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">geom_bar</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">theme</span>(legend.position <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;none&#34;</span>, 
+</span></span><span style="display:flex;"><span>            axis.text.x <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(angle <span style="color:#f92672">=</span> <span style="color:#ae81ff">45</span>, hjust <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>), 
+</span></span><span style="display:flex;"><span>            axis.text <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">scale_fill_viridis_d</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">labs</span>(title <span style="color:#f92672">=</span> viz_title, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>, x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>  } else <span style="color:#a6e22e">if </span>(<span style="color:#e6db74">&#34;numeric&#34;</span> <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">class</span>(x)) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ggplot</span>(train, <span style="color:#a6e22e">aes</span>(x)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">geom_histogram</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">scale_fill_viridis_d</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">labs</span>(title <span style="color:#f92672">=</span> viz_title, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>, x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>  } else <span style="color:#a6e22e">if </span>(<span style="color:#e6db74">&#34;integer&#34;</span> <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">class</span>(x)) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ggplot</span>(train, <span style="color:#a6e22e">aes</span>(x)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">geom_histogram</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">scale_fill_viridis_d</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">labs</span>(title <span style="color:#f92672">=</span> viz_title, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>, x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>  } else <span style="color:#a6e22e">if </span>(<span style="color:#e6db74">&#34;character&#34;</span> <span style="color:#f92672">%in%</span> <span style="color:#a6e22e">class</span>(x)) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ggplot</span>(train, <span style="color:#a6e22e">aes</span>(x, fill <span style="color:#f92672">=</span> x)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">geom_bar</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">theme</span>(legend.position <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;none&#34;</span>, 
+</span></span><span style="display:flex;"><span>            axis.text.x <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(angle <span style="color:#f92672">=</span> <span style="color:#ae81ff">45</span>, hjust <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>), 
+</span></span><span style="display:flex;"><span>            axis.text <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">scale_fill_viridis_d</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">labs</span>(title <span style="color:#f92672">=</span> viz_title, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>, x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>multiple_plots <span style="color:#f92672">=</span> <span style="color:#a6e22e">map2</span>(train, <span style="color:#a6e22e">colnames</span>(train), plot_by_column_type) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">wrap_plots</span>(ncol <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>, nrow <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>multiple_plots
+</span></span></code></pre></div><p><img src="/img/r/machine_learning/classification_tidymodels/unnamed-chunk-4-1.png" alt=""><!-- raw HTML omitted --></p>
 <ul>
 <li>
 <p>위 데이터를 간단하게 설명하면 다음과 같다.</p>
@@ -583,39 +591,39 @@ multiple_plots
 <li>양적 변수 시각화를 하기 위해서는 산점도를 작성하는 것이 좋다.</li>
 <li>관계성을 파악하기에도 매우 유용하다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">num_df <span style="color:#f92672">&lt;-</span> train <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">select</span>(Loan_Status, <span style="color:#a6e22e">where</span>(is.numeric)) 
-
-<span style="color:#a6e22e">str</span>(num_df)
-</code></pre></div><pre><code>## tibble [614 × 5] (S3: tbl_df/tbl/data.frame)
-##  $ Loan_Status       : chr [1:614] &quot;Y&quot; &quot;N&quot; &quot;Y&quot; &quot;Y&quot; ...
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>num_df <span style="color:#f92672">&lt;-</span> train <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">select</span>(Loan_Status, <span style="color:#a6e22e">where</span>(is.numeric)) 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">str</span>(num_df)
+</span></span></code></pre></div><pre tabindex="0"><code>## tibble [614 × 5] (S3: tbl_df/tbl/data.frame)
+##  $ Loan_Status       : chr [1:614] &#34;Y&#34; &#34;N&#34; &#34;Y&#34; &#34;Y&#34; ...
 ##  $ Applicant_Income  : num [1:614] 5849 4583 3000 2583 6000 ...
 ##  $ CoApplicant_Income: num [1:614] 0 1508 0 2358 0 ...
 ##  $ Loan_Amount       : num [1:614] NA 128 66 120 141 267 95 158 168 349 ...
 ##  $ Loan_Amount_Term  : num [1:614] 360 360 360 360 360 360 360 360 360 360 ...
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">ggpairs</span>(num_df, <span style="color:#a6e22e">aes</span>(color <span style="color:#f92672">=</span> train<span style="color:#f92672">$</span>Loan_Status, alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.3</span>)) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">scale_fill_viridis_d</span>(aesthetics <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;color&#34;</span>, <span style="color:#e6db74">&#34;fill&#34;</span>), begin <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.15</span>, end <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.85</span>) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">labs</span>(title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Numeric Data Analysis&#34;</span>)
-</code></pre></div><p><img src="/img/r/machine_learning/classification_tidymodels/unnamed-chunk-5-1.png" alt=""><!-- raw HTML omitted --></p>
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggpairs</span>(num_df, <span style="color:#a6e22e">aes</span>(color <span style="color:#f92672">=</span> train<span style="color:#f92672">$</span>Loan_Status, alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.3</span>)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">scale_fill_viridis_d</span>(aesthetics <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;color&#34;</span>, <span style="color:#e6db74">&#34;fill&#34;</span>), begin <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.15</span>, end <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.85</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">labs</span>(title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Numeric Data Analysis&#34;</span>)
+</span></span></code></pre></div><p><img src="/img/r/machine_learning/classification_tidymodels/unnamed-chunk-5-1.png" alt=""><!-- raw HTML omitted --></p>
 <h3 id="질적-변수-시각화">질적 변수 시각화</h3>
 <ul>
 <li>이번에는 질적 변수 시각화를 진행하도록 한다.</li>
 <li>우선, 질적 변수 시각화를 진행하기에 앞서서 평균과 신뢰구간을 구하도록 한다.</li>
 <li>평균을 구하려면 우선 숫자 데이터를 만들어야 하는데, <code>Loan_Status</code> 대출을 승인받았으면 1, 그렇지 않으면 0이라고 표시를 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">qual_df <span style="color:#f92672">&lt;-</span> train <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">select</span>(<span style="color:#a6e22e">where</span>(is.character)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">drop_na</span>() <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">mutate</span>(Loan_Status <span style="color:#f92672">=</span> <span style="color:#a6e22e">if_else</span>(Loan_Status <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Y&#34;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">pivot_longer</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">7</span>, names_to <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Variables&#34;</span>, values_to <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Values&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">group_by</span>(Variables, Values) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">summarise</span>(mean <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(Loan_Status), 
-            conf_val <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.96</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">sd</span>(Loan_Status) <span style="color:#f92672">/</span> <span style="color:#a6e22e">sqrt</span>(<span style="color:#a6e22e">n</span>())) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">pivot_wider</span>(names_from <span style="color:#f92672">=</span> Variables, values_from <span style="color:#f92672">=</span> Values)
-</code></pre></div><pre><code>## `summarise()` has grouped output by 'Variables'. You can override using the `.groups` argument.
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">qual_df
-</code></pre></div><pre><code>## # A tibble: 17 × 9
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>qual_df <span style="color:#f92672">&lt;-</span> train <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">select</span>(<span style="color:#a6e22e">where</span>(is.character)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">drop_na</span>() <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(Loan_Status <span style="color:#f92672">=</span> <span style="color:#a6e22e">if_else</span>(Loan_Status <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Y&#34;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">pivot_longer</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">7</span>, names_to <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Variables&#34;</span>, values_to <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Values&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Variables, Values) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarise</span>(mean <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(Loan_Status), 
+</span></span><span style="display:flex;"><span>            conf_val <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.96</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">sd</span>(Loan_Status) <span style="color:#f92672">/</span> <span style="color:#a6e22e">sqrt</span>(<span style="color:#a6e22e">n</span>())) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">pivot_wider</span>(names_from <span style="color:#f92672">=</span> Variables, values_from <span style="color:#f92672">=</span> Values)
+</span></span></code></pre></div><pre tabindex="0"><code>## `summarise()` has grouped output by &#39;Variables&#39;. You can override using the `.groups` argument.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>qual_df
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 17 × 9
 ##      mean conf_val Credit_History Dependents Education    Gender Married
 ##     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;  
 ##  1 0.0875   0.0623 0              &lt;NA&gt;       &lt;NA&gt;         &lt;NA&gt;   &lt;NA&gt;   
@@ -639,35 +647,35 @@ multiple_plots
 </code></pre><ul>
 <li>이제 시각화를 그려본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">viz_plot <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(data, column_name) {
-  column <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">sym</span>(column_name)
-  <span style="color:#75715e"># cat(&#34;column:&#34;, enquo(column_name))</span>
-  data <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">select</span>({{ column }}, mean, conf_val) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">drop_na</span>() <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">ggplot</span>(<span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span> {{ column }}, y <span style="color:#f92672">=</span> mean, color <span style="color:#f92672">=</span> {{ column }})) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">geom_point</span>() <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">geom_errorbar</span>(<span style="color:#a6e22e">aes</span>(ymin <span style="color:#f92672">=</span> mean <span style="color:#f92672">-</span> conf_val, ymax <span style="color:#f92672">=</span> mean <span style="color:#f92672">+</span> conf_val), width <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">theme</span>(legend.position <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;none&#34;</span>,
-        axis.title.x <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
-        axis.title.y <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>()) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">scale_colour_viridis_d</span>(aesthetics <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;color&#34;</span>, <span style="color:#e6db74">&#34;fill&#34;</span>), begin <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.15</span>, end <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.85</span>) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">labs</span>(title<span style="color:#f92672">=</span>column_name)
-}
-
-column_names <span style="color:#f92672">=</span> <span style="color:#a6e22e">colnames</span>(qual_df <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">select</span>(<span style="color:#f92672">-</span><span style="color:#a6e22e">c</span>(mean, conf_val)))
-plots <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">list</span>()
-<span style="color:#a6e22e">for </span>(i in <span style="color:#a6e22e">seq_along</span>(column_names)) {
-  p1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">viz_plot</span>(qual_df, column_names[i])
-  plots[[i]] <span style="color:#f92672">&lt;-</span> p1
-}
-
-<span style="color:#a6e22e">wrap_plots</span>(plots) <span style="color:#f92672">+</span> <span style="color:#a6e22e">plot_annotation</span>(
-  title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Proportion of Loan Data - Categorical Variables&#39;</span>,
-  subtitle <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;With 95% Confidence Intervals&#39;</span>,
-  caption <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Data Source: Loan Prediction Problem by Analytics Vidhya&#39;</span>
-)
-</code></pre></div><p><img src="/img/r/machine_learning/classification_tidymodels/unnamed-chunk-7-1.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>viz_plot <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(data, column_name) {
+</span></span><span style="display:flex;"><span>  column <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">sym</span>(column_name)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># cat(&#34;column:&#34;, enquo(column_name))</span>
+</span></span><span style="display:flex;"><span>  data <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">select</span>({{ column }}, mean, conf_val) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">drop_na</span>() <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ggplot</span>(<span style="color:#a6e22e">aes</span>(x<span style="color:#f92672">=</span> {{ column }}, y <span style="color:#f92672">=</span> mean, color <span style="color:#f92672">=</span> {{ column }})) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_point</span>() <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_errorbar</span>(<span style="color:#a6e22e">aes</span>(ymin <span style="color:#f92672">=</span> mean <span style="color:#f92672">-</span> conf_val, ymax <span style="color:#f92672">=</span> mean <span style="color:#f92672">+</span> conf_val), width <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme</span>(legend.position <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;none&#34;</span>,
+</span></span><span style="display:flex;"><span>        axis.title.x <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
+</span></span><span style="display:flex;"><span>        axis.title.y <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>()) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">scale_colour_viridis_d</span>(aesthetics <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;color&#34;</span>, <span style="color:#e6db74">&#34;fill&#34;</span>), begin <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.15</span>, end <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.85</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">labs</span>(title<span style="color:#f92672">=</span>column_name)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>column_names <span style="color:#f92672">=</span> <span style="color:#a6e22e">colnames</span>(qual_df <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">select</span>(<span style="color:#f92672">-</span><span style="color:#a6e22e">c</span>(mean, conf_val)))
+</span></span><span style="display:flex;"><span>plots <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">list</span>()
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">for </span>(i in <span style="color:#a6e22e">seq_along</span>(column_names)) {
+</span></span><span style="display:flex;"><span>  p1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">viz_plot</span>(qual_df, column_names[i])
+</span></span><span style="display:flex;"><span>  plots[[i]] <span style="color:#f92672">&lt;-</span> p1
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">wrap_plots</span>(plots) <span style="color:#f92672">+</span> <span style="color:#a6e22e">plot_annotation</span>(
+</span></span><span style="display:flex;"><span>  title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Proportion of Loan Data - Categorical Variables&#39;</span>,
+</span></span><span style="display:flex;"><span>  subtitle <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;With 95% Confidence Intervals&#39;</span>,
+</span></span><span style="display:flex;"><span>  caption <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Data Source: Loan Prediction Problem by Analytics Vidhya&#39;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><p><img src="/img/r/machine_learning/classification_tidymodels/unnamed-chunk-7-1.png" alt=""><!-- raw HTML omitted --></p>
 <ul>
 <li>
 <p>간단하게 요약하면 다음과 같다.</p>
@@ -684,74 +692,74 @@ plots <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">list<
 <ul>
 <li>약 8:2로 데이터를 분리하도록 하는데, Loan_Status의 비율에 따라서 층화추출(Stratified Sampling) 방식을 취하도록 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">101</span>)
-loan_split <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">initial_split</span>(train, prop <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.8</span>, strata <span style="color:#f92672">=</span> Loan_Status)
-</code></pre></div><h2 id="모델-개발">모델 개발</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">101</span>)
+</span></span><span style="display:flex;"><span>loan_split <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">initial_split</span>(train, prop <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.8</span>, strata <span style="color:#f92672">=</span> Loan_Status)
+</span></span></code></pre></div><h2 id="모델-개발">모델 개발</h2>
 <ul>
 <li>분류 모형을 개발하도록 한다.</li>
 <li>이때, logistic, decision tree, random forest, xgboost 총 4개의 모델을 개발하도록 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">logistic_ml <span style="color:#f92672">=</span> <span style="color:#a6e22e">logistic_reg</span>(penalty <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), mixture <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>()) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">set_engine</span>(<span style="color:#e6db74">&#34;glmnet&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">set_mode</span>(<span style="color:#e6db74">&#34;classification&#34;</span>)
-
-dt_ml <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">decision_tree</span>(cost_complexity <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), 
-                       tree_depth <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), 
-                       min_n <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>()) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">set_engine</span>(<span style="color:#e6db74">&#34;rpart&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">set_mode</span>(<span style="color:#e6db74">&#34;classification&#34;</span>)
-
-rf_ml <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rand_forest</span>(mtry <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), trees <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), min_n <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>()) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">set_engine</span>(<span style="color:#e6db74">&#34;ranger&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">set_mode</span>(<span style="color:#e6db74">&#34;classification&#34;</span>)
-  
-xgboost_ml <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">boost_tree</span>(mtry <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), tree <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), min_n <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), tree_depth <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), learn_rate <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), loss_reduction <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), sample_size <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>()) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">set_engine</span>(<span style="color:#e6db74">&#34;xgboost&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">set_mode</span>(<span style="color:#e6db74">&#34;classification&#34;</span>)
-</code></pre></div><h2 id="feature-engineering">Feature Engineering</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>logistic_ml <span style="color:#f92672">=</span> <span style="color:#a6e22e">logistic_reg</span>(penalty <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), mixture <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>()) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">set_engine</span>(<span style="color:#e6db74">&#34;glmnet&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">set_mode</span>(<span style="color:#e6db74">&#34;classification&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dt_ml <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">decision_tree</span>(cost_complexity <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), 
+</span></span><span style="display:flex;"><span>                       tree_depth <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), 
+</span></span><span style="display:flex;"><span>                       min_n <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>()) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">set_engine</span>(<span style="color:#e6db74">&#34;rpart&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">set_mode</span>(<span style="color:#e6db74">&#34;classification&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rf_ml <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rand_forest</span>(mtry <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), trees <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), min_n <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>()) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">set_engine</span>(<span style="color:#e6db74">&#34;ranger&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">set_mode</span>(<span style="color:#e6db74">&#34;classification&#34;</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>xgboost_ml <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">boost_tree</span>(mtry <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), tree <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), min_n <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), tree_depth <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), learn_rate <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), loss_reduction <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>(), sample_size <span style="color:#f92672">=</span> <span style="color:#a6e22e">tune</span>()) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">set_engine</span>(<span style="color:#e6db74">&#34;xgboost&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">set_mode</span>(<span style="color:#e6db74">&#34;classification&#34;</span>)
+</span></span></code></pre></div><h2 id="feature-engineering">Feature Engineering</h2>
 <ul>
 <li><code>tidymodels</code>에서는 feature engineering을 수행하기 위해 recipe 함수를 적용한다.</li>
 <li>결측치 처리를 위해 bagged tree models, impute_mean, impute_node 등을 사용했다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">recipe_1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">recipe</span>(Loan_Status <span style="color:#f92672">~</span> ., data <span style="color:#f92672">=</span> <span style="color:#a6e22e">training</span>(loan_split)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">step_mutate</span>(Credit_History <span style="color:#f92672">=</span> <span style="color:#a6e22e">if_else</span>(Credit_History <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">-1</span>, <span style="color:#ae81ff">0</span>)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">step_scale</span>(<span style="color:#a6e22e">all_numeric_predictors</span>(), <span style="color:#f92672">-</span>Credit_History) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">step_impute_bag</span>(Gender, 
-                  Married, 
-                  Dependents, 
-                  Self_Employed, 
-                  Loan_Amount, 
-                  Loan_Amount_Term) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">step_dummy</span>(<span style="color:#a6e22e">all_nominal_predictors</span>())
-
-recipe_2 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">recipe</span>(Loan_Status <span style="color:#f92672">~</span> ., data <span style="color:#f92672">=</span> <span style="color:#a6e22e">training</span>(loan_split)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">step_mutate</span>(Credit_History <span style="color:#f92672">=</span> <span style="color:#a6e22e">if_else</span>(Credit_History <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">-1</span>, <span style="color:#ae81ff">0</span>)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">step_scale</span>(<span style="color:#a6e22e">all_numeric_predictors</span>(), <span style="color:#f92672">-</span>Credit_History) <span style="color:#f92672">%&gt;%</span>  
-  <span style="color:#a6e22e">step_impute_mean</span>(<span style="color:#a6e22e">all_numeric_predictors</span>()) <span style="color:#f92672">%&gt;%</span>
-  <span style="color:#a6e22e">step_impute_mode</span>(<span style="color:#a6e22e">all_nominal_predictors</span>()) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">step_dummy</span>(<span style="color:#a6e22e">all_nominal_predictors</span>()) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">step_zv</span>(<span style="color:#a6e22e">all_predictors</span>())
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>recipe_1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">recipe</span>(Loan_Status <span style="color:#f92672">~</span> ., data <span style="color:#f92672">=</span> <span style="color:#a6e22e">training</span>(loan_split)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">step_mutate</span>(Credit_History <span style="color:#f92672">=</span> <span style="color:#a6e22e">if_else</span>(Credit_History <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">-1</span>, <span style="color:#ae81ff">0</span>)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">step_scale</span>(<span style="color:#a6e22e">all_numeric_predictors</span>(), <span style="color:#f92672">-</span>Credit_History) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">step_impute_bag</span>(Gender, 
+</span></span><span style="display:flex;"><span>                  Married, 
+</span></span><span style="display:flex;"><span>                  Dependents, 
+</span></span><span style="display:flex;"><span>                  Self_Employed, 
+</span></span><span style="display:flex;"><span>                  Loan_Amount, 
+</span></span><span style="display:flex;"><span>                  Loan_Amount_Term) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">step_dummy</span>(<span style="color:#a6e22e">all_nominal_predictors</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>recipe_2 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">recipe</span>(Loan_Status <span style="color:#f92672">~</span> ., data <span style="color:#f92672">=</span> <span style="color:#a6e22e">training</span>(loan_split)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">step_mutate</span>(Credit_History <span style="color:#f92672">=</span> <span style="color:#a6e22e">if_else</span>(Credit_History <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">-1</span>, <span style="color:#ae81ff">0</span>)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">step_scale</span>(<span style="color:#a6e22e">all_numeric_predictors</span>(), <span style="color:#f92672">-</span>Credit_History) <span style="color:#f92672">%&gt;%</span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">step_impute_mean</span>(<span style="color:#a6e22e">all_numeric_predictors</span>()) <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">step_impute_mode</span>(<span style="color:#a6e22e">all_nominal_predictors</span>()) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">step_dummy</span>(<span style="color:#a6e22e">all_nominal_predictors</span>()) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">step_zv</span>(<span style="color:#a6e22e">all_predictors</span>())
+</span></span></code></pre></div><ul>
 <li>모델 개발을 위해 recipe_1를 적용한 train, validation 데이터를 준비한다.</li>
 <li>실제 테스트 데이터가 존재하기 때문에, 여기에서는 validation 이라고 명명했다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">loan_train_df <span style="color:#f92672">=</span> recipe_1 <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">prep</span>() <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">bake</span>(new_data <span style="color:#f92672">=</span> <span style="color:#66d9ef">NULL</span>)
-loan_validation_df <span style="color:#f92672">=</span> recipe_1 <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">prep</span>() <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">bake</span>(<span style="color:#a6e22e">testing</span>(loan_split))
-</code></pre></div><h3 id="correlation-graph">Correlation Graph</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>loan_train_df <span style="color:#f92672">=</span> recipe_1 <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">prep</span>() <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">bake</span>(new_data <span style="color:#f92672">=</span> <span style="color:#66d9ef">NULL</span>)
+</span></span><span style="display:flex;"><span>loan_validation_df <span style="color:#f92672">=</span> recipe_1 <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">prep</span>() <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">bake</span>(<span style="color:#a6e22e">testing</span>(loan_split))
+</span></span></code></pre></div><h3 id="correlation-graph">Correlation Graph</h3>
 <ul>
 <li>실제 변환된 데이터를 불러와서 상관관계 그래프를 작성하도록 한다.</li>
 <li>먼저 train &amp; validation 데이터를 합치도록 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">loan_train_df <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">bind_rows</span>(loan_validation_df) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">mutate</span>(Loan_Status <span style="color:#f92672">=</span> <span style="color:#a6e22e">if_else</span>(Loan_Status <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Y&#34;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">correlate</span>() <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">rearrange</span>() <span style="color:#f92672">-&gt;</span> static_correlations
-</code></pre></div><pre><code>## 
-## Correlation method: 'pearson'
-## Missing treated using: 'pairwise.complete.obs'
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">static_correlations
-</code></pre></div><pre><code>## # A tibble: 15 × 16
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>loan_train_df <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">bind_rows</span>(loan_validation_df) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(Loan_Status <span style="color:#f92672">=</span> <span style="color:#a6e22e">if_else</span>(Loan_Status <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Y&#34;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">correlate</span>() <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">rearrange</span>() <span style="color:#f92672">-&gt;</span> static_correlations
+</span></span></code></pre></div><pre tabindex="0"><code>## 
+## Correlation method: &#39;pearson&#39;
+## Missing treated using: &#39;pairwise.complete.obs&#39;
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>static_correlations
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 15 × 16
 ##    term                    Property_Area_U… Loan_Amount Applicant_Income Gender_Male
 ##    &lt;chr&gt;                              &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;
 ##  1 Property_Area_Urban            NA           -0.0419         -0.000598     0.0374 
@@ -776,20 +784,20 @@ loan_validation_df <span style="color:#f92672">=</span> recipe_1 <span style="co
 </code></pre><ul>
 <li>시각화를 작성해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(tidyquant)
-
-static_correlations <span style="color:#f92672">%&gt;%</span>
-    <span style="color:#a6e22e">network_plot</span>(min_cor <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.05</span>, colours <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;red&#34;</span>, <span style="color:#e6db74">&#34;white&#34;</span>, <span style="color:#e6db74">&#34;blue&#34;</span>), legend <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>) <span style="color:#f92672">+</span>
-    <span style="color:#a6e22e">labs</span>(
-        title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Correlation Plot for Trained Loan Dataset&#34;</span>,
-        subtitle <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>, 
-        caption <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Image by McBert&#34;</span>
-        ) <span style="color:#f92672">+</span>
-    <span style="color:#a6e22e">expand_limits</span>(x <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">-0.1</span>, <span style="color:#ae81ff">0.1</span>), y <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">-0.4</span>, <span style="color:#ae81ff">0.4</span>)) <span style="color:#f92672">+</span>
-    <span style="color:#a6e22e">theme_tq</span>() <span style="color:#f92672">+</span>
-    <span style="color:#a6e22e">theme</span>(legend.position <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;bottom&#34;</span>, 
-          axis.text <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>))
-</code></pre></div><p><img src="/img/r/machine_learning/classification_tidymodels/unnamed-chunk-13-1.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(tidyquant)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>static_correlations <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">network_plot</span>(min_cor <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.05</span>, colours <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;red&#34;</span>, <span style="color:#e6db74">&#34;white&#34;</span>, <span style="color:#e6db74">&#34;blue&#34;</span>), legend <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">labs</span>(
+</span></span><span style="display:flex;"><span>        title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Correlation Plot for Trained Loan Dataset&#34;</span>,
+</span></span><span style="display:flex;"><span>        subtitle <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>, 
+</span></span><span style="display:flex;"><span>        caption <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Image by McBert&#34;</span>
+</span></span><span style="display:flex;"><span>        ) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">expand_limits</span>(x <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">-0.1</span>, <span style="color:#ae81ff">0.1</span>), y <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">-0.4</span>, <span style="color:#ae81ff">0.4</span>)) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">theme_tq</span>() <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">theme</span>(legend.position <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;bottom&#34;</span>, 
+</span></span><span style="display:flex;"><span>          axis.text <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>))
+</span></span></code></pre></div><p><img src="/img/r/machine_learning/classification_tidymodels/unnamed-chunk-13-1.png" alt=""><!-- raw HTML omitted --></p>
 <ul>
 <li>위 그래프를 보면, <code>Loan_Status</code>와 가장 연관성이 큰 데이터는 <code>Credit_History</code>이다. 상식적으로 생각해도, <code>기존 대출 이력</code>이 있는 사람에게 더 많은 대출을 하고자 하는 은행의 경향성을 생각하면 대략적으로 이해가 가는 결과임을 알 수 있다.</li>
 </ul>
@@ -797,50 +805,50 @@ static_correlations <span style="color:#f92672">%&gt;%</span>
 <ul>
 <li>Recipe List와 Model List를 만들어 본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">recipe_list <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">list</span>(Recipe1 <span style="color:#f92672">=</span> recipe_1, Recipe2 <span style="color:#f92672">=</span> recipe_2)
-model_list <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">list</span>(Random_Forest <span style="color:#f92672">=</span> rf_ml, Decision_Tree <span style="color:#f92672">=</span> dt_ml, Logistic_Regression <span style="color:#f92672">=</span> logistic_ml, XGBoost <span style="color:#f92672">=</span> xgboost_ml)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>recipe_list <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">list</span>(Recipe1 <span style="color:#f92672">=</span> recipe_1, Recipe2 <span style="color:#f92672">=</span> recipe_2)
+</span></span><span style="display:flex;"><span>model_list <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">list</span>(Random_Forest <span style="color:#f92672">=</span> rf_ml, Decision_Tree <span style="color:#f92672">=</span> dt_ml, Logistic_Regression <span style="color:#f92672">=</span> logistic_ml, XGBoost <span style="color:#f92672">=</span> xgboost_ml)
+</span></span></code></pre></div><ul>
 <li>workflow_sets()를 활용하여 최종적인 model_set를 완료한다.</li>
 <li><code>cross = T</code>는 recipe의 각 조건과 머신러닝 알고리즘과 매칭되는 모든 가능한 조건들을 Combination 하도록 허락하는 설정으로 이해하면 된다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">model_set <span style="color:#f92672">=</span> <span style="color:#a6e22e">workflow_set</span>(preproc <span style="color:#f92672">=</span> recipe_list, models <span style="color:#f92672">=</span> model_list, cross <span style="color:#f92672">=</span> T)
-</code></pre></div><h2 id="모델-학습">모델 학습</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>model_set <span style="color:#f92672">=</span> <span style="color:#a6e22e">workflow_set</span>(preproc <span style="color:#f92672">=</span> recipe_list, models <span style="color:#f92672">=</span> model_list, cross <span style="color:#f92672">=</span> T)
+</span></span></code></pre></div><h2 id="모델-학습">모델 학습</h2>
 <ul>
 <li>이제 모델을 학습해보도록 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">2</span>)
-train_resamples <span style="color:#f92672">=</span> <span style="color:#a6e22e">bootstraps</span>(<span style="color:#a6e22e">training</span>(loan_split), strata <span style="color:#f92672">=</span> Loan_Status)
-<span style="color:#a6e22e">detectCores</span>()
-</code></pre></div><pre><code>## [1] 8
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">registerDoParallel</span>(cores <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>)
-all_workflows <span style="color:#f92672">&lt;-</span> model_set <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">workflow_map</span>(resamples <span style="color:#f92672">=</span> train_resamples, verbose <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>)
-</code></pre></div><pre><code>## i 1 of 8 tuning:     Recipe1_Random_Forest
-</code></pre><pre><code>## i Creating pre-processing data to finalize unknown parameter: mtry
-</code></pre><pre><code>## ✓ 1 of 8 tuning:     Recipe1_Random_Forest (1m 9.6s)
-</code></pre><pre><code>## i 2 of 8 tuning:     Recipe1_Decision_Tree
-</code></pre><pre><code>## ✓ 2 of 8 tuning:     Recipe1_Decision_Tree (33s)
-</code></pre><pre><code>## i 3 of 8 tuning:     Recipe1_Logistic_Regression
-</code></pre><pre><code>## ✓ 3 of 8 tuning:     Recipe1_Logistic_Regression (30.4s)
-</code></pre><pre><code>## i 4 of 8 tuning:     Recipe1_XGBoost
-</code></pre><pre><code>## i Creating pre-processing data to finalize unknown parameter: mtry
-</code></pre><pre><code>## ✓ 4 of 8 tuning:     Recipe1_XGBoost (57.5s)
-</code></pre><pre><code>## i 5 of 8 tuning:     Recipe2_Random_Forest
-</code></pre><pre><code>## i Creating pre-processing data to finalize unknown parameter: mtry
-</code></pre><pre><code>## ✓ 5 of 8 tuning:     Recipe2_Random_Forest (49s)
-</code></pre><pre><code>## i 6 of 8 tuning:     Recipe2_Decision_Tree
-</code></pre><pre><code>## ✓ 6 of 8 tuning:     Recipe2_Decision_Tree (24.1s)
-</code></pre><pre><code>## i 7 of 8 tuning:     Recipe2_Logistic_Regression
-</code></pre><pre><code>## ✓ 7 of 8 tuning:     Recipe2_Logistic_Regression (22.9s)
-</code></pre><pre><code>## i 8 of 8 tuning:     Recipe2_XGBoost
-</code></pre><pre><code>## i Creating pre-processing data to finalize unknown parameter: mtry
-</code></pre><pre><code>## ✓ 8 of 8 tuning:     Recipe2_XGBoost (43.8s)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>train_resamples <span style="color:#f92672">=</span> <span style="color:#a6e22e">bootstraps</span>(<span style="color:#a6e22e">training</span>(loan_split), strata <span style="color:#f92672">=</span> Loan_Status)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">detectCores</span>()
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] 8
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">registerDoParallel</span>(cores <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>)
+</span></span><span style="display:flex;"><span>all_workflows <span style="color:#f92672">&lt;-</span> model_set <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">workflow_map</span>(resamples <span style="color:#f92672">=</span> train_resamples, verbose <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## i 1 of 8 tuning:     Recipe1_Random_Forest
+</code></pre><pre tabindex="0"><code>## i Creating pre-processing data to finalize unknown parameter: mtry
+</code></pre><pre tabindex="0"><code>## ✓ 1 of 8 tuning:     Recipe1_Random_Forest (1m 9.6s)
+</code></pre><pre tabindex="0"><code>## i 2 of 8 tuning:     Recipe1_Decision_Tree
+</code></pre><pre tabindex="0"><code>## ✓ 2 of 8 tuning:     Recipe1_Decision_Tree (33s)
+</code></pre><pre tabindex="0"><code>## i 3 of 8 tuning:     Recipe1_Logistic_Regression
+</code></pre><pre tabindex="0"><code>## ✓ 3 of 8 tuning:     Recipe1_Logistic_Regression (30.4s)
+</code></pre><pre tabindex="0"><code>## i 4 of 8 tuning:     Recipe1_XGBoost
+</code></pre><pre tabindex="0"><code>## i Creating pre-processing data to finalize unknown parameter: mtry
+</code></pre><pre tabindex="0"><code>## ✓ 4 of 8 tuning:     Recipe1_XGBoost (57.5s)
+</code></pre><pre tabindex="0"><code>## i 5 of 8 tuning:     Recipe2_Random_Forest
+</code></pre><pre tabindex="0"><code>## i Creating pre-processing data to finalize unknown parameter: mtry
+</code></pre><pre tabindex="0"><code>## ✓ 5 of 8 tuning:     Recipe2_Random_Forest (49s)
+</code></pre><pre tabindex="0"><code>## i 6 of 8 tuning:     Recipe2_Decision_Tree
+</code></pre><pre tabindex="0"><code>## ✓ 6 of 8 tuning:     Recipe2_Decision_Tree (24.1s)
+</code></pre><pre tabindex="0"><code>## i 7 of 8 tuning:     Recipe2_Logistic_Regression
+</code></pre><pre tabindex="0"><code>## ✓ 7 of 8 tuning:     Recipe2_Logistic_Regression (22.9s)
+</code></pre><pre tabindex="0"><code>## i 8 of 8 tuning:     Recipe2_XGBoost
+</code></pre><pre tabindex="0"><code>## i Creating pre-processing data to finalize unknown parameter: mtry
+</code></pre><pre tabindex="0"><code>## ✓ 8 of 8 tuning:     Recipe2_XGBoost (43.8s)
 </code></pre><h3 id="모델학습-비교">모델학습 비교</h3>
 <ul>
 <li>이제 모형 학습이 완료가 되었다면, 시각화로 어떤 모델이 좋은지를 확인해보도록 한다.</li>
 <li>우선 학습된 데이터를 확인해보도록 한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">collect_metrics</span>(all_workflows)
-</code></pre></div><pre><code>## # A tibble: 160 × 9
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">collect_metrics</span>(all_workflows)
+</span></span></code></pre></div><pre tabindex="0"><code>## # A tibble: 160 × 9
 ##    wflow_id     .config    preproc model  .metric .estimator  mean     n std_err
 ##    &lt;chr&gt;        &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
 ##  1 Recipe1_Ran… Preproces… recipe  rand_… accura… binary     0.773    25 0.00383
@@ -862,29 +870,29 @@ all_workflows <span style="color:#f92672">&lt;-</span> model_set <span style="co
 </li>
 <li>그리고, 바로 시각화를 진행한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">collect_metrics</span>(all_workflows) <span style="color:#f92672">%&gt;%</span> 
-  tidyr<span style="color:#f92672">::</span><span style="color:#a6e22e">separate</span>(wflow_id, into <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;Recipe&#34;</span>, <span style="color:#e6db74">&#34;Model_Type&#34;</span>), sep <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;_&#34;</span>, remove <span style="color:#f92672">=</span> F, extra <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;merge&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">filter</span>(.metric <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;accuracy&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">group_by</span>(model) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">select</span>(<span style="color:#ae81ff">-.</span>config) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">distinct</span>() <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">group_by</span>(Recipe, Model_Type, .metric) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">summarise</span>(mean <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(mean), 
-            std_err <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(std_err), .groups <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;drop&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">mutate</span>(Workflow_Rank <span style="color:#f92672">=</span> <span style="color:#a6e22e">row_number</span>(<span style="color:#f92672">-</span>mean), 
-         .metric <span style="color:#f92672">=</span> <span style="color:#a6e22e">str_to_upper</span>(.metric)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">ggplot</span>(<span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> Workflow_Rank, y <span style="color:#f92672">=</span> mean, shape <span style="color:#f92672">=</span> Recipe, color <span style="color:#f92672">=</span> Model_Type)) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.7</span>) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">geom_errorbar</span>(<span style="color:#a6e22e">aes</span>(ymin <span style="color:#f92672">=</span> mean<span style="color:#f92672">-</span>std_err, ymax <span style="color:#f92672">=</span> mean <span style="color:#f92672">+</span> std_err), position <span style="color:#f92672">=</span> <span style="color:#a6e22e">position_dodge</span>(<span style="color:#ae81ff">0.9</span>)) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">labs</span>(title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Performance Comparison of Workflow Sets with Tidymodels&#34;</span>, 
-       subtitle <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Bootstrap Resamplings Procedure 25 Times&#34;</span>, 
-       caption <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Image Created By McBert&#34;</span>, 
-       x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;WorkFlow Rank by ML Model&#34;</span>, 
-       y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Accuracy&#34;</span>, 
-       color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Model Types&#34;</span>, 
-       shape <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Recipes&#34;</span>)
-</code></pre></div><p><img src="/img/r/machine_learning/classification_tidymodels/unnamed-chunk-18-1.png" alt=""><!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">collect_metrics</span>(all_workflows) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  tidyr<span style="color:#f92672">::</span><span style="color:#a6e22e">separate</span>(wflow_id, into <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;Recipe&#34;</span>, <span style="color:#e6db74">&#34;Model_Type&#34;</span>), sep <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;_&#34;</span>, remove <span style="color:#f92672">=</span> F, extra <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;merge&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">filter</span>(.metric <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;accuracy&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(model) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">select</span>(<span style="color:#ae81ff">-.</span>config) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">distinct</span>() <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">group_by</span>(Recipe, Model_Type, .metric) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">summarise</span>(mean <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(mean), 
+</span></span><span style="display:flex;"><span>            std_err <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(std_err), .groups <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;drop&#34;</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(Workflow_Rank <span style="color:#f92672">=</span> <span style="color:#a6e22e">row_number</span>(<span style="color:#f92672">-</span>mean), 
+</span></span><span style="display:flex;"><span>         .metric <span style="color:#f92672">=</span> <span style="color:#a6e22e">str_to_upper</span>(.metric)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ggplot</span>(<span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> Workflow_Rank, y <span style="color:#f92672">=</span> mean, shape <span style="color:#f92672">=</span> Recipe, color <span style="color:#f92672">=</span> Model_Type)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.7</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_errorbar</span>(<span style="color:#a6e22e">aes</span>(ymin <span style="color:#f92672">=</span> mean<span style="color:#f92672">-</span>std_err, ymax <span style="color:#f92672">=</span> mean <span style="color:#f92672">+</span> std_err), position <span style="color:#f92672">=</span> <span style="color:#a6e22e">position_dodge</span>(<span style="color:#ae81ff">0.9</span>)) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme_minimal</span>() <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">labs</span>(title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Performance Comparison of Workflow Sets with Tidymodels&#34;</span>, 
+</span></span><span style="display:flex;"><span>       subtitle <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Bootstrap Resamplings Procedure 25 Times&#34;</span>, 
+</span></span><span style="display:flex;"><span>       caption <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Image Created By McBert&#34;</span>, 
+</span></span><span style="display:flex;"><span>       x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;WorkFlow Rank by ML Model&#34;</span>, 
+</span></span><span style="display:flex;"><span>       y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Accuracy&#34;</span>, 
+</span></span><span style="display:flex;"><span>       color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Model Types&#34;</span>, 
+</span></span><span style="display:flex;"><span>       shape <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Recipes&#34;</span>)
+</span></span></code></pre></div><p><img src="/img/r/machine_learning/classification_tidymodels/unnamed-chunk-18-1.png" alt=""><!-- raw HTML omitted --></p>
 <h2 id="reference">Reference</h2>
 <p>Murray Gillin. (2021 July). Using Workflow Sets to Screen and Compare Model-Recipe Combinations for Bank Loan Classification: Screening A Series of Model Types and Feature Engineering Steps for a Classification Problem with Tidymodels. Retrieved from <a href="https://towardsdatascience.com/using-workflow-sets-to-screen-and-compare-model-recipe-combinations-for-bank-loan-classification-fcaad2853290">https://towardsdatascience.com/using-workflow-sets-to-screen-and-compare-model-recipe-combinations-for-bank-loan-classification-fcaad2853290</a></p>
 <h2 id="r-강의-소개">R 강의 소개</h2>
@@ -924,7 +932,7 @@ all_workflows <span style="color:#f92672">&lt;-</span> model_set <span style="co
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

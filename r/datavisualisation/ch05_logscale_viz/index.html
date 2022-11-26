@@ -8,30 +8,38 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="ch05 - Log Scale Visualisation" />
-<meta property="og:description" content="공지  본 포스트는 데이터 시각화 교과서 내용의 일부를 요약하였다.   본 포스트를 읽고 가급적 전체 내용 숙지를 위해 구매하는 것을 권유한다.  개요  수치형 자료를 Y축으로 놓는 그래프는 언제나 힘들었다. log Scale을 통해 값의 크기를 줄이기는 하지만, Y축을 어떻게 표현하는 것이 좋을지에 대한 고민은 늘 있어왔다. 시각화 이론 중심의 포스팅이기에 코드 리뷰 및 해석은 생략한다.  문제점  log Scale을 적용했을 때와 그렇지 않을 때의 그래프를 비교해본다.  (1) 패키지 불러오기  각각의 패키지를 불러온다." />
+<meta property="og:description" content="공지 본 포스트는 데이터 시각화 교과서 내용의 일부를 요약하였다. 본 포스트를 읽고 가급적 전체 내용 숙지를 위해 구매하는 것을 권유한다. 개요 수치형 자료를 Y축으로 놓는 그래프는 언제나 힘들었다. log Scale을 통해 값의 크기를 줄이기는 하지만, Y축을 어떻게 표현하는 것이 좋을지에 대한 고민은 늘 있어왔다. 시각화 이론 중심의 포스팅이기에 코드 리뷰 및 해석은 생략한다. 문제점 log Scale을 적용했을 때와 그렇지 않을 때의 그래프를 비교해본다. (1) 패키지 불러오기 각각의 패키지를 불러온다. 이 때, 데이터는 dviz." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/r/datavisualisation/ch05_logscale_viz/" />
+<meta property="og:url" content="https://dschloe.github.io/r/datavisualisation/ch05_logscale_viz/" /><meta property="article:section" content="R" />
 <meta property="article:published_time" content="2020-07-29T00:10:39+09:00" />
 <meta property="article:modified_time" content="2020-07-29T00:10:39+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="ch05 - Log Scale Visualisation"/>
-<meta name="twitter:description" content="공지  본 포스트는 데이터 시각화 교과서 내용의 일부를 요약하였다.   본 포스트를 읽고 가급적 전체 내용 숙지를 위해 구매하는 것을 권유한다.  개요  수치형 자료를 Y축으로 놓는 그래프는 언제나 힘들었다. log Scale을 통해 값의 크기를 줄이기는 하지만, Y축을 어떻게 표현하는 것이 좋을지에 대한 고민은 늘 있어왔다. 시각화 이론 중심의 포스팅이기에 코드 리뷰 및 해석은 생략한다.  문제점  log Scale을 적용했을 때와 그렇지 않을 때의 그래프를 비교해본다.  (1) 패키지 불러오기  각각의 패키지를 불러온다."/>
+<meta name="twitter:description" content="공지 본 포스트는 데이터 시각화 교과서 내용의 일부를 요약하였다. 본 포스트를 읽고 가급적 전체 내용 숙지를 위해 구매하는 것을 권유한다. 개요 수치형 자료를 Y축으로 놓는 그래프는 언제나 힘들었다. log Scale을 통해 값의 크기를 줄이기는 하지만, Y축을 어떻게 표현하는 것이 좋을지에 대한 고민은 늘 있어왔다. 시각화 이론 중심의 포스팅이기에 코드 리뷰 및 해석은 생략한다. 문제점 log Scale을 적용했을 때와 그렇지 않을 때의 그래프를 비교해본다. (1) 패키지 불러오기 각각의 패키지를 불러온다. 이 때, 데이터는 dviz."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -200,11 +208,11 @@
 <li>우선, 사전에 설치해야 할 패키지가 존재한다.</li>
 <li>현재 필자 개발환경 Spec은 다음과 같다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">sessionInfo</span>()
-R version <span style="color:#ae81ff">4.0.2</span> (<span style="color:#ae81ff">2020-06-22</span>)
-Platform<span style="color:#f92672">:</span> x86_64<span style="color:#f92672">-</span>apple<span style="color:#f92672">-</span><span style="color:#a6e22e">darwin17.0 </span>(<span style="color:#ae81ff">64</span><span style="color:#f92672">-</span>bit)
-Running under<span style="color:#f92672">:</span> macOS Catalina <span style="color:#ae81ff">10.15.6</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">sessionInfo</span>()
+</span></span><span style="display:flex;"><span>R version <span style="color:#ae81ff">4.0.2</span> (<span style="color:#ae81ff">2020-06-22</span>)
+</span></span><span style="display:flex;"><span>Platform<span style="color:#f92672">:</span> x86_64<span style="color:#f92672">-</span>apple<span style="color:#f92672">-</span><span style="color:#a6e22e">darwin17.0 </span>(<span style="color:#ae81ff">64</span><span style="color:#f92672">-</span>bit)
+</span></span><span style="display:flex;"><span>Running under<span style="color:#f92672">:</span> macOS Catalina <span style="color:#ae81ff">10.15.6</span>
+</span></span></code></pre></div><ul>
 <li>아래는 추가적으로 설치한 파일이다.
 <ul>
 <li>깃허브 Issues에서 좀 더 구체적으로 확인하는 것을 추천한다.</li>
@@ -212,29 +220,29 @@ Running under<span style="color:#f92672">:</span> macOS Catalina <span style="co
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">install.packages</span>(<span style="color:#e6db74">&#34;devtools&#34;</span>)
-
-devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install_github</span>(<span style="color:#e6db74">&#34;wilkelab/cowplot&#34;</span>)
-<span style="color:#a6e22e">library</span>(cowplot)
-
-<span style="color:#a6e22e">install.packages</span>(<span style="color:#e6db74">&#34;colorspace&#34;</span>)
-<span style="color:#a6e22e">library</span>(colorspace)
-
-devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install_github</span>(<span style="color:#e6db74">&#34;clauswilke/colorblindr&#34;</span>)
-<span style="color:#a6e22e">library</span>(colorblindr)
-
-devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install_github</span>(<span style="color:#e6db74">&#34;clauswilke/dviz.supp&#34;</span>)
-<span style="color:#a6e22e">library</span>(dviz.supp)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">install.packages</span>(<span style="color:#e6db74">&#34;devtools&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install_github</span>(<span style="color:#e6db74">&#34;wilkelab/cowplot&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(cowplot)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">install.packages</span>(<span style="color:#e6db74">&#34;colorspace&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(colorspace)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install_github</span>(<span style="color:#e6db74">&#34;clauswilke/colorblindr&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(colorblindr)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install_github</span>(<span style="color:#e6db74">&#34;clauswilke/dviz.supp&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(dviz.supp)
+</span></span></code></pre></div><ul>
 <li>위 패키지들을 설치하는데 꽤 시간이 걸렸다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(lubridate) <span style="color:#75715e"># 날짜 관련 패키지</span>
-<span style="color:#a6e22e">library</span>(forcats)   <span style="color:#75715e"># 시계열 관련 패키지</span>
-<span style="color:#a6e22e">library</span>(tidyr)     <span style="color:#75715e"># 데이터 핸들링 패키지</span>
-<span style="color:#a6e22e">library</span>(ggrepel)   <span style="color:#75715e"># 시각화 관련 패키지</span>
-<span style="color:#a6e22e">library</span>(dviz.supp) <span style="color:#75715e"># 저자의 개인 Repo 패키지: 교재 있는 데이터 활용 및 그래프를 구현하려면 필수적으로 설치 되어야 함.</span>
-<span style="color:#a6e22e">library</span>(kableExtra) <span style="color:#75715e"># 데이터 출력 Table을 HTML로 변환하기 위한 패키지 </span>
-</code></pre></div><h3 id="2-데이터-확인">(2) 데이터 확인</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(lubridate) <span style="color:#75715e"># 날짜 관련 패키지</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(forcats)   <span style="color:#75715e"># 시계열 관련 패키지</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(tidyr)     <span style="color:#75715e"># 데이터 핸들링 패키지</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(ggrepel)   <span style="color:#75715e"># 시각화 관련 패키지</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(dviz.supp) <span style="color:#75715e"># 저자의 개인 Repo 패키지: 교재 있는 데이터 활용 및 그래프를 구현하려면 필수적으로 설치 되어야 함.</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(kableExtra) <span style="color:#75715e"># 데이터 출력 Table을 HTML로 변환하기 위한 패키지 </span>
+</span></span></code></pre></div><h3 id="2-데이터-확인">(2) 데이터 확인</h3>
 <ul>
 <li>데이터는 <code>US_Census</code> 데이터를 기반으로 한다.
 <ul>
@@ -246,21 +254,21 @@ devtools<span style="color:#f92672">::</span><span style="color:#a6e22e">install
 <blockquote>
 <p>소스코드 참조: <a href="https://github.com/clauswilke/dataviz/blob/master/coordinate_systems_axes.Rmd">https://github.com/clauswilke/dataviz/blob/master/coordinate_systems_axes.Rmd</a></p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">3878</span>)
-
-US_census <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">filter</span>(state <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Texas&#34;</span>) <span style="color:#f92672">%&gt;%</span>
-  <span style="color:#a6e22e">select</span>(name, pop2010) <span style="color:#f92672">%&gt;%</span>
-  <span style="color:#a6e22e">extract</span>(name, <span style="color:#e6db74">&#34;county&#34;</span>, regex <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;(.+) County&#34;</span>) <span style="color:#f92672">%&gt;%</span>
-  <span style="color:#a6e22e">mutate</span>(popratio <span style="color:#f92672">=</span> pop2010<span style="color:#f92672">/</span><span style="color:#a6e22e">median</span>(pop2010)) <span style="color:#f92672">%&gt;%</span>
-  <span style="color:#a6e22e">arrange</span>(<span style="color:#a6e22e">desc</span>(popratio)) <span style="color:#f92672">%&gt;%</span>
-  <span style="color:#a6e22e">mutate</span>(index <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#a6e22e">n</span>(),
-         label <span style="color:#f92672">=</span> <span style="color:#a6e22e">ifelse</span>(index <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">|</span> index <span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">n</span>()<span style="color:#ae81ff">-3</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">runif</span>(<span style="color:#a6e22e">n</span>()) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">.04</span>, county, <span style="color:#e6db74">&#34;&#34;</span>),
-         label_large <span style="color:#f92672">=</span> <span style="color:#a6e22e">ifelse</span>(index <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">6</span>, county, <span style="color:#e6db74">&#34;&#34;</span>)) <span style="color:#f92672">-&gt;</span> tx_counties
-
-<span style="color:#a6e22e">kable</span>(tx_counties) <span style="color:#f92672">%&gt;%</span>
-  <span style="color:#a6e22e">kable_styling</span>(bootstrap_options <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;striped&#34;</span>, <span style="color:#e6db74">&#34;hover&#34;</span>)) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">scroll_box</span>(width <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;500px&#34;</span>, height <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;200px&#34;</span>)
-</code></pre></div><div style="border: 1px solid #ddd; margin-bottom: 20px; padding: 0px; overflow-y: scroll; height:200px; overflow-x: scroll; width:100%; overflow:auto;">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">3878</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>US_census <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">filter</span>(state <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Texas&#34;</span>) <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">select</span>(name, pop2010) <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">extract</span>(name, <span style="color:#e6db74">&#34;county&#34;</span>, regex <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;(.+) County&#34;</span>) <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(popratio <span style="color:#f92672">=</span> pop2010<span style="color:#f92672">/</span><span style="color:#a6e22e">median</span>(pop2010)) <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrange</span>(<span style="color:#a6e22e">desc</span>(popratio)) <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutate</span>(index <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#a6e22e">n</span>(),
+</span></span><span style="display:flex;"><span>         label <span style="color:#f92672">=</span> <span style="color:#a6e22e">ifelse</span>(index <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">|</span> index <span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">n</span>()<span style="color:#ae81ff">-3</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">runif</span>(<span style="color:#a6e22e">n</span>()) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">.04</span>, county, <span style="color:#e6db74">&#34;&#34;</span>),
+</span></span><span style="display:flex;"><span>         label_large <span style="color:#f92672">=</span> <span style="color:#a6e22e">ifelse</span>(index <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">6</span>, county, <span style="color:#e6db74">&#34;&#34;</span>)) <span style="color:#f92672">-&gt;</span> tx_counties
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">kable</span>(tx_counties) <span style="color:#f92672">%&gt;%</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">kable_styling</span>(bootstrap_options <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;striped&#34;</span>, <span style="color:#e6db74">&#34;hover&#34;</span>)) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">scroll_box</span>(width <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;500px&#34;</span>, height <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;200px&#34;</span>)
+</span></span></code></pre></div><div style="border: 1px solid #ddd; margin-bottom: 20px; padding: 0px; overflow-y: scroll; height:200px; overflow-x: scroll; width:100%; overflow:auto;">
   <table class="table table-striped table-hover" style="margin-left: auto; margin-right: auto;"> 
     <thead>
      <tr>
@@ -2312,25 +2320,25 @@ US_census <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">
 <ul>
 <li>주어진 데이터를 가지고 시각화를 작성한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">temp_font <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;Times New Roman&#34;</span>
-
-counties_lin <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">ggplot</span>(tx_counties, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> index, y <span style="color:#f92672">=</span> popratio)) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;#0072B2&#34;</span>) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">geom_text_repel</span>(<span style="color:#a6e22e">aes</span>(label <span style="color:#f92672">=</span> label_large), point.padding <span style="color:#f92672">=</span> <span style="color:#ae81ff">.4</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;black&#34;</span>,
-                  min.segment.length <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">scale_y_continuous</span>(name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;population number / median&#34;</span>) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">scale_x_continuous</span>(limits <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">.5</span>, <span style="color:#a6e22e">nrow</span>(tx_counties) <span style="color:#f92672">+</span> <span style="color:#ae81ff">.5</span>), expand <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
-                     breaks <span style="color:#f92672">=</span> <span style="color:#66d9ef">NULL</span>, <span style="color:#75715e">#c(1, 50*(1:5)),</span>
-                     name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Texas counties, from most to least populous&#34;</span>) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">theme_dviz_hgrid</span>(font_family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">theme</span>(axis.line <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
-        plot.margin <span style="color:#f92672">=</span> <span style="color:#a6e22e">margin</span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1.5</span>)) 
-
-<span style="color:#a6e22e">ggdraw</span>(counties_lin, clip <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;on&#34;</span>) <span style="color:#f92672">+</span> 
-  <span style="color:#a6e22e">draw_text</span>(<span style="color:#a6e22e">paste0</span>(<span style="color:#e6db74">&#34;bad&#34;</span>, <span style="color:#e6db74">&#34;  &#34;</span>), x<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, y<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, vjust<span style="color:#f92672">=</span><span style="color:#ae81ff">1.1</span>, hjust<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, size<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>, angle <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>,
-              color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#d02138&#34;</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, family <span style="color:#f92672">=</span> temp_font, fontface <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;plain&#34;</span>) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">draw_line</span>(<span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>), size<span style="color:#f92672">=</span><span style="color:#ae81ff">2.8</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#d02138&#34;</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-</code></pre></div><p><img src="/img/datavisualisation/ch05_logscale_viz_files/figure-html/unnamed-chunk-2-1.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>temp_font <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;Times New Roman&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>counties_lin <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">ggplot</span>(tx_counties, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> index, y <span style="color:#f92672">=</span> popratio)) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;#0072B2&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_text_repel</span>(<span style="color:#a6e22e">aes</span>(label <span style="color:#f92672">=</span> label_large), point.padding <span style="color:#f92672">=</span> <span style="color:#ae81ff">.4</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;black&#34;</span>,
+</span></span><span style="display:flex;"><span>                  min.segment.length <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">scale_y_continuous</span>(name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;population number / median&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">scale_x_continuous</span>(limits <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">.5</span>, <span style="color:#a6e22e">nrow</span>(tx_counties) <span style="color:#f92672">+</span> <span style="color:#ae81ff">.5</span>), expand <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+</span></span><span style="display:flex;"><span>                     breaks <span style="color:#f92672">=</span> <span style="color:#66d9ef">NULL</span>, <span style="color:#75715e">#c(1, 50*(1:5)),</span>
+</span></span><span style="display:flex;"><span>                     name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Texas counties, from most to least populous&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme_dviz_hgrid</span>(font_family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme</span>(axis.line <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
+</span></span><span style="display:flex;"><span>        plot.margin <span style="color:#f92672">=</span> <span style="color:#a6e22e">margin</span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1.5</span>)) 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ggdraw</span>(counties_lin, clip <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;on&#34;</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">draw_text</span>(<span style="color:#a6e22e">paste0</span>(<span style="color:#e6db74">&#34;bad&#34;</span>, <span style="color:#e6db74">&#34;  &#34;</span>), x<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, y<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, vjust<span style="color:#f92672">=</span><span style="color:#ae81ff">1.1</span>, hjust<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, size<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>, angle <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>              color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#d02138&#34;</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, family <span style="color:#f92672">=</span> temp_font, fontface <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;plain&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">draw_line</span>(<span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>), size<span style="color:#f92672">=</span><span style="color:#ae81ff">2.8</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#d02138&#34;</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><p><img src="/img/datavisualisation/ch05_logscale_viz_files/figure-html/unnamed-chunk-2-1.png" alt=""></p>
 <ul>
 <li>위 그래프는 전형적인 선형 스케일을 옮겨 담은 것이다.
 <ul>
@@ -2348,21 +2356,21 @@ counties_lin <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e
 <ul>
 <li>시각화 코드는 아래와 같다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">ggplot</span>(tx_counties, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> index, y <span style="color:#f92672">=</span> popratio)) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">geom_hline</span>(yintercept <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, linetype <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;grey40&#34;</span>) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;#0072B2&#34;</span>) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">geom_text_repel</span>(<span style="color:#a6e22e">aes</span>(label <span style="color:#f92672">=</span> label), point.padding <span style="color:#f92672">=</span> <span style="color:#ae81ff">.4</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;black&#34;</span>,
-                  min.segment.length <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">scale_y_log10</span>(breaks <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">.01</span>, <span style="color:#ae81ff">.1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">100</span>),
-                name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;population number / median&#34;</span>,
-                labels <span style="color:#f92672">=</span> label_log10) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">scale_x_continuous</span>(limits <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">.5</span>, <span style="color:#a6e22e">nrow</span>(tx_counties) <span style="color:#f92672">+</span> <span style="color:#ae81ff">.5</span>), expand <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
-                     breaks <span style="color:#f92672">=</span> <span style="color:#66d9ef">NULL</span>, <span style="color:#75715e">#c(1, 50*(1:5)),</span>
-                     name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Texas counties, from most to least populous&#34;</span>) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">theme_dviz_hgrid</span>(font_family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
-  <span style="color:#a6e22e">theme</span>(axis.line <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
-        plot.margin <span style="color:#f92672">=</span> <span style="color:#a6e22e">margin</span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1.5</span>))
-</code></pre></div><p><img src="/img/datavisualisation/ch05_logscale_viz_files/figure-html/unnamed-chunk-3-1.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">ggplot</span>(tx_counties, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> index, y <span style="color:#f92672">=</span> popratio)) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_hline</span>(yintercept <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, linetype <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;grey40&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;#0072B2&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">geom_text_repel</span>(<span style="color:#a6e22e">aes</span>(label <span style="color:#f92672">=</span> label), point.padding <span style="color:#f92672">=</span> <span style="color:#ae81ff">.4</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;black&#34;</span>,
+</span></span><span style="display:flex;"><span>                  min.segment.length <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">scale_y_log10</span>(breaks <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">.01</span>, <span style="color:#ae81ff">.1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">100</span>),
+</span></span><span style="display:flex;"><span>                name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;population number / median&#34;</span>,
+</span></span><span style="display:flex;"><span>                labels <span style="color:#f92672">=</span> label_log10) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">scale_x_continuous</span>(limits <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">.5</span>, <span style="color:#a6e22e">nrow</span>(tx_counties) <span style="color:#f92672">+</span> <span style="color:#ae81ff">.5</span>), expand <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+</span></span><span style="display:flex;"><span>                     breaks <span style="color:#f92672">=</span> <span style="color:#66d9ef">NULL</span>, <span style="color:#75715e">#c(1, 50*(1:5)),</span>
+</span></span><span style="display:flex;"><span>                     name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Texas counties, from most to least populous&#34;</span>) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme_dviz_hgrid</span>(font_family <span style="color:#f92672">=</span> temp_font) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">theme</span>(axis.line <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
+</span></span><span style="display:flex;"><span>        plot.margin <span style="color:#f92672">=</span> <span style="color:#a6e22e">margin</span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1.5</span>))
+</span></span></code></pre></div><p><img src="/img/datavisualisation/ch05_logscale_viz_files/figure-html/unnamed-chunk-3-1.png" alt=""></p>
 <h3 id="2-그래프-해석">(2) 그래프 해석</h3>
 <ul>
 <li>위 그래프는 비율 값을 로그 스케일로 사용할 때의 예시이다. - 텍사스의 카운티별 인구를 텍사스 전체 인구의 중간 값으로 나눈다고 생각할 때, 이 계산으로 얻은 비율 값은 1보다 크거나 작다.
@@ -2443,7 +2451,7 @@ counties_lin <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

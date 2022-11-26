@@ -8,30 +8,38 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="Heroku를 활용한 배포 - DB 연결편" />
-<meta property="og:description" content="읽기 전 공지  본 글은 2022년 11월 28일까지만 유효합니다. 무료 버전이 사라지기 때문에, 앞으로 어떻게 될지는 현재 글 쓰는 시점에서는 모릅니다. 이 부분에 주의해서 참고 하시기를 바랍니다.  강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   [비전공자 대환영] 캐글 데이터를 활용한 Optuna with MLFlow - 캐글다지기  머신러닝 하이퍼파라미터 튜닝 등을 배우고 싶다면 다음 강의를 참고하세요." />
+<meta property="og:description" content="읽기 전 공지 본 글은 2022년 11월 28일까지만 유효합니다. 무료 버전이 사라지기 때문에, 앞으로 어떻게 될지는 현재 글 쓰는 시점에서는 모릅니다. 이 부분에 주의해서 참고 하시기를 바랍니다. 강의 홍보 취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다. 스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다. [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기 [비전공자 대환영] 캐글 데이터를 활용한 Optuna with MLFlow - 캐글다지기 머신러닝 하이퍼파라미터 튜닝 등을 배우고 싶다면 다음 강의를 참고하세요." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/python/11/heroku_deploy_final/" />
+<meta property="og:url" content="https://dschloe.github.io/python/11/heroku_deploy_final/" /><meta property="article:section" content="Python" />
 <meta property="article:published_time" content="2022-11-09T01:15:47+09:00" />
 <meta property="article:modified_time" content="2022-11-09T01:15:47+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Heroku를 활용한 배포 - DB 연결편"/>
-<meta name="twitter:description" content="읽기 전 공지  본 글은 2022년 11월 28일까지만 유효합니다. 무료 버전이 사라지기 때문에, 앞으로 어떻게 될지는 현재 글 쓰는 시점에서는 모릅니다. 이 부분에 주의해서 참고 하시기를 바랍니다.  강의 홍보  취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.  스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다.   [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기   [비전공자 대환영] 캐글 데이터를 활용한 Optuna with MLFlow - 캐글다지기  머신러닝 하이퍼파라미터 튜닝 등을 배우고 싶다면 다음 강의를 참고하세요."/>
+<meta name="twitter:description" content="읽기 전 공지 본 글은 2022년 11월 28일까지만 유효합니다. 무료 버전이 사라지기 때문에, 앞으로 어떻게 될지는 현재 글 쓰는 시점에서는 모릅니다. 이 부분에 주의해서 참고 하시기를 바랍니다. 강의 홍보 취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다. 스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다. [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기 [비전공자 대환영] 캐글 데이터를 활용한 Optuna with MLFlow - 캐글다지기 머신러닝 하이퍼파라미터 튜닝 등을 배우고 싶다면 다음 강의를 참고하세요."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -247,22 +255,22 @@
 <ul>
 <li>Heroku를 로그인한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ heroku login
- »   Warning: heroku update available from 7.53.0 to 7.66.0.
-heroku: Press any key to open up the browser to login or q to exit: a
-Opening browser to https://cli-auth.heroku.com/auth/cli/browser/74049fd8-34d8-4125-980d-90650f72c541?requestor<span style="color:#f92672">=</span>SFMyNTY.g2gDbQAAAA01OC43Mi4xNTEuMTI2bgYACH1ZWoQBYgABUYA.lh-yG6rtbGZqCtIHiMMeDsQSJi-CCGQAB_72jJgSVkQ
-</code></pre></div><p><img src="/img/python/2022/11/heroku_deploy_final/Untitled%202.png" alt="Untitled"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ heroku login
+</span></span><span style="display:flex;"><span> »   Warning: heroku update available from 7.53.0 to 7.66.0.
+</span></span><span style="display:flex;"><span>heroku: Press any key to open up the browser to login or q to exit: a
+</span></span><span style="display:flex;"><span>Opening browser to https://cli-auth.heroku.com/auth/cli/browser/74049fd8-34d8-4125-980d-90650f72c541?requestor<span style="color:#f92672">=</span>SFMyNTY.g2gDbQAAAA01OC43Mi4xNTEuMTI2bgYACH1ZWoQBYgABUYA.lh-yG6rtbGZqCtIHiMMeDsQSJi-CCGQAB_72jJgSVkQ
+</span></span></code></pre></div><p><img src="/img/python/2022/11/heroku_deploy_final/Untitled%202.png" alt="Untitled"></p>
 <ul>
 <li>로그인을 하고 나면 아래와 같이 완료가 된다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ heroku login
- »   Warning: heroku update available from 7.53.0 to 7.66.0.
-heroku: Press any key to open up the browser to login or q to exit: a
-Opening browser to https://cli-auth.heroku.com/auth/cli/browser/feac7503-9c5e-4a89-9782-eb92ddbc4d11?requestor<span style="color:#f92672">=</span>SFMyNTY.g2gDbQAAAA01OC43Mi4xNTEuMTI2bgYAqP1bWoQBYgABUYA.DvMXiQ3idJYttk03Sjsrl8z48g8_Bu8k9JgDmTqwiPw
-heroku: Waiting <span style="color:#66d9ef">for</span> login...
-Logging in... <span style="color:#66d9ef">done</span>
-Logged in as j2hoon85@gmail.com
-</code></pre></div><h2 id="github-repo">Github Repo</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ heroku login
+</span></span><span style="display:flex;"><span> »   Warning: heroku update available from 7.53.0 to 7.66.0.
+</span></span><span style="display:flex;"><span>heroku: Press any key to open up the browser to login or q to exit: a
+</span></span><span style="display:flex;"><span>Opening browser to https://cli-auth.heroku.com/auth/cli/browser/feac7503-9c5e-4a89-9782-eb92ddbc4d11?requestor<span style="color:#f92672">=</span>SFMyNTY.g2gDbQAAAA01OC43Mi4xNTEuMTI2bgYAqP1bWoQBYgABUYA.DvMXiQ3idJYttk03Sjsrl8z48g8_Bu8k9JgDmTqwiPw
+</span></span><span style="display:flex;"><span>heroku: Waiting <span style="color:#66d9ef">for</span> login...
+</span></span><span style="display:flex;"><span>Logging in... <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>Logged in as j2hoon85@gmail.com
+</span></span></code></pre></div><h2 id="github-repo">Github Repo</h2>
 <ul>
 <li>github repo를 생성 한다.</li>
 <li>repo 이름은 heroku App name과 동일하게 하도록 한다.</li>
@@ -271,14 +279,14 @@ Logged in as j2hoon85@gmail.com
 <ul>
 <li>github를 다운로드 받는다. (예)</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git clone https://github.com/your_name/your_repo.git
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git clone https://github.com/your_name/your_repo.git
+</span></span></code></pre></div><ul>
 <li>해당 프로젝트 Root 경로로 가서 heroku와 연결을 시도한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ heroku git:remote -a human-cal-evan
- »   Warning: heroku update available from 7.53.0 to 7.66.0.
-set git remote heroku to https://git.heroku.com/human-cal-evan.git
-</code></pre></div><h2 id="첫번째-페이지-구축">첫번째 페이지 구축</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ heroku git:remote -a human-cal-evan
+</span></span><span style="display:flex;"><span> »   Warning: heroku update available from 7.53.0 to 7.66.0.
+</span></span><span style="display:flex;"><span>set git remote heroku to https://git.heroku.com/human-cal-evan.git
+</span></span></code></pre></div><h2 id="첫번째-페이지-구축">첫번째 페이지 구축</h2>
 <ul>
 <li>Heroku를 통해 Hello World 서버를 구축한다.</li>
 </ul>
@@ -286,59 +294,59 @@ set git remote heroku to https://git.heroku.com/human-cal-evan.git
 <ul>
 <li>Flask 파일을 활용하여 Hello World 배포를 진행한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ virtualenv venv
-created virtual environment CPython3.10.8.final.0-64 in 7072ms
-  creator CPython3Windows<span style="color:#f92672">(</span>dest<span style="color:#f92672">=</span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\h\D</span>esktop<span style="color:#ae81ff">\h</span>uman-cal-evan<span style="color:#ae81ff">\v</span>env, clear<span style="color:#f92672">=</span>False, no_vcs_ignore<span style="color:#f92672">=</span>False, global<span style="color:#f92672">=</span>False<span style="color:#f92672">)</span>
-  seeder FromAppData<span style="color:#f92672">(</span>download<span style="color:#f92672">=</span>False, pip<span style="color:#f92672">=</span>bundle, setuptools<span style="color:#f92672">=</span>bundle, wheel<span style="color:#f92672">=</span>bundle, via<span style="color:#f92672">=</span>copy, app_data_dir<span style="color:#f92672">=</span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\h\A</span>ppData<span style="color:#ae81ff">\L</span>ocal<span style="color:#ae81ff">\p</span>ypa<span style="color:#ae81ff">\v</span>irtualenv<span style="color:#f92672">)</span>
-    added seed packages: pip<span style="color:#f92672">==</span>22.2.2, setuptools<span style="color:#f92672">==</span>65.4.1, wheel<span style="color:#f92672">==</span>0.37.1
-  activators BashActivator,BatchActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ virtualenv venv
+</span></span><span style="display:flex;"><span>created virtual environment CPython3.10.8.final.0-64 in 7072ms
+</span></span><span style="display:flex;"><span>  creator CPython3Windows<span style="color:#f92672">(</span>dest<span style="color:#f92672">=</span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\h\D</span>esktop<span style="color:#ae81ff">\h</span>uman-cal-evan<span style="color:#ae81ff">\v</span>env, clear<span style="color:#f92672">=</span>False, no_vcs_ignore<span style="color:#f92672">=</span>False, global<span style="color:#f92672">=</span>False<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  seeder FromAppData<span style="color:#f92672">(</span>download<span style="color:#f92672">=</span>False, pip<span style="color:#f92672">=</span>bundle, setuptools<span style="color:#f92672">=</span>bundle, wheel<span style="color:#f92672">=</span>bundle, via<span style="color:#f92672">=</span>copy, app_data_dir<span style="color:#f92672">=</span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\h\A</span>ppData<span style="color:#ae81ff">\L</span>ocal<span style="color:#ae81ff">\p</span>ypa<span style="color:#ae81ff">\v</span>irtualenv<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    added seed packages: pip<span style="color:#f92672">==</span>22.2.2, setuptools<span style="color:#f92672">==</span>65.4.1, wheel<span style="color:#f92672">==</span>0.37.1
+</span></span><span style="display:flex;"><span>  activators BashActivator,BatchActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+</span></span></code></pre></div><ul>
 <li>가상환경에 접속 후, flask를 설치한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ source venv/Scripts/activate
-<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ pip install Flask gunicorn
-Collecting Flask
-  Downloading Flask-2.2.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">101</span> kB<span style="color:#f92672">)</span>
-     -------------------------------------- 101.5/101.5 kB 6.1 MB/s eta 0:00:00
-Collecting gunicorn
-  Using cached gunicorn-20.1.0-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">79</span> kB<span style="color:#f92672">)</span>
-Collecting itsdangerous&gt;<span style="color:#f92672">=</span>2.0
-  Using cached itsdangerous-2.1.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">15</span> kB<span style="color:#f92672">)</span>
-Collecting click&gt;<span style="color:#f92672">=</span>8.0
-  Using cached click-8.1.3-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">96</span> kB<span style="color:#f92672">)</span>
-Collecting Werkzeug&gt;<span style="color:#f92672">=</span>2.2.2
-  Using cached Werkzeug-2.2.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">232</span> kB<span style="color:#f92672">)</span>
-Collecting Jinja2&gt;<span style="color:#f92672">=</span>3.0
-  Using cached Jinja2-3.1.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">133</span> kB<span style="color:#f92672">)</span>
-Requirement already satisfied: setuptools&gt;<span style="color:#f92672">=</span>3.0 in c:<span style="color:#ae81ff">\u</span>sers<span style="color:#ae81ff">\h\d</span>esktop<span style="color:#ae81ff">\h</span>uman-cal-evan<span style="color:#ae81ff">\v</span>env<span style="color:#ae81ff">\l</span>ib<span style="color:#ae81ff">\s</span>ite-packages <span style="color:#f92672">(</span>from gunicorn<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>65.4.1<span style="color:#f92672">)</span>
-Collecting colorama
-  Downloading colorama-0.4.6-py2.py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">25</span> kB<span style="color:#f92672">)</span>
-Collecting MarkupSafe&gt;<span style="color:#f92672">=</span>2.0
-  Using cached MarkupSafe-2.1.1-cp310-cp310-win_amd64.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">17</span> kB<span style="color:#f92672">)</span>
-Installing collected packages: MarkupSafe, itsdangerous, gunicorn, colorama, Werkzeug, Jinja2, click, Flask
-Successfully installed Flask-2.2.2 Jinja2-3.1.2 MarkupSafe-2.1.1 Werkzeug-2.2.2 click-8.1.3 colorama-0.4.6 gunicorn-20.1.0 itsdangerous-2.1.2
-
-<span style="color:#f92672">[</span>notice<span style="color:#f92672">]</span> A new release of pip available: 22.2.2 -&gt; 22.3.1
-<span style="color:#f92672">[</span>notice<span style="color:#f92672">]</span> To update, run: python.exe -m pip install --upgrade pip
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ source venv/Scripts/activate
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ pip install Flask gunicorn
+</span></span><span style="display:flex;"><span>Collecting Flask
+</span></span><span style="display:flex;"><span>  Downloading Flask-2.2.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">101</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     -------------------------------------- 101.5/101.5 kB 6.1 MB/s eta 0:00:00
+</span></span><span style="display:flex;"><span>Collecting gunicorn
+</span></span><span style="display:flex;"><span>  Using cached gunicorn-20.1.0-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">79</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting itsdangerous&gt;<span style="color:#f92672">=</span>2.0
+</span></span><span style="display:flex;"><span>  Using cached itsdangerous-2.1.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">15</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting click&gt;<span style="color:#f92672">=</span>8.0
+</span></span><span style="display:flex;"><span>  Using cached click-8.1.3-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">96</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting Werkzeug&gt;<span style="color:#f92672">=</span>2.2.2
+</span></span><span style="display:flex;"><span>  Using cached Werkzeug-2.2.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">232</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting Jinja2&gt;<span style="color:#f92672">=</span>3.0
+</span></span><span style="display:flex;"><span>  Using cached Jinja2-3.1.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">133</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Requirement already satisfied: setuptools&gt;<span style="color:#f92672">=</span>3.0 in c:<span style="color:#ae81ff">\u</span>sers<span style="color:#ae81ff">\h\d</span>esktop<span style="color:#ae81ff">\h</span>uman-cal-evan<span style="color:#ae81ff">\v</span>env<span style="color:#ae81ff">\l</span>ib<span style="color:#ae81ff">\s</span>ite-packages <span style="color:#f92672">(</span>from gunicorn<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>65.4.1<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting colorama
+</span></span><span style="display:flex;"><span>  Downloading colorama-0.4.6-py2.py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">25</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting MarkupSafe&gt;<span style="color:#f92672">=</span>2.0
+</span></span><span style="display:flex;"><span>  Using cached MarkupSafe-2.1.1-cp310-cp310-win_amd64.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">17</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Installing collected packages: MarkupSafe, itsdangerous, gunicorn, colorama, Werkzeug, Jinja2, click, Flask
+</span></span><span style="display:flex;"><span>Successfully installed Flask-2.2.2 Jinja2-3.1.2 MarkupSafe-2.1.1 Werkzeug-2.2.2 click-8.1.3 colorama-0.4.6 gunicorn-20.1.0 itsdangerous-2.1.2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>notice<span style="color:#f92672">]</span> A new release of pip available: 22.2.2 -&gt; 22.3.1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>notice<span style="color:#f92672">]</span> To update, run: python.exe -m pip install --upgrade pip
+</span></span></code></pre></div><ul>
 <li>설치를 진행 후, <code>requirements.txt</code> 파일을 터미널에서 생성한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ pip freeze &gt; requirements.txt
-</code></pre></div><h3 id="2-apppy-파일">(2) app.py 파일</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ pip freeze &gt; requirements.txt
+</span></span></code></pre></div><h3 id="2-apppy-파일">(2) app.py 파일</h3>
 <ul>
 <li>VS Code를 연다.</li>
 <li>다음 코드를 작성한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># -*- coding: utf-8 -*-</span>
-
-<span style="color:#f92672">from</span> flask <span style="color:#f92672">import</span> Flask
-
-app <span style="color:#f92672">=</span> Flask(__name__)
-
-<span style="color:#a6e22e">@app.route</span>(<span style="color:#e6db74">&#34;/&#34;</span>)
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">index</span>():
-    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Hello World!&#34;</span>
-</code></pre></div><h3 id="3-procfile-파일">(3) Procfile 파일</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># -*- coding: utf-8 -*-</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> flask <span style="color:#f92672">import</span> Flask
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app <span style="color:#f92672">=</span> Flask(__name__)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.route</span>(<span style="color:#e6db74">&#34;/&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">index</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Hello World!&#34;</span>
+</span></span></code></pre></div><h3 id="3-procfile-파일">(3) Procfile 파일</h3>
 <ul>
 <li>WSGI 서버의 양대산맥 Gunicorn 과 uwsgi 중 하나.
 <ul>
@@ -354,87 +362,87 @@ app <span style="color:#f92672">=</span> Flask(__name__)
 <li>wsgi.py를 사용하면, 이 부분은 또 달라진다.</li>
 <li></li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">web: gunicorn app:app
-</code></pre></div><h3 id="4-runtimetxt-파일">(4) runtime.txt 파일</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>web: gunicorn app:app
+</span></span></code></pre></div><h3 id="4-runtimetxt-파일">(4) runtime.txt 파일</h3>
 <ul>
 <li>파이썬 버전을 명시한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">python<span style="color:#f92672">-</span><span style="color:#ae81ff">3.9</span><span style="color:#f92672">.</span><span style="color:#ae81ff">12</span>
-</code></pre></div><h3 id="5-배포">(5) 배포</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>python<span style="color:#f92672">-</span><span style="color:#ae81ff">3.9.12</span>
+</span></span></code></pre></div><h3 id="5-배포">(5) 배포</h3>
 <ul>
 <li>github와 Heroku에 배포를 동시에 진행하는 코드를 작성한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ git add .
-<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ git commit -m <span style="color:#e6db74">&#34;your_message&#34;</span>
-<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ git push <span style="color:#f92672">&amp;&amp;</span> git push heroku main
-Enumerating objects: 7, <span style="color:#66d9ef">done</span>.
-Counting objects: 100% <span style="color:#f92672">(</span>7/7<span style="color:#f92672">)</span>, <span style="color:#66d9ef">done</span>.
-Delta compression using up to <span style="color:#ae81ff">8</span> threads
-Compressing objects: 100% <span style="color:#f92672">(</span>4/4<span style="color:#f92672">)</span>, <span style="color:#66d9ef">done</span>.
-Writing objects: 100% <span style="color:#f92672">(</span>6/6<span style="color:#f92672">)</span>, <span style="color:#ae81ff">679</span> bytes | 339.00 KiB/s, <span style="color:#66d9ef">done</span>.
-Total <span style="color:#ae81ff">6</span> <span style="color:#f92672">(</span>delta 0<span style="color:#f92672">)</span>, reused <span style="color:#ae81ff">0</span> <span style="color:#f92672">(</span>delta 0<span style="color:#f92672">)</span>, pack-reused <span style="color:#ae81ff">0</span>
-To https://github.com/dschloe/human-cal-evan.git
-   06b2fe6..1158e96  main -&gt; main
-Enumerating objects: 10, <span style="color:#66d9ef">done</span>.
-Counting objects: 100% <span style="color:#f92672">(</span>10/10<span style="color:#f92672">)</span>, <span style="color:#66d9ef">done</span>.
-Delta compression using up to <span style="color:#ae81ff">8</span> threads
-Compressing objects: 100% <span style="color:#f92672">(</span>7/7<span style="color:#f92672">)</span>, <span style="color:#66d9ef">done</span>.
-Writing objects: 100% <span style="color:#f92672">(</span>10/10<span style="color:#f92672">)</span>, 2.22 KiB | 1.11 MiB/s, <span style="color:#66d9ef">done</span>.
-Total <span style="color:#ae81ff">10</span> <span style="color:#f92672">(</span>delta 0<span style="color:#f92672">)</span>, reused <span style="color:#ae81ff">4</span> <span style="color:#f92672">(</span>delta 0<span style="color:#f92672">)</span>, pack-reused <span style="color:#ae81ff">0</span>
-remote: Compressing source files... <span style="color:#66d9ef">done</span>.
-remote: Building source:
-remote:
-remote: -----&gt; Building on the Heroku-22 stack
-remote: -----&gt; Determining which buildpack to use <span style="color:#66d9ef">for</span> this app
-remote: -----&gt; Python app detected
-remote: -----&gt; Using Python version specified in runtime.txt
-remote:  !
-remote:  !     A Python security update is available! Upgrade as soon as possible to: python-3.9.15
-remote:  !     See: https://devcenter.heroku.com/articles/python-runtimes
-remote:  !
-remote: -----&gt; Installing python-3.9.12
-remote: -----&gt; Installing pip 22.3.1, setuptools 63.4.3 and wheel 0.37.1
-remote: -----&gt; Installing SQLite3
-remote: -----&gt; Installing requirements with pip
-remote:        Collecting click<span style="color:#f92672">==</span>8.1.3
-remote:          Downloading click-8.1.3-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">96</span> kB<span style="color:#f92672">)</span>
-remote:        Collecting colorama<span style="color:#f92672">==</span>0.4.6
-remote:          Downloading colorama-0.4.6-py2.py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">25</span> kB<span style="color:#f92672">)</span>
-remote:        Collecting Flask<span style="color:#f92672">==</span>2.2.2
-remote:          Downloading Flask-2.2.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">101</span> kB<span style="color:#f92672">)</span>
-remote:        Collecting gunicorn<span style="color:#f92672">==</span>20.1.0
-remote:          Downloading gunicorn-20.1.0-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">79</span> kB<span style="color:#f92672">)</span>
-remote:        Collecting itsdangerous<span style="color:#f92672">==</span>2.1.2
-remote:          Downloading itsdangerous-2.1.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">15</span> kB<span style="color:#f92672">)</span>
-remote:        Collecting Jinja2<span style="color:#f92672">==</span>3.1.2
-remote:          Downloading Jinja2-3.1.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">133</span> kB<span style="color:#f92672">)</span>
-remote:        Collecting MarkupSafe<span style="color:#f92672">==</span>2.1.1
-remote:          Downloading MarkupSafe-2.1.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">25</span> kB<span style="color:#f92672">)</span>
-remote:        Collecting Werkzeug<span style="color:#f92672">==</span>2.2.2
-remote:          Downloading Werkzeug-2.2.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">232</span> kB<span style="color:#f92672">)</span>
-remote:        Collecting importlib-metadata&gt;<span style="color:#f92672">=</span>3.6.0
-remote:          Downloading importlib_metadata-5.0.0-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">21</span> kB<span style="color:#f92672">)</span>
-remote:        Collecting zipp&gt;<span style="color:#f92672">=</span>0.5
-remote:          Downloading zipp-3.10.0-py3-none-any.whl <span style="color:#f92672">(</span>6.2 kB<span style="color:#f92672">)</span>
-remote:        Installing collected packages: zipp, MarkupSafe, itsdangerous, gunicorn, colorama, click, Werkzeug, Jinja2, importlib-metadata, Flask
-remote:        Successfully installed Flask-2.2.2 Jinja2-3.1.2 MarkupSafe-2.1.1 Werkzeug-2.2.2 click-8.1.3 colorama-0.4.6 gunicorn-20.1.0 importlib-metadata-5.0.0 itsdangerous-2.1.2 zipp-3.10.0
-remote: -----&gt; Discovering process types
-remote:        Procfile declares types -&gt; web
-remote:
-remote: -----&gt; Compressing...
-remote:        Done: 24.8M
-remote: -----&gt; Launching...
-remote:        Released v3
-remote:        https://human-cal-evan.herokuapp.com/ deployed to Heroku
-remote:
-remote: Starting November 28th, 2022, free Heroku Dynos, free Heroku Postgres, and free Heroku Data <span style="color:#66d9ef">for</span> Redis® will no longer be available.
-remote:
-remote: If you have apps using any of these resources, you must upgrade to paid plans by this date to ensure your apps <span style="color:#66d9ef">continue</span> to run and to retain your data. For students, we will announce a new program by the end of September. Learn more at https://blog.heroku.com/next-chapter
-remote:
-remote: Verifying deploy... <span style="color:#66d9ef">done</span>.
-To https://git.heroku.com/human-cal-evan.git
- * <span style="color:#f92672">[</span>new branch<span style="color:#f92672">]</span>      main -&gt; main
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ git add .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ git commit -m <span style="color:#e6db74">&#34;your_message&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ git push <span style="color:#f92672">&amp;&amp;</span> git push heroku main
+</span></span><span style="display:flex;"><span>Enumerating objects: 7, <span style="color:#66d9ef">done</span>.
+</span></span><span style="display:flex;"><span>Counting objects: 100% <span style="color:#f92672">(</span>7/7<span style="color:#f92672">)</span>, <span style="color:#66d9ef">done</span>.
+</span></span><span style="display:flex;"><span>Delta compression using up to <span style="color:#ae81ff">8</span> threads
+</span></span><span style="display:flex;"><span>Compressing objects: 100% <span style="color:#f92672">(</span>4/4<span style="color:#f92672">)</span>, <span style="color:#66d9ef">done</span>.
+</span></span><span style="display:flex;"><span>Writing objects: 100% <span style="color:#f92672">(</span>6/6<span style="color:#f92672">)</span>, <span style="color:#ae81ff">679</span> bytes | 339.00 KiB/s, <span style="color:#66d9ef">done</span>.
+</span></span><span style="display:flex;"><span>Total <span style="color:#ae81ff">6</span> <span style="color:#f92672">(</span>delta 0<span style="color:#f92672">)</span>, reused <span style="color:#ae81ff">0</span> <span style="color:#f92672">(</span>delta 0<span style="color:#f92672">)</span>, pack-reused <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>To https://github.com/dschloe/human-cal-evan.git
+</span></span><span style="display:flex;"><span>   06b2fe6..1158e96  main -&gt; main
+</span></span><span style="display:flex;"><span>Enumerating objects: 10, <span style="color:#66d9ef">done</span>.
+</span></span><span style="display:flex;"><span>Counting objects: 100% <span style="color:#f92672">(</span>10/10<span style="color:#f92672">)</span>, <span style="color:#66d9ef">done</span>.
+</span></span><span style="display:flex;"><span>Delta compression using up to <span style="color:#ae81ff">8</span> threads
+</span></span><span style="display:flex;"><span>Compressing objects: 100% <span style="color:#f92672">(</span>7/7<span style="color:#f92672">)</span>, <span style="color:#66d9ef">done</span>.
+</span></span><span style="display:flex;"><span>Writing objects: 100% <span style="color:#f92672">(</span>10/10<span style="color:#f92672">)</span>, 2.22 KiB | 1.11 MiB/s, <span style="color:#66d9ef">done</span>.
+</span></span><span style="display:flex;"><span>Total <span style="color:#ae81ff">10</span> <span style="color:#f92672">(</span>delta 0<span style="color:#f92672">)</span>, reused <span style="color:#ae81ff">4</span> <span style="color:#f92672">(</span>delta 0<span style="color:#f92672">)</span>, pack-reused <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>remote: Compressing source files... <span style="color:#66d9ef">done</span>.
+</span></span><span style="display:flex;"><span>remote: Building source:
+</span></span><span style="display:flex;"><span>remote:
+</span></span><span style="display:flex;"><span>remote: -----&gt; Building on the Heroku-22 stack
+</span></span><span style="display:flex;"><span>remote: -----&gt; Determining which buildpack to use <span style="color:#66d9ef">for</span> this app
+</span></span><span style="display:flex;"><span>remote: -----&gt; Python app detected
+</span></span><span style="display:flex;"><span>remote: -----&gt; Using Python version specified in runtime.txt
+</span></span><span style="display:flex;"><span>remote:  !
+</span></span><span style="display:flex;"><span>remote:  !     A Python security update is available! Upgrade as soon as possible to: python-3.9.15
+</span></span><span style="display:flex;"><span>remote:  !     See: https://devcenter.heroku.com/articles/python-runtimes
+</span></span><span style="display:flex;"><span>remote:  !
+</span></span><span style="display:flex;"><span>remote: -----&gt; Installing python-3.9.12
+</span></span><span style="display:flex;"><span>remote: -----&gt; Installing pip 22.3.1, setuptools 63.4.3 and wheel 0.37.1
+</span></span><span style="display:flex;"><span>remote: -----&gt; Installing SQLite3
+</span></span><span style="display:flex;"><span>remote: -----&gt; Installing requirements with pip
+</span></span><span style="display:flex;"><span>remote:        Collecting click<span style="color:#f92672">==</span>8.1.3
+</span></span><span style="display:flex;"><span>remote:          Downloading click-8.1.3-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">96</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>remote:        Collecting colorama<span style="color:#f92672">==</span>0.4.6
+</span></span><span style="display:flex;"><span>remote:          Downloading colorama-0.4.6-py2.py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">25</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>remote:        Collecting Flask<span style="color:#f92672">==</span>2.2.2
+</span></span><span style="display:flex;"><span>remote:          Downloading Flask-2.2.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">101</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>remote:        Collecting gunicorn<span style="color:#f92672">==</span>20.1.0
+</span></span><span style="display:flex;"><span>remote:          Downloading gunicorn-20.1.0-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">79</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>remote:        Collecting itsdangerous<span style="color:#f92672">==</span>2.1.2
+</span></span><span style="display:flex;"><span>remote:          Downloading itsdangerous-2.1.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">15</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>remote:        Collecting Jinja2<span style="color:#f92672">==</span>3.1.2
+</span></span><span style="display:flex;"><span>remote:          Downloading Jinja2-3.1.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">133</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>remote:        Collecting MarkupSafe<span style="color:#f92672">==</span>2.1.1
+</span></span><span style="display:flex;"><span>remote:          Downloading MarkupSafe-2.1.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">25</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>remote:        Collecting Werkzeug<span style="color:#f92672">==</span>2.2.2
+</span></span><span style="display:flex;"><span>remote:          Downloading Werkzeug-2.2.2-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">232</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>remote:        Collecting importlib-metadata&gt;<span style="color:#f92672">=</span>3.6.0
+</span></span><span style="display:flex;"><span>remote:          Downloading importlib_metadata-5.0.0-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">21</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>remote:        Collecting zipp&gt;<span style="color:#f92672">=</span>0.5
+</span></span><span style="display:flex;"><span>remote:          Downloading zipp-3.10.0-py3-none-any.whl <span style="color:#f92672">(</span>6.2 kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>remote:        Installing collected packages: zipp, MarkupSafe, itsdangerous, gunicorn, colorama, click, Werkzeug, Jinja2, importlib-metadata, Flask
+</span></span><span style="display:flex;"><span>remote:        Successfully installed Flask-2.2.2 Jinja2-3.1.2 MarkupSafe-2.1.1 Werkzeug-2.2.2 click-8.1.3 colorama-0.4.6 gunicorn-20.1.0 importlib-metadata-5.0.0 itsdangerous-2.1.2 zipp-3.10.0
+</span></span><span style="display:flex;"><span>remote: -----&gt; Discovering process types
+</span></span><span style="display:flex;"><span>remote:        Procfile declares types -&gt; web
+</span></span><span style="display:flex;"><span>remote:
+</span></span><span style="display:flex;"><span>remote: -----&gt; Compressing...
+</span></span><span style="display:flex;"><span>remote:        Done: 24.8M
+</span></span><span style="display:flex;"><span>remote: -----&gt; Launching...
+</span></span><span style="display:flex;"><span>remote:        Released v3
+</span></span><span style="display:flex;"><span>remote:        https://human-cal-evan.herokuapp.com/ deployed to Heroku
+</span></span><span style="display:flex;"><span>remote:
+</span></span><span style="display:flex;"><span>remote: Starting November 28th, 2022, free Heroku Dynos, free Heroku Postgres, and free Heroku Data <span style="color:#66d9ef">for</span> Redis® will no longer be available.
+</span></span><span style="display:flex;"><span>remote:
+</span></span><span style="display:flex;"><span>remote: If you have apps using any of these resources, you must upgrade to paid plans by this date to ensure your apps <span style="color:#66d9ef">continue</span> to run and to retain your data. For students, we will announce a new program by the end of September. Learn more at https://blog.heroku.com/next-chapter
+</span></span><span style="display:flex;"><span>remote:
+</span></span><span style="display:flex;"><span>remote: Verifying deploy... <span style="color:#66d9ef">done</span>.
+</span></span><span style="display:flex;"><span>To https://git.heroku.com/human-cal-evan.git
+</span></span><span style="display:flex;"><span> * <span style="color:#f92672">[</span>new branch<span style="color:#f92672">]</span>      main -&gt; main
+</span></span></code></pre></div><ul>
 <li>배포 실행 확인</li>
 </ul>
 <p><img src="/img/python/2022/11/heroku_deploy_final/Untitled%204.png" alt="Untitled"></p>
@@ -481,18 +489,18 @@ To https://git.heroku.com/human-cal-evan.git
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ heroku addons:create heroku-postgresql:hobby-dev
- »   Warning: heroku update available from 7.53.0 to 7.66.0.
-Creating heroku-postgresql:hobby-dev on ⬢ human-cal-evan... free
-Database has been created and is available
- ! This database is empty. If upgrading, you can transfer
- ! data from another database with pg:copy
-DEPRECATION NOTICE:
- Starting November 28th, 2022, ‘hobby-dev’ databases will no longer be available. To retain your data after this date, upgrade to ‘mini’ or another paid plan.
- Learn more in our blog <span style="color:#f92672">(</span>https://blog.heroku.com/new-low-cost-plans<span style="color:#f92672">)</span>
-Created postgresql-concave-93710 as DATABASE_URL
-Use heroku addons:docs heroku-postgresql to view documentation
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ heroku addons:create heroku-postgresql:hobby-dev
+</span></span><span style="display:flex;"><span> »   Warning: heroku update available from 7.53.0 to 7.66.0.
+</span></span><span style="display:flex;"><span>Creating heroku-postgresql:hobby-dev on ⬢ human-cal-evan... free
+</span></span><span style="display:flex;"><span>Database has been created and is available
+</span></span><span style="display:flex;"><span> ! This database is empty. If upgrading, you can transfer
+</span></span><span style="display:flex;"><span> ! data from another database with pg:copy
+</span></span><span style="display:flex;"><span>DEPRECATION NOTICE:
+</span></span><span style="display:flex;"><span> Starting November 28th, 2022, ‘hobby-dev’ databases will no longer be available. To retain your data after this date, upgrade to ‘mini’ or another paid plan.
+</span></span><span style="display:flex;"><span> Learn more in our blog <span style="color:#f92672">(</span>https://blog.heroku.com/new-low-cost-plans<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Created postgresql-concave-93710 as DATABASE_URL
+</span></span><span style="display:flex;"><span>Use heroku addons:docs heroku-postgresql to view documentation
+</span></span></code></pre></div><ul>
 <li>Heroku에 접속을 해서 실제 연동이 되었는지 확인한다.
 <ul>
 <li>참고 : <a href="https://data.heroku.com/">https://data.heroku.com/</a></li>
@@ -517,53 +525,53 @@ Use heroku addons:docs heroku-postgresql to view documentation
 <li>DB와 관련된 주요 라이브러리를 설치한다.</li>
 <li>설치 후, requirements.txt 파일을</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ pip install psycopg2 SQLAlchemy pandas
-<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ pip freeze &gt; requirements.txt
-</code></pre></div><h3 id="2-apppy-파일-수정-및-배포">(2) app.py 파일 수정 및 배포</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ pip install psycopg2 SQLAlchemy pandas
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ pip freeze &gt; requirements.txt
+</span></span></code></pre></div><h3 id="2-apppy-파일-수정-및-배포">(2) app.py 파일 수정 및 배포</h3>
 <ul>
 <li>iris.csv 파일은 <a href="https://www.kaggle.com/datasets/saurabh00007/iriscsv">https://www.kaggle.com/datasets/saurabh00007/iriscsv</a> 에서 가져와서 컬럼명을 가공하였다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># -*- coding: utf-8 -*-</span>
-<span style="color:#f92672">from</span> flask <span style="color:#f92672">import</span> Flask
-<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd 
-<span style="color:#f92672">from</span> sqlalchemy <span style="color:#f92672">import</span> create_engine, MetaData, Table, Column, Integer, String
-
-<span style="color:#75715e">## DB 연결 Local</span>
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">db_create</span>():
-	<span style="color:#75715e"># Heroku</span>
-    engine <span style="color:#f92672">=</span> create_engine(<span style="color:#e6db74">&#34;postgresql://your_url&#34;</span>, echo <span style="color:#f92672">=</span> False)
-
-    engine<span style="color:#f92672">.</span>connect()
-    engine<span style="color:#f92672">.</span>execute(<span style="color:#e6db74">&#34;&#34;&#34;
-</span><span style="color:#e6db74">        CREATE TABLE IF NOT EXISTS iris(
-</span><span style="color:#e6db74">            sepal_length FLOAT NOT NULL,
-</span><span style="color:#e6db74">            sepal_width FLOAT NOT NULL,
-</span><span style="color:#e6db74">            pepal_length FLOAT NOT NULL,
-</span><span style="color:#e6db74">            pepal_width FLOAT NOT NULL,
-</span><span style="color:#e6db74">            species VARCHAR(100) NOT NULL
-</span><span style="color:#e6db74">        );&#34;&#34;&#34;</span>
-    )
-    data <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;data/iris.csv&#39;</span>)
-    <span style="color:#66d9ef">print</span>(data)
-    data<span style="color:#f92672">.</span>to_sql(name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;iris&#39;</span>, con<span style="color:#f92672">=</span>engine, schema <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;public&#39;</span>, if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>, index<span style="color:#f92672">=</span>False)
-
-application <span style="color:#f92672">=</span> Flask(__name__)
-
-<span style="color:#a6e22e">@application.route</span>(<span style="color:#e6db74">&#34;/&#34;</span>)
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">index</span>():
-    <span style="color:#75715e"># db_create()</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;DB Created Done!!!&#34;</span>
-
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    db_create()
-    application<span style="color:#f92672">.</span>run()
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># -*- coding: utf-8 -*-</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> flask <span style="color:#f92672">import</span> Flask
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sqlalchemy <span style="color:#f92672">import</span> create_engine, MetaData, Table, Column, Integer, String
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## DB 연결 Local</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">db_create</span>():
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e"># Heroku</span>
+</span></span><span style="display:flex;"><span>    engine <span style="color:#f92672">=</span> create_engine(<span style="color:#e6db74">&#34;postgresql://your_url&#34;</span>, echo <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    engine<span style="color:#f92672">.</span>connect()
+</span></span><span style="display:flex;"><span>    engine<span style="color:#f92672">.</span>execute(<span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        CREATE TABLE IF NOT EXISTS iris(
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            sepal_length FLOAT NOT NULL,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            sepal_width FLOAT NOT NULL,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            pepal_length FLOAT NOT NULL,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            pepal_width FLOAT NOT NULL,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            species VARCHAR(100) NOT NULL
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        );&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    data <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;data/iris.csv&#39;</span>)
+</span></span><span style="display:flex;"><span>    print(data)
+</span></span><span style="display:flex;"><span>    data<span style="color:#f92672">.</span>to_sql(name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;iris&#39;</span>, con<span style="color:#f92672">=</span>engine, schema <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;public&#39;</span>, if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>, index<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>application <span style="color:#f92672">=</span> Flask(__name__)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@application.route</span>(<span style="color:#e6db74">&#34;/&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">index</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># db_create()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;DB Created Done!!!&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    db_create()
+</span></span><span style="display:flex;"><span>    application<span style="color:#f92672">.</span>run()
+</span></span></code></pre></div><ul>
 <li>코드 작성이 끝난 후, 배포를 재 진행한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ git add .
-<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ git commit -m <span style="color:#e6db74">&#34;your_message&#34;</span>
-<span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ git push <span style="color:#f92672">&amp;&amp;</span> git push heroku main
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ git add .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ git commit -m <span style="color:#e6db74">&#34;your_message&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>venv<span style="color:#f92672">)</span> $ git push <span style="color:#f92672">&amp;&amp;</span> git push heroku main
+</span></span></code></pre></div><ul>
 <li>정상적으로 배포가 되는지 확인한다.</li>
 </ul>
 <p><img src="/img/python/2022/11/heroku_deploy_final/Untitled%2011.png" alt="Untitled"></p>
@@ -606,8 +614,8 @@ application <span style="color:#f92672">=</span> Flask(__name__)
 <li>Query Tool을 클릭 후, 간단하게 조회 쿼리를 작성해서 확인해본다.</li>
 </ul>
 <p><img src="/img/python/2022/11/heroku_deploy_final/Untitled%2020.png" alt="Untitled"></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">SELECT * FROM iris;
-</code></pre></div><p><img src="/img/python/2022/11/heroku_deploy_final/Untitled%2021.png" alt="Untitled"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>SELECT * FROM iris;
+</span></span></code></pre></div><p><img src="/img/python/2022/11/heroku_deploy_final/Untitled%2021.png" alt="Untitled"></p>
 
 		</div>
 		<footer class="post__footer">
@@ -635,7 +643,7 @@ application <span style="color:#f92672">=</span> Flask(__name__)
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

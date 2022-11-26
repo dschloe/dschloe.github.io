@@ -9,31 +9,39 @@
 	<meta name="description" content="">
 		<meta property="og:title" content="Ch09 Struct, Tuple" />
 <meta property="og:description" content="1. 구글 클라우드 설정 본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.
- 만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery  위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다." />
+만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery 위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 BigQuery 권장사항: 비용 관리에서 확인하기를 바란다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/gcp/bigquery/02_basics/ch09_struct_and_tuple/" />
+<meta property="og:url" content="https://dschloe.github.io/gcp/bigquery/02_basics/ch09_struct_and_tuple/" /><meta property="article:section" content="GCP" />
 <meta property="article:published_time" content="2020-04-30T15:30:30+09:00" />
 <meta property="article:modified_time" content="2020-04-30T15:30:30+09:00" />
+
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Ch09 Struct, Tuple"/>
 <meta name="twitter:description" content="1. 구글 클라우드 설정 본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.
- 만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery  위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다."/>
+만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery 위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 BigQuery 권장사항: 비용 관리에서 확인하기를 바란다."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -174,10 +182,10 @@
 <p>위 API를 이용하지 않으면 <code>Python</code> 또는 <code>R</code>과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 <a href="https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko">BigQuery 권장사항: 비용 관리</a>에서 확인하기를 바란다.</p>
 <h2 id="2-사용자-계정-인증">2. 사용자 계정 인증</h2>
 <p>구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. <code>Gmail</code> 인증 절차와 비슷하다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> auth
-auth<span style="color:#f92672">.</span>authenticate_user()
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Authenticated&#39;</span>)
-</code></pre></div><pre><code>Authenticated
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> auth
+</span></span><span style="display:flex;"><span>auth<span style="color:#f92672">.</span>authenticate_user()
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;Authenticated&#39;</span>)
+</span></span></code></pre></div><pre><code>Authenticated
 </code></pre>
 <h2 id="3-쿼리-기본">3. 쿼리 기본</h2>
 <p>빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.</p>
@@ -200,22 +208,22 @@ auth<span style="color:#f92672">.</span>authenticate_user()
 <li>파이썬의 <a href="https://stackoverflow.com/questions/35988/c-like-structures-in-python">데이터 클래스</a>와 비슷함. (<a href="">C Structure</a>와 유사)</li>
 </ul>
 <p>우선 가상의 <code>Struct</code> 테이블을 만들어 본다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.cloud <span style="color:#f92672">import</span> bigquery
-<span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
-
-project_id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;your_project_id&#39;</span>
-client <span style="color:#f92672">=</span> bigquery<span style="color:#f92672">.</span>Client(project<span style="color:#f92672">=</span>project_id)
-
-temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">  SELECT
-</span><span style="color:#e6db74">    [
-</span><span style="color:#e6db74">      STRUCT(&#39;male&#39; as gender, [930660, 3955871] as numtrips)
-</span><span style="color:#e6db74">      , STRUCT(&#39;female&#39; as gender, [3236735, 1260893] as numtrips) 
-</span><span style="color:#e6db74">    ] AS bikerides
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-<span style="color:#66d9ef">print</span>(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
-</code></pre></div><pre><code>WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> google.cloud <span style="color:#f92672">import</span> bigquery
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>project_id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;your_project_id&#39;</span>
+</span></span><span style="display:flex;"><span>client <span style="color:#f92672">=</span> bigquery<span style="color:#f92672">.</span>Client(project<span style="color:#f92672">=</span>project_id)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  SELECT
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    [
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      STRUCT(&#39;male&#39; as gender, [930660, 3955871] as numtrips)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      , STRUCT(&#39;female&#39; as gender, [3236735, 1260893] as numtrips) 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    ] AS bikerides
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
+</span></span></code></pre></div><pre><code>WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
 
 
 |    | bikerides                                                                                                 |
@@ -225,38 +233,37 @@ temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</s
 <p>참고로 이번 포스트에서는 각각의 개념에 대해서만 살피고, 실 데이터에서 어떤 문제에서 Struct, ARRAY_AGG 등을 활용해서 쿼리를 작성해야 하는지는 추후에 포스팅 하겠다. 특히, 시계열 데이터를 다룰 때 매우 유용하게 접근 할 수 있음만 기억하자.</p>
 <h3 id="2-tuple">(2) Tuple</h3>
 <p>만약에 위 구문에서 struct과 별도의 필드명을 주지 않으면 어떻게 될까? 그러나 결과값은 위와 동일하게 나오게 하고싶다면 어떻게 작성해야 할까? 이 코드를 통해서 구조가 어떻게 되는지 이해하는 것이 중요하다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">  SELECT
-</span><span style="color:#e6db74">    [
-</span><span style="color:#e6db74">      (&#39;male&#39;, [930660, 3955871])
-</span><span style="color:#e6db74">      , (&#39;female&#39;, [3236735, 1260893]) 
-</span><span style="color:#e6db74">    ]
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-<span style="color:#66d9ef">print</span>(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
-</code></pre></div><pre><code>|    | f0_                                                                                                           |
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  SELECT
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    [
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      (&#39;male&#39;, [930660, 3955871])
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      , (&#39;female&#39;, [3236735, 1260893]) 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    ]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
+</span></span></code></pre></div><pre><code>|    | f0_                                                                                                           |
 |---:|:--------------------------------------------------------------------------------------------------------------|
 |  0 | [{'_field_1': 'male', '_field_2': [930660, 3955871]}, {'_field_1': 'female', '_field_2': [3236735, 1260893]}] |
 </code></pre>
 <p><code>f0_</code>라는 Cell안에 <code>_field_1</code>과 <code>field_2</code>라는 이름으로 구분되어 출력됨을 확인할 수 있다.</p>
 <h3 id="3-working-with-array">(3) Working with Array</h3>
 <p>이제, 여기에서 우리가 구하고 싶은 것은 <code>ARRAY</code>안에 있는 <code>numtrips</code>의 갯수와, gender의 두번째 값을 구한다고 가정합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">  SELECT 
-</span><span style="color:#e6db74">    ARRAY_LENGTH(bikerides) as num_items
-</span><span style="color:#e6db74">    , bikerides[OFFSET(1)].gender as second_gender
-</span><span style="color:#e6db74">  FROM 
-</span><span style="color:#e6db74">    (SELECT
-</span><span style="color:#e6db74">      [
-</span><span style="color:#e6db74">        STRUCT(&#39;male&#39; as gender, [930660, 3955871] as numtrips)
-</span><span style="color:#e6db74">        , STRUCT(&#39;female&#39; as gender, [3236735, 1260893] as numtrips) 
-</span><span style="color:#e6db74">      ] AS bikerides
-</span><span style="color:#e6db74">    ) 
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-<span style="color:#66d9ef">print</span>(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pipe&#39;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;keys&#39;</span>))
-
-</code></pre></div><pre><code>|    |   num_items | second_gender   |
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  SELECT 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    ARRAY_LENGTH(bikerides) as num_items
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    , bikerides[OFFSET(1)].gender as second_gender
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  FROM 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    (SELECT
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      [
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        STRUCT(&#39;male&#39; as gender, [930660, 3955871] as numtrips)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        , STRUCT(&#39;female&#39; as gender, [3236735, 1260893] as numtrips) 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      ] AS bikerides
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    ) 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pipe&#39;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;keys&#39;</span>))
+</span></span></code></pre></div><pre><code>|    |   num_items | second_gender   |
 |---:|------------:|:----------------|
 |  0 |           2 | female          |
 </code></pre>
@@ -308,7 +315,7 @@ temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</s
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

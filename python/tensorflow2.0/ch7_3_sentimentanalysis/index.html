@@ -8,36 +8,44 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="Tensorflow 2.0 Tutorial ch7.3 - 긍정, 부정 감성 분석" />
-<meta property="og:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2." />
+<meta property="og:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/python/tensorflow2.0/ch7_3_sentimentanalysis/" />
+<meta property="og:url" content="https://dschloe.github.io/python/tensorflow2.0/ch7_3_sentimentanalysis/" /><meta property="article:section" content="Python" />
 <meta property="article:published_time" content="2020-04-25T11:08:30+09:00" />
 <meta property="article:modified_time" content="2020-04-25T11:08:30+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Tensorflow 2.0 Tutorial ch7.3 - 긍정, 부정 감성 분석"/>
-<meta name="twitter:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2."/>
+<meta name="twitter:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -218,33 +226,33 @@
 <p>리뷰 중 10만 개븐 별점이 1-4로 부정적인 리뷰이고, 나머지 10만개는 9-10으로 긍정적인 리뷰입니다. 별점 5-8에 해당하는 리뷰는 중립적이라고도 볼 수 있지만, 데이터 세트에서는 제외합니다.</p>
 <h3 id="1-데이터-로드">(1) 데이터 로드</h3>
 <p>박은정 박사 깃허브에 올라와 있는 데이터를 가져오도록 합니다. 별도 파일을 로컬로 내려받을 필요 없이 직접 깃허브에서 가져와서 구글 코랩에 연동할 수 있도록 하는 코드입니다. 특히 딥러닝 예제는 일반적인 머신러닝과 달리 데이터의 양이 클 수 밖에 없습니다. 그러니, 꼭 참조하시기를 바랍니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
-<span style="color:#66d9ef">try</span>:
-    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
-    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
-<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
-    <span style="color:#66d9ef">pass</span>
-<span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
-<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
-<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">path_to_train_file <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;train.txt&#39;</span>, <span style="color:#e6db74">&#39;https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt&#39;</span>)
-path_to_test_file <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;test.txt&#39;</span>, <span style="color:#e6db74">&#39;https://raw.githubusercontent.com/e9t/nsmc/master/ratings_test.txt&#39;</span>)
-</code></pre></div><pre><code>Downloading data from https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>path_to_train_file <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;train.txt&#39;</span>, <span style="color:#e6db74">&#39;https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt&#39;</span>)
+</span></span><span style="display:flex;"><span>path_to_test_file <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;test.txt&#39;</span>, <span style="color:#e6db74">&#39;https://raw.githubusercontent.com/e9t/nsmc/master/ratings_test.txt&#39;</span>)
+</span></span></code></pre></div><pre><code>Downloading data from https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt
 14630912/14628807 [==============================] - 0s 0us/step
 Downloading data from https://raw.githubusercontent.com/e9t/nsmc/master/ratings_test.txt
 4898816/4893335 [==============================] - 0s 0us/step
 </code></pre>
 <p>다운로드가 완료되면 데이터를 메모리에 불러옵니다. 이 때 데이터가 어떻게 생겼는지 간단하게 확인해 볼 수 있습니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_text <span style="color:#f92672">=</span> open(path_to_train_file, <span style="color:#e6db74">&#39;rb&#39;</span>)<span style="color:#f92672">.</span>read()<span style="color:#f92672">.</span>decode(encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;utf-8&#39;</span>)
-test_text <span style="color:#f92672">=</span> open(path_to_test_file, <span style="color:#e6db74">&#39;rb&#39;</span>)<span style="color:#f92672">.</span>read()<span style="color:#f92672">.</span>decode(encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;utf-8&#39;</span>)
-
-<span style="color:#75715e"># 텍스트가 총 몇 자인지 확인해봅니다. </span>
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Length of text: {} characters&#39;</span><span style="color:#f92672">.</span>format(len(train_text)))
-<span style="color:#66d9ef">print</span>((<span style="color:#e6db74">&#39;Length of text: {} characters&#39;</span><span style="color:#f92672">.</span>format(len(test_text))))
-
-<span style="color:#75715e"># 처음 300자를 확인해봅니다. </span>
-<span style="color:#66d9ef">print</span>(train_text[:<span style="color:#ae81ff">300</span>])
-</code></pre></div><pre><code>Length of text: 6937271 characters
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train_text <span style="color:#f92672">=</span> open(path_to_train_file, <span style="color:#e6db74">&#39;rb&#39;</span>)<span style="color:#f92672">.</span>read()<span style="color:#f92672">.</span>decode(encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;utf-8&#39;</span>)
+</span></span><span style="display:flex;"><span>test_text <span style="color:#f92672">=</span> open(path_to_test_file, <span style="color:#e6db74">&#39;rb&#39;</span>)<span style="color:#f92672">.</span>read()<span style="color:#f92672">.</span>decode(encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;utf-8&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 텍스트가 총 몇 자인지 확인해봅니다. </span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;Length of text: </span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> characters&#39;</span><span style="color:#f92672">.</span>format(len(train_text)))
+</span></span><span style="display:flex;"><span>print((<span style="color:#e6db74">&#39;Length of text: </span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> characters&#39;</span><span style="color:#f92672">.</span>format(len(test_text))))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 처음 300자를 확인해봅니다. </span>
+</span></span><span style="display:flex;"><span>print(train_text[:<span style="color:#ae81ff">300</span>])
+</span></span></code></pre></div><pre><code>Length of text: 6937271 characters
 Length of text: 2318260 characters
 id	document	label
 9976970	아 더빙.. 진짜 짜증나네요 목소리	0
@@ -263,13 +271,13 @@ id	document	label
 <p>초기 수동으로 뽑은 데이터로 학습을 시킨 후, 계속 나오는 댓글을 테스트 데이터로 확인 후 재 라벨링하는 방법으로 오류를 개선하고 데이터층을 쌓는 노력을 계속해야 합니다.</p>
 <h3 id="2-학습을-위한-정답-데이터-y-만들기">(2) 학습을 위한 정답 데이터 (Y) 만들기</h3>
 <p>이제 학습을 위한 훈련 데이터와 테스트 데이터를 만들어 봅니다. 입력(X)에 해당하는 자연어의 처리는 복잡한 과정이기 때문에 조금 뒤에서 다루도록 하고 일단 0, 1만 존재하는 출력(Y)부터 처리해 봅니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 7.21 학습을 위한 정답 데이터(Y) 만들기</span>
-train_Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([[int(row<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">2</span>])] <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> train_text<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">1</span>:] <span style="color:#66d9ef">if</span> row<span style="color:#f92672">.</span>count(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>])
-test_Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([[int(row<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">2</span>])] <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> test_text<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">1</span>:] <span style="color:#66d9ef">if</span> row<span style="color:#f92672">.</span>count(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>])
-
-<span style="color:#66d9ef">print</span>(train_Y<span style="color:#f92672">.</span>shape, test_Y<span style="color:#f92672">.</span>shape)
-<span style="color:#66d9ef">print</span>(train_Y[:<span style="color:#ae81ff">5</span>])
-</code></pre></div><pre><code>(150000, 1) (50000, 1)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 7.21 학습을 위한 정답 데이터(Y) 만들기</span>
+</span></span><span style="display:flex;"><span>train_Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([[int(row<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">2</span>])] <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> train_text<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">1</span>:] <span style="color:#66d9ef">if</span> row<span style="color:#f92672">.</span>count(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>test_Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([[int(row<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">2</span>])] <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> test_text<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">1</span>:] <span style="color:#66d9ef">if</span> row<span style="color:#f92672">.</span>count(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(train_Y<span style="color:#f92672">.</span>shape, test_Y<span style="color:#f92672">.</span>shape)
+</span></span><span style="display:flex;"><span>print(train_Y[:<span style="color:#ae81ff">5</span>])
+</span></span></code></pre></div><pre><code>(150000, 1) (50000, 1)
 [[0]
  [1]
  [0]
@@ -289,91 +297,91 @@ test_Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</spa
 <ul>
 <li>원 소스코드는 <code>process_data.py</code>에 있습니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">import re
-
-def clean_str(string, TREC=False):
-    &#34;&#34;&#34;
-    Tokenization/string cleaning for all datasets except for SST.
-    Every dataset is lower cased except for TREC
-    &#34;&#34;&#34;
-    string = re.sub(r&#34;[^A-Za-z0-9(),!?\&#39;\`]&#34;, &#34; &#34;, string)     
-    string = re.sub(r&#34;\&#39;s&#34;, &#34; \&#39;s&#34;, string) 
-    string = re.sub(r&#34;\&#39;ve&#34;, &#34; \&#39;ve&#34;, string) 
-    string = re.sub(r&#34;n\&#39;t&#34;, &#34; n\&#39;t&#34;, string) 
-    string = re.sub(r&#34;\&#39;re&#34;, &#34; \&#39;re&#34;, string) 
-    string = re.sub(r&#34;\&#39;d&#34;, &#34; \&#39;d&#34;, string) 
-    string = re.sub(r&#34;\&#39;ll&#34;, &#34; \&#39;ll&#34;, string) 
-    string = re.sub(r&#34;,&#34;, &#34; , &#34;, string) 
-    string = re.sub(r&#34;!&#34;, &#34; ! &#34;, string) 
-    string = re.sub(r&#34;\(&#34;, &#34; \( &#34;, string) 
-    string = re.sub(r&#34;\)&#34;, &#34; \) &#34;, string) 
-    string = re.sub(r&#34;\?&#34;, &#34; \? &#34;, string) 
-    string = re.sub(r&#34;\s{2,}&#34;, &#34; &#34;, string)    
-
-    return string.strip() if TREC else string.strip().lower()
-</code></pre></div><p>우선 위 코드를 기반으로 코드를 작성합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 7.22 train 데이터의 입력(X)에 대한 정제(Cleaning)</span>
-<span style="color:#f92672">import</span> re
-<span style="color:#75715e"># From https://github.com/yoonkim/CNN_sentence/blob/master/process_data.py</span>
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">clean_str</span>(string):    
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;[^가-힣A-Za-z0-9(),!?\&#39;\`]&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;s&#34;</span>, <span style="color:#e6db74">&#34; </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">s&#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;ve&#34;</span>, <span style="color:#e6db74">&#34; </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">ve&#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;n\&#39;t&#34;</span>, <span style="color:#e6db74">&#34; n</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">t&#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;re&#34;</span>, <span style="color:#e6db74">&#34; </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">re&#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;d&#34;</span>, <span style="color:#e6db74">&#34; </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">d&#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;ll&#34;</span>, <span style="color:#e6db74">&#34; </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">ll&#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;,&#34;</span>, <span style="color:#e6db74">&#34; , &#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;!&#34;</span>, <span style="color:#e6db74">&#34; ! &#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\(&#34;</span>, <span style="color:#e6db74">&#34; \( &#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\)&#34;</span>, <span style="color:#e6db74">&#34; \) &#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\?&#34;</span>, <span style="color:#e6db74">&#34; \? &#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\s{2,}&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;{2,}&#34;</span>, <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#34;</span>, string)
-    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, string)
-
-    <span style="color:#66d9ef">return</span> string<span style="color:#f92672">.</span>lower()
-
-train_text_X <span style="color:#f92672">=</span> [row<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">1</span>] <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> train_text<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">1</span>:] <span style="color:#66d9ef">if</span> row<span style="color:#f92672">.</span>count(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>]
-train_text_X <span style="color:#f92672">=</span> [clean_str(sentence) <span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> train_text_X]
-<span style="color:#75715e"># 문장을 띄어쓰기 단위로 단어 분리</span>
-sentences <span style="color:#f92672">=</span> [sentence<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>) <span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> train_text_X]
-<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>):
-    <span style="color:#66d9ef">print</span>(sentences[i])
-</code></pre></div><pre><code>['아', '더빙', '진짜', '짜증나네요', '목소리']
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span>import re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def clean_str(string, TREC=False):
+</span></span><span style="display:flex;"><span>    &#34;&#34;&#34;
+</span></span><span style="display:flex;"><span>    Tokenization/string cleaning for all datasets except for SST.
+</span></span><span style="display:flex;"><span>    Every dataset is lower cased except for TREC
+</span></span><span style="display:flex;"><span>    &#34;&#34;&#34;
+</span></span><span style="display:flex;"><span>    string = re.sub(r&#34;[^A-Za-z0-9(),!?\&#39;\`]&#34;, &#34; &#34;, string)     
+</span></span><span style="display:flex;"><span>    string = re.sub(r&#34;\&#39;s&#34;, &#34; \&#39;s&#34;, string) 
+</span></span><span style="display:flex;"><span>    string = re.sub(r&#34;\&#39;ve&#34;, &#34; \&#39;ve&#34;, string) 
+</span></span><span style="display:flex;"><span>    string = re.sub(r&#34;n\&#39;t&#34;, &#34; n\&#39;t&#34;, string) 
+</span></span><span style="display:flex;"><span>    string = re.sub(r&#34;\&#39;re&#34;, &#34; \&#39;re&#34;, string) 
+</span></span><span style="display:flex;"><span>    string = re.sub(r&#34;\&#39;d&#34;, &#34; \&#39;d&#34;, string) 
+</span></span><span style="display:flex;"><span>    string = re.sub(r&#34;\&#39;ll&#34;, &#34; \&#39;ll&#34;, string) 
+</span></span><span style="display:flex;"><span>    string = re.sub(r&#34;,&#34;, &#34; , &#34;, string) 
+</span></span><span style="display:flex;"><span>    string = re.sub(r&#34;!&#34;, &#34; ! &#34;, string) 
+</span></span><span style="display:flex;"><span>    string = re.sub(r&#34;\(&#34;, &#34; \( &#34;, string) 
+</span></span><span style="display:flex;"><span>    string = re.sub(r&#34;\)&#34;, &#34; \) &#34;, string) 
+</span></span><span style="display:flex;"><span>    string = re.sub(r&#34;\?&#34;, &#34; \? &#34;, string) 
+</span></span><span style="display:flex;"><span>    string = re.sub(r&#34;\s{2,}&#34;, &#34; &#34;, string)    
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    return string.strip() if TREC else string.strip().lower()
+</span></span></code></pre></div><p>우선 위 코드를 기반으로 코드를 작성합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 7.22 train 데이터의 입력(X)에 대한 정제(Cleaning)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># From https://github.com/yoonkim/CNN_sentence/blob/master/process_data.py</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">clean_str</span>(string):    
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;[^가-힣A-Za-z0-9(),!?\&#39;\`]&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;s&#34;</span>, <span style="color:#e6db74">&#34; </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">s&#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;ve&#34;</span>, <span style="color:#e6db74">&#34; </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">ve&#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;n\&#39;t&#34;</span>, <span style="color:#e6db74">&#34; n</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">t&#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;re&#34;</span>, <span style="color:#e6db74">&#34; </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">re&#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;d&#34;</span>, <span style="color:#e6db74">&#34; </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">d&#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;ll&#34;</span>, <span style="color:#e6db74">&#34; </span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">ll&#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;,&#34;</span>, <span style="color:#e6db74">&#34; , &#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;!&#34;</span>, <span style="color:#e6db74">&#34; ! &#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\(&#34;</span>, <span style="color:#e6db74">&#34; \( &#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\)&#34;</span>, <span style="color:#e6db74">&#34; \) &#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\?&#34;</span>, <span style="color:#e6db74">&#34; \? &#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\s{2,}&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;{2,}&#34;</span>, <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#34;</span>, string)
+</span></span><span style="display:flex;"><span>    string <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\&#39;&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, string)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> string<span style="color:#f92672">.</span>lower()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>train_text_X <span style="color:#f92672">=</span> [row<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">1</span>] <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> train_text<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">1</span>:] <span style="color:#66d9ef">if</span> row<span style="color:#f92672">.</span>count(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>train_text_X <span style="color:#f92672">=</span> [clean_str(sentence) <span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> train_text_X]
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 문장을 띄어쓰기 단위로 단어 분리</span>
+</span></span><span style="display:flex;"><span>sentences <span style="color:#f92672">=</span> [sentence<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>) <span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> train_text_X]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>):
+</span></span><span style="display:flex;"><span>    print(sentences[i])
+</span></span></code></pre></div><pre><code>['아', '더빙', '진짜', '짜증나네요', '목소리']
 ['흠', '포스터보고', '초딩영화줄', '오버연기조차', '가볍지', '않구나']
 ['너무재밓었다그래서보는것을추천한다']
 ['교도소', '이야기구먼', '솔직히', '재미는', '없다', '평점', '조정']
 ['사이몬페그의', '익살스런', '연기가', '돋보였던', '영화', '!', '스파이더맨에서', '늙어보이기만', '했던', '커스틴', '던스트가', '너무나도', '이뻐보였다']
 </code></pre>
 <p><code>clean_str(string)</code> 함수는 다수의 정규표현식을 사용하고 있습니다만 첫 줄을 제외하면 세 번째 인수인 <code>string</code>에서 첫 번째 인수에 해당하는 내용을 찾아서 두 번째 인수로 단순히 교체해주는 것입니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;[^가-힣A-Za-z0-9(),!?\&#39;\`]&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>, string)
-</code></pre></div><p>위 정규표현식에서 특이한 점은 대괄호([])로 묶은 부분의 처음에 <code>^</code>가 들어가 있다는 점입니다. 이 기호는 대괄호 안의 내용을 찾은 다음에, 그에 포함되지 않는 나머지 모두를 선택한다는 뜻입니다. 즉, 한글, 영문, 숫자, 괄호, 쉽표, 느낌표, 물음표, 작은따옴표('), 역따옴표(`)를 제외한 나머지는 모두 찾아서 공백(&rdquo; &ldquo;)으로 바꾸겠다는 뜻입니다.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;[^가-힣A-Za-z0-9(),!?\&#39;\`]&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>, string)
+</span></span></code></pre></div><p>위 정규표현식에서 특이한 점은 대괄호([])로 묶은 부분의 처음에 <code>^</code>가 들어가 있다는 점입니다. 이 기호는 대괄호 안의 내용을 찾은 다음에, 그에 포함되지 않는 나머지 모두를 선택한다는 뜻입니다. 즉, 한글, 영문, 숫자, 괄호, 쉽표, 느낌표, 물음표, 작은따옴표(&rsquo;), 역따옴표(`)를 제외한 나머지는 모두 찾아서 공백(&rdquo; &ldquo;)으로 바꾸겠다는 뜻입니다.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></p>
 <p>훈련 데이터의 처음 다섯 개를 출력해보면 구두점(.) 기호가 삭제된 것을 확인할 수 있습니다. 그런데, 아시다시피, 네트워크에 입력하려면 데이터의 크기(문장의 길이)는 동일해야 하는데, 그렇지 않습니다. 긴 문장은 줄이고, 짧은 문장에는 공백을 의미하는 (<code>padding</code>)을 채워 넣어야 합니다.</p>
 <p>각 문장의 길이를 그래프로 그려봅니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-sentence_len <span style="color:#f92672">=</span> [len(sentence) <span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> sentences]
-sentence_len<span style="color:#f92672">.</span>sort()
-plt<span style="color:#f92672">.</span>plot(sentence_len)
-plt<span style="color:#f92672">.</span>show()
-
-<span style="color:#66d9ef">print</span>(sum([int(l<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">25</span>) <span style="color:#66d9ef">for</span> l <span style="color:#f92672">in</span> sentence_len]))
-</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_07_03/output_16_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>sentence_len <span style="color:#f92672">=</span> [len(sentence) <span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> sentences]
+</span></span><span style="display:flex;"><span>sentence_len<span style="color:#f92672">.</span>sort()
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(sentence_len)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(sum([int(l<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">25</span>) <span style="color:#66d9ef">for</span> l <span style="color:#f92672">in</span> sentence_len]))
+</span></span></code></pre></div><p><img src="/img/tensorflow2.0/tutorial_07_03/output_16_0.png" alt="png"></p>
 <pre><code>142587
 </code></pre>
 <h3 id="4-단어의-정제-및-문장-전처리">(4) 단어의 정제 및 문장 전처리</h3>
 <p>그래프의 Y축은 문장의 단어 개수입니다. 15만 개의 문장 중에서 대부분이 40단어 이하로 구성되어 있음을 확인할 수 있습니다. 특히 25단어 이하인 문장의 수는 <code>142,587</code>개로 전체의 95% 정도입니다. 따라서 기준이 되는 문장의 길이를 25단어로 잡고 이 이상은 생략, 이 이하는 패딩으로 길이를 25로 맞춰면 임베딩 레이어에 넣을 준비가 끝납니다.</p>
 <p>또 하나 고려해야 하는 것은 각 단어의 최대 길이를 조정하는 일입니다. 예를 들면, 훈련 데이터의 5번째 문장에서 <code>스파이더맨에서</code>라는 단어가 있는데, 이 단어는 엄밀히 말하면 조사를 제거하면 <code>스파이더맨</code>이라는 한 단어가 됩니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">sentence_new <span style="color:#f92672">=</span> []
-<span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> sentences:
-  sentence_new<span style="color:#f92672">.</span>append([word[:<span style="color:#ae81ff">5</span>] <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> sentence][:<span style="color:#ae81ff">25</span>])
-
-sentences <span style="color:#f92672">=</span> sentence_new
-
-<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>):
-  <span style="color:#66d9ef">print</span>(sentences[i])
-</code></pre></div><pre><code>['아', '더빙', '진짜', '짜증나네요', '목소리']
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>sentence_new <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> sentences:
+</span></span><span style="display:flex;"><span>  sentence_new<span style="color:#f92672">.</span>append([word[:<span style="color:#ae81ff">5</span>] <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> sentence][:<span style="color:#ae81ff">25</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sentences <span style="color:#f92672">=</span> sentence_new
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>):
+</span></span><span style="display:flex;"><span>  print(sentences[i])
+</span></span></code></pre></div><pre><code>['아', '더빙', '진짜', '짜증나네요', '목소리']
 ['흠', '포스터보고', '초딩영화줄', '오버연기조', '가볍지', '않구나']
 ['너무재밓었']
 ['교도소', '이야기구먼', '솔직히', '재미는', '없다', '평점', '조정']
@@ -381,16 +389,16 @@ sentences <span style="color:#f92672">=</span> sentence_new
 </code></pre>
 <p>단어의 길이가 최대 다섯 글자로 줄어든 것을 확인 할 수 있습니다.</p>
 <p>이제 앞에서 설명한 작업 중에서 짧은 문장을 같은 길이의 문장(25단어)으로 바꾸기 위한 패딩을 넣기 위해 <code>tf.keras</code>에서 제공하는 <code>pad_sequences</code>를 사용해봅니다. 또 모든 단어를 사용하지 않고 출현 빈도가 가장 높은 일부 단어만 사용하기 위해 <code>Tokenizer</code>도 같이 병행해서 사용합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> tensorflow.keras.preprocessing.text <span style="color:#f92672">import</span> Tokenizer
-<span style="color:#f92672">from</span> tensorflow.keras.preprocessing.sequence <span style="color:#f92672">import</span> pad_sequences
-
-tokenizer <span style="color:#f92672">=</span> Tokenizer(num_words<span style="color:#f92672">=</span><span style="color:#ae81ff">2000</span>)
-tokenizer<span style="color:#f92672">.</span>fit_on_texts(sentences)
-train_X <span style="color:#f92672">=</span> tokenizer<span style="color:#f92672">.</span>texts_to_sequences(sentences)
-train_X <span style="color:#f92672">=</span> pad_sequences(train_X, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;post&#39;</span>)
-
-<span style="color:#66d9ef">print</span>(train_X[:<span style="color:#ae81ff">5</span>])
-</code></pre></div><pre><code>[[  25  884    8 1111    0    0    0    0    0    0    0    0    0    0
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> tensorflow.keras.preprocessing.text <span style="color:#f92672">import</span> Tokenizer
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> tensorflow.keras.preprocessing.sequence <span style="color:#f92672">import</span> pad_sequences
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tokenizer <span style="color:#f92672">=</span> Tokenizer(num_words<span style="color:#f92672">=</span><span style="color:#ae81ff">2000</span>)
+</span></span><span style="display:flex;"><span>tokenizer<span style="color:#f92672">.</span>fit_on_texts(sentences)
+</span></span><span style="display:flex;"><span>train_X <span style="color:#f92672">=</span> tokenizer<span style="color:#f92672">.</span>texts_to_sequences(sentences)
+</span></span><span style="display:flex;"><span>train_X <span style="color:#f92672">=</span> pad_sequences(train_X, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;post&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(train_X[:<span style="color:#ae81ff">5</span>])
+</span></span></code></pre></div><pre><code>[[  25  884    8 1111    0    0    0    0    0    0    0    0    0    0
      0    0    0    0    0    0    0    0    0    0    0]
  [ 588    0    0    0    0    0    0    0    0    0    0    0    0    0
      0    0    0    0    0    0    0    0    0    0    0]
@@ -409,9 +417,9 @@ train_X <span style="color:#f92672">=</span> pad_sequences(train_X, padding<span
 <li><code>pad_sequences()</code>의 인수에는 <code>pre</code> &amp; <code>post</code>가 있는데, <code>pre</code>는 문장의 앞에 패딩을 넣고, <code>post</code>는 문장의 뒤에 패딩을 넣습니다. 여기에서는 <code>post</code>를 사용합니다.</li>
 </ul>
 <p>이렇게 정제된 데이터는 보시다시피 숫자로 변환이 되는 것입니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">for</span> idx, word <span style="color:#f92672">in</span> enumerate(range(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">26</span>), <span style="color:#ae81ff">1</span>):
-  <span style="color:#66d9ef">print</span>(idx, tokenizer<span style="color:#f92672">.</span>index_word[word])
-</code></pre></div><pre><code>1 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> idx, word <span style="color:#f92672">in</span> enumerate(range(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">26</span>), <span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>  print(idx, tokenizer<span style="color:#f92672">.</span>index_word[word])
+</span></span></code></pre></div><pre><code>1 
 2 !
 3 ,
 4 영화
@@ -440,15 +448,15 @@ train_X <span style="color:#f92672">=</span> pad_sequences(train_X, padding<span
 <p>각 번호마다 매칭되는 한글을 보려면 위와 같은 코드로 구현이 가능합니다. <code>range(1, 26)</code>에서 26을 바꾸면 원하는 범위까지 출력이 가능합니다. 이제 본격적으로 딥러닝 소스코드를 구현해서 모형을 만들도록 합니다.</p>
 <h3 id="5-딥러닝-모형-정의-및-학습">(5) 딥러닝 모형 정의 및 학습</h3>
 <p>이제 실제로 네트워크를 정의하고 학습시켜봅니다. 먼저 임베딩 레이어와 <code>LSTM</code>레이어를 연결한 뒤 마지막에 <code>Dense</code>레이어의 소프트맥스 활성화 함수를 사용해 긍정/부정을 분류하는 네트워크를 정의합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
-  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Embedding(<span style="color:#ae81ff">20000</span>, <span style="color:#ae81ff">300</span>, input_length<span style="color:#f92672">=</span><span style="color:#ae81ff">25</span>), 
-  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>LSTM(units<span style="color:#f92672">=</span><span style="color:#ae81ff">50</span>), 
-  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">2</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;softmax&#39;</span>)
-])
-
-model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sparse_categorical_crossentropy&#39;</span>, metrics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;accuracy&#39;</span>])
-model<span style="color:#f92672">.</span>summary()
-</code></pre></div><pre><code>Model: &quot;sequential&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Embedding(<span style="color:#ae81ff">20000</span>, <span style="color:#ae81ff">300</span>, input_length<span style="color:#f92672">=</span><span style="color:#ae81ff">25</span>), 
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>LSTM(units<span style="color:#f92672">=</span><span style="color:#ae81ff">50</span>), 
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">2</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;softmax&#39;</span>)
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sparse_categorical_crossentropy&#39;</span>, metrics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;accuracy&#39;</span>])
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>summary()
+</span></span></code></pre></div><pre><code>Model: &quot;sequential&quot;
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
 =================================================================
@@ -465,8 +473,8 @@ _________________________________________________________________
 </code></pre>
 <p>input_length 인수가 중요합니다. 데이터 전처리를 25기준으로 정해놨기 때문에, <code>input_length</code>로 정의했습니다.</p>
 <p><code>희소행렬(sparse_categorical_crossentropy)</code>에 관한 내용은 튜토리얼 5장-6장을 확인하여 주시기 바랍니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">history <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>fit(train_X, train_Y, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>, batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">128</span>, validation_split<span style="color:#f92672">=</span><span style="color:#ae81ff">0.2</span>)
-</code></pre></div><pre><code>Epoch 1/5
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>history <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>fit(train_X, train_Y, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>, batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">128</span>, validation_split<span style="color:#f92672">=</span><span style="color:#ae81ff">0.2</span>)
+</span></span></code></pre></div><pre><code>Epoch 1/5
 938/938 [==============================] - 69s 73ms/step - loss: 0.4898 - accuracy: 0.7383 - val_loss: 0.4517 - val_accuracy: 0.7685
 Epoch 2/5
 938/938 [==============================] - 68s 72ms/step - loss: 0.4481 - accuracy: 0.7649 - val_loss: 0.4469 - val_accuracy: 0.7707
@@ -480,24 +488,24 @@ Epoch 5/5
 <p>데이터가 많기 때문에 한번에 학습하는 데이터의 양인 batch_size를 128로 설정했고, 5에포크만 학습을 시킵니다. 학습 과정에서 <code>loss</code>는 꾸준히 감소하지만 <code>val_loss</code>는 점점 증가하는 것을 확인할 수 있습니다. 이는 네트워크가 과적합되고 있다는 것을 의미합니다.</p>
 <h3 id="6-모형-결과-시각화">(6) 모형 결과 시각화</h3>
 <p>학습 결과를 시각화로 확인해봅니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">4</span>))
-
-plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>)
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;loss&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;loss&#39;</span>)
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_loss&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_loss&#39;</span>)
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
-plt<span style="color:#f92672">.</span>legend()
-
-plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>)
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;accuracy&#39;</span>], <span style="color:#e6db74">&#39;g-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;accuracy&#39;</span>)
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_accuracy&#39;</span>], <span style="color:#e6db74">&#39;k--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_accuracy&#39;</span>)
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
-plt<span style="color:#f92672">.</span>ylim(<span style="color:#ae81ff">0.7</span>, <span style="color:#ae81ff">1</span>)
-plt<span style="color:#f92672">.</span>legend()
-
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_07_03/output_29_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">4</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;loss&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;loss&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_loss&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_loss&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>legend()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;accuracy&#39;</span>], <span style="color:#e6db74">&#39;g-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;accuracy&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_accuracy&#39;</span>], <span style="color:#e6db74">&#39;k--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_accuracy&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>ylim(<span style="color:#ae81ff">0.7</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>legend()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img src="/img/tensorflow2.0/tutorial_07_03/output_29_0.png" alt="png"></p>
 <p>왼쪽 그래프에서 <code>val_loss</code>는 증가하는데 비해, 오른쪽 그래프에서는 <code>val_accuracy</code>가 떨어지는 것으로 보아 네트워크가 과적합되는 것으로 보입니다.</p>
 <p>과적합의 이유는 임베딩 레이어를 랜덤한 값에서부터 시작해서 학습시키기 때문에 각 단어를 나타내는 벡터의 품질이 좋지 않아서입니다. 이를 개선하기 위해서는 임베딩 레이어를 별도로 학습시켜서 네트워크에 불러와서 사용하거나 <code>RNN</code>이 아닌 <code>CNN</code>을 사용하는 방법이 있습니다.</p>
 <p>이 부분은 추후 자료가 정리가 되면 추가적으로 기술하도록 합니다.</p>
@@ -505,40 +513,39 @@ plt<span style="color:#f92672">.</span>show()
 <p>학습된 네트워크에서 테스트 데이터는 어떻게 평가를 할까요? 확인을 위해 <code>test_text</code>에도 <code>train_text</code>와 같은 변환 과정을 거쳐서 <code>test_X</code>를 만듭니다.</p>
 <p>여기에서 한가지 주목해야 하는 것은 <code>train_X</code>를 만들 때 학습시킨 <code>Tokenizer</code>를 어떤 변경 없이 그대로 사용한다는 것입니다.</p>
 <p>이렇게 하는 이유는 테스트 데이터는 우리 손에 없다는 가정하에 작업을 진행합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">test_text_X <span style="color:#f92672">=</span> [row<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">1</span>] <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> test_text<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">1</span>:] <span style="color:#66d9ef">if</span> row<span style="color:#f92672">.</span>count(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>]
-test_text_X <span style="color:#f92672">=</span> [clean_str(sentence) <span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> test_text_X]
-
-<span style="color:#75715e"># 문장을 띄어쓰기 단위로 단어 분리</span>
-sentences <span style="color:#f92672">=</span> [sentence<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>) <span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> test_text_X]
-sentence_new <span style="color:#f92672">=</span> []
-<span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> sentences:
-  sentence_new<span style="color:#f92672">.</span>append([word[:<span style="color:#ae81ff">5</span>] <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> sentence][:<span style="color:#ae81ff">25</span>])
-
-sentences <span style="color:#f92672">=</span> sentence_new
-
-test_X <span style="color:#f92672">=</span> tokenizer<span style="color:#f92672">.</span>texts_to_sequences(sentences)
-test_X <span style="color:#f92672">=</span> pad_sequences(test_X, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;post&#39;</span>)
-
-model<span style="color:#f92672">.</span>evaluate(test_X, test_Y, verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
-
-</code></pre></div><pre><code>[0.4587577283382416, 0.7637199759483337]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>test_text_X <span style="color:#f92672">=</span> [row<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">1</span>] <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> test_text<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#ae81ff">1</span>:] <span style="color:#66d9ef">if</span> row<span style="color:#f92672">.</span>count(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>test_text_X <span style="color:#f92672">=</span> [clean_str(sentence) <span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> test_text_X]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 문장을 띄어쓰기 단위로 단어 분리</span>
+</span></span><span style="display:flex;"><span>sentences <span style="color:#f92672">=</span> [sentence<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>) <span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> test_text_X]
+</span></span><span style="display:flex;"><span>sentence_new <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> sentences:
+</span></span><span style="display:flex;"><span>  sentence_new<span style="color:#f92672">.</span>append([word[:<span style="color:#ae81ff">5</span>] <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> sentence][:<span style="color:#ae81ff">25</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sentences <span style="color:#f92672">=</span> sentence_new
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test_X <span style="color:#f92672">=</span> tokenizer<span style="color:#f92672">.</span>texts_to_sequences(sentences)
+</span></span><span style="display:flex;"><span>test_X <span style="color:#f92672">=</span> pad_sequences(test_X, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;post&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>evaluate(test_X, test_Y, verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span></code></pre></div><pre><code>[0.4587577283382416, 0.7637199759483337]
 </code></pre>
 <p>테스트 데이터의 정확도는 약 76%로 나왔습니다. 이는 검증 데이터와 비슷한 값입니다. 그렇다면 임의의 문장에 대한 감성 분석은 어떨까요? 순환 신경망이 입력의 변화에 따라 값이 변한다는 것을 확인하기 위해 하나의 문장을 잘라서 앞에서부터 차례로 입력합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">test_sentence <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;재미있을 줄 알았는데 완전 실망했다. 너무 졸리고 돈이 아까웠다.&#39;</span>
-test_sentence <span style="color:#f92672">=</span> test_sentence<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>)
-test_sentences <span style="color:#f92672">=</span> []
-now_sentence <span style="color:#f92672">=</span> []
-<span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> test_sentence:
-    now_sentence<span style="color:#f92672">.</span>append(word)
-    test_sentences<span style="color:#f92672">.</span>append(now_sentence[:])
-    
-test_X_1 <span style="color:#f92672">=</span> tokenizer<span style="color:#f92672">.</span>texts_to_sequences(test_sentences)
-test_X_1 <span style="color:#f92672">=</span> pad_sequences(test_X_1, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;post&#39;</span>, maxlen<span style="color:#f92672">=</span><span style="color:#ae81ff">25</span>)
-prediction <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(test_X_1)
-<span style="color:#66d9ef">for</span> idx, sentence <span style="color:#f92672">in</span> enumerate(test_sentences):
-    <span style="color:#66d9ef">print</span>(sentence)
-    <span style="color:#66d9ef">print</span>(prediction[idx])
-</code></pre></div><pre><code>['재미있을']
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>test_sentence <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;재미있을 줄 알았는데 완전 실망했다. 너무 졸리고 돈이 아까웠다.&#39;</span>
+</span></span><span style="display:flex;"><span>test_sentence <span style="color:#f92672">=</span> test_sentence<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>)
+</span></span><span style="display:flex;"><span>test_sentences <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>now_sentence <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> test_sentence:
+</span></span><span style="display:flex;"><span>    now_sentence<span style="color:#f92672">.</span>append(word)
+</span></span><span style="display:flex;"><span>    test_sentences<span style="color:#f92672">.</span>append(now_sentence[:])
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>test_X_1 <span style="color:#f92672">=</span> tokenizer<span style="color:#f92672">.</span>texts_to_sequences(test_sentences)
+</span></span><span style="display:flex;"><span>test_X_1 <span style="color:#f92672">=</span> pad_sequences(test_X_1, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;post&#39;</span>, maxlen<span style="color:#f92672">=</span><span style="color:#ae81ff">25</span>)
+</span></span><span style="display:flex;"><span>prediction <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(test_X_1)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> idx, sentence <span style="color:#f92672">in</span> enumerate(test_sentences):
+</span></span><span style="display:flex;"><span>    print(sentence)
+</span></span><span style="display:flex;"><span>    print(prediction[idx])
+</span></span></code></pre></div><pre><code>['재미있을']
 [0.5659361  0.43406394]
 ['재미있을', '줄']
 [0.55835325 0.44164675]
@@ -565,17 +572,17 @@ prediction <span style="color:#f92672">=</span> model<span style="color:#f92672"
 </ul>
 <h2 id="iv-reference">IV. Reference</h2>
 <p>김환희. (2020). 시작하세요! 텐서플로 2.0 프로그래밍: 기초 이론부터 실전 예제까지 한번에 끝내는 머신러닝, 딥러닝 핵심 가이드. 서울: 위키북스.</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
-<p>출처: <a href="https://github.com/yoonkim/cnn_sentence">https://github.com/yoonkim/cnn_sentence</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:1">
+<p>출처: <a href="https://github.com/yoonkim/cnn_sentence">https://github.com/yoonkim/cnn_sentence</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
-<p>파이썬 정규표현식 온라인 테스트: <a href="https://regex101.com/">https://regex101.com/</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:2">
+<p>파이썬 정규표현식 온라인 테스트: <a href="https://regex101.com/">https://regex101.com/</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
 		</div>
 		<footer class="post__footer">
@@ -627,7 +634,7 @@ prediction <span style="color:#f92672">=</span> model<span style="color:#f92672"
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

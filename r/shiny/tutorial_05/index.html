@@ -11,33 +11,41 @@
 <meta property="og:description" content="공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
 이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
 I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts  II. Shiny Deployment의 개요 이 영역은 웹개발자에게는 매우 쉬운 영역일 수도 있다." />
+shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts II. Shiny Deployment의 개요 이 영역은 웹개발자에게는 매우 쉬운 영역일 수도 있다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/r/shiny/tutorial_05/" />
+<meta property="og:url" content="https://dschloe.github.io/r/shiny/tutorial_05/" /><meta property="article:section" content="R" />
 <meta property="article:published_time" content="2020-03-31T01:10:39+09:00" />
 <meta property="article:modified_time" content="2020-03-31T01:10:39+09:00" />
+
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="shiny tutorial 05 - Sharing Apps"/>
 <meta name="twitter:description" content="공지 이번에 준비한 튜토리얼은 제 강의를 듣는 과거-현재-미래 수강생분들을 위해 준비한 자료이다. 많은 도움이 되기를 바란다
 이번에 준비한 Tutorial 코로나 세계현황을 Shiny Dashboard로 만들어 가는 과정을 담았다.
 I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼이 궁금한 사람들을 위해 이전 글을 소개한다.
- shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts  II. Shiny Deployment의 개요 이 영역은 웹개발자에게는 매우 쉬운 영역일 수도 있다."/>
+shiny tutorial 01 - get started shiny tutorial 02 - Shiny Structure shiny tutorial 03 - HTML content shiny tutorial 04 - Shiny Layouts II. Shiny Deployment의 개요 이 영역은 웹개발자에게는 매우 쉬운 영역일 수도 있다."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -195,49 +203,49 @@ I. 이전 글 소개 처음 shiny를 접하거나 shiny의 전체 튜토리얼�
 <li>소스코드는 Shiny User Case에 있는 <a href="https://shiny.rstudio.com/gallery/kmeans-example.html">Iris K-Means Clustering</a>에서 가져왔다.</li>
 <li><code>app.R</code></li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(shiny)
-iris <span style="color:#f92672">&lt;-</span> iris
-vars <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">setdiff</span>(<span style="color:#a6e22e">names</span>(iris), <span style="color:#e6db74">&#34;Species&#34;</span>)
-
-ui <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">pageWithSidebar</span>(
-  <span style="color:#a6e22e">headerPanel</span>(<span style="color:#e6db74">&#39;Iris k-means clustering&#39;</span>),
-  <span style="color:#a6e22e">sidebarPanel</span>(
-    <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;xcol&#39;</span>, <span style="color:#e6db74">&#39;X Variable&#39;</span>, vars),
-    <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;ycol&#39;</span>, <span style="color:#e6db74">&#39;Y Variable&#39;</span>, vars, selected <span style="color:#f92672">=</span> vars[[2]]),
-    <span style="color:#a6e22e">numericInput</span>(<span style="color:#e6db74">&#39;clusters&#39;</span>, <span style="color:#e6db74">&#39;Cluster count&#39;</span>, <span style="color:#ae81ff">3</span>, min <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, max <span style="color:#f92672">=</span> <span style="color:#ae81ff">9</span>)
-    ),
-  <span style="color:#a6e22e">mainPanel</span>(
-    <span style="color:#a6e22e">plotOutput</span>(<span style="color:#e6db74">&#39;plot1&#39;</span>)
-  )
-)
-
-server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(input, output, session) {
-
-  <span style="color:#75715e"># Combine the selected variables into a new data frame</span>
-  selectedData <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">reactive</span>({
-    iris[, <span style="color:#a6e22e">c</span>(input<span style="color:#f92672">$</span>xcol, input<span style="color:#f92672">$</span>ycol)]
-  })
-
-  clusters <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">reactive</span>({
-    <span style="color:#a6e22e">kmeans</span>(<span style="color:#a6e22e">selectedData</span>(), input<span style="color:#f92672">$</span>clusters)
-  })
-
-  output<span style="color:#f92672">$</span>plot1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">renderPlot</span>({
-    <span style="color:#a6e22e">palette</span>(<span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;#E41A1C&#34;</span>, <span style="color:#e6db74">&#34;#377EB8&#34;</span>, <span style="color:#e6db74">&#34;#4DAF4A&#34;</span>, <span style="color:#e6db74">&#34;#984EA3&#34;</span>,
-      <span style="color:#e6db74">&#34;#FF7F00&#34;</span>, <span style="color:#e6db74">&#34;#FFFF33&#34;</span>, <span style="color:#e6db74">&#34;#A65628&#34;</span>, <span style="color:#e6db74">&#34;#F781BF&#34;</span>, <span style="color:#e6db74">&#34;#999999&#34;</span>))
-
-    <span style="color:#a6e22e">par</span>(mar <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">5.1</span>, <span style="color:#ae81ff">4.1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>))
-    <span style="color:#a6e22e">plot</span>(<span style="color:#a6e22e">selectedData</span>(),
-         col <span style="color:#f92672">=</span> <span style="color:#a6e22e">clusters</span>()<span style="color:#f92672">$</span>cluster,
-         pch <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>, cex <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>)
-    <span style="color:#a6e22e">points</span>(<span style="color:#a6e22e">clusters</span>()<span style="color:#f92672">$</span>centers, pch <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>, cex <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>, lwd <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>)
-  })
-
-}
-
-<span style="color:#75715e"># Run the application </span>
-<span style="color:#a6e22e">shinyApp</span>(ui <span style="color:#f92672">=</span> ui, server <span style="color:#f92672">=</span> server)
-</code></pre></div><pre><code>## 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(shiny)
+</span></span><span style="display:flex;"><span>iris <span style="color:#f92672">&lt;-</span> iris
+</span></span><span style="display:flex;"><span>vars <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">setdiff</span>(<span style="color:#a6e22e">names</span>(iris), <span style="color:#e6db74">&#34;Species&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ui <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">pageWithSidebar</span>(
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">headerPanel</span>(<span style="color:#e6db74">&#39;Iris k-means clustering&#39;</span>),
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">sidebarPanel</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;xcol&#39;</span>, <span style="color:#e6db74">&#39;X Variable&#39;</span>, vars),
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">selectInput</span>(<span style="color:#e6db74">&#39;ycol&#39;</span>, <span style="color:#e6db74">&#39;Y Variable&#39;</span>, vars, selected <span style="color:#f92672">=</span> vars[[2]]),
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">numericInput</span>(<span style="color:#e6db74">&#39;clusters&#39;</span>, <span style="color:#e6db74">&#39;Cluster count&#39;</span>, <span style="color:#ae81ff">3</span>, min <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, max <span style="color:#f92672">=</span> <span style="color:#ae81ff">9</span>)
+</span></span><span style="display:flex;"><span>    ),
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mainPanel</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">plotOutput</span>(<span style="color:#e6db74">&#39;plot1&#39;</span>)
+</span></span><span style="display:flex;"><span>  )
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(input, output, session) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Combine the selected variables into a new data frame</span>
+</span></span><span style="display:flex;"><span>  selectedData <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">reactive</span>({
+</span></span><span style="display:flex;"><span>    iris[, <span style="color:#a6e22e">c</span>(input<span style="color:#f92672">$</span>xcol, input<span style="color:#f92672">$</span>ycol)]
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  clusters <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">reactive</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">kmeans</span>(<span style="color:#a6e22e">selectedData</span>(), input<span style="color:#f92672">$</span>clusters)
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  output<span style="color:#f92672">$</span>plot1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">renderPlot</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">palette</span>(<span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;#E41A1C&#34;</span>, <span style="color:#e6db74">&#34;#377EB8&#34;</span>, <span style="color:#e6db74">&#34;#4DAF4A&#34;</span>, <span style="color:#e6db74">&#34;#984EA3&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;#FF7F00&#34;</span>, <span style="color:#e6db74">&#34;#FFFF33&#34;</span>, <span style="color:#e6db74">&#34;#A65628&#34;</span>, <span style="color:#e6db74">&#34;#F781BF&#34;</span>, <span style="color:#e6db74">&#34;#999999&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">par</span>(mar <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">5.1</span>, <span style="color:#ae81ff">4.1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">plot</span>(<span style="color:#a6e22e">selectedData</span>(),
+</span></span><span style="display:flex;"><span>         col <span style="color:#f92672">=</span> <span style="color:#a6e22e">clusters</span>()<span style="color:#f92672">$</span>cluster,
+</span></span><span style="display:flex;"><span>         pch <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>, cex <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">points</span>(<span style="color:#a6e22e">clusters</span>()<span style="color:#f92672">$</span>centers, pch <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>, cex <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>, lwd <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Run the application </span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">shinyApp</span>(ui <span style="color:#f92672">=</span> ui, server <span style="color:#f92672">=</span> server)
+</span></span></code></pre></div><pre tabindex="0"><code>## 
 ## Listening on http://127.0.0.1:8977
 </code></pre><ul>
 <li><code>Shiny App</code>을 실행하고 난 후에 우측 상단의 <code>Publish</code> 버튼을 클릭한다.</li>
@@ -257,7 +265,7 @@ server <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">func
 <p><img src="/img/shiny/tutorial_05/shiny06.png" alt=""><!-- raw HTML omitted --></p>
 <p>복사한 소스코드는 <code>Connect ShinyApps.io Account</code>에 붙여넣기 한후 <code>Connect Account</code>를 실행한뒤 <code>Publish to Server</code> 팝업창에서 <code>Publish</code> 버튼을 클릭하면 연동이 완료된다. 이 때 <code>Shiny Project Title</code>은 URL에 적용되므로 참고하기를 바란다. 강사는 <code>shinyProject_Test</code> 이름으로 <code>Title</code>을 적용했다.</p>
 <p>Publishing을 진행하면 Deploy창이 활성화되면서 아래와 같은 메시지가 출력이 되기 시작할 것이다. App이 무거우면 배포하는데도 시간이 소요되므로 이 부분은 참고하기를 바란다.</p>
-<pre><code>Preparing to deploy application...DONE
+<pre tabindex="0"><code>Preparing to deploy application...DONE
 Uploading bundle for application: 2027237...DONE
 Deploying bundle: 2948176 for application: 2027237 ...
 Waiting for task: 709961221
@@ -334,7 +342,7 @@ Deployment completed: https://chloevan.shinyapps.io/shinyProject_Test/
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

@@ -9,31 +9,39 @@
 	<meta name="description" content="">
 		<meta property="og:title" content="Ch08_Creating_Arrays_with_Array_AGG" />
 <meta property="og:description" content="1. 구글 클라우드 설정 본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.
- 만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery  위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다." />
+만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery 위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 BigQuery 권장사항: 비용 관리에서 확인하기를 바란다." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/gcp/bigquery/02_basics/ch08_creating_arrays_with_array_agg/" />
+<meta property="og:url" content="https://dschloe.github.io/gcp/bigquery/02_basics/ch08_creating_arrays_with_array_agg/" /><meta property="article:section" content="GCP" />
 <meta property="article:published_time" content="2020-04-29T10:30:30+09:00" />
 <meta property="article:modified_time" content="2020-04-29T10:30:30+09:00" />
+
 
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Ch08_Creating_Arrays_with_Array_AGG"/>
 <meta name="twitter:description" content="1. 구글 클라우드 설정 본격적인 빅쿼리 실습에 앞서서, Python과 연동하는 예제를 준비하였다. 빅쿼리 시작에 앞서서 선행적으로 클라우드 사용을 해야 한다.
- 만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery  위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다."/>
+만약 GCP 프로젝트가 없다면, 계정을 연동한다. Go to Cloud Resource Manager 그리고, 비용결제를 위한 카드를 등록한다. Enable billing 마지막으로 BigQuery API를 사용해야 하기 때문에 빅쿼리 API 사용허가를 내준다.Enable BigQuery 위 API를 이용하지 않으면 Python 또는 R과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 BigQuery 권장사항: 비용 관리에서 확인하기를 바란다."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -174,10 +182,10 @@
 <p>위 API를 이용하지 않으면 <code>Python</code> 또는 <code>R</code>과 연동해서 사용할 수는 없다. 자주 쓰는것이 아니라면 비용은 거의 발생하지 않으니 염려하지 않아도 된다. 비용관리에 대한 자세한 내용은 <a href="https://cloud.google.com/bigquery/docs/best-practices-costs?hl=ko">BigQuery 권장사항: 비용 관리</a>에서 확인하기를 바란다.</p>
 <h2 id="2-사용자-계정-인증">2. 사용자 계정 인증</h2>
 <p>구글 코랩을 사용해서 인증 절차를 밟도록 한다. 아래 소스코드는 변경시키지 않는다. 아래 절차대로 진행하면 된다. <code>Gmail</code> 인증 절차와 비슷하다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> auth
-auth<span style="color:#f92672">.</span>authenticate_user()
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Authenticated&#39;</span>)
-</code></pre></div><pre><code>Authenticated
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> auth
+</span></span><span style="display:flex;"><span>auth<span style="color:#f92672">.</span>authenticate_user()
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;Authenticated&#39;</span>)
+</span></span></code></pre></div><pre><code>Authenticated
 </code></pre>
 <h2 id="3-쿼리-기본">3. 쿼리 기본</h2>
 <p>빅쿼리는 기본적으로 데이터 웨어하우스의 기능을 가지고 있다. Structured(데이터프레임) &amp; Semi-Structured(JSON)과 같은 DB를 지원하고 있다. Create, Read, Update, Delete 기능을 지원한다.</p>
@@ -194,26 +202,26 @@ auth<span style="color:#f92672">.</span>authenticate_user()
 <p>오늘 포스트에서는 <code>ARRAY_AGG</code>을 활용하도록 한다. 한국말로는 다중 집계함수, 배열 집계함수 라고 표현하는 것 같기도 하지만, 가급적 원어의 의미를 그대로 담아내고자 <code>ARRAY_AGG</code>를 사용하였다.</p>
 <p>우선, <code>gender</code>와 <code>year</code>에 따른 <code>trips이 개수</code> 구하는 쿼리를 작성해본다.</p>
 <h3 id="1-without-array_agg">(1) Without ARRAY_AGG</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> google.cloud <span style="color:#f92672">import</span> bigquery
-<span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
-
-project_id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;your_project_id&#39;</span>
-client <span style="color:#f92672">=</span> bigquery<span style="color:#f92672">.</span>Client(project<span style="color:#f92672">=</span>project_id)
-
-temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">  SELECT 
-</span><span style="color:#e6db74">    gender
-</span><span style="color:#e6db74">    , EXTRACT(YEAR from starttime) AS year --
-</span><span style="color:#e6db74">    , COUNT(*) AS numtrips
-</span><span style="color:#e6db74">   
-</span><span style="color:#e6db74">  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
-</span><span style="color:#e6db74">  WHERE gender != &#39;unknown&#39; and starttime IS NOT NULL
-</span><span style="color:#e6db74">  GROUP BY gender, year
-</span><span style="color:#e6db74">  HAVING year &gt; 2016  
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-<span style="color:#66d9ef">print</span>(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
-</code></pre></div><pre><code>WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> google.cloud <span style="color:#f92672">import</span> bigquery
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> tabulate <span style="color:#f92672">import</span> tabulate
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>project_id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;your_project_id&#39;</span>
+</span></span><span style="display:flex;"><span>client <span style="color:#f92672">=</span> bigquery<span style="color:#f92672">.</span>Client(project<span style="color:#f92672">=</span>project_id)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  SELECT 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    gender
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    , EXTRACT(YEAR from starttime) AS year --
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    , COUNT(*) AS numtrips
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">   
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  WHERE gender != &#39;unknown&#39; and starttime IS NOT NULL
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  GROUP BY gender, year
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  HAVING year &gt; 2016  
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pipe&#34;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;keys&#34;</span>))
+</span></span></code></pre></div><pre><code>WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
 
 
 |    | gender   |   year |   numtrips |
@@ -226,35 +234,34 @@ temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</s
 <h3 id="2-쿼리-작성-tip">(2) 쿼리 작성 Tip</h3>
 <p><code>SELECT</code> 구문을 짤 때, <code>,</code>가 쿼리문 맨 앞쪽에 오면 주석 처리 하기가 용이해지는 장점이 있다.</p>
 <p>간단한 예를 들면,</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">SELECT</span> 
-  gender
-  , <span style="color:#66d9ef">EXTRACT</span>(<span style="color:#66d9ef">YEAR</span> <span style="color:#66d9ef">from</span> starttime) <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">year</span> <span style="color:#75715e">-- extract year
-</span><span style="color:#75715e"></span>  , <span style="color:#66d9ef">COUNT</span>(<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">AS</span> numtrips  <span style="color:#75715e">-- count the number of trips
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">FROM</span> 
-  etc
-</code></pre></div><p>위에서 보는 것처럼, 주석 처리의 가독성이 한결 좋아진 것이 눈에 들어온다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>  gender
+</span></span><span style="display:flex;"><span>  , <span style="color:#66d9ef">EXTRACT</span>(<span style="color:#66d9ef">YEAR</span> <span style="color:#66d9ef">from</span> starttime) <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">year</span> <span style="color:#75715e">-- extract year
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  , <span style="color:#66d9ef">COUNT</span>(<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">AS</span> numtrips  <span style="color:#75715e">-- count the number of trips
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">FROM</span> 
+</span></span><span style="display:flex;"><span>  etc
+</span></span></code></pre></div><p>위에서 보는 것처럼, 주석 처리의 가독성이 한결 좋아진 것이 눈에 들어온다.</p>
 <h3 id="3-with-array_agg">(3) WITH ARRAY_AGG</h3>
 <p>그런데, ARRAY_AGG를 활용하지 않을 때 문제점은 <code>gender</code>의 구분이 조금 불명확다는 데 있다. 이러한 단점을 <code>ARRAY_AGG</code>를 활용하면 만회할 수 있다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">  SELECT
-</span><span style="color:#e6db74">    gender
-</span><span style="color:#e6db74">    , ARRAY_AGG(numtrips order by year) AS numtrips
-</span><span style="color:#e6db74">  FROM (
-</span><span style="color:#e6db74">    SELECT
-</span><span style="color:#e6db74">      gender
-</span><span style="color:#e6db74">      , EXTRACT(YEAR from starttime) AS year --
-</span><span style="color:#e6db74">      , COUNT(*) AS numtrips
-</span><span style="color:#e6db74">    FROM `bigquery-public-data.new_york_citibike.citibike_trips`
-</span><span style="color:#e6db74">    WHERE gender != &#39;unknown&#39; and starttime IS NOT NULL
-</span><span style="color:#e6db74">    GROUP BY gender, year
-</span><span style="color:#e6db74">    HAVING year &gt; 2016  
-</span><span style="color:#e6db74">  )
-</span><span style="color:#e6db74">  GROUP BY gender 
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-<span style="color:#66d9ef">print</span>(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pipe&#39;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;keys&#39;</span>))
-
-</code></pre></div><pre><code>|    | gender   | numtrips           |
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  SELECT
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    gender
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    , ARRAY_AGG(numtrips order by year) AS numtrips
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  FROM (
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    SELECT
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      gender
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      , EXTRACT(YEAR from starttime) AS year --
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      , COUNT(*) AS numtrips
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    FROM `bigquery-public-data.new_york_citibike.citibike_trips`
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    WHERE gender != &#39;unknown&#39; and starttime IS NOT NULL
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    GROUP BY gender, year
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    HAVING year &gt; 2016  
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  )
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  GROUP BY gender 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pipe&#39;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;keys&#39;</span>))
+</span></span></code></pre></div><pre><code>|    | gender   | numtrips           |
 |---:|:---------|:-------------------|
 |  0 | male     | [9306602, 3955871] |
 |  1 | female   | [3236735, 1260893] |
@@ -262,17 +269,17 @@ temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</s
 <p>ARRAY Type의 장점은 쿼리의 결과값에 제한이 없다는 점이다. 또한, 결과값을 JSON 형태로 출력함으로써, 업무의 형태를 다양하게 가져갈 수 있다는 장점이 있다.</p>
 <p>그런데, 한가지 고려해야 할 사항이 있다. 테이블 형태로 저장하지 않는한 NULL 요소는 일반적으로 Array에서는 허용이 된다. 즉, (예:, [1, NULL, 2]) 형태로 임시저장하는 형태의 코드는 작동하지 않는다.</p>
 <p>다음 코드를 예드를 들어보자.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">  WITH example AS (
-</span><span style="color:#e6db74">    SELECT true AS is_vowel, &#39;a&#39; as letter, 1 as position
-</span><span style="color:#e6db74">    UNION ALL SELECT false, &#39;b&#39;, 2
-</span><span style="color:#e6db74">    UNION ALL SELECT false, &#39;c&#39;, 3
-</span><span style="color:#e6db74">  )
-</span><span style="color:#e6db74">  SELECT ARRAY_AGG(IF(position=2, NULL, position)) as positions from example
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-<span style="color:#66d9ef">print</span>(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pipe&#39;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;keys&#39;</span>))
-</code></pre></div><pre><code>ERROR:root:An unexpected error occurred while tokenizing input
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  WITH example AS (
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    SELECT true AS is_vowel, &#39;a&#39; as letter, 1 as position
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    UNION ALL SELECT false, &#39;b&#39;, 2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    UNION ALL SELECT false, &#39;c&#39;, 3
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  )
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  SELECT ARRAY_AGG(IF(position=2, NULL, position)) as positions from example
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pipe&#39;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;keys&#39;</span>))
+</span></span></code></pre></div><pre><code>ERROR:root:An unexpected error occurred while tokenizing input
 The following traceback may be corrupted or invalid
 The error message is: ('EOF in multi-line string', (1, 2))
 
@@ -309,17 +316,17 @@ BadRequest: 400 GET https://bigquery.googleapis.com/bigquery/v2/projects/bigquer
     |    .    |    .    |    .    |    .    |    .    |    .    |    .    |
 </code></pre>
 <p>그런데, NULL 요소가 저장되지 않으면 쿼리는 정상적으로 작동한다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
-</span><span style="color:#e6db74">  WITH example AS (
-</span><span style="color:#e6db74">    SELECT true AS is_vowel, &#39;a&#39; as letter, 1 as position
-</span><span style="color:#e6db74">    UNION ALL SELECT false, &#39;b&#39;, 2
-</span><span style="color:#e6db74">    UNION ALL SELECT false, &#39;c&#39;, 3
-</span><span style="color:#e6db74">  )
-</span><span style="color:#e6db74">  SELECT ARRAY_LENGTH(ARRAY_AGG(IF(position=2, NULL, position))) as positions from example
-</span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
-
-<span style="color:#66d9ef">print</span>(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pipe&#39;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;keys&#39;</span>))
-</code></pre></div><pre><code>|    |   positions |
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>temp <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query(<span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  WITH example AS (
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    SELECT true AS is_vowel, &#39;a&#39; as letter, 1 as position
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    UNION ALL SELECT false, &#39;b&#39;, 2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    UNION ALL SELECT false, &#39;c&#39;, 3
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  )
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  SELECT ARRAY_LENGTH(ARRAY_AGG(IF(position=2, NULL, position))) as positions from example
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>to_dataframe()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(tabulate(temp, tablefmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pipe&#39;</span>, headers<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;keys&#39;</span>))
+</span></span></code></pre></div><pre><code>|    |   positions |
 |---:|------------:|
 |  0 |           3 |
 </code></pre>
@@ -370,7 +377,7 @@ BadRequest: 400 GET https://bigquery.googleapis.com/bigquery/v2/projects/bigquer
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

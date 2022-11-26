@@ -8,30 +8,38 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="입문자를 위한 머신러닝 분류 튜토리얼 - Decision Tree" />
-<meta property="og:description" content="개요  사이킷런(scikit-learn)은 파이썬 머신러닝 라이브러리이다. 파이썬에서 나오는 최신 알고리즘들도 이제는 사이킷런에 통합하는 형태로 취하고 있다. 구글 코랩은 기본적으로 사이킷런까지 설치가 완료되기에 별도의 설치가 필요없는 장점이 있다. Note: 본 포스트는 머신러닝 자체를 처음 접하는 분들을 위한 것이기 때문에, 어느정도 경험이 있으신 분들은 필자의 다른 포스트를 읽어주시기를 바랍니다.  패키지 불러오기  패키지는 시간에 지남에 따라 계속 업그레이드가 되기 때문에 꼭 버전 체크를 하는 것을 권장한다.  필자가 글을 남겼을 때는 2020년 8월 16일에 작성했음을 기억하자." />
+<meta property="og:description" content="개요 사이킷런(scikit-learn)은 파이썬 머신러닝 라이브러리이다. 파이썬에서 나오는 최신 알고리즘들도 이제는 사이킷런에 통합하는 형태로 취하고 있다. 구글 코랩은 기본적으로 사이킷런까지 설치가 완료되기에 별도의 설치가 필요없는 장점이 있다. Note: 본 포스트는 머신러닝 자체를 처음 접하는 분들을 위한 것이기 때문에, 어느정도 경험이 있으신 분들은 필자의 다른 포스트를 읽어주시기를 바랍니다. 패키지 불러오기 패키지는 시간에 지남에 따라 계속 업그레이드가 되기 때문에 꼭 버전 체크를 하는 것을 권장한다. 필자가 글을 남겼을 때는 2020년 8월 16일에 작성했음을 기억하자." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/python/python_edu/04_machinelearning/chapter_4_5_understanding_tree/" />
+<meta property="og:url" content="https://dschloe.github.io/python/python_edu/04_machinelearning/chapter_4_5_understanding_tree/" /><meta property="article:section" content="Python" />
 <meta property="article:published_time" content="2020-08-19T01:00:47+09:00" />
 <meta property="article:modified_time" content="2020-08-19T01:00:47+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="입문자를 위한 머신러닝 분류 튜토리얼 - Decision Tree"/>
-<meta name="twitter:description" content="개요  사이킷런(scikit-learn)은 파이썬 머신러닝 라이브러리이다. 파이썬에서 나오는 최신 알고리즘들도 이제는 사이킷런에 통합하는 형태로 취하고 있다. 구글 코랩은 기본적으로 사이킷런까지 설치가 완료되기에 별도의 설치가 필요없는 장점이 있다. Note: 본 포스트는 머신러닝 자체를 처음 접하는 분들을 위한 것이기 때문에, 어느정도 경험이 있으신 분들은 필자의 다른 포스트를 읽어주시기를 바랍니다.  패키지 불러오기  패키지는 시간에 지남에 따라 계속 업그레이드가 되기 때문에 꼭 버전 체크를 하는 것을 권장한다.  필자가 글을 남겼을 때는 2020년 8월 16일에 작성했음을 기억하자."/>
+<meta name="twitter:description" content="개요 사이킷런(scikit-learn)은 파이썬 머신러닝 라이브러리이다. 파이썬에서 나오는 최신 알고리즘들도 이제는 사이킷런에 통합하는 형태로 취하고 있다. 구글 코랩은 기본적으로 사이킷런까지 설치가 완료되기에 별도의 설치가 필요없는 장점이 있다. Note: 본 포스트는 머신러닝 자체를 처음 접하는 분들을 위한 것이기 때문에, 어느정도 경험이 있으신 분들은 필자의 다른 포스트를 읽어주시기를 바랍니다. 패키지 불러오기 패키지는 시간에 지남에 따라 계속 업그레이드가 되기 때문에 꼭 버전 체크를 하는 것을 권장한다. 필자가 글을 남겼을 때는 2020년 8월 16일에 작성했음을 기억하자."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -189,9 +197,9 @@
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> sklearn
-<span style="color:#66d9ef">print</span>(sklearn<span style="color:#f92672">.</span>__version__)
-</code></pre></div><pre><code>0.22.2.post1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> sklearn
+</span></span><span style="display:flex;"><span>print(sklearn<span style="color:#f92672">.</span>__version__)
+</span></span></code></pre></div><pre><code>0.22.2.post1
 </code></pre>
 <h2 id="머신러닝-워크플로우">머신러닝 워크플로우</h2>
 <ul>
@@ -229,31 +237,31 @@
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.datasets <span style="color:#f92672">import</span> load_iris <span style="color:#75715e"># 패키지 불러오기</span>
-
-<span style="color:#75715e"># Bunch 형태의 데이터셋으로 구성되어 있음</span>
-iris <span style="color:#f92672">=</span> load_iris()
-
-<span style="color:#75715e"># 독립변수로만 구성된 데이터를 NumPy 형태로 가지고 있음</span>
-iris_data <span style="color:#f92672">=</span> iris<span style="color:#f92672">.</span>data
-
-<span style="color:#75715e"># iris.target은 붓꽃 데이터 세트에서 레이블을 NumPy로 가지고 있다. </span>
-iris_label <span style="color:#f92672">=</span> iris<span style="color:#f92672">.</span>target
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;iris target값:&#39;</span>, iris_label[[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">100</span>]])
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;iris target명:&#39;</span>, iris<span style="color:#f92672">.</span>target_names)
-</code></pre></div><pre><code>iris target값: [0 1 2]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.datasets <span style="color:#f92672">import</span> load_iris <span style="color:#75715e"># 패키지 불러오기</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Bunch 형태의 데이터셋으로 구성되어 있음</span>
+</span></span><span style="display:flex;"><span>iris <span style="color:#f92672">=</span> load_iris()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 독립변수로만 구성된 데이터를 NumPy 형태로 가지고 있음</span>
+</span></span><span style="display:flex;"><span>iris_data <span style="color:#f92672">=</span> iris<span style="color:#f92672">.</span>data
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># iris.target은 붓꽃 데이터 세트에서 레이블을 NumPy로 가지고 있다. </span>
+</span></span><span style="display:flex;"><span>iris_label <span style="color:#f92672">=</span> iris<span style="color:#f92672">.</span>target
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;iris target값:&#39;</span>, iris_label[[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">100</span>]])
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;iris target명:&#39;</span>, iris<span style="color:#f92672">.</span>target_names)
+</span></span></code></pre></div><pre><code>iris target값: [0 1 2]
 iris target명: ['setosa' 'versicolor' 'virginica']
 </code></pre>
 <ul>
 <li>위와 같이 데이터 세트를 확인하였다면 이제 하나의 데이터프레임으로 만들어봅니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
-
-
-iris_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(data <span style="color:#f92672">=</span> iris_data, columns <span style="color:#f92672">=</span> iris<span style="color:#f92672">.</span>feature_names)
-iris_df[<span style="color:#e6db74">&#39;label&#39;</span>] <span style="color:#f92672">=</span> iris<span style="color:#f92672">.</span>target
-<span style="color:#66d9ef">print</span>(iris_df<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">3</span>)<span style="color:#f92672">.</span>to_markdown())
-</code></pre></div><pre><code>|    |   sepal length (cm) |   sepal width (cm) |   petal length (cm) |   petal width (cm) |   label |
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iris_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(data <span style="color:#f92672">=</span> iris_data, columns <span style="color:#f92672">=</span> iris<span style="color:#f92672">.</span>feature_names)
+</span></span><span style="display:flex;"><span>iris_df[<span style="color:#e6db74">&#39;label&#39;</span>] <span style="color:#f92672">=</span> iris<span style="color:#f92672">.</span>target
+</span></span><span style="display:flex;"><span>print(iris_df<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">3</span>)<span style="color:#f92672">.</span>to_markdown())
+</span></span></code></pre></div><pre><code>|    |   sepal length (cm) |   sepal width (cm) |   petal length (cm) |   petal width (cm) |   label |
 |---:|--------------------:|-------------------:|--------------------:|-------------------:|--------:|
 |  0 |                 5.1 |                3.5 |                 1.4 |                0.2 |       0 |
 |  1 |                 4.9 |                3   |                 1.4 |                0.2 |       0 |
@@ -271,14 +279,14 @@ iris_df[<span style="color:#e6db74">&#39;label&#39;</span>] <span style="color:#
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">temp_data <span style="color:#f92672">=</span> iris_df<span style="color:#f92672">.</span>copy()
-
-replace_fct <span style="color:#f92672">=</span> {<span style="color:#ae81ff">0</span>: <span style="color:#e6db74">&#39;setosa&#39;</span>, <span style="color:#ae81ff">1</span>: <span style="color:#e6db74">&#39;versicolor&#39;</span>, <span style="color:#ae81ff">2</span>: <span style="color:#e6db74">&#34;virginica&#34;</span>}
-temp_data<span style="color:#f92672">.</span>columns <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;sepal_length&#34;</span>, <span style="color:#e6db74">&#34;sepal_width&#34;</span>, <span style="color:#e6db74">&#34;petal_length&#34;</span>, <span style="color:#e6db74">&#34;petal_width&#34;</span>, <span style="color:#e6db74">&#34;species&#34;</span>] 
-temp_data[<span style="color:#e6db74">&#39;species&#39;</span>] <span style="color:#f92672">=</span> temp_data[<span style="color:#e6db74">&#39;species&#39;</span>]<span style="color:#f92672">.</span>map(replace_fct)
-
-temp_data<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">3</span>)<span style="color:#f92672">.</span>to_markdown()
-</code></pre></div><pre><code>'|    |   sepal_length |   sepal_width |   petal_length |   petal_width | species   |\n|---:|---------------:|--------------:|---------------:|--------------:|:----------|\n|  0 |            5.1 |           3.5 |            1.4 |           0.2 | setosa    |\n|  1 |            4.9 |           3   |            1.4 |           0.2 | setosa    |\n|  2 |            4.7 |           3.2 |            1.3 |           0.2 | setosa    |'
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>temp_data <span style="color:#f92672">=</span> iris_df<span style="color:#f92672">.</span>copy()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>replace_fct <span style="color:#f92672">=</span> {<span style="color:#ae81ff">0</span>: <span style="color:#e6db74">&#39;setosa&#39;</span>, <span style="color:#ae81ff">1</span>: <span style="color:#e6db74">&#39;versicolor&#39;</span>, <span style="color:#ae81ff">2</span>: <span style="color:#e6db74">&#34;virginica&#34;</span>}
+</span></span><span style="display:flex;"><span>temp_data<span style="color:#f92672">.</span>columns <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;sepal_length&#34;</span>, <span style="color:#e6db74">&#34;sepal_width&#34;</span>, <span style="color:#e6db74">&#34;petal_length&#34;</span>, <span style="color:#e6db74">&#34;petal_width&#34;</span>, <span style="color:#e6db74">&#34;species&#34;</span>] 
+</span></span><span style="display:flex;"><span>temp_data[<span style="color:#e6db74">&#39;species&#39;</span>] <span style="color:#f92672">=</span> temp_data[<span style="color:#e6db74">&#39;species&#39;</span>]<span style="color:#f92672">.</span>map(replace_fct)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>temp_data<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">3</span>)<span style="color:#f92672">.</span>to_markdown()
+</span></span></code></pre></div><pre><code>'|    |   sepal_length |   sepal_width |   petal_length |   petal_width | species   |\n|---:|---------------:|--------------:|---------------:|--------------:|:----------|\n|  0 |            5.1 |           3.5 |            1.4 |           0.2 | setosa    |\n|  1 |            4.9 |           3   |            1.4 |           0.2 | setosa    |\n|  2 |            4.7 |           3.2 |            1.3 |           0.2 | setosa    |'
 </code></pre>
 <h3 id="4-데이터-시각화">(4) 데이터 시각화</h3>
 <ul>
@@ -287,27 +295,27 @@ temp_data<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">3<
 <li>여기에서는 우선 각 수치형 데이터에 관한 산점도를 작성한다.</li>
 <li>또한 수치형 산점도를 종별로 그룹화하는 시각화를 작성해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-
-n_bins <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>
-fig, axs <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>) <span style="color:#75715e"># 그래프를 그리기 위해 일종의 레이아웃을 작성한다. </span>
-axs[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>hist(temp_data[<span style="color:#e6db74">&#39;sepal_length&#39;</span>], bins <span style="color:#f92672">=</span> n_bins);
-axs[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Sepal Length&#39;</span>);
-axs[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>hist(temp_data[<span style="color:#e6db74">&#39;sepal_width&#39;</span>], bins <span style="color:#f92672">=</span> n_bins);
-axs[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Sepal Width&#39;</span>);
-axs[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>hist(temp_data[<span style="color:#e6db74">&#39;petal_width&#39;</span>], bins <span style="color:#f92672">=</span> n_bins);
-axs[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Pepal Width&#39;</span>);
-axs[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>hist(temp_data[<span style="color:#e6db74">&#39;petal_length&#39;</span>], bins <span style="color:#f92672">=</span> n_bins);
-axs[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Pepal Length&#39;</span>);
-
-fig<span style="color:#f92672">.</span>tight_layout(pad<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>);
-</code></pre></div><p><img src="/img/python_edu/04_machineLearning/Chapter_4_5_understanding_tree/output_14_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>n_bins <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>fig, axs <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>) <span style="color:#75715e"># 그래프를 그리기 위해 일종의 레이아웃을 작성한다. </span>
+</span></span><span style="display:flex;"><span>axs[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>hist(temp_data[<span style="color:#e6db74">&#39;sepal_length&#39;</span>], bins <span style="color:#f92672">=</span> n_bins);
+</span></span><span style="display:flex;"><span>axs[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Sepal Length&#39;</span>);
+</span></span><span style="display:flex;"><span>axs[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>hist(temp_data[<span style="color:#e6db74">&#39;sepal_width&#39;</span>], bins <span style="color:#f92672">=</span> n_bins);
+</span></span><span style="display:flex;"><span>axs[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Sepal Width&#39;</span>);
+</span></span><span style="display:flex;"><span>axs[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>hist(temp_data[<span style="color:#e6db74">&#39;petal_width&#39;</span>], bins <span style="color:#f92672">=</span> n_bins);
+</span></span><span style="display:flex;"><span>axs[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Pepal Width&#39;</span>);
+</span></span><span style="display:flex;"><span>axs[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>hist(temp_data[<span style="color:#e6db74">&#39;petal_length&#39;</span>], bins <span style="color:#f92672">=</span> n_bins);
+</span></span><span style="display:flex;"><span>axs[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Pepal Length&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>fig<span style="color:#f92672">.</span>tight_layout(pad<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>);
+</span></span></code></pre></div><p><img src="/img/python_edu/04_machineLearning/Chapter_4_5_understanding_tree/output_14_0.png" alt="png"></p>
 <ul>
 <li>이번에는 산점도를 작성한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
-sns<span style="color:#f92672">.</span>pairplot(temp_data, hue<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;species&#34;</span>, height <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, palette <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;colorblind&#39;</span>);
-</code></pre></div><pre><code>/usr/local/lib/python3.6/dist-packages/statsmodels/tools/_testing.py:19: FutureWarning: pandas.util.testing is deprecated. Use the functions in the public API at pandas.testing instead.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> seaborn <span style="color:#66d9ef">as</span> sns
+</span></span><span style="display:flex;"><span>sns<span style="color:#f92672">.</span>pairplot(temp_data, hue<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;species&#34;</span>, height <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, palette <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;colorblind&#39;</span>);
+</span></span></code></pre></div><pre><code>/usr/local/lib/python3.6/dist-packages/statsmodels/tools/_testing.py:19: FutureWarning: pandas.util.testing is deprecated. Use the functions in the public API at pandas.testing instead.
   import pandas.util.testing as tm
 </code></pre>
 <p><img src="/img/python_edu/04_machineLearning/Chapter_4_5_understanding_tree/output_16_1.png" alt="png"></p>
@@ -322,12 +330,12 @@ sns<span style="color:#f92672">.</span>pairplot(temp_data, hue<span style="color
 <li>사이킷런은 <code>train_test_split()</code> API를 제공한다.</li>
 <li>소스코드를 통해서 한번 확인해보자.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.model_selection <span style="color:#f92672">import</span> train_test_split
-X_train, X_test, y_train, y_test <span style="color:#f92672">=</span> train_test_split(iris_data, <span style="color:#75715e"># 독립변수 </span>
-                                                    iris_label, <span style="color:#75715e"># 종속변수 </span>
-                                                    test_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.2</span>, 
-                                                    random_state <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.model_selection <span style="color:#f92672">import</span> train_test_split
+</span></span><span style="display:flex;"><span>X_train, X_test, y_train, y_test <span style="color:#f92672">=</span> train_test_split(iris_data, <span style="color:#75715e"># 독립변수 </span>
+</span></span><span style="display:flex;"><span>                                                    iris_label, <span style="color:#75715e"># 종속변수 </span>
+</span></span><span style="display:flex;"><span>                                                    test_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.2</span>, 
+</span></span><span style="display:flex;"><span>                                                    random_state <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><ul>
 <li>위 코드에서 <code>test_size</code>는 훈련데이터와 테스트데이터로 나누는 비율이다.</li>
 <li>이제 본격적으로 분류기를 만들어본다.</li>
 </ul>
@@ -342,14 +350,14 @@ X_train, X_test, y_train, y_test <span style="color:#f92672">=</span> train_test
 </li>
 <li>모형의 해석은 시각화 이후 진행한다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.tree <span style="color:#f92672">import</span> DecisionTreeClassifier
-
-<span style="color:#75715e"># 객체 생성</span>
-dt_clf <span style="color:#f92672">=</span> DecisionTreeClassifier(random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">11</span>, max_depth<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
-
-<span style="color:#75715e"># 학습 수행</span>
-dt_clf<span style="color:#f92672">.</span>fit(X_train, y_train)
-</code></pre></div><pre><code>DecisionTreeClassifier(ccp_alpha=0.0, class_weight=None, criterion='gini',
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.tree <span style="color:#f92672">import</span> DecisionTreeClassifier
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 객체 생성</span>
+</span></span><span style="display:flex;"><span>dt_clf <span style="color:#f92672">=</span> DecisionTreeClassifier(random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">11</span>, max_depth<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 학습 수행</span>
+</span></span><span style="display:flex;"><span>dt_clf<span style="color:#f92672">.</span>fit(X_train, y_train)
+</span></span></code></pre></div><pre><code>DecisionTreeClassifier(ccp_alpha=0.0, class_weight=None, criterion='gini',
                        max_depth=2, max_features=None, max_leaf_nodes=None,
                        min_impurity_decrease=0.0, min_impurity_split=None,
                        min_samples_leaf=1, min_samples_split=2,
@@ -364,10 +372,10 @@ dt_clf<span style="color:#f92672">.</span>fit(X_train, y_train)
 <ul>
 <li>이제 모형을 예측해보자</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> accuracy_score
-pred <span style="color:#f92672">=</span> dt_clf<span style="color:#f92672">.</span>predict(X_test)
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;The accuracy of the Decision Tree is: {:.3f}&#39;</span><span style="color:#f92672">.</span>format(accuracy_score(pred,y_test)))
-</code></pre></div><pre><code>The accuracy of the Decision Tree is: 0.967
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> accuracy_score
+</span></span><span style="display:flex;"><span>pred <span style="color:#f92672">=</span> dt_clf<span style="color:#f92672">.</span>predict(X_test)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;The accuracy of the Decision Tree is: </span><span style="color:#e6db74">{:.3f}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(accuracy_score(pred,y_test)))
+</span></span></code></pre></div><pre><code>The accuracy of the Decision Tree is: 0.967
 </code></pre>
 <ul>
 <li>최종적인 정확도는 <code>0.967</code>인 것으로 확인되었다.</li>
@@ -376,28 +384,28 @@ pred <span style="color:#f92672">=</span> dt_clf<span style="color:#f92672">.</s
 <ul>
 <li>모형 결과에 대해 혼동행렬로 시각화 본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.tree <span style="color:#f92672">import</span> DecisionTreeClassifier, plot_tree
-<span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> plot_confusion_matrix
-
-labels <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;setosa&#39;</span>, <span style="color:#e6db74">&#39;versicolor&#39;</span>, <span style="color:#e6db74">&#39;virginica&#39;</span>]
-disp <span style="color:#f92672">=</span> plot_confusion_matrix(dt_clf, 
-                             X_test, y_test, 
-                             display_labels<span style="color:#f92672">=</span>labels, 
-                             cmap<span style="color:#f92672">=</span>plt<span style="color:#f92672">.</span>cm<span style="color:#f92672">.</span>Reds, 
-                             normalize<span style="color:#f92672">=</span>None)
-disp<span style="color:#f92672">.</span>ax_<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Confusion Matrix&#39;</span>);
-</code></pre></div><p><img src="/img/python_edu/04_machineLearning/Chapter_4_5_understanding_tree/output_28_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.tree <span style="color:#f92672">import</span> DecisionTreeClassifier, plot_tree
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> plot_confusion_matrix
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>labels <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;setosa&#39;</span>, <span style="color:#e6db74">&#39;versicolor&#39;</span>, <span style="color:#e6db74">&#39;virginica&#39;</span>]
+</span></span><span style="display:flex;"><span>disp <span style="color:#f92672">=</span> plot_confusion_matrix(dt_clf, 
+</span></span><span style="display:flex;"><span>                             X_test, y_test, 
+</span></span><span style="display:flex;"><span>                             display_labels<span style="color:#f92672">=</span>labels, 
+</span></span><span style="display:flex;"><span>                             cmap<span style="color:#f92672">=</span>plt<span style="color:#f92672">.</span>cm<span style="color:#f92672">.</span>Reds, 
+</span></span><span style="display:flex;"><span>                             normalize<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>)
+</span></span><span style="display:flex;"><span>disp<span style="color:#f92672">.</span>ax_<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Confusion Matrix&#39;</span>);
+</span></span></code></pre></div><p><img src="/img/python_edu/04_machineLearning/Chapter_4_5_understanding_tree/output_28_0.png" alt="png"></p>
 <ul>
 <li>적합한 <code>Tree</code> 모형을 시각화를 해본다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-
-explt_vars <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;sepal_length&#34;</span>, <span style="color:#e6db74">&#34;sepal_width&#34;</span>, <span style="color:#e6db74">&#34;petal_length&#34;</span>, <span style="color:#e6db74">&#34;petal_width&#34;</span>]
-fct_val <span style="color:#f92672">=</span> {<span style="color:#ae81ff">0</span>: <span style="color:#e6db74">&#39;setosa&#39;</span>, <span style="color:#ae81ff">1</span>: <span style="color:#e6db74">&#39;versicolor&#39;</span>, <span style="color:#ae81ff">2</span>: <span style="color:#e6db74">&#34;virginica&#34;</span>}
-
-plt<span style="color:#f92672">.</span>figure(figsize <span style="color:#f92672">=</span> (<span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">8</span>))
-plot_tree(dt_clf, feature_names <span style="color:#f92672">=</span> explt_vars, class_names <span style="color:#f92672">=</span> fct_val, filled <span style="color:#f92672">=</span> True);
-</code></pre></div><p><img src="/img/python_edu/04_machineLearning/Chapter_4_5_understanding_tree/output_30_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>explt_vars <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;sepal_length&#34;</span>, <span style="color:#e6db74">&#34;sepal_width&#34;</span>, <span style="color:#e6db74">&#34;petal_length&#34;</span>, <span style="color:#e6db74">&#34;petal_width&#34;</span>]
+</span></span><span style="display:flex;"><span>fct_val <span style="color:#f92672">=</span> {<span style="color:#ae81ff">0</span>: <span style="color:#e6db74">&#39;setosa&#39;</span>, <span style="color:#ae81ff">1</span>: <span style="color:#e6db74">&#39;versicolor&#39;</span>, <span style="color:#ae81ff">2</span>: <span style="color:#e6db74">&#34;virginica&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize <span style="color:#f92672">=</span> (<span style="color:#ae81ff">10</span>,<span style="color:#ae81ff">8</span>))
+</span></span><span style="display:flex;"><span>plot_tree(dt_clf, feature_names <span style="color:#f92672">=</span> explt_vars, class_names <span style="color:#f92672">=</span> fct_val, filled <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>);
+</span></span></code></pre></div><p><img src="/img/python_edu/04_machineLearning/Chapter_4_5_understanding_tree/output_30_0.png" alt="png"></p>
 <ul>
 <li>먼저 뿌리 노드(<code>root node</code>)에서 시작한다.
 <ul>
@@ -424,61 +432,61 @@ $$G_{i} = 1 - \sum_{k=1}^{n}\left ( P_{i,k} \right )^{2}$$</li>
 <p>위 <code>gini=0.18</code> 나온 것을 확인하면 다음과 같다.</p>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">gini <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> (<span style="color:#ae81ff">0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">40</span>)<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> (<span style="color:#ae81ff">36</span><span style="color:#f92672">/</span><span style="color:#ae81ff">40</span>)<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> (<span style="color:#ae81ff">4</span><span style="color:#f92672">/</span><span style="color:#ae81ff">40</span>)<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;The value of Gini is: {:.3f}&#39;</span><span style="color:#f92672">.</span>format(gini))
-</code></pre></div><pre><code>The value of Gini is: 0.180
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>gini <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> (<span style="color:#ae81ff">0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">40</span>)<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> (<span style="color:#ae81ff">36</span><span style="color:#f92672">/</span><span style="color:#ae81ff">40</span>)<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> (<span style="color:#ae81ff">4</span><span style="color:#f92672">/</span><span style="color:#ae81ff">40</span>)<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;The value of Gini is: </span><span style="color:#e6db74">{:.3f}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(gini))
+</span></span></code></pre></div><pre><code>The value of Gini is: 0.180
 </code></pre>
 <ul>
 <li>아래 코드는 핸즈온 머신러닝에서 발췌하였다.</li>
 </ul>
 <p><img src="https://learning.oreilly.com/library/cover/9781492032632/250w/#center" alt=""></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> matplotlib.colors <span style="color:#f92672">import</span> ListedColormap
-<span style="color:#f92672">from</span> sklearn.datasets <span style="color:#f92672">import</span> load_iris
-<span style="color:#f92672">from</span> sklearn.tree <span style="color:#f92672">import</span> DecisionTreeClassifier
-<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
-
-iris <span style="color:#f92672">=</span> load_iris()
-X <span style="color:#f92672">=</span> iris<span style="color:#f92672">.</span>data[:, <span style="color:#ae81ff">2</span>:] <span style="color:#75715e"># 꽃잎 길이와 너비</span>
-y <span style="color:#f92672">=</span> iris<span style="color:#f92672">.</span>target
-
-tree_clf <span style="color:#f92672">=</span> DecisionTreeClassifier(max_depth<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">42</span>)
-tree_clf<span style="color:#f92672">.</span>fit(X, y)
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">plot_decision_boundary</span>(clf, X, y, axes<span style="color:#f92672">=</span>[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">7.5</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>], iris<span style="color:#f92672">=</span>True, legend<span style="color:#f92672">=</span>False, plot_training<span style="color:#f92672">=</span>True):
-    x1s <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>linspace(axes[<span style="color:#ae81ff">0</span>], axes[<span style="color:#ae81ff">1</span>], <span style="color:#ae81ff">100</span>)
-    x2s <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>linspace(axes[<span style="color:#ae81ff">2</span>], axes[<span style="color:#ae81ff">3</span>], <span style="color:#ae81ff">100</span>)
-    x1, x2 <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>meshgrid(x1s, x2s)
-    X_new <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>c_[x1<span style="color:#f92672">.</span>ravel(), x2<span style="color:#f92672">.</span>ravel()]
-    y_pred <span style="color:#f92672">=</span> clf<span style="color:#f92672">.</span>predict(X_new)<span style="color:#f92672">.</span>reshape(x1<span style="color:#f92672">.</span>shape)
-    custom_cmap <span style="color:#f92672">=</span> ListedColormap([<span style="color:#e6db74">&#39;#fafab0&#39;</span>,<span style="color:#e6db74">&#39;#9898ff&#39;</span>,<span style="color:#e6db74">&#39;#a0faa0&#39;</span>])
-    plt<span style="color:#f92672">.</span>contourf(x1, x2, y_pred, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">0.3</span>, cmap<span style="color:#f92672">=</span>custom_cmap)
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> iris:
-        custom_cmap2 <span style="color:#f92672">=</span> ListedColormap([<span style="color:#e6db74">&#39;#7d7d58&#39;</span>,<span style="color:#e6db74">&#39;#4c4c7f&#39;</span>,<span style="color:#e6db74">&#39;#507d50&#39;</span>])
-        plt<span style="color:#f92672">.</span>contour(x1, x2, y_pred, cmap<span style="color:#f92672">=</span>custom_cmap2, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">0.8</span>)
-    <span style="color:#66d9ef">if</span> plot_training:
-        plt<span style="color:#f92672">.</span>plot(X[:, <span style="color:#ae81ff">0</span>][y<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>], X[:, <span style="color:#ae81ff">1</span>][y<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>], <span style="color:#e6db74">&#34;yo&#34;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Iris setosa&#34;</span>)
-        plt<span style="color:#f92672">.</span>plot(X[:, <span style="color:#ae81ff">0</span>][y<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>], X[:, <span style="color:#ae81ff">1</span>][y<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>], <span style="color:#e6db74">&#34;bs&#34;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Iris versicolor&#34;</span>)
-        plt<span style="color:#f92672">.</span>plot(X[:, <span style="color:#ae81ff">0</span>][y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span>], X[:, <span style="color:#ae81ff">1</span>][y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span>], <span style="color:#e6db74">&#34;g^&#34;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Iris virginica&#34;</span>)
-        plt<span style="color:#f92672">.</span>axis(axes)
-    <span style="color:#66d9ef">if</span> iris:
-        plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#34;Petal length&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
-        plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#34;Petal width&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
-    <span style="color:#66d9ef">else</span>:
-        plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;$x_1$&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">18</span>)
-        plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;$x_2$&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">18</span>, rotation<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
-    <span style="color:#66d9ef">if</span> legend:
-        plt<span style="color:#f92672">.</span>legend(loc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;lower right&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
-
-plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">4</span>))
-plot_decision_boundary(tree_clf, X, y)
-plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">2.45</span>, <span style="color:#ae81ff">2.45</span>], [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>], <span style="color:#e6db74">&#34;k-&#34;</span>, linewidth<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
-plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">2.45</span>, <span style="color:#ae81ff">7.5</span>], [<span style="color:#ae81ff">1.75</span>, <span style="color:#ae81ff">1.75</span>], <span style="color:#e6db74">&#34;k--&#34;</span>, linewidth<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
-plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">4.95</span>, <span style="color:#ae81ff">4.95</span>], [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1.75</span>], <span style="color:#e6db74">&#34;k:&#34;</span>, linewidth<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
-plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">4.85</span>, <span style="color:#ae81ff">4.85</span>], [<span style="color:#ae81ff">1.75</span>, <span style="color:#ae81ff">3</span>], <span style="color:#e6db74">&#34;k:&#34;</span>, linewidth<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
-plt<span style="color:#f92672">.</span>text(<span style="color:#ae81ff">1.40</span>, <span style="color:#ae81ff">1.0</span>, <span style="color:#e6db74">&#34;Depth=0&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span>)
-plt<span style="color:#f92672">.</span>text(<span style="color:#ae81ff">3.2</span>, <span style="color:#ae81ff">1.80</span>, <span style="color:#e6db74">&#34;Depth=1&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">13</span>)
-plt<span style="color:#f92672">.</span>text(<span style="color:#ae81ff">4.05</span>, <span style="color:#ae81ff">0.5</span>, <span style="color:#e6db74">&#34;(Depth=2)&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">11</span>)
-</code></pre></div><pre><code>Text(4.05, 0.5, '(Depth=2)')
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> matplotlib.colors <span style="color:#f92672">import</span> ListedColormap
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.datasets <span style="color:#f92672">import</span> load_iris
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.tree <span style="color:#f92672">import</span> DecisionTreeClassifier
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iris <span style="color:#f92672">=</span> load_iris()
+</span></span><span style="display:flex;"><span>X <span style="color:#f92672">=</span> iris<span style="color:#f92672">.</span>data[:, <span style="color:#ae81ff">2</span>:] <span style="color:#75715e"># 꽃잎 길이와 너비</span>
+</span></span><span style="display:flex;"><span>y <span style="color:#f92672">=</span> iris<span style="color:#f92672">.</span>target
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tree_clf <span style="color:#f92672">=</span> DecisionTreeClassifier(max_depth<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">42</span>)
+</span></span><span style="display:flex;"><span>tree_clf<span style="color:#f92672">.</span>fit(X, y)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">plot_decision_boundary</span>(clf, X, y, axes<span style="color:#f92672">=</span>[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">7.5</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>], iris<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, legend<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>, plot_training<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>):
+</span></span><span style="display:flex;"><span>    x1s <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>linspace(axes[<span style="color:#ae81ff">0</span>], axes[<span style="color:#ae81ff">1</span>], <span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>    x2s <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>linspace(axes[<span style="color:#ae81ff">2</span>], axes[<span style="color:#ae81ff">3</span>], <span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>    x1, x2 <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>meshgrid(x1s, x2s)
+</span></span><span style="display:flex;"><span>    X_new <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>c_[x1<span style="color:#f92672">.</span>ravel(), x2<span style="color:#f92672">.</span>ravel()]
+</span></span><span style="display:flex;"><span>    y_pred <span style="color:#f92672">=</span> clf<span style="color:#f92672">.</span>predict(X_new)<span style="color:#f92672">.</span>reshape(x1<span style="color:#f92672">.</span>shape)
+</span></span><span style="display:flex;"><span>    custom_cmap <span style="color:#f92672">=</span> ListedColormap([<span style="color:#e6db74">&#39;#fafab0&#39;</span>,<span style="color:#e6db74">&#39;#9898ff&#39;</span>,<span style="color:#e6db74">&#39;#a0faa0&#39;</span>])
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>contourf(x1, x2, y_pred, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">0.3</span>, cmap<span style="color:#f92672">=</span>custom_cmap)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> iris:
+</span></span><span style="display:flex;"><span>        custom_cmap2 <span style="color:#f92672">=</span> ListedColormap([<span style="color:#e6db74">&#39;#7d7d58&#39;</span>,<span style="color:#e6db74">&#39;#4c4c7f&#39;</span>,<span style="color:#e6db74">&#39;#507d50&#39;</span>])
+</span></span><span style="display:flex;"><span>        plt<span style="color:#f92672">.</span>contour(x1, x2, y_pred, cmap<span style="color:#f92672">=</span>custom_cmap2, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">0.8</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> plot_training:
+</span></span><span style="display:flex;"><span>        plt<span style="color:#f92672">.</span>plot(X[:, <span style="color:#ae81ff">0</span>][y<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>], X[:, <span style="color:#ae81ff">1</span>][y<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>], <span style="color:#e6db74">&#34;yo&#34;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Iris setosa&#34;</span>)
+</span></span><span style="display:flex;"><span>        plt<span style="color:#f92672">.</span>plot(X[:, <span style="color:#ae81ff">0</span>][y<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>], X[:, <span style="color:#ae81ff">1</span>][y<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>], <span style="color:#e6db74">&#34;bs&#34;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Iris versicolor&#34;</span>)
+</span></span><span style="display:flex;"><span>        plt<span style="color:#f92672">.</span>plot(X[:, <span style="color:#ae81ff">0</span>][y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span>], X[:, <span style="color:#ae81ff">1</span>][y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span>], <span style="color:#e6db74">&#34;g^&#34;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Iris virginica&#34;</span>)
+</span></span><span style="display:flex;"><span>        plt<span style="color:#f92672">.</span>axis(axes)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> iris:
+</span></span><span style="display:flex;"><span>        plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#34;Petal length&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
+</span></span><span style="display:flex;"><span>        plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#34;Petal width&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;$x_1$&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">18</span>)
+</span></span><span style="display:flex;"><span>        plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;$x_2$&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">18</span>, rotation<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> legend:
+</span></span><span style="display:flex;"><span>        plt<span style="color:#f92672">.</span>legend(loc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;lower right&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">4</span>))
+</span></span><span style="display:flex;"><span>plot_decision_boundary(tree_clf, X, y)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">2.45</span>, <span style="color:#ae81ff">2.45</span>], [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>], <span style="color:#e6db74">&#34;k-&#34;</span>, linewidth<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">2.45</span>, <span style="color:#ae81ff">7.5</span>], [<span style="color:#ae81ff">1.75</span>, <span style="color:#ae81ff">1.75</span>], <span style="color:#e6db74">&#34;k--&#34;</span>, linewidth<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">4.95</span>, <span style="color:#ae81ff">4.95</span>], [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1.75</span>], <span style="color:#e6db74">&#34;k:&#34;</span>, linewidth<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">4.85</span>, <span style="color:#ae81ff">4.85</span>], [<span style="color:#ae81ff">1.75</span>, <span style="color:#ae81ff">3</span>], <span style="color:#e6db74">&#34;k:&#34;</span>, linewidth<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>text(<span style="color:#ae81ff">1.40</span>, <span style="color:#ae81ff">1.0</span>, <span style="color:#e6db74">&#34;Depth=0&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>text(<span style="color:#ae81ff">3.2</span>, <span style="color:#ae81ff">1.80</span>, <span style="color:#e6db74">&#34;Depth=1&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">13</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>text(<span style="color:#ae81ff">4.05</span>, <span style="color:#ae81ff">0.5</span>, <span style="color:#e6db74">&#34;(Depth=2)&#34;</span>, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">11</span>)
+</span></span></code></pre></div><pre><code>Text(4.05, 0.5, '(Depth=2)')
 </code></pre>
 <p><img src="/img/python_edu/04_machineLearning/Chapter_4_5_understanding_tree/output_35_1.png" alt="png"></p>
 <h2 id="과적합에-대한-이해-및-해결-방안">과적합에 대한 이해 및 해결 방안</h2>
@@ -566,7 +574,7 @@ plt<span style="color:#f92672">.</span>text(<span style="color:#ae81ff">4.05</sp
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

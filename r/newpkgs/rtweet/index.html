@@ -8,34 +8,46 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="트위터 데이터 수집 with R" />
-<meta property="og:description" content="1줄 요약  R을 활용하여 트위터 데이터를 수집하는 방법 및 절차에 대해 배우도록 한다.  트위터 API 인증   https://apps.twitter.com에 접속한다.
- 회원가입을 진행한다.    create an app 버튼을 클릭한다.   필자는 Hobbysit-Exploring the API를 선택했다.  그 후에 개인 정보 등을 입력해야 한다. 휴대폰, 이메일 인증 등    인증 메일이 오기전까지는 조금 시일이 걸린다.
-  rtweet 패키지   별도의 인증 절차 없이 사용 가능한 패키지" />
+<meta property="og:description" content="1줄 요약 R을 활용하여 트위터 데이터를 수집하는 방법 및 절차에 대해 배우도록 한다. 트위터 API 인증 https://apps.twitter.com에 접속한다.
+회원가입을 진행한다. create an app 버튼을 클릭한다. 필자는 Hobbysit-Exploring the API를 선택했다. 그 후에 개인 정보 등을 입력해야 한다. 휴대폰, 이메일 인증 등 인증 메일이 오기전까지는 조금 시일이 걸린다.
+rtweet 패키지 별도의 인증 절차 없이 사용 가능한 패키지
+https://github.com/ropensci/rtweet 우선 설치 후, 사용해보도록 한다.
+본 코드는 Github 예제로 있는 코드를 가져온 것임 # install." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/r/newpkgs/rtweet/" />
+<meta property="og:url" content="https://dschloe.github.io/r/newpkgs/rtweet/" /><meta property="article:section" content="R" />
 <meta property="article:published_time" content="2021-03-24T11:00:00+09:00" />
 <meta property="article:modified_time" content="2021-03-24T11:00:00+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="트위터 데이터 수집 with R"/>
-<meta name="twitter:description" content="1줄 요약  R을 활용하여 트위터 데이터를 수집하는 방법 및 절차에 대해 배우도록 한다.  트위터 API 인증   https://apps.twitter.com에 접속한다.
- 회원가입을 진행한다.    create an app 버튼을 클릭한다.   필자는 Hobbysit-Exploring the API를 선택했다.  그 후에 개인 정보 등을 입력해야 한다. 휴대폰, 이메일 인증 등    인증 메일이 오기전까지는 조금 시일이 걸린다.
-  rtweet 패키지   별도의 인증 절차 없이 사용 가능한 패키지"/>
+<meta name="twitter:description" content="1줄 요약 R을 활용하여 트위터 데이터를 수집하는 방법 및 절차에 대해 배우도록 한다. 트위터 API 인증 https://apps.twitter.com에 접속한다.
+회원가입을 진행한다. create an app 버튼을 클릭한다. 필자는 Hobbysit-Exploring the API를 선택했다. 그 후에 개인 정보 등을 입력해야 한다. 휴대폰, 이메일 인증 등 인증 메일이 오기전까지는 조금 시일이 걸린다.
+rtweet 패키지 별도의 인증 절차 없이 사용 가능한 패키지
+https://github.com/ropensci/rtweet 우선 설치 후, 사용해보도록 한다.
+본 코드는 Github 예제로 있는 코드를 가져온 것임 # install."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -207,25 +219,25 @@
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># install.packages(&#34;rtweet&#34;)</span>
-<span style="color:#a6e22e">library</span>(rtweet)
-<span style="color:#a6e22e">library</span>(dplyr)
-<span style="color:#a6e22e">library</span>(ggplot2)
-</code></pre></div><h3 id="search-tweets">Search Tweets</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e"># install.packages(&#34;rtweet&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(rtweet)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(dplyr)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(ggplot2)
+</span></span></code></pre></div><h3 id="search-tweets">Search Tweets</h3>
 <ul>
 <li><code>search_tweets()</code> 함수를 활용하면 매우 쉽게 데이터를 가져올 수 있다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">rstats <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">search_tweets</span>(<span style="color:#e6db74">&#34;#테슬라&#34;</span>, n <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>, include_rts <span style="color:#f92672">=</span> <span style="color:#66d9ef">FALSE</span>) <span style="color:#f92672">%&gt;%</span> 
-  <span style="color:#a6e22e">select</span>(name, location, description)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>rstats <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">search_tweets</span>(<span style="color:#e6db74">&#34;#테슬라&#34;</span>, n <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>, include_rts <span style="color:#f92672">=</span> <span style="color:#66d9ef">FALSE</span>) <span style="color:#f92672">%&gt;%</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">select</span>(name, location, description)
+</span></span></code></pre></div><ul>
 <li>앱 인증 절차만 진행이 되면 데이터를 가져올 수 있다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">glimpse</span>(rstats)
-</code></pre></div><pre><code>## Rows: 132
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">glimpse</span>(rstats)
+</span></span></code></pre></div><pre tabindex="0"><code>## Rows: 132
 ## Columns: 3
-## $ name        &lt;chr&gt; &quot;얼리어답터&quot;, &quot;얼리어답터&quot;, &quot;허프포스트코리아&quot;, &quot;뉴스핌&quot;, &quot;뉴스핌&quot;, &quot;disclosure&quot;, ~
-## $ location    &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;SEOUL&quot;, &quot;Korea&quot;, &quot;Korea&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,~
-## $ description &lt;chr&gt; &quot;2001년부터 전세계의 테크 트랜드를 한국에 소개했던 얼리어답터가 완전히 새롭게 다시 시작합니다. 더 ~
+## $ name        &lt;chr&gt; &#34;얼리어답터&#34;, &#34;얼리어답터&#34;, &#34;허프포스트코리아&#34;, &#34;뉴스핌&#34;, &#34;뉴스핌&#34;, &#34;disclosure&#34;, ~
+## $ location    &lt;chr&gt; &#34;&#34;, &#34;&#34;, &#34;SEOUL&#34;, &#34;Korea&#34;, &#34;Korea&#34;, &#34;&#34;, &#34;&#34;, &#34;&#34;, &#34;&#34;, &#34;&#34;, &#34;&#34;,~
+## $ description &lt;chr&gt; &#34;2001년부터 전세계의 테크 트랜드를 한국에 소개했던 얼리어답터가 완전히 새롭게 다시 시작합니다. 더 ~
 </code></pre><ul>
 <li>텍스트 데이터를 수집할 수 있었다.</li>
 </ul>
@@ -258,7 +270,7 @@
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.

@@ -8,36 +8,44 @@
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 		<meta property="og:title" content="Tensorflow 2.0 Tutorial ch9.4 - 초해상도" />
-<meta property="og:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2." />
+<meta property="og:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dschloe.github.io/python/tensorflow2.0/ch9_4_super_resolution/" />
+<meta property="og:url" content="https://dschloe.github.io/python/tensorflow2.0/ch9_4_super_resolution/" /><meta property="article:section" content="Python" />
 <meta property="article:published_time" content="2020-05-07T07:20:30+09:00" />
 <meta property="article:modified_time" content="2020-05-07T07:20:30+09:00" />
 
+
 		<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Tensorflow 2.0 Tutorial ch9.4 - 초해상도"/>
-<meta name="twitter:description" content="공지   본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
-  강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
-   본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.  Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
- Google Colab Tensorflow 2."/>
+<meta name="twitter:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶으신 분은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2."/>
 
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/custom.css">
+
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K95C7LSPRK');
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160625195-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -239,24 +247,24 @@
 <li>다수의 레이어가 중첩되는 구조에서 앞쪽의 정보를 잃어버리기 않기 위해 뒤쪽에 정보를 그대로 전달해줄 때 건너뛴 연결이 사용됩니다.</li>
 <li>논문에서 사용한 이미지는 <code>BSD (Berkeley Segmentation Dataset)</code> 이며, 책에서도 동일하게 사용합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
-<span style="color:#66d9ef">try</span>:
-    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
-    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
-<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
-    <span style="color:#66d9ef">pass</span>
-<span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
-<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
-<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
-<span style="color:#f92672">import</span> tensorflow_hub <span style="color:#f92672">as</span> hub
-<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-<span style="color:#f92672">import</span> cv2
-</code></pre></div><h2 id="iii-데이터-불러오기">III. 데이터 불러오기</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow_hub <span style="color:#66d9ef">as</span> hub
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> cv2
+</span></span></code></pre></div><h2 id="iii-데이터-불러오기">III. 데이터 불러오기</h2>
 <ul>
 <li><code>tf.keras.utils.get_file()</code> 데이터를 불러옵니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;/content/bsd_images.zip&#39;</span>, <span style="color:#e6db74">&#39;http://bit.ly/35pHZlC&#39;</span>, extract<span style="color:#f92672">=</span>True)
-</code></pre></div><pre><code>Downloading data from http://bit.ly/35pHZlC
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;/content/bsd_images.zip&#39;</span>, <span style="color:#e6db74">&#39;http://bit.ly/35pHZlC&#39;</span>, extract<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><pre><code>Downloading data from http://bit.ly/35pHZlC
 37527552/37520292 [==============================] - 0s 0us/step
 
 
@@ -265,8 +273,8 @@
 
 '/content/bsd_images.zip'
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>unzip <span style="color:#f92672">/</span>content<span style="color:#f92672">/</span>bsd_images<span style="color:#f92672">.</span>zip
-</code></pre></div><pre><code>Archive:  /content/bsd_images.zip
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>unzip <span style="color:#f92672">/</span>content<span style="color:#f92672">/</span>bsd_images<span style="color:#f92672">.</span>zip
+</span></span></code></pre></div><pre><code>Archive:  /content/bsd_images.zip
    creating: images/
    creating: images/test/
   inflating: images/test/100007.jpg  
@@ -281,11 +289,11 @@
 <ul>
 <li>이미지 경로 저장 및 확인을 합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pathlib
-image_root <span style="color:#f92672">=</span> pathlib<span style="color:#f92672">.</span>Path(<span style="color:#e6db74">&#39;/content/images&#39;</span>)
-all_images_paths<span style="color:#f92672">=</span>list(image_root<span style="color:#f92672">.</span>glob(<span style="color:#e6db74">&#39;*/*&#39;</span>))
-<span style="color:#66d9ef">print</span>(all_images_paths[:<span style="color:#ae81ff">10</span>])
-</code></pre></div><pre><code>[PosixPath('/content/images/val/62096.jpg'), PosixPath('/content/images/val/361010.jpg'), PosixPath('/content/images/val/Thumbs.db'), PosixPath('/content/images/val/54082.jpg'), PosixPath('/content/images/val/87046.jpg'), PosixPath('/content/images/val/38082.jpg'), PosixPath('/content/images/val/156065.jpg'), PosixPath('/content/images/val/33039.jpg'), PosixPath('/content/images/val/14037.jpg'), PosixPath('/content/images/val/159008.jpg')]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> pathlib
+</span></span><span style="display:flex;"><span>image_root <span style="color:#f92672">=</span> pathlib<span style="color:#f92672">.</span>Path(<span style="color:#e6db74">&#39;/content/images&#39;</span>)
+</span></span><span style="display:flex;"><span>all_images_paths<span style="color:#f92672">=</span>list(image_root<span style="color:#f92672">.</span>glob(<span style="color:#e6db74">&#39;*/*&#39;</span>))
+</span></span><span style="display:flex;"><span>print(all_images_paths[:<span style="color:#ae81ff">10</span>])
+</span></span></code></pre></div><pre><code>[PosixPath('/content/images/val/62096.jpg'), PosixPath('/content/images/val/361010.jpg'), PosixPath('/content/images/val/Thumbs.db'), PosixPath('/content/images/val/54082.jpg'), PosixPath('/content/images/val/87046.jpg'), PosixPath('/content/images/val/38082.jpg'), PosixPath('/content/images/val/156065.jpg'), PosixPath('/content/images/val/33039.jpg'), PosixPath('/content/images/val/14037.jpg'), PosixPath('/content/images/val/159008.jpg')]
 </code></pre>
 <ul>
 <li>각 이미지의 경로는 <code>root</code> 디렉터리에서 <code>glob()</code> 함수를 사용해 하단의 모든 파일을 불러올 수 있습니다.</li>
@@ -295,17 +303,17 @@ all_images_paths<span style="color:#f92672">=</span>list(image_root<span style="
 <ul>
 <li><code>matplotlib.pyplot</code>으로 확인합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> PIL.Image <span style="color:#f92672">as</span> Image
-<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-
-plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">12</span>))
-<span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">9</span>):
-  plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">3</span>,c<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
-  plt<span style="color:#f92672">.</span>imshow(plt<span style="color:#f92672">.</span>imread(all_images_paths[c]))
-  plt<span style="color:#f92672">.</span>title(all_images_paths[c])
-  plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p>/img/tensorflow2.0/tutorial_09_04/output_7_1.png
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> PIL.Image <span style="color:#66d9ef">as</span> Image
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">12</span>))
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">9</span>):
+</span></span><span style="display:flex;"><span>  plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">3</span>,c<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>  plt<span style="color:#f92672">.</span>imshow(plt<span style="color:#f92672">.</span>imread(all_images_paths[c]))
+</span></span><span style="display:flex;"><span>  plt<span style="color:#f92672">.</span>title(all_images_paths[c])
+</span></span><span style="display:flex;"><span>  plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p>/img/tensorflow2.0/tutorial_09_04/output_7_1.png
 <img src="/img/tensorflow2.0/tutorial_09_04/output_7_1.png" alt="png"></p>
 <ul>
 <li>데이터를 보면 아시겠지만, 가로와 세로 길이가 모두 다릅니다. 또한, 이미지의 내용은 사람, 동물, 자연등으로 다양합니다.</li>
@@ -315,34 +323,34 @@ plt<span style="color:#f92672">.</span>show()
 <li><code>BSD500</code>은 200장의 훈련 데이터, 100장의 검증 데이터, 200장의 테스트 데이터로 구성되어 있습니다.</li>
 <li><code>tf.data.Dataset</code>를 각 데이터세트마다 만듭니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_path, valid_path, test_path <span style="color:#f92672">=</span> [], [], []
-
-<span style="color:#66d9ef">for</span> image_path <span style="color:#f92672">in</span> all_images_paths:
-  <span style="color:#66d9ef">if</span> str(image_path)<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;.&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;jpg&#34;</span>:
-    <span style="color:#66d9ef">continue</span>
-  
-  <span style="color:#66d9ef">if</span> str(image_path)<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;/&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]<span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;train&#39;</span>: 
-    train_path<span style="color:#f92672">.</span>append(str(image_path))
-  <span style="color:#66d9ef">elif</span> str(image_path)<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;/&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;val&#39;</span>:
-    valid_path<span style="color:#f92672">.</span>append(str(image_path))
-  <span style="color:#66d9ef">else</span>:
-    test_path<span style="color:#f92672">.</span>append(str(image_path))
-</code></pre></div><h3 id="3-원본-이미지-조각-추출-입력-출력-데이터-변환-함수-정의">(3) 원본 이미지 조각 추출, 입력, 출력 데이터 변환 함수 정의</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train_path, valid_path, test_path <span style="color:#f92672">=</span> [], [], []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> image_path <span style="color:#f92672">in</span> all_images_paths:
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> str(image_path)<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;.&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;jpg&#34;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> str(image_path)<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;/&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]<span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;train&#39;</span>: 
+</span></span><span style="display:flex;"><span>    train_path<span style="color:#f92672">.</span>append(str(image_path))
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">elif</span> str(image_path)<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;/&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;val&#39;</span>:
+</span></span><span style="display:flex;"><span>    valid_path<span style="color:#f92672">.</span>append(str(image_path))
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    test_path<span style="color:#f92672">.</span>append(str(image_path))
+</span></span></code></pre></div><h3 id="3-원본-이미지-조각-추출-입력-출력-데이터-변환-함수-정의">(3) 원본 이미지 조각 추출, 입력, 출력 데이터 변환 함수 정의</h3>
 <ul>
 <li>현재의 이미지는 고해상도이기 때문에, 저해상도는 일부러 낮추고 원본과 함께 반환하는 함수를 만듭니다.</li>
 <li>원본 이미지에서 조각을 추출해서 입력, 출력 데이터를 생성하는 구조에 관한 이미지는 교재 360페이지를 확인해봅니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_hr_and_lr</span>(image_path):
-  img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>io<span style="color:#f92672">.</span>read_file(image_path)
-  img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>decode_jpeg(img, channels<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
-  img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>convert_image_dtype(img, tf<span style="color:#f92672">.</span>float32)
-
-  hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>random_crop(img, [<span style="color:#ae81ff">50</span>,<span style="color:#ae81ff">50</span>,<span style="color:#ae81ff">3</span>])
-  lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(hr, [<span style="color:#ae81ff">25</span>, <span style="color:#ae81ff">25</span>])
-  lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(lr, [<span style="color:#ae81ff">50</span>,<span style="color:#ae81ff">50</span>])
-
-  <span style="color:#66d9ef">return</span> lr, hr 
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_hr_and_lr</span>(image_path):
+</span></span><span style="display:flex;"><span>  img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>io<span style="color:#f92672">.</span>read_file(image_path)
+</span></span><span style="display:flex;"><span>  img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>decode_jpeg(img, channels<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>  img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>convert_image_dtype(img, tf<span style="color:#f92672">.</span>float32)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>random_crop(img, [<span style="color:#ae81ff">50</span>,<span style="color:#ae81ff">50</span>,<span style="color:#ae81ff">3</span>])
+</span></span><span style="display:flex;"><span>  lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(hr, [<span style="color:#ae81ff">25</span>, <span style="color:#ae81ff">25</span>])
+</span></span><span style="display:flex;"><span>  lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(lr, [<span style="color:#ae81ff">50</span>,<span style="color:#ae81ff">50</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> lr, hr 
+</span></span></code></pre></div><ul>
 <li><code>JPEG</code> 이미지는 <code>tf.io.read_file()</code>로 불러올 수 있습니다.</li>
 <li>이미지를 불러온 후 <code>decode_jpeg()</code> 함수를 사용해서 프로그램이 이해할 수 있는 데이터 형태로 만들어야 하고, <code>convert_image_dtype()</code>함수로 데이터 타입을 딥러닝에서 가장 범용적으로 사용하는 <code>float32</code> 데이터 타입으로 바꿉니다.</li>
 <li>가로 X 세로 50픽셀의 이미지를 <code>random_crop()</code>이라는 함수로 쉽게 얻을 수 있습니다.</li>
@@ -352,122 +360,122 @@ plt<span style="color:#f92672">.</span>show()
 <ul>
 <li><code>Dataset</code>를 정의할 차례이며, 학습 과정에서 사용할 훈련 데이터와 검증 데이터를 사용하는 <code>Dataset</code>를 각각 정의합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_dataset <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>Dataset<span style="color:#f92672">.</span>list_files(train_path)
-train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>map(get_hr_and_lr)
-train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>repeat()
-train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>batch(<span style="color:#ae81ff">16</span>)
-
-valid_dataset <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>Dataset<span style="color:#f92672">.</span>list_files(train_path)
-valid_dataset <span style="color:#f92672">=</span> valid_dataset<span style="color:#f92672">.</span>map(get_hr_and_lr)
-valid_dataset <span style="color:#f92672">=</span> valid_dataset<span style="color:#f92672">.</span>repeat()
-valid_dataset <span style="color:#f92672">=</span> valid_dataset<span style="color:#f92672">.</span>batch(<span style="color:#ae81ff">1</span>)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train_dataset <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>Dataset<span style="color:#f92672">.</span>list_files(train_path)
+</span></span><span style="display:flex;"><span>train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>map(get_hr_and_lr)
+</span></span><span style="display:flex;"><span>train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>repeat()
+</span></span><span style="display:flex;"><span>train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>batch(<span style="color:#ae81ff">16</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>valid_dataset <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>Dataset<span style="color:#f92672">.</span>list_files(train_path)
+</span></span><span style="display:flex;"><span>valid_dataset <span style="color:#f92672">=</span> valid_dataset<span style="color:#f92672">.</span>map(get_hr_and_lr)
+</span></span><span style="display:flex;"><span>valid_dataset <span style="color:#f92672">=</span> valid_dataset<span style="color:#f92672">.</span>repeat()
+</span></span><span style="display:flex;"><span>valid_dataset <span style="color:#f92672">=</span> valid_dataset<span style="color:#f92672">.</span>batch(<span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><ul>
 <li>먼저 파일의 경로 리스트를 가지고 있다면 <code>tf.data.Dataset.list_files()</code> 함수의 인수로 파일 경로 리스트를 넣어서 <code>Dataset</code>를 쉽게 정의할 수 있습니다.</li>
 <li><code>get_hr_and_lr()</code> 함수를 <code>map()</code>함수를 적용해 새로운 <code>Dataset</code>을 만듭니다.</li>
 <li>이렇게 연결되면 <code>Dataset</code>는 먼저 <code>train_path</code> 리스트의 이미지를 불러온 다음에 저해상도와 고해상도 조각인 <code>lr</code>, <code>hr</code>을 반환합니다. 여기까지 선언하면 쉽게 사용할 수 있는 <code>Dataset</code>을 1차로 완성한 것입니다.</li>
 </ul>
 <h3 id="5-rednet-30의-정의">(5) REDNet-30의 정의</h3>
 <p><code>REDNet-30</code>에 대한 구조에 대한 설명은 교재 <code>362-363 p</code>를 확인합니다. 다음 소스코드로 네트워크 정의를 합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">REDNet</span>(num_layers):
-    conv_layers <span style="color:#f92672">=</span> []
-    deconv_layers <span style="color:#f92672">=</span> []
-    residual_layers <span style="color:#f92672">=</span> []
-
-    inputs <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Input(shape<span style="color:#f92672">=</span>(None, None, <span style="color:#ae81ff">3</span>))
-    conv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(<span style="color:#ae81ff">3</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>))
-
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
-        conv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(<span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>))
-        deconv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(<span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>))
-
-    deconv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(<span style="color:#ae81ff">3</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>))
-
-    <span style="color:#75715e"># 인코더 시작</span>
-    x <span style="color:#f92672">=</span> conv_layers[<span style="color:#ae81ff">0</span>](inputs)
-
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
-        x <span style="color:#f92672">=</span> conv_layers[i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>](x)
-        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-            residual_layers<span style="color:#f92672">.</span>append(x)
-
-    <span style="color:#75715e"># 디코더 시작</span>
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
-        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
-            x <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Add()([x, residual_layers<span style="color:#f92672">.</span>pop()])
-            x <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Activation(<span style="color:#e6db74">&#39;relu&#39;</span>)(x)
-        x <span style="color:#f92672">=</span> deconv_layers[i](x) 
-
-    x <span style="color:#f92672">=</span> deconv_layers[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>](x)
-    
-    model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Model(inputs<span style="color:#f92672">=</span>inputs, outputs<span style="color:#f92672">=</span>x)
-    <span style="color:#66d9ef">return</span> model
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">REDNet</span>(num_layers):
+</span></span><span style="display:flex;"><span>    conv_layers <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    deconv_layers <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    residual_layers <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    inputs <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Input(shape<span style="color:#f92672">=</span>(<span style="color:#66d9ef">None</span>, <span style="color:#66d9ef">None</span>, <span style="color:#ae81ff">3</span>))
+</span></span><span style="display:flex;"><span>    conv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(<span style="color:#ae81ff">3</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>        conv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(<span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>))
+</span></span><span style="display:flex;"><span>        deconv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(<span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    deconv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(<span style="color:#ae81ff">3</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 인코더 시작</span>
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> conv_layers[<span style="color:#ae81ff">0</span>](inputs)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> conv_layers[i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>](x)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>            residual_layers<span style="color:#f92672">.</span>append(x)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 디코더 시작</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>            x <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Add()([x, residual_layers<span style="color:#f92672">.</span>pop()])
+</span></span><span style="display:flex;"><span>            x <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Activation(<span style="color:#e6db74">&#39;relu&#39;</span>)(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> deconv_layers[i](x) 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> deconv_layers[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>](x)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Model(inputs<span style="color:#f92672">=</span>inputs, outputs<span style="color:#f92672">=</span>x)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> model
+</span></span></code></pre></div><ul>
 <li>위 함수를 통해서, <code>REDNet-10, REDNet-20, REDNet-30</code>등 다양한 네트워크를 함수 호출 한 번으로 만들 수 있습니다.</li>
 <li><code>num_layers</code>는 컨볼루션 레이어와 디컨볼루션 레이어의 수입니다. 같은 수의 컨볼루션 레이어가 존재하기 때문에, <code>REDNet-30</code>이라면 <code>num_layers=15</code>를 입력하면 됩니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">conv_layers<span style="color:#f92672">=</span>[]
-deconv_layers<span style="color:#f92672">=</span>[]
-residual_layers<span style="color:#f92672">=</span>[]
-</code></pre></div><p>먼저 세 개의 리스트에 각각 컨볼루션 레이어, 디컨볼루션 레이어, 잔류(<code>residual</code>)레이어를 저장합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>conv_layers<span style="color:#f92672">=</span>[]
+</span></span><span style="display:flex;"><span>deconv_layers<span style="color:#f92672">=</span>[]
+</span></span><span style="display:flex;"><span>residual_layers<span style="color:#f92672">=</span>[]
+</span></span></code></pre></div><p>먼저 세 개의 리스트에 각각 컨볼루션 레이어, 디컨볼루션 레이어, 잔류(<code>residual</code>)레이어를 저장합니다.</p>
 <p>각 레이어를 따로 저장할 리스트가 별도로 필요로 합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#f92672">...</span>
-    inputs <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Input(shape<span style="color:#f92672">=</span>(None, None, <span style="color:#ae81ff">3</span>))
-    conv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(<span style="color:#ae81ff">3</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>))
-
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
-        conv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(<span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>))
-        deconv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(<span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>))
-
-    deconv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(<span style="color:#ae81ff">3</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>))
-    <span style="color:#f92672">...</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>    <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>    inputs <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Input(shape<span style="color:#f92672">=</span>(<span style="color:#66d9ef">None</span>, <span style="color:#66d9ef">None</span>, <span style="color:#ae81ff">3</span>))
+</span></span><span style="display:flex;"><span>    conv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(<span style="color:#ae81ff">3</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>        conv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2D(<span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>))
+</span></span><span style="display:flex;"><span>        deconv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(<span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    deconv_layers<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Conv2DTranspose(<span style="color:#ae81ff">3</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;same&#39;</span>))
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">...</span>
+</span></span></code></pre></div><ul>
 <li>먼저 입력 레이어를 정의합니다. 입력 레이어의 <code>shape</code>에서 이미지의 높이와 너비를 <code>None</code>으로 지정해서 어떤 크기의 이미지라도 입력으로 받을 수 있습니다.</li>
 <li>첫 번째 컨볼루션 레이어와 마지막 디컨볼루션 레이어를 제외한 레이어들은 <code>for</code> 문 안에서 정의해서 각 리스트에 저장합니다.</li>
 <li>첫번째 컨볼루션 레이어와 마지막 디컨볼루션 레이어는 필터의 수가 다른데 이는 필터의 수로 <code>RGB</code> 채널의 수인 <code>3</code>을 그대로 받기 위함입니다. 나머지 레이어에서는 64개의 필터를 사용합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#75715e"># 인코더 시작</span>
-    x <span style="color:#f92672">=</span> conv_layers[<span style="color:#ae81ff">0</span>](inputs)
-
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
-        x <span style="color:#f92672">=</span> conv_layers[i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>](x)
-        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-            residual_layers<span style="color:#f92672">.</span>append(x)
-
-    <span style="color:#75715e"># 디코더 시작</span>
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
-        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
-            x <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Add()([x, residual_layers<span style="color:#f92672">.</span>pop()])
-            x <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Activation(<span style="color:#e6db74">&#39;relu&#39;</span>)(x)
-        x <span style="color:#f92672">=</span> deconv_layers[i](x) 
-
-    x <span style="color:#f92672">=</span> deconv_layers[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>](x)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>    <span style="color:#75715e"># 인코더 시작</span>
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> conv_layers[<span style="color:#ae81ff">0</span>](inputs)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> conv_layers[i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>](x)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>            residual_layers<span style="color:#f92672">.</span>append(x)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 디코더 시작</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>            x <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Add()([x, residual_layers<span style="color:#f92672">.</span>pop()])
+</span></span><span style="display:flex;"><span>            x <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Activation(<span style="color:#e6db74">&#39;relu&#39;</span>)(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> deconv_layers[i](x) 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> deconv_layers[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>](x)
+</span></span></code></pre></div><ul>
 <li>여기에서는 <code>x</code>라는 변수에 레이어를 계속 적용해서 함수형 <code>API</code>를 사용합니다. 마지막에 <code>x</code>는 모든 레이어가 적용된 결과가 되기 때문에 모델의 출력이 됩니다.</li>
 <li>이렇게 하나의 변수 이름을 재사용하여 레이어를 적용해나가는 방법은 케라스의 함수형 <code>API</code>나 <code>torch</code>에서 일반적으로 쓰이는 문법입니다.</li>
 <li>첫번째 명령인 <code>x = conv_layers[0](inputs)</code>의 결과로 <code>x</code>는 입력 레이어에 첫 번째 컨볼루션 레이어를 적용한 결과가 됩니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
-        x <span style="color:#f92672">=</span> conv_layers[i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>](x)
-        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-            residual_layers<span style="color:#f92672">.</span>append(x)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> conv_layers[i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>](x)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>            residual_layers<span style="color:#f92672">.</span>append(x)
+</span></span></code></pre></div><ul>
 <li>그 다음으로는 <code>for</code> 문 안에서 <code>x</code>에 나머지 컨볼루션 레이어를 계속 적용시키며, 짝수번재 컨볼루션 레이어를 지날 때마다 <code>x</code>를 잔류 레이어 리스트에도 저장합니다.</li>
 <li>잔류 레이어에 <code>x</code>를 저장한 다음 스텝에서 <code>x</code>는 다시 컨볼루션 레이어를 통과해서 새로운 값이 되지만 잔류 레이어에 이미 저장된 값은 사라지지 않습니다.</li>
 <li>교재 366페이지에 그림설명이 있기 때문에 한번 더 확인하시기를 바랍니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#75715e"># 디코더 시작</span>
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
-        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
-            x <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Add()([x, residual_layers<span style="color:#f92672">.</span>pop()])
-            x <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Activation(<span style="color:#e6db74">&#39;relu&#39;</span>)(x)
-        x <span style="color:#f92672">=</span> deconv_layers[i](x) 
-
-    x <span style="color:#f92672">=</span> deconv_layers[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>](x)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>    <span style="color:#75715e"># 디코더 시작</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_layers<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>            x <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Add()([x, residual_layers<span style="color:#f92672">.</span>pop()])
+</span></span><span style="display:flex;"><span>            x <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Activation(<span style="color:#e6db74">&#39;relu&#39;</span>)(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> deconv_layers[i](x) 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> deconv_layers[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>](x)
+</span></span></code></pre></div><ul>
 <li>두 번째 <code>for</code> 문 안에서는 홀수 번째의 디컨볼루션 레이어를 통과할 경우 잔류 레이어 리스트에 저장돼 있던 값을 <code>residual_layers.pop()</code>으로 뒤에서부터 하나씩 가져옵니다. 그 다음 합연산과 <code>ReLU</code> 활성화함수를 통과한 후 다음 디컨볼루션 레이어에 연결시킵니다.</li>
 <li>짝수 번째일 때는 디컨볼루션 레이어만 연결합니다.</li>
 </ul>
-<pre><code>model = tf.keras.Model(inputs=inputs, outputs=x)
+<pre tabindex="0"><code>model = tf.keras.Model(inputs=inputs, outputs=x)
 </code></pre><ul>
 <li><code>tf.keras</code>의 함수형 <code>API</code>로 <code>Model</code>을 만들기 위해서는 입력과 출력만 지정하면 됩니다.</li>
 <li>입력인 <code>inputs</code>는 함수의 가장 앞에서 정의한 입력 레이어로, 출력인 <code>outputs</code>는 지금까지 레이어 연산을 쭉 따라온 변수 이름인 <code>x</code>로 넣고, <code>model</code>을 반환합니다.</li>
@@ -484,9 +492,9 @@ residual_layers<span style="color:#f92672">=</span>[]
 <li><code>MSE</code>는 우리가 잘 알고 있는 평균 제곱 오차(<code>Mean Squared Error</code>)입니다.</li>
 <li>평균 제곱 오차가 로그의 분모에 있기 때문에 이 식은 평균 제곱 오차가 낮을수록 큰 값을 갖게 됩니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">psnr_metric</span>(y_true, y_pred):
-  <span style="color:#66d9ef">return</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(y_true, y_pred, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>)
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">psnr_metric</span>(y_true, y_pred):
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(y_true, y_pred, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>)
+</span></span></code></pre></div><ul>
 <li><code>Metric</code>은 분류의 정확도(<code>accuracy</code>)처럼 <code>tf.keras</code>에 등록되어 있을 경우 그대로 사용하면 되지만 <code>PSNR</code>은 지원하지 않기 때문에 함수를 만들어줍니다.</li>
 <li><code>y_true</code>는 정답에 해당하는 값이고, <code>y_pred</code>는 네트워크가 학습 결과 예측한 값입니다.</li>
 <li>이 둘의 <code>tf.image.psnr()</code>을 계산해서 반환하는 것이 <code>psnr_metric()</code> 함수의 역할입니다.</li>
@@ -495,23 +503,23 @@ residual_layers<span style="color:#f92672">=</span>[]
 <ul>
 <li>이제 <code>REDNet()</code> 함수로 네트워크를 초기화하고 컴파일합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model <span style="color:#f92672">=</span> REDNet(<span style="color:#ae81ff">15</span>)
-model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(<span style="color:#ae81ff">0.0001</span>), loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>, metrics<span style="color:#f92672">=</span>[psnr_metric])
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model <span style="color:#f92672">=</span> REDNet(<span style="color:#ae81ff">15</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(<span style="color:#ae81ff">0.0001</span>), loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>, metrics<span style="color:#f92672">=</span>[psnr_metric])
+</span></span></code></pre></div><ul>
 <li>컴파일된 네트워크 시각화를 작성해봅니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>plot_model(model)
-</code></pre></div><h3 id="8-rednet-30-네트워크-학습">(8) REDNet-30 네트워크 학습</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>plot_model(model)
+</span></span></code></pre></div><h3 id="8-rednet-30-네트워크-학습">(8) REDNet-30 네트워크 학습</h3>
 <ul>
 <li>이제 네트워크를 학습합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">history <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>fit_generator(train_dataset, 
-                              epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>, 
-                              steps_per_epoch<span style="color:#f92672">=</span>len(train_path)<span style="color:#f92672">//</span><span style="color:#ae81ff">16</span>, 
-                              validation_data<span style="color:#f92672">=</span>valid_dataset, 
-                              validation_steps<span style="color:#f92672">=</span>len(valid_path), 
-                              verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
-</code></pre></div><pre><code>WARNING:tensorflow:From &lt;ipython-input-15-11785503027a&gt;:6: Model.fit_generator (from tensorflow.python.keras.engine.training) is deprecated and will be removed in a future version.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>history <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>fit_generator(train_dataset, 
+</span></span><span style="display:flex;"><span>                              epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>, 
+</span></span><span style="display:flex;"><span>                              steps_per_epoch<span style="color:#f92672">=</span>len(train_path)<span style="color:#f92672">//</span><span style="color:#ae81ff">16</span>, 
+</span></span><span style="display:flex;"><span>                              validation_data<span style="color:#f92672">=</span>valid_dataset, 
+</span></span><span style="display:flex;"><span>                              validation_steps<span style="color:#f92672">=</span>len(valid_path), 
+</span></span><span style="display:flex;"><span>                              verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</span></span></code></pre></div><pre><code>WARNING:tensorflow:From &lt;ipython-input-15-11785503027a&gt;:6: Model.fit_generator (from tensorflow.python.keras.engine.training) is deprecated and will be removed in a future version.
 Instructions for updating:
 Please use Model.fit, which supports generators.
 Epoch 1/1000
@@ -541,25 +549,25 @@ Epoch 1000/1000
 </ul>
 <h3 id="9-네트워크-학습-결과-확인">(9) 네트워크 학습 결과 확인</h3>
 <p>학습 겨로가를 확인합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;psnr_metric&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;psnr&#39;</span>)
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_psnr_metric&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_psnr&#39;</span>)
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
-plt<span style="color:#f92672">.</span>legend()
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_09_04/output_37_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;psnr_metric&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;psnr&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_psnr_metric&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_psnr&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>legend()
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img src="/img/tensorflow2.0/tutorial_09_04/output_37_0.png" alt="png"></p>
 <p>PSNR 수치 모두 학습할수록 증가하는 경향을 보입니다. 이렇게 학습된 데이터가 실제 이미지를 어떻게 복원하는지 확인합니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>io<span style="color:#f92672">.</span>read_file(test_path[<span style="color:#ae81ff">0</span>])
-img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>decode_jpeg(img, channels<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
-hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>convert_image_dtype(img, tf<span style="color:#f92672">.</span>float32)
-
-lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(hr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">2</span>, hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">2</span>])
-lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(lr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>], hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]])
-predict_hr<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(lr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
-
-<span style="color:#66d9ef">print</span>(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>), hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>))
-<span style="color:#66d9ef">print</span>(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(lr, hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>))
-</code></pre></div><pre><code>tf.Tensor(26.110872, shape=(), dtype=float32)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>io<span style="color:#f92672">.</span>read_file(test_path[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>decode_jpeg(img, channels<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>convert_image_dtype(img, tf<span style="color:#f92672">.</span>float32)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(hr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">2</span>, hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">2</span>])
+</span></span><span style="display:flex;"><span>lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(lr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>], hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]])
+</span></span><span style="display:flex;"><span>predict_hr<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(lr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>), hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>))
+</span></span><span style="display:flex;"><span>print(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(lr, hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>))
+</span></span></code></pre></div><pre><code>tf.Tensor(26.110872, shape=(), dtype=float32)
 tf.Tensor(24.853115, shape=(), dtype=float32)
 </code></pre>
 <h3 id="10-테스트-이미지에-대한-초해상도-결과-확인">(10) 테스트 이미지에 대한 초해상도 결과 확인</h3>
@@ -568,50 +576,50 @@ tf.Tensor(24.853115, shape=(), dtype=float32)
 <li>결과에서 <code>PSNR</code> 점수는 복원 이미지가 저해상도 이미지보다 아주 살짝 높은 것으로 나옵니다.</li>
 <li>이미지를 출력합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">16</span>,<span style="color:#ae81ff">4</span>))
-plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>)
-plt<span style="color:#f92672">.</span>imshow(hr)
-plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;original - hr&#39;</span>)
-
-plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">2</span>)
-plt<span style="color:#f92672">.</span>imshow(lr)
-plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;lr&#39;</span>)
-
-plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">3</span>)
-plt<span style="color:#f92672">.</span>imshow(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
-plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;sr&#39;</span>)
-
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">16</span>,<span style="color:#ae81ff">4</span>))
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(hr)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;original - hr&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(lr)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;lr&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;sr&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><ul>
 <li>첫번째 사진이 이미지의 원본이고, 두번째 사진이 저해상도, 세번째 줄이 복원된 이미지입니다.</li>
 <li>이 작업의 성능을 비교하기 위해 <code>Set5</code>라는 데이터세트가 있습니다. 이 중에서도 자주 쓰이는 나비의 사진을 불러와서 확인합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">image_path <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;butterfly.png&#39;</span>, <span style="color:#e6db74">&#39;http://bit.ly/2oAOxgH&#39;</span>)
-img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>io<span style="color:#f92672">.</span>read_file(image_path)
-img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>decode_jpeg(img, channels<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
-hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>convert_image_dtype(img, tf<span style="color:#f92672">.</span>float32)
-
-lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(hr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">4</span>, hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">4</span>])
-lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(lr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>], hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]])
-predict_hr <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(lr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
-
-<span style="color:#66d9ef">print</span>(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>), hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>))
-<span style="color:#66d9ef">print</span>(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(lr, hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>))
-
-
-plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">16</span>,<span style="color:#ae81ff">6</span>))
-plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>)
-plt<span style="color:#f92672">.</span>imshow(hr)
-plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;original - hr&#39;</span>)
-
-plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>)
-plt<span style="color:#f92672">.</span>imshow(lr)
-plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;lr&#39;</span>)
-
-plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>)
-plt<span style="color:#f92672">.</span>imshow(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
-plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;sr&#39;</span>)
-</code></pre></div><pre><code>Downloading data from http://bit.ly/2oAOxgH
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>image_path <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;butterfly.png&#39;</span>, <span style="color:#e6db74">&#39;http://bit.ly/2oAOxgH&#39;</span>)
+</span></span><span style="display:flex;"><span>img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>io<span style="color:#f92672">.</span>read_file(image_path)
+</span></span><span style="display:flex;"><span>img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>decode_jpeg(img, channels<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>convert_image_dtype(img, tf<span style="color:#f92672">.</span>float32)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(hr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">4</span>, hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">4</span>])
+</span></span><span style="display:flex;"><span>lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(lr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>], hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]])
+</span></span><span style="display:flex;"><span>predict_hr <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(lr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>), hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>))
+</span></span><span style="display:flex;"><span>print(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(lr, hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">16</span>,<span style="color:#ae81ff">6</span>))
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(hr)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;original - hr&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(lr)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;lr&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;sr&#39;</span>)
+</span></span></code></pre></div><pre><code>Downloading data from http://bit.ly/2oAOxgH
 131072/127529 [==============================] - 0s 0us/step
 tf.Tensor(20.3429, shape=(), dtype=float32)
 tf.Tensor(20.217585, shape=(), dtype=float32)
@@ -629,49 +637,49 @@ Text(0.5, 1.0, 'sr')
 </ul>
 <h3 id="11-확대비율-4배로-수정-이미지-보강-rednet-30-네트워크-학습">(11) 확대비율 4배로 수정, 이미지 보강 REDNet-30 네트워크 학습</h3>
 <p><code>Dataset</code>에서는 쉽게 이미지 보강을 할 수 있습니다. 이미지에서 랜덤한 부분을 잘라서 고해상도와 저해상도 버전을 추출하던 <code>get_hr_and_lr()</code> 함수를 다음과 같이 바꿉니다.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> random
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_hr_and_lr_flip_s4</span>(image_path):
-  img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>io<span style="color:#f92672">.</span>read_file(image_path)
-  img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>decode_jpeg(img, channels<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
-  img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>convert_image_dtype(img, tf<span style="color:#f92672">.</span>float32)
-
-  hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>random_crop(img, [<span style="color:#ae81ff">50</span>,<span style="color:#ae81ff">50</span>,<span style="color:#ae81ff">3</span>])
-  lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(hr, [<span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">12</span>])
-  lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(lr, [<span style="color:#ae81ff">50</span>,<span style="color:#ae81ff">50</span>])
-
-  <span style="color:#66d9ef">if</span> random<span style="color:#f92672">.</span>random() <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0.25</span>:
-    hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>flip_left_right(hr)
-    lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>flip_left_right(lr)
-  <span style="color:#66d9ef">if</span> random<span style="color:#f92672">.</span>random() <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0.25</span>:
-    hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>flip_up_down(hr)
-    lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>flip_up_down(lr)
-
-  <span style="color:#66d9ef">return</span> lr, hr 
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_hr_and_lr_flip_s4</span>(image_path):
+</span></span><span style="display:flex;"><span>  img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>io<span style="color:#f92672">.</span>read_file(image_path)
+</span></span><span style="display:flex;"><span>  img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>decode_jpeg(img, channels<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>  img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>convert_image_dtype(img, tf<span style="color:#f92672">.</span>float32)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>random_crop(img, [<span style="color:#ae81ff">50</span>,<span style="color:#ae81ff">50</span>,<span style="color:#ae81ff">3</span>])
+</span></span><span style="display:flex;"><span>  lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(hr, [<span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">12</span>])
+</span></span><span style="display:flex;"><span>  lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(lr, [<span style="color:#ae81ff">50</span>,<span style="color:#ae81ff">50</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> random<span style="color:#f92672">.</span>random() <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0.25</span>:
+</span></span><span style="display:flex;"><span>    hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>flip_left_right(hr)
+</span></span><span style="display:flex;"><span>    lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>flip_left_right(lr)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> random<span style="color:#f92672">.</span>random() <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0.25</span>:
+</span></span><span style="display:flex;"><span>    hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>flip_up_down(hr)
+</span></span><span style="display:flex;"><span>    lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>flip_up_down(lr)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> lr, hr 
+</span></span></code></pre></div><ul>
 <li>앞부분은 축소/확대 비율을 2배에서 4배로 바꾸는 부분을 제외하면 <code>get_hr_and_lr()</code> 함수와 같고, 뒤쪽에서 <code>25%</code>의 확률로 좌우 반전, 또 <code>25%</code>의 확률로 상하 반전을 시켜줍니다.</li>
 <li>결과적으로 <code>Dataset</code>을 다시 정의하고 바뀐 함수를 적용합니다.</li>
 </ul>
 <h3 id="12-rednet-30-네트워크-학습">(12) REDNet-30 네트워크 학습</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">train_dataset <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>Dataset<span style="color:#f92672">.</span>list_files(train_path)
-train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>map(get_hr_and_lr_flip_s4)
-train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>repeat()
-train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>batch(<span style="color:#ae81ff">16</span>)
-
-valid_dataset <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>Dataset<span style="color:#f92672">.</span>list_files(valid_path)
-valid_dataset <span style="color:#f92672">=</span> valid_dataset<span style="color:#f92672">.</span>map(get_hr_and_lr_flip_s4)
-valid_dataset <span style="color:#f92672">=</span> valid_dataset<span style="color:#f92672">.</span>repeat()
-valid_dataset <span style="color:#f92672">=</span> valid_dataset<span style="color:#f92672">.</span>batch(<span style="color:#ae81ff">1</span>)
-
-model <span style="color:#f92672">=</span> REDNet(<span style="color:#ae81ff">15</span>)
-model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(<span style="color:#ae81ff">0.0001</span>), loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>, metrics<span style="color:#f92672">=</span>[psnr_metric])
-
-history <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>fit_generator(train_dataset, 
-                              epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">4000</span>, 
-                              steps_per_epoch<span style="color:#f92672">=</span>len(train_path)<span style="color:#f92672">//</span><span style="color:#ae81ff">16</span>, 
-                              validation_data<span style="color:#f92672">=</span>valid_dataset, 
-                              validation_steps<span style="color:#f92672">=</span>len(valid_path), 
-                              verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
-</code></pre></div><pre><code>12/12 - 3s - loss: 0.0046 - psnr_metric: 27.3362 - val_loss: 0.0050 - val_psnr_metric: 27.4308
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>train_dataset <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>Dataset<span style="color:#f92672">.</span>list_files(train_path)
+</span></span><span style="display:flex;"><span>train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>map(get_hr_and_lr_flip_s4)
+</span></span><span style="display:flex;"><span>train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>repeat()
+</span></span><span style="display:flex;"><span>train_dataset <span style="color:#f92672">=</span> train_dataset<span style="color:#f92672">.</span>batch(<span style="color:#ae81ff">16</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>valid_dataset <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>Dataset<span style="color:#f92672">.</span>list_files(valid_path)
+</span></span><span style="display:flex;"><span>valid_dataset <span style="color:#f92672">=</span> valid_dataset<span style="color:#f92672">.</span>map(get_hr_and_lr_flip_s4)
+</span></span><span style="display:flex;"><span>valid_dataset <span style="color:#f92672">=</span> valid_dataset<span style="color:#f92672">.</span>repeat()
+</span></span><span style="display:flex;"><span>valid_dataset <span style="color:#f92672">=</span> valid_dataset<span style="color:#f92672">.</span>batch(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> REDNet(<span style="color:#ae81ff">15</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>optimizers<span style="color:#f92672">.</span>Adam(<span style="color:#ae81ff">0.0001</span>), loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>, metrics<span style="color:#f92672">=</span>[psnr_metric])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>history <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>fit_generator(train_dataset, 
+</span></span><span style="display:flex;"><span>                              epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">4000</span>, 
+</span></span><span style="display:flex;"><span>                              steps_per_epoch<span style="color:#f92672">=</span>len(train_path)<span style="color:#f92672">//</span><span style="color:#ae81ff">16</span>, 
+</span></span><span style="display:flex;"><span>                              validation_data<span style="color:#f92672">=</span>valid_dataset, 
+</span></span><span style="display:flex;"><span>                              validation_steps<span style="color:#f92672">=</span>len(valid_path), 
+</span></span><span style="display:flex;"><span>                              verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+</span></span></code></pre></div><pre><code>12/12 - 3s - loss: 0.0046 - psnr_metric: 27.3362 - val_loss: 0.0050 - val_psnr_metric: 27.4308
 Epoch 3548/4000
 12/12 - 3s - loss: 0.0046 - psnr_metric: 26.8918 - val_loss: 0.0045 - val_psnr_metric: 26.7091
 .
@@ -687,39 +695,39 @@ Epoch 4000/4000
 <li><code>Set5</code>의 나비 이미지를 테스트해보면 다음과 같은 결과가 나옵니다.</li>
 </ul>
 <h3 id="13-학습-결과-확인-및-set5-이미지-시각화">(13) 학습 결과 확인 및 <code>Set5</code> 이미지 시각화</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;psnr_metric&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;psnr&#39;</span>)
-plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_psnr_metric&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_psnr&#39;</span>)
-plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
-plt<span style="color:#f92672">.</span>legend()
-plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="/img/tensorflow2.0/tutorial_09_04/output_52_0.png" alt="png"></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">image_path <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;butterfly.png&#39;</span>, <span style="color:#e6db74">&#39;http://bit.ly/2oAOxgH&#39;</span>)
-img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>io<span style="color:#f92672">.</span>read_file(image_path)
-img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>decode_jpeg(img, channels<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
-hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>convert_image_dtype(img, tf<span style="color:#f92672">.</span>float32)
-
-lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(hr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">4</span>, hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">4</span>])
-lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(lr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>], hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]])
-predict_hr <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(lr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
-
-<span style="color:#66d9ef">print</span>(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>), hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>))
-<span style="color:#66d9ef">print</span>(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(lr, hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>))
-
-
-plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">16</span>,<span style="color:#ae81ff">6</span>))
-plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>)
-plt<span style="color:#f92672">.</span>imshow(hr)
-plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;original - hr&#39;</span>)
-
-plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>)
-plt<span style="color:#f92672">.</span>imshow(lr)
-plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;lr&#39;</span>)
-
-plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>)
-plt<span style="color:#f92672">.</span>imshow(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
-plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;sr&#39;</span>)
-</code></pre></div><pre><code>Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;psnr_metric&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;psnr&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_psnr_metric&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_psnr&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>legend()
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img src="/img/tensorflow2.0/tutorial_09_04/output_52_0.png" alt="png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>image_path <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;butterfly.png&#39;</span>, <span style="color:#e6db74">&#39;http://bit.ly/2oAOxgH&#39;</span>)
+</span></span><span style="display:flex;"><span>img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>io<span style="color:#f92672">.</span>read_file(image_path)
+</span></span><span style="display:flex;"><span>img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>decode_jpeg(img, channels<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>convert_image_dtype(img, tf<span style="color:#f92672">.</span>float32)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(hr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">4</span>, hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">4</span>])
+</span></span><span style="display:flex;"><span>lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(lr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>], hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]])
+</span></span><span style="display:flex;"><span>predict_hr <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(lr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>), hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>))
+</span></span><span style="display:flex;"><span>print(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(lr, hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">16</span>,<span style="color:#ae81ff">6</span>))
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(hr)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;original - hr&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(lr)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;lr&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imshow(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;sr&#39;</span>)
+</span></span></code></pre></div><pre><code>Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
 
 
 tf.Tensor(22.349665, shape=(), dtype=float32)
@@ -735,9 +743,9 @@ Text(0.5, 1.0, 'sr')
 <ul>
 <li>이미지를 불러온 다음 각 이미지에 대한 저해상도 버전과 복원 이미지의 <code>PSNR</code> 점수를 구해서 평균을 비교합니다.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">image_path <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;/content/Set5.zip&#39;</span>, <span style="color:#e6db74">&#39;http://bit.ly/2MEG4kr&#39;</span>)
-<span style="color:#960050;background-color:#1e0010">!</span>unzip Set5<span style="color:#f92672">.</span>zip
-</code></pre></div><pre><code>Downloading data from http://bit.ly/2MEG4kr
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>image_path <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>get_file(<span style="color:#e6db74">&#39;/content/Set5.zip&#39;</span>, <span style="color:#e6db74">&#39;http://bit.ly/2MEG4kr&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>unzip Set5<span style="color:#f92672">.</span>zip
+</span></span></code></pre></div><pre><code>Downloading data from http://bit.ly/2MEG4kr
 860160/852576 [==============================] - 0s 0us/step
 Archive:  Set5.zip
    creating: Set5/
@@ -747,30 +755,30 @@ Archive:  Set5.zip
  extracting: Set5/head.png           
   inflating: Set5/woman.png          
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">set5_image_root <span style="color:#f92672">=</span> pathlib<span style="color:#f92672">.</span>Path(<span style="color:#e6db74">&#39;/content/Set5&#39;</span>)
-set5_image_paths <span style="color:#f92672">=</span> list(set5_image_root<span style="color:#f92672">.</span>glob(<span style="color:#e6db74">&#39;*.*&#39;</span>))
-
-sr_psnr <span style="color:#f92672">=</span> []
-lr_psnr <span style="color:#f92672">=</span> []
-
-<span style="color:#66d9ef">for</span> image_path <span style="color:#f92672">in</span> set5_image_paths:
-    img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>io<span style="color:#f92672">.</span>read_file(str(image_path))
-    img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>decode_jpeg(img, channels<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
-    hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>convert_image_dtype(img, tf<span style="color:#f92672">.</span>float32)
-
-    lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(hr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">4</span>, hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">4</span>])
-    lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(lr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>], hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]])
-    predict_hr <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(lr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
-    
-    sr_psnr<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>), hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>)<span style="color:#f92672">.</span>numpy())
-    lr_psnr<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(lr, hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>)<span style="color:#f92672">.</span>numpy())
-    
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;sr:&#39;</span>, sr_psnr)
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;sr mean:&#39;</span>, np<span style="color:#f92672">.</span>mean(sr_psnr))
-<span style="color:#66d9ef">print</span>()
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;lr:&#39;</span>, lr_psnr)
-<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;lr mean:&#39;</span>, np<span style="color:#f92672">.</span>mean(lr_psnr))
-</code></pre></div><pre><code>WARNING:tensorflow:5 out of the last 5 calls to &lt;function Model.make_predict_function.&lt;locals&gt;.predict_function at 0x7fc446f63158&gt; triggered tf.function retracing. Tracing is expensive and the excessive number of tracings is likely due to passing python objects instead of tensors. Also, tf.function has experimental_relax_shapes=True option that relaxes argument shapes that can avoid unnecessary retracing. Please refer to https://www.tensorflow.org/tutorials/customization/performance#python_or_tensor_args and https://www.tensorflow.org/api_docs/python/tf/function for more details.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>set5_image_root <span style="color:#f92672">=</span> pathlib<span style="color:#f92672">.</span>Path(<span style="color:#e6db74">&#39;/content/Set5&#39;</span>)
+</span></span><span style="display:flex;"><span>set5_image_paths <span style="color:#f92672">=</span> list(set5_image_root<span style="color:#f92672">.</span>glob(<span style="color:#e6db74">&#39;*.*&#39;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sr_psnr <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>lr_psnr <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> image_path <span style="color:#f92672">in</span> set5_image_paths:
+</span></span><span style="display:flex;"><span>    img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>io<span style="color:#f92672">.</span>read_file(str(image_path))
+</span></span><span style="display:flex;"><span>    img <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>decode_jpeg(img, channels<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>    hr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>convert_image_dtype(img, tf<span style="color:#f92672">.</span>float32)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(hr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">4</span>, hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">//</span><span style="color:#ae81ff">4</span>])
+</span></span><span style="display:flex;"><span>    lr <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>resize(lr, [hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>], hr<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]])
+</span></span><span style="display:flex;"><span>    predict_hr <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>expand_dims(lr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    sr_psnr<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(np<span style="color:#f92672">.</span>squeeze(predict_hr, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>), hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>)<span style="color:#f92672">.</span>numpy())
+</span></span><span style="display:flex;"><span>    lr_psnr<span style="color:#f92672">.</span>append(tf<span style="color:#f92672">.</span>image<span style="color:#f92672">.</span>psnr(lr, hr, max_val<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>)<span style="color:#f92672">.</span>numpy())
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;sr:&#39;</span>, sr_psnr)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;sr mean:&#39;</span>, np<span style="color:#f92672">.</span>mean(sr_psnr))
+</span></span><span style="display:flex;"><span>print()
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;lr:&#39;</span>, lr_psnr)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;lr mean:&#39;</span>, np<span style="color:#f92672">.</span>mean(lr_psnr))
+</span></span></code></pre></div><pre><code>WARNING:tensorflow:5 out of the last 5 calls to &lt;function Model.make_predict_function.&lt;locals&gt;.predict_function at 0x7fc446f63158&gt; triggered tf.function retracing. Tracing is expensive and the excessive number of tracings is likely due to passing python objects instead of tensors. Also, tf.function has experimental_relax_shapes=True option that relaxes argument shapes that can avoid unnecessary retracing. Please refer to https://www.tensorflow.org/tutorials/customization/performance#python_or_tensor_args and https://www.tensorflow.org/api_docs/python/tf/function for more details.
 sr: [28.628256, 22.349665, 25.808668, 27.925306, 30.419857]
 sr mean: 27.026352
 
@@ -788,14 +796,14 @@ lr mean: 26.064276
 </ul>
 <h2 id="v-reference">V. Reference</h2>
 <p>김환희. (2020). 시작하세요! 텐서플로 2.0 프로그래밍: 기초 이론부터 실전 예제까지 한번에 끝내는 머신러닝, 딥러닝 핵심 가이드. 서울: 위키북스.</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
-<p>X. Mao, C. Shen, and Y. Yang. (2016, September 1). Image Restoration Using Very Deep Convolutional Encoder-Decoder Networks with Symmetric Skip Connections. Retrieved from <a href="https://arxiv.org/abs/1603.09056">https://arxiv.org/abs/1603.09056</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:1">
+<p>X. Mao, C. Shen, and Y. Yang. (2016, September 1). Image Restoration Using Very Deep Convolutional Encoder-Decoder Networks with Symmetric Skip Connections. Retrieved from <a href="https://arxiv.org/abs/1603.09056">https://arxiv.org/abs/1603.09056</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
 		</div>
 		<footer class="post__footer">
@@ -856,7 +864,7 @@ lr mean: 26.064276
 		<img alt="DSChloe avatar" src="/img/chloe_greek.png" class="avatar" height="90" width="90">
 	</figure>
 	<div class="authorbox__header">
-		<span class="authorbox__name"></span>
+		<span class="authorbox__name">About DSChloe</span>
 	</div>
 	<div class="authorbox__description">
 		DSChloe&rsquo;s dream is to educate young people and make it better the business world via DS Education and Project.
