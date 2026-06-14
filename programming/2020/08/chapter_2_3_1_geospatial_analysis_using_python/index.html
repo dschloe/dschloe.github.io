@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Geospatial Analysis Using Python - Basic - Data Science | DSChloe</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+
+	
+	
+	  
+	  
+	  <script>
+	   
+		var dataLayer = window.dataLayer = window.dataLayer || [];
+		dataLayer.push({
+		  page:'Geospatial Analysis Using Python - Basic',
+		  categories:'Your dataLayer'
+		});
+	  </script>
+	  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	  })(window,document,'script','dataLayer','GTM-PJBZL2Z');</script>
+	  
+	
+		<meta property="og:url" content="https://dschloe.github.io/programming/2020/08/chapter_2_3_1_geospatial_analysis_using_python/">
+  <meta property="og:site_name" content="Data Science | DSChloe">
+  <meta property="og:title" content="Geospatial Analysis Using Python - Basic">
+  <meta property="og:description" content="강의 홍보 취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다. 스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다. [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기 개요 파이썬을 활용한 공간 시각화에 대해 기술하도록 한다. 각 패키지의 쓰임새와 용도를 확인하도록 한다. 예제를 통해 확인한 뒤, 국내 데이터를 적용해보도록 한다. 한글 폰트상의 문제점 외에 다른 문제점은 없는지 확인해본다. 우선 참고한 자료는 아래와 같다. Visualizing Geospatial Data in Python 지리 정보 데이터 처리 기본 환경설정 구글 코랩의 환경설정을 살펴보자. 파이썬 버전 3.6.9을 현재 사용중이다. (2020년 8월 기준) import sys sys.version_info sys.version_info(major=3, minor=6, micro=9, releaselevel=&#39;final&#39;, serial=0) 이번에는 OS 플랫폼을 확인한다. 현재 Ubuntu 18.04 버전을 사용중이다. import platform platform.platform() &#39;Linux-4.19.112&#43;-x86_64-with-Ubuntu-18.04-bionic&#39; 이번에는 CPU 관련된 정보를 확인해본다. CPU 제논 2.3GHz !cat /proc/cpuinfo processor	: 0 vendor_id	: GenuineIntel cpu family	: 6 model	: 79 model name	: Intel(R) Xeon(R) CPU @ 2.20GHz stepping	: 0 microcode	: 0x1 cpu MHz	: 2200.000 cache size	: 56320 KB physical id	: 0 siblings	: 2 core id	: 0 cpu cores	: 1 apicid	: 0 initial apicid	: 0 fpu	: yes fpu_exception	: yes cpuid level	: 13 wp	: yes flags	: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm rdseed adx smap xsaveopt arat md_clear arch_capabilities bugs	: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa bogomips	: 4400.00 clflush size	: 64 cache_alignment	: 64 address sizes	: 46 bits physical, 48 bits virtual power management: processor	: 1 vendor_id	: GenuineIntel cpu family	: 6 model	: 79 model name	: Intel(R) Xeon(R) CPU @ 2.20GHz stepping	: 0 microcode	: 0x1 cpu MHz	: 2200.000 cache size	: 56320 KB physical id	: 0 siblings	: 2 core id	: 0 cpu cores	: 1 apicid	: 1 initial apicid	: 1 fpu	: yes fpu_exception	: yes cpuid level	: 13 wp	: yes flags	: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm rdseed adx smap xsaveopt arat md_clear arch_capabilities bugs	: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa bogomips	: 4400.00 clflush size	: 64 cache_alignment	: 64 address sizes	: 46 bits physical, 48 bits virtual power management: 메모리 정보를 확인해본다. 무료 버전의 경우 약 13GB를 사용할 수 있다. !cat /proc/meminfo MemTotal: 13333552 kB MemFree: 10691516 kB MemAvailable: 12499620 kB Buffers: 76712 kB Cached: 1886808 kB SwapCached: 0 kB Active: 668976 kB Inactive: 1678968 kB Active(anon): 360932 kB Inactive(anon): 360 kB Active(file): 308044 kB Inactive(file): 1678608 kB Unevictable: 0 kB Mlocked: 0 kB SwapTotal: 0 kB SwapFree: 0 kB Dirty: 1992 kB Writeback: 0 kB AnonPages: 384360 kB Mapped: 179824 kB Shmem: 972 kB Slab: 164416 kB SReclaimable: 124572 kB SUnreclaim: 39844 kB KernelStack: 3872 kB PageTables: 4924 kB NFS_Unstable: 0 kB Bounce: 0 kB WritebackTmp: 0 kB CommitLimit: 6666776 kB Committed_AS: 2491516 kB VmallocTotal: 34359738367 kB VmallocUsed: 0 kB VmallocChunk: 0 kB Percpu: 952 kB AnonHugePages: 0 kB ShmemHugePages: 0 kB ShmemPmdMapped: 0 kB HugePages_Total: 0 HugePages_Free: 0 HugePages_Rsvd: 0 HugePages_Surp: 0 Hugepagesize: 2048 kB Hugetlb: 0 kB DirectMap4k: 107708 kB DirectMap2M: 5134336 kB DirectMap1G: 10485760 kB GPU 사용이 가능하면 /device:GPU:0이라고 확인이 될 것이다. 만약 런타임 유형 변경에서 None으로 설정 하면, &#39; &#39;만 출력이 된다. import tensorflow as tf tf.test.gpu_device_name() &#39;/device:GPU:0&#39; 한글 폰트 설정 시각화 출력 시, 한글 폰트는 별도로 설치 및 설정해줘야 한다. 폰트 설치, 폰트 불러오기, 그리고 런타임 재실행 순으로 해준다. (1) 폰트 설치 우분투 명령어 apt-get을 통해 나눔 폰트를 설치한다. !apt-get update -qq !apt-get install fonts-nanum* -qq Selecting previously unselected package fonts-nanum. (Reading database ... 144540 files and directories currently installed.) Preparing to unpack .../fonts-nanum_20170925-1_all.deb ... Unpacking fonts-nanum (20170925-1) ... Selecting previously unselected package fonts-nanum-eco. Preparing to unpack .../fonts-nanum-eco_1.000-6_all.deb ... Unpacking fonts-nanum-eco (1.000-6) ... Selecting previously unselected package fonts-nanum-extra. Preparing to unpack .../fonts-nanum-extra_20170925-1_all.deb ... Unpacking fonts-nanum-extra (20170925-1) ... Selecting previously unselected package fonts-nanum-coding. Preparing to unpack .../fonts-nanum-coding_2.5-1_all.deb ... Unpacking fonts-nanum-coding (2.5-1) ... Setting up fonts-nanum-extra (20170925-1) ... Setting up fonts-nanum (20170925-1) ... Setting up fonts-nanum-coding (2.5-1) ... Setting up fonts-nanum-eco (1.000-6) ... Processing triggers for fontconfig (2.12.6-0ubuntu2) ... (2) 폰트 설정 # 설치된 나눔 폰트 출력 # 만약, 설치했는데도, 리스트가 [] 로 출력된다면 런타임을 다시 시작해주세요 import matplotlib.font_manager as fm import matplotlib.pyplot as plt sys_font=fm.findSystemFonts() nanum_font = [f for f in sys_font if &#39;Nanum&#39; in f] print(f&#34;nanum_font number: {len(nanum_font)}&#34;) nanum_font !python --version def current_font(): print(f&#34;현재 설정된 폰트 글꼴: {plt.rcParams[&#39;font.family&#39;]}, 현재 설정된 폰트 사이즈: {plt.rcParams[&#39;font.size&#39;]}&#34;) # 파이썬 3.6 이상 사용가능 current_font() nanum_font number: 31 Python 3.6.9 현재 설정된 폰트 글꼴: [&#39;sans-serif&#39;], 현재 설정된 폰트 사이즈: 10.0 현재 설정된 폰트 글꼴은 [&#39;sans-serif&#39;]인 것으로 확인된다. 이제 sans-serif를 나눔고딕으로 변경한다. path = &#39;/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf&#39; font_name = fm.FontProperties(fname=path, size=14).get_name() plt.rc(&#39;font&#39;, family=font_name) current_font() 현재 설정된 폰트 글꼴: [&#39;NanumBarunGothic&#39;], 현재 설정된 폰트 사이즈: 10.0 (3) 전체 노트북에 반영 이렇게 설정이 된 후에는 fm._rebuild()를 통해 재 설정 한다. 현재 나올 모든 환경 설정을 아래와 같이 설정한다. fm._rebuild() # 노트북 전체 폰트 및 차트 크기 설정 plt.rcParams[&#39;font.family&#39;] = &#39;NanumBarunGothic&#39; plt.rcParams[&#34;font.size&#34;] = 14 plt.rcParams[&#34;figure.figsize&#34;] = (12,6) # matplotlib에서 마이너스 부호가 깨질 때 import matplotlib as mpl mpl.rcParams[&#39;axes.unicode_minus&#39;] = False print(&#39;설정 되어있는 폰트 사이즈 : {}&#39;.format(plt.rcParams[&#39;font.size&#39;])) print(&#39;설정 되어있는 폰트 글꼴 : {}&#39;.format(plt.rcParams[&#39;font.family&#39;])) print(&#39;설정 되어있는 차트 크기 : {}&#39;.format(plt.rcParams[&#34;figure.figsize&#34;])) 설정 되어있는 폰트 사이즈 : 14.0 설정 되어있는 폰트 글꼴 : [&#39;NanumBarunGothic&#39;] 설정 되어있는 차트 크기 : [12.0, 6.0] (4) 공간시각화 관련 패키지 설정 방법 rtree 패키지 설치가 문제가 될 수 있기 때문에 다음과 같이 설치를 진행한다. !apt install libspatialindex-dev !pip install rtree !pip install geopandas Reading package lists... Done Building dependency tree Reading state information... Done libspatialindex-dev is already the newest version (1.8.5-5). The following package was automatically installed and is no longer required: libnvidia-common-440 Use &#39;apt autoremove&#39; to remove it. 0 upgraded, 0 newly installed, 0 to remove and 60 not upgraded. Requirement already satisfied: rtree in /usr/local/lib/python3.6/dist-packages (0.9.4) Requirement already satisfied: setuptools in /usr/local/lib/python3.6/dist-packages (from rtree) (49.2.0) Requirement already satisfied: geopandas in /usr/local/lib/python3.6/dist-packages (0.8.1) Requirement already satisfied: pyproj&gt;=2.2.0 in /usr/local/lib/python3.6/dist-packages (from geopandas) (2.6.1.post1) Requirement already satisfied: fiona in /usr/local/lib/python3.6/dist-packages (from geopandas) (1.8.13.post1) Requirement already satisfied: shapely in /usr/local/lib/python3.6/dist-packages (from geopandas) (1.7.0) Requirement already satisfied: pandas&gt;=0.23.0 in /usr/local/lib/python3.6/dist-packages (from geopandas) (1.0.5) Requirement already satisfied: cligj&gt;=0.5 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (0.5.0) Requirement already satisfied: attrs&gt;=17 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (19.3.0) Requirement already satisfied: six&gt;=1.7 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (1.15.0) Requirement already satisfied: munch in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (2.5.0) Requirement already satisfied: click&lt;8,&gt;=4.0 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (7.1.2) Requirement already satisfied: click-plugins&gt;=1.0 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (1.1.1) Requirement already satisfied: python-dateutil&gt;=2.6.1 in /usr/local/lib/python3.6/dist-packages (from pandas&gt;=0.23.0-&gt;geopandas) (2.8.1) Requirement already satisfied: numpy&gt;=1.13.3 in /usr/local/lib/python3.6/dist-packages (from pandas&gt;=0.23.0-&gt;geopandas) (1.18.5) Requirement already satisfied: pytz&gt;=2017.2 in /usr/local/lib/python3.6/dist-packages (from pandas&gt;=0.23.0-&gt;geopandas) (2018.9) 구글 드라이브와 연동 우선 구글 드라이브와 계정 연동을 진행한다. # Mount Google Drive from google.colab import drive # import drive from google colab ROOT = &#34;/content/drive&#34; # default location for the drive print(ROOT) # print content of ROOT (Optional) drive.mount(ROOT) # we mount the google drive at /content/drive /content/drive Drive already mounted at /content/drive; to attempt to forcibly remount, call drive.mount(&#34;/content/drive&#34;, force_remount=True). 데이터가 있는 경로로 이동한다. from os.path import join MY_GOOGLE_DRIVE_PATH = &#39;My Drive/Colab Notebooks/inflearn/Python/Kaggle_Edu/02_kaggle_eda/03_map/data&#39; # 프로젝트 경로 PROJECT_PATH = join(ROOT, MY_GOOGLE_DRIVE_PATH) # 프로젝트 경로 print(PROJECT_PATH) /content/drive/My Drive/Colab Notebooks/inflearn/Python/Kaggle_Edu/02_kaggle_eda/03_map/data %cd &#34;{PROJECT_PATH}&#34; /content/drive/My Drive/Colab Notebooks/inflearn/Python/Kaggle_Edu/02_kaggle_eda/03_map/data %ls [0m[01;34m&#39;상가(상권)정보_201912.&#39;[0m/ customer_rate_02.xlsx pivot_table_04.xlsx census.csv merge_03.xlsx city.geojson missing_values_01.xlsx 공간시각화 파일에 대한 기본 개념 geometry는 Point, Line, Polygon을 저장할 수 있다. 파일의 구성도는 다음과 같다. $ ls map_files/ map.dbf map.shp map.shx shp는 전체 geometry를 의미한다. dbf는 각 geometry에 대한 속성(atrributes)값을 가지고 있다. shx는 각 속성 값을 shp안에 있는 geometry를 연결한다. Geopandas 의존성 GeoJSON은 MultiPoint, MultiLineString, MultiPolygon을 포함한 MultiGeometry를 지원함. geojson을 geopandas로 읽게 될 경우, properties는 GeoDataFrame이 된다. (1) Geopandas의 개념 geopandas는 크게 2가지의 데이터 의존성이 있다. Vector: points, lines, and polygons. RASTER: 일종의 격자(grid)로 생각하면 된다. (예: Topographical Map) 크게 2개의 Library가 필요하다. Fiona: Open GIS Simple Features와 파이썬과 geopandas를 연결하는 일종의 다리 역할을 수행한다. GDAL은 rater 데이터를 변환하는 것 OGR은 vector 데이터를 변환하는 것">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="programming">
+    <meta property="article:published_time" content="2020-08-23T10:30:47+09:00">
+    <meta property="article:modified_time" content="2020-08-23T10:30:47+09:00">
+    <meta property="article:tag" content="Exploratory Data Analysis">
+    <meta property="article:tag" content="EDA">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="Geospatial Analysis">
+
+		
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Geospatial Analysis Using Python - Basic">
+  <meta name="twitter:description" content="강의 홍보 취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다. 스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다. [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기 개요 파이썬을 활용한 공간 시각화에 대해 기술하도록 한다. 각 패키지의 쓰임새와 용도를 확인하도록 한다. 예제를 통해 확인한 뒤, 국내 데이터를 적용해보도록 한다. 한글 폰트상의 문제점 외에 다른 문제점은 없는지 확인해본다. 우선 참고한 자료는 아래와 같다. Visualizing Geospatial Data in Python 지리 정보 데이터 처리 기본 환경설정 구글 코랩의 환경설정을 살펴보자. 파이썬 버전 3.6.9을 현재 사용중이다. (2020년 8월 기준) import sys sys.version_info sys.version_info(major=3, minor=6, micro=9, releaselevel=&#39;final&#39;, serial=0) 이번에는 OS 플랫폼을 확인한다. 현재 Ubuntu 18.04 버전을 사용중이다. import platform platform.platform() &#39;Linux-4.19.112&#43;-x86_64-with-Ubuntu-18.04-bionic&#39; 이번에는 CPU 관련된 정보를 확인해본다. CPU 제논 2.3GHz !cat /proc/cpuinfo processor	: 0 vendor_id	: GenuineIntel cpu family	: 6 model	: 79 model name	: Intel(R) Xeon(R) CPU @ 2.20GHz stepping	: 0 microcode	: 0x1 cpu MHz	: 2200.000 cache size	: 56320 KB physical id	: 0 siblings	: 2 core id	: 0 cpu cores	: 1 apicid	: 0 initial apicid	: 0 fpu	: yes fpu_exception	: yes cpuid level	: 13 wp	: yes flags	: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm rdseed adx smap xsaveopt arat md_clear arch_capabilities bugs	: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa bogomips	: 4400.00 clflush size	: 64 cache_alignment	: 64 address sizes	: 46 bits physical, 48 bits virtual power management: processor	: 1 vendor_id	: GenuineIntel cpu family	: 6 model	: 79 model name	: Intel(R) Xeon(R) CPU @ 2.20GHz stepping	: 0 microcode	: 0x1 cpu MHz	: 2200.000 cache size	: 56320 KB physical id	: 0 siblings	: 2 core id	: 0 cpu cores	: 1 apicid	: 1 initial apicid	: 1 fpu	: yes fpu_exception	: yes cpuid level	: 13 wp	: yes flags	: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm rdseed adx smap xsaveopt arat md_clear arch_capabilities bugs	: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa bogomips	: 4400.00 clflush size	: 64 cache_alignment	: 64 address sizes	: 46 bits physical, 48 bits virtual power management: 메모리 정보를 확인해본다. 무료 버전의 경우 약 13GB를 사용할 수 있다. !cat /proc/meminfo MemTotal: 13333552 kB MemFree: 10691516 kB MemAvailable: 12499620 kB Buffers: 76712 kB Cached: 1886808 kB SwapCached: 0 kB Active: 668976 kB Inactive: 1678968 kB Active(anon): 360932 kB Inactive(anon): 360 kB Active(file): 308044 kB Inactive(file): 1678608 kB Unevictable: 0 kB Mlocked: 0 kB SwapTotal: 0 kB SwapFree: 0 kB Dirty: 1992 kB Writeback: 0 kB AnonPages: 384360 kB Mapped: 179824 kB Shmem: 972 kB Slab: 164416 kB SReclaimable: 124572 kB SUnreclaim: 39844 kB KernelStack: 3872 kB PageTables: 4924 kB NFS_Unstable: 0 kB Bounce: 0 kB WritebackTmp: 0 kB CommitLimit: 6666776 kB Committed_AS: 2491516 kB VmallocTotal: 34359738367 kB VmallocUsed: 0 kB VmallocChunk: 0 kB Percpu: 952 kB AnonHugePages: 0 kB ShmemHugePages: 0 kB ShmemPmdMapped: 0 kB HugePages_Total: 0 HugePages_Free: 0 HugePages_Rsvd: 0 HugePages_Surp: 0 Hugepagesize: 2048 kB Hugetlb: 0 kB DirectMap4k: 107708 kB DirectMap2M: 5134336 kB DirectMap1G: 10485760 kB GPU 사용이 가능하면 /device:GPU:0이라고 확인이 될 것이다. 만약 런타임 유형 변경에서 None으로 설정 하면, &#39; &#39;만 출력이 된다. import tensorflow as tf tf.test.gpu_device_name() &#39;/device:GPU:0&#39; 한글 폰트 설정 시각화 출력 시, 한글 폰트는 별도로 설치 및 설정해줘야 한다. 폰트 설치, 폰트 불러오기, 그리고 런타임 재실행 순으로 해준다. (1) 폰트 설치 우분투 명령어 apt-get을 통해 나눔 폰트를 설치한다. !apt-get update -qq !apt-get install fonts-nanum* -qq Selecting previously unselected package fonts-nanum. (Reading database ... 144540 files and directories currently installed.) Preparing to unpack .../fonts-nanum_20170925-1_all.deb ... Unpacking fonts-nanum (20170925-1) ... Selecting previously unselected package fonts-nanum-eco. Preparing to unpack .../fonts-nanum-eco_1.000-6_all.deb ... Unpacking fonts-nanum-eco (1.000-6) ... Selecting previously unselected package fonts-nanum-extra. Preparing to unpack .../fonts-nanum-extra_20170925-1_all.deb ... Unpacking fonts-nanum-extra (20170925-1) ... Selecting previously unselected package fonts-nanum-coding. Preparing to unpack .../fonts-nanum-coding_2.5-1_all.deb ... Unpacking fonts-nanum-coding (2.5-1) ... Setting up fonts-nanum-extra (20170925-1) ... Setting up fonts-nanum (20170925-1) ... Setting up fonts-nanum-coding (2.5-1) ... Setting up fonts-nanum-eco (1.000-6) ... Processing triggers for fontconfig (2.12.6-0ubuntu2) ... (2) 폰트 설정 # 설치된 나눔 폰트 출력 # 만약, 설치했는데도, 리스트가 [] 로 출력된다면 런타임을 다시 시작해주세요 import matplotlib.font_manager as fm import matplotlib.pyplot as plt sys_font=fm.findSystemFonts() nanum_font = [f for f in sys_font if &#39;Nanum&#39; in f] print(f&#34;nanum_font number: {len(nanum_font)}&#34;) nanum_font !python --version def current_font(): print(f&#34;현재 설정된 폰트 글꼴: {plt.rcParams[&#39;font.family&#39;]}, 현재 설정된 폰트 사이즈: {plt.rcParams[&#39;font.size&#39;]}&#34;) # 파이썬 3.6 이상 사용가능 current_font() nanum_font number: 31 Python 3.6.9 현재 설정된 폰트 글꼴: [&#39;sans-serif&#39;], 현재 설정된 폰트 사이즈: 10.0 현재 설정된 폰트 글꼴은 [&#39;sans-serif&#39;]인 것으로 확인된다. 이제 sans-serif를 나눔고딕으로 변경한다. path = &#39;/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf&#39; font_name = fm.FontProperties(fname=path, size=14).get_name() plt.rc(&#39;font&#39;, family=font_name) current_font() 현재 설정된 폰트 글꼴: [&#39;NanumBarunGothic&#39;], 현재 설정된 폰트 사이즈: 10.0 (3) 전체 노트북에 반영 이렇게 설정이 된 후에는 fm._rebuild()를 통해 재 설정 한다. 현재 나올 모든 환경 설정을 아래와 같이 설정한다. fm._rebuild() # 노트북 전체 폰트 및 차트 크기 설정 plt.rcParams[&#39;font.family&#39;] = &#39;NanumBarunGothic&#39; plt.rcParams[&#34;font.size&#34;] = 14 plt.rcParams[&#34;figure.figsize&#34;] = (12,6) # matplotlib에서 마이너스 부호가 깨질 때 import matplotlib as mpl mpl.rcParams[&#39;axes.unicode_minus&#39;] = False print(&#39;설정 되어있는 폰트 사이즈 : {}&#39;.format(plt.rcParams[&#39;font.size&#39;])) print(&#39;설정 되어있는 폰트 글꼴 : {}&#39;.format(plt.rcParams[&#39;font.family&#39;])) print(&#39;설정 되어있는 차트 크기 : {}&#39;.format(plt.rcParams[&#34;figure.figsize&#34;])) 설정 되어있는 폰트 사이즈 : 14.0 설정 되어있는 폰트 글꼴 : [&#39;NanumBarunGothic&#39;] 설정 되어있는 차트 크기 : [12.0, 6.0] (4) 공간시각화 관련 패키지 설정 방법 rtree 패키지 설치가 문제가 될 수 있기 때문에 다음과 같이 설치를 진행한다. !apt install libspatialindex-dev !pip install rtree !pip install geopandas Reading package lists... Done Building dependency tree Reading state information... Done libspatialindex-dev is already the newest version (1.8.5-5). The following package was automatically installed and is no longer required: libnvidia-common-440 Use &#39;apt autoremove&#39; to remove it. 0 upgraded, 0 newly installed, 0 to remove and 60 not upgraded. Requirement already satisfied: rtree in /usr/local/lib/python3.6/dist-packages (0.9.4) Requirement already satisfied: setuptools in /usr/local/lib/python3.6/dist-packages (from rtree) (49.2.0) Requirement already satisfied: geopandas in /usr/local/lib/python3.6/dist-packages (0.8.1) Requirement already satisfied: pyproj&gt;=2.2.0 in /usr/local/lib/python3.6/dist-packages (from geopandas) (2.6.1.post1) Requirement already satisfied: fiona in /usr/local/lib/python3.6/dist-packages (from geopandas) (1.8.13.post1) Requirement already satisfied: shapely in /usr/local/lib/python3.6/dist-packages (from geopandas) (1.7.0) Requirement already satisfied: pandas&gt;=0.23.0 in /usr/local/lib/python3.6/dist-packages (from geopandas) (1.0.5) Requirement already satisfied: cligj&gt;=0.5 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (0.5.0) Requirement already satisfied: attrs&gt;=17 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (19.3.0) Requirement already satisfied: six&gt;=1.7 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (1.15.0) Requirement already satisfied: munch in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (2.5.0) Requirement already satisfied: click&lt;8,&gt;=4.0 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (7.1.2) Requirement already satisfied: click-plugins&gt;=1.0 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (1.1.1) Requirement already satisfied: python-dateutil&gt;=2.6.1 in /usr/local/lib/python3.6/dist-packages (from pandas&gt;=0.23.0-&gt;geopandas) (2.8.1) Requirement already satisfied: numpy&gt;=1.13.3 in /usr/local/lib/python3.6/dist-packages (from pandas&gt;=0.23.0-&gt;geopandas) (1.18.5) Requirement already satisfied: pytz&gt;=2017.2 in /usr/local/lib/python3.6/dist-packages (from pandas&gt;=0.23.0-&gt;geopandas) (2018.9) 구글 드라이브와 연동 우선 구글 드라이브와 계정 연동을 진행한다. # Mount Google Drive from google.colab import drive # import drive from google colab ROOT = &#34;/content/drive&#34; # default location for the drive print(ROOT) # print content of ROOT (Optional) drive.mount(ROOT) # we mount the google drive at /content/drive /content/drive Drive already mounted at /content/drive; to attempt to forcibly remount, call drive.mount(&#34;/content/drive&#34;, force_remount=True). 데이터가 있는 경로로 이동한다. from os.path import join MY_GOOGLE_DRIVE_PATH = &#39;My Drive/Colab Notebooks/inflearn/Python/Kaggle_Edu/02_kaggle_eda/03_map/data&#39; # 프로젝트 경로 PROJECT_PATH = join(ROOT, MY_GOOGLE_DRIVE_PATH) # 프로젝트 경로 print(PROJECT_PATH) /content/drive/My Drive/Colab Notebooks/inflearn/Python/Kaggle_Edu/02_kaggle_eda/03_map/data %cd &#34;{PROJECT_PATH}&#34; /content/drive/My Drive/Colab Notebooks/inflearn/Python/Kaggle_Edu/02_kaggle_eda/03_map/data %ls [0m[01;34m&#39;상가(상권)정보_201912.&#39;[0m/ customer_rate_02.xlsx pivot_table_04.xlsx census.csv merge_03.xlsx city.geojson missing_values_01.xlsx 공간시각화 파일에 대한 기본 개념 geometry는 Point, Line, Polygon을 저장할 수 있다. 파일의 구성도는 다음과 같다. $ ls map_files/ map.dbf map.shp map.shx shp는 전체 geometry를 의미한다. dbf는 각 geometry에 대한 속성(atrributes)값을 가지고 있다. shx는 각 속성 값을 shp안에 있는 geometry를 연결한다. Geopandas 의존성 GeoJSON은 MultiPoint, MultiLineString, MultiPolygon을 포함한 MultiGeometry를 지원함. geojson을 geopandas로 읽게 될 경우, properties는 GeoDataFrame이 된다. (1) Geopandas의 개념 geopandas는 크게 2가지의 데이터 의존성이 있다. Vector: points, lines, and polygons. RASTER: 일종의 격자(grid)로 생각하면 된다. (예: Topographical Map) 크게 2개의 Library가 필요하다. Fiona: Open GIS Simple Features와 파이썬과 geopandas를 연결하는 일종의 다리 역할을 수행한다. GDAL은 rater 데이터를 변환하는 것 OGR은 vector 데이터를 변환하는 것">
+
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-K95C7LSPRK');
+        }
+      </script>
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo">
+		<a class="logo__link" href="/" title="Data Science | DSChloe" rel="home">
+			<div class="logo__item logo__text">
+					<div class="logo__title">Data Science | DSChloe</div>
+					<div class="logo__tagline">Love your beloved one forever</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/programming/">
+				
+				<span class="menu__text">Programming</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/data-analysis/">
+				
+				<span class="menu__text">Data Analysis</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/trip/">
+				
+				<span class="menu__text">Trip</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About DSChloe</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/privacyinfo/">
+				
+				<span class="menu__text">개인정보처리방침</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9871603218577546"
+		crossorigin="anonymous"></script>
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">Geospatial Analysis Using Python - Basic</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-08-23T10:30:47&#43;09:00">2020-08-23</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/programming/" rel="category">Programming</a>, <a class="meta__link" href="/categories/data-transformation/" rel="category">Data Transformation</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#강의-홍보">강의 홍보</a></li>
+    <li><a href="#개요">개요</a></li>
+    <li><a href="#기본-환경설정">기본 환경설정</a></li>
+    <li><a href="#한글-폰트-설정">한글 폰트 설정</a>
+      <ul>
+        <li><a href="#1-폰트-설치">(1) 폰트 설치</a></li>
+        <li><a href="#2-폰트-설정">(2) 폰트 설정</a></li>
+        <li><a href="#3-전체-노트북에-반영">(3) 전체 노트북에 반영</a></li>
+        <li><a href="#4-공간시각화-관련-패키지-설정-방법">(4) 공간시각화 관련 패키지 설정 방법</a></li>
+      </ul>
+    </li>
+    <li><a href="#구글-드라이브와-연동">구글 드라이브와 연동</a></li>
+    <li><a href="#공간시각화-파일에-대한-기본-개념">공간시각화 파일에 대한 기본 개념</a></li>
+    <li><a href="#geopandas-의존성">Geopandas 의존성</a>
+      <ul>
+        <li><a href="#1-geopandas의-개념">(1) Geopandas의 개념</a></li>
+      </ul>
+    </li>
+    <li><a href="#coordinate-system">Coordinate System</a>
+      <ul>
+        <li><a href="#1-shapely-package">(1) shapely package</a></li>
+      </ul>
+    </li>
+    <li><a href="#예제-실습-구현">예제 실습 구현</a>
+      <ul>
+        <li><a href="#1-예제-데이터-수집-및-변환">(1) 예제 데이터 수집 및 변환</a></li>
+        <li><a href="#2-예제-데이터-시각화">(2) 예제 데이터 시각화</a></li>
+        <li><a href="#3-coordinate-시스템-변환">(3) Coordinate 시스템 변환</a></li>
+        <li><a href="#4-데이터-변환">(4) 데이터 변환</a></li>
+        <li><a href="#5-공간-데이터-조인">(5) 공간 데이터 조인</a></li>
+        <li><a href="#6-집계함수">(6) 집계함수</a></li>
+        <li><a href="#6-공간-시각화-구현">(6) 공간 시각화 구현</a></li>
+      </ul>
+    </li>
+    <li><a href="#고양시-데이터-시각화-구현">고양시 데이터 시각화 구현</a>
+      <ul>
+        <li><a href="#1-고양시-데이터-수집-및-변환">(1) 고양시 데이터 수집 및 변환</a></li>
+        <li><a href="#2-시각화를-구현">(2) 시각화를 구현</a></li>
+        <li><a href="#3-coordinate-시스템-변환-1">(3) Coordinate 시스템 변환</a></li>
+        <li><a href="#4-인구-데이터-불러오기">(4) 인구 데이터 불러오기</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="강의-홍보">강의 홍보</h2>
+<ul>
+<li>취준생을 위한 강의를 제작하였습니다.</li>
+<li>본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.
+<ul>
+<li><code>스타벅스 아이스 아메리카노를 선물</code>로 보내드리겠습니다.</li>
+</ul>
+</li>
+<li><a href="https://www.inflearn.com/course/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EC%BA%90%EA%B8%80%EC%9E%85%EB%AC%B8?inst=46ae3c78">[비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기</a>
+<img src="/img/lecture_ad/lecture_ad_01.png" alt=""></li>
+</ul>
+<h2 id="개요">개요</h2>
+<ul>
+<li>파이썬을 활용한 공간 시각화에 대해 기술하도록 한다.</li>
+<li>각 패키지의 쓰임새와 용도를 확인하도록 한다.
+<ul>
+<li>예제를 통해 확인한 뒤, 국내 데이터를 적용해보도록 한다.</li>
+<li>한글 폰트상의 문제점 외에 다른 문제점은 없는지 확인해본다.</li>
+</ul>
+</li>
+<li>우선 참고한 자료는 아래와 같다.
+<ul>
+<li><a href="https://towardsdatascience.com/visualizing-geospatial-data-in-python-e070374fe621">Visualizing Geospatial Data in Python</a></li>
+<li><a href="https://datascienceschool.net/view-notebook/ef921dc25e01437b9b5c532ba3b89b02/#Geoplot">지리 정보 데이터 처리</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="기본-환경설정">기본 환경설정</h2>
+<ul>
+<li>구글 코랩의 환경설정을 살펴보자.
+<ul>
+<li>파이썬 버전 3.6.9을 현재 사용중이다. (2020년 8월 기준)</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> sys
+</span></span><span style="display:flex;"><span>sys<span style="color:#f92672">.</span>version_info
+</span></span></code></pre></div><pre><code>sys.version_info(major=3, minor=6, micro=9, releaselevel='final', serial=0)
+</code></pre>
+<ul>
+<li>이번에는 <code>OS</code> 플랫폼을 확인한다.
+<ul>
+<li>현재 <code>Ubuntu 18.04</code> 버전을 사용중이다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> platform
+</span></span><span style="display:flex;"><span>platform<span style="color:#f92672">.</span>platform()
+</span></span></code></pre></div><pre><code>'Linux-4.19.112+-x86_64-with-Ubuntu-18.04-bionic'
+</code></pre>
+<ul>
+<li>이번에는 CPU 관련된 정보를 확인해본다.
+<ul>
+<li>CPU 제논 2.3GHz</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>cat <span style="color:#f92672">/</span>proc<span style="color:#f92672">/</span>cpuinfo
+</span></span></code></pre></div><pre><code>processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 79
+model name	: Intel(R) Xeon(R) CPU @ 2.20GHz
+stepping	: 0
+microcode	: 0x1
+cpu MHz		: 2200.000
+cache size	: 56320 KB
+physical id	: 0
+siblings	: 2
+core id		: 0
+cpu cores	: 1
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm rdseed adx smap xsaveopt arat md_clear arch_capabilities
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa
+bogomips	: 4400.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 79
+model name	: Intel(R) Xeon(R) CPU @ 2.20GHz
+stepping	: 0
+microcode	: 0x1
+cpu MHz		: 2200.000
+cache size	: 56320 KB
+physical id	: 0
+siblings	: 2
+core id		: 0
+cpu cores	: 1
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm rdseed adx smap xsaveopt arat md_clear arch_capabilities
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa
+bogomips	: 4400.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+</code></pre>
+<ul>
+<li>메모리 정보를 확인해본다.
+<ul>
+<li>무료 버전의 경우 약 <code>13GB</code>를 사용할 수 있다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>cat <span style="color:#f92672">/</span>proc<span style="color:#f92672">/</span>meminfo
+</span></span></code></pre></div><pre><code>MemTotal:       13333552 kB
+MemFree:        10691516 kB
+MemAvailable:   12499620 kB
+Buffers:           76712 kB
+Cached:          1886808 kB
+SwapCached:            0 kB
+Active:           668976 kB
+Inactive:        1678968 kB
+Active(anon):     360932 kB
+Inactive(anon):      360 kB
+Active(file):     308044 kB
+Inactive(file):  1678608 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:              1992 kB
+Writeback:             0 kB
+AnonPages:        384360 kB
+Mapped:           179824 kB
+Shmem:               972 kB
+Slab:             164416 kB
+SReclaimable:     124572 kB
+SUnreclaim:        39844 kB
+KernelStack:        3872 kB
+PageTables:         4924 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     6666776 kB
+Committed_AS:    2491516 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+Percpu:              952 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:               0 kB
+DirectMap4k:      107708 kB
+DirectMap2M:     5134336 kB
+DirectMap1G:    10485760 kB
+</code></pre>
+<ul>
+<li>GPU 사용이 가능하면 <code>/device:GPU:0</code>이라고 확인이 될 것이다.
+<ul>
+<li>만약 런타임 유형 변경에서 <code>None</code>으로 설정 하면, <code>' '</code>만 출력이 된다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+</span></span><span style="display:flex;"><span>tf<span style="color:#f92672">.</span>test<span style="color:#f92672">.</span>gpu_device_name()
+</span></span></code></pre></div><pre><code>'/device:GPU:0'
+</code></pre>
+<h2 id="한글-폰트-설정">한글 폰트 설정</h2>
+<ul>
+<li>시각화 출력 시, 한글 폰트는 별도로 설치 및 설정해줘야 한다.
+<ul>
+<li>폰트 설치, 폰트 불러오기, 그리고 런타임 재실행 순으로 해준다.</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-폰트-설치">(1) 폰트 설치</h3>
+<ul>
+<li>우분투 명령어 <code>apt-get</code>을 통해 <code>나눔</code> 폰트를 설치한다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>apt<span style="color:#f92672">-</span>get update <span style="color:#f92672">-</span>qq
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>apt<span style="color:#f92672">-</span>get install fonts<span style="color:#f92672">-</span>nanum<span style="color:#f92672">*</span> <span style="color:#f92672">-</span>qq
+</span></span></code></pre></div><pre><code>Selecting previously unselected package fonts-nanum.
+(Reading database ... 144540 files and directories currently installed.)
+Preparing to unpack .../fonts-nanum_20170925-1_all.deb ...
+Unpacking fonts-nanum (20170925-1) ...
+Selecting previously unselected package fonts-nanum-eco.
+Preparing to unpack .../fonts-nanum-eco_1.000-6_all.deb ...
+Unpacking fonts-nanum-eco (1.000-6) ...
+Selecting previously unselected package fonts-nanum-extra.
+Preparing to unpack .../fonts-nanum-extra_20170925-1_all.deb ...
+Unpacking fonts-nanum-extra (20170925-1) ...
+Selecting previously unselected package fonts-nanum-coding.
+Preparing to unpack .../fonts-nanum-coding_2.5-1_all.deb ...
+Unpacking fonts-nanum-coding (2.5-1) ...
+Setting up fonts-nanum-extra (20170925-1) ...
+Setting up fonts-nanum (20170925-1) ...
+Setting up fonts-nanum-coding (2.5-1) ...
+Setting up fonts-nanum-eco (1.000-6) ...
+Processing triggers for fontconfig (2.12.6-0ubuntu2) ...
+</code></pre>
+<h3 id="2-폰트-설정">(2) 폰트 설정</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 설치된 나눔 폰트 출력</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 만약, 설치했는데도, 리스트가 [] 로 출력된다면 런타임을 다시 시작해주세요</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.font_manager <span style="color:#66d9ef">as</span> fm
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sys_font<span style="color:#f92672">=</span>fm<span style="color:#f92672">.</span>findSystemFonts()
+</span></span><span style="display:flex;"><span>nanum_font <span style="color:#f92672">=</span> [f <span style="color:#66d9ef">for</span> f <span style="color:#f92672">in</span> sys_font <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#39;Nanum&#39;</span> <span style="color:#f92672">in</span> f]
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;nanum_font number: </span><span style="color:#e6db74">{</span>len(nanum_font)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>nanum_font
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>python <span style="color:#f92672">--</span>version
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">current_font</span>():
+</span></span><span style="display:flex;"><span>  print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;현재 설정된 폰트 글꼴: </span><span style="color:#e6db74">{</span>plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;font.family&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">, 현재 설정된 폰트 사이즈: </span><span style="color:#e6db74">{</span>plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;font.size&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)  <span style="color:#75715e"># 파이썬 3.6 이상 사용가능</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>current_font()
+</span></span></code></pre></div><pre><code>nanum_font number: 31
+Python 3.6.9
+현재 설정된 폰트 글꼴: ['sans-serif'], 현재 설정된 폰트 사이즈: 10.0
+</code></pre>
+<ul>
+<li>현재 설정된 폰트 글꼴은 <code>['sans-serif']</code>인 것으로 확인된다.
+<ul>
+<li>이제 <code>sans-serif</code>를 나눔고딕으로 변경한다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>path <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf&#39;</span>  
+</span></span><span style="display:flex;"><span>font_name <span style="color:#f92672">=</span> fm<span style="color:#f92672">.</span>FontProperties(fname<span style="color:#f92672">=</span>path, size<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span>)<span style="color:#f92672">.</span>get_name()
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>rc(<span style="color:#e6db74">&#39;font&#39;</span>, family<span style="color:#f92672">=</span>font_name)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>current_font()
+</span></span></code></pre></div><pre><code>현재 설정된 폰트 글꼴: ['NanumBarunGothic'], 현재 설정된 폰트 사이즈: 10.0
+</code></pre>
+<h3 id="3-전체-노트북에-반영">(3) 전체 노트북에 반영</h3>
+<ul>
+<li>이렇게 설정이 된 후에는 <code>fm._rebuild()</code>를 통해 재 설정 한다.</li>
+<li>현재 나올 모든 환경 설정을 아래와 같이 설정한다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>fm<span style="color:#f92672">.</span>_rebuild()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 노트북 전체 폰트 및 차트 크기 설정</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;font.family&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;NanumBarunGothic&#39;</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#34;font.size&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">14</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#34;figure.figsize&#34;</span>] <span style="color:#f92672">=</span> (<span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">6</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># matplotlib에서 마이너스 부호가 깨질 때</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib <span style="color:#66d9ef">as</span> mpl
+</span></span><span style="display:flex;"><span>mpl<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;axes.unicode_minus&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;설정 되어있는 폰트 사이즈 : </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;font.size&#39;</span>]))
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;설정 되어있는 폰트 글꼴 : </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;font.family&#39;</span>]))
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;설정 되어있는 차트 크기 : </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#34;figure.figsize&#34;</span>]))
+</span></span></code></pre></div><pre><code>설정 되어있는 폰트 사이즈 : 14.0
+설정 되어있는 폰트 글꼴 : ['NanumBarunGothic']
+설정 되어있는 차트 크기 : [12.0, 6.0]
+</code></pre>
+<h3 id="4-공간시각화-관련-패키지-설정-방법">(4) 공간시각화 관련 패키지 설정 방법</h3>
+<ul>
+<li>rtree 패키지 설치가 문제가 될 수 있기 때문에 다음과 같이 설치를 진행한다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>apt install libspatialindex<span style="color:#f92672">-</span>dev
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>pip install rtree
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>pip install geopandas
+</span></span></code></pre></div><pre><code>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+libspatialindex-dev is already the newest version (1.8.5-5).
+The following package was automatically installed and is no longer required:
+  libnvidia-common-440
+Use 'apt autoremove' to remove it.
+0 upgraded, 0 newly installed, 0 to remove and 60 not upgraded.
+Requirement already satisfied: rtree in /usr/local/lib/python3.6/dist-packages (0.9.4)
+Requirement already satisfied: setuptools in /usr/local/lib/python3.6/dist-packages (from rtree) (49.2.0)
+Requirement already satisfied: geopandas in /usr/local/lib/python3.6/dist-packages (0.8.1)
+Requirement already satisfied: pyproj&gt;=2.2.0 in /usr/local/lib/python3.6/dist-packages (from geopandas) (2.6.1.post1)
+Requirement already satisfied: fiona in /usr/local/lib/python3.6/dist-packages (from geopandas) (1.8.13.post1)
+Requirement already satisfied: shapely in /usr/local/lib/python3.6/dist-packages (from geopandas) (1.7.0)
+Requirement already satisfied: pandas&gt;=0.23.0 in /usr/local/lib/python3.6/dist-packages (from geopandas) (1.0.5)
+Requirement already satisfied: cligj&gt;=0.5 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (0.5.0)
+Requirement already satisfied: attrs&gt;=17 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (19.3.0)
+Requirement already satisfied: six&gt;=1.7 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (1.15.0)
+Requirement already satisfied: munch in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (2.5.0)
+Requirement already satisfied: click&lt;8,&gt;=4.0 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (7.1.2)
+Requirement already satisfied: click-plugins&gt;=1.0 in /usr/local/lib/python3.6/dist-packages (from fiona-&gt;geopandas) (1.1.1)
+Requirement already satisfied: python-dateutil&gt;=2.6.1 in /usr/local/lib/python3.6/dist-packages (from pandas&gt;=0.23.0-&gt;geopandas) (2.8.1)
+Requirement already satisfied: numpy&gt;=1.13.3 in /usr/local/lib/python3.6/dist-packages (from pandas&gt;=0.23.0-&gt;geopandas) (1.18.5)
+Requirement already satisfied: pytz&gt;=2017.2 in /usr/local/lib/python3.6/dist-packages (from pandas&gt;=0.23.0-&gt;geopandas) (2018.9)
+</code></pre>
+<h2 id="구글-드라이브와-연동">구글 드라이브와 연동</h2>
+<ul>
+<li>우선 구글 드라이브와 계정 연동을 진행한다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Mount Google Drive</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> google.colab <span style="color:#f92672">import</span> drive <span style="color:#75715e"># import drive from google colab</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ROOT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/content/drive&#34;</span>     <span style="color:#75715e"># default location for the drive</span>
+</span></span><span style="display:flex;"><span>print(ROOT)                 <span style="color:#75715e"># print content of ROOT (Optional)</span>
+</span></span><span style="display:flex;"><span>drive<span style="color:#f92672">.</span>mount(ROOT)           <span style="color:#75715e"># we mount the google drive at /content/drive</span>
+</span></span></code></pre></div><pre><code>/content/drive
+Drive already mounted at /content/drive; to attempt to forcibly remount, call drive.mount(&quot;/content/drive&quot;, force_remount=True).
+</code></pre>
+<ul>
+<li>데이터가 있는 경로로 이동한다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> os.path <span style="color:#f92672">import</span> join  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>MY_GOOGLE_DRIVE_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;My Drive/Colab Notebooks/inflearn/Python/Kaggle_Edu/02_kaggle_eda/03_map/data&#39;</span> <span style="color:#75715e"># 프로젝트 경로</span>
+</span></span><span style="display:flex;"><span>PROJECT_PATH <span style="color:#f92672">=</span> join(ROOT, MY_GOOGLE_DRIVE_PATH) <span style="color:#75715e"># 프로젝트 경로</span>
+</span></span><span style="display:flex;"><span>print(PROJECT_PATH)
+</span></span></code></pre></div><pre><code>/content/drive/My Drive/Colab Notebooks/inflearn/Python/Kaggle_Edu/02_kaggle_eda/03_map/data
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">%</span>cd <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{PROJECT_PATH}</span><span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div><pre><code>/content/drive/My Drive/Colab Notebooks/inflearn/Python/Kaggle_Edu/02_kaggle_eda/03_map/data
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">%</span>ls
+</span></span></code></pre></div><pre><code>[0m[01;34m'상가(상권)정보_201912.'[0m/   customer_rate_02.xlsx    pivot_table_04.xlsx
+ census.csv                 merge_03.xlsx
+ city.geojson               missing_values_01.xlsx
+</code></pre>
+<h2 id="공간시각화-파일에-대한-기본-개념">공간시각화 파일에 대한 기본 개념</h2>
+<ul>
+<li><code>geometry</code>는 <code>Point</code>, <code>Line</code>, <code>Polygon</code>을 저장할 수 있다.</li>
+<li>파일의 구성도는 다음과 같다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ls map_files/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>map.dbf
+</span></span><span style="display:flex;"><span>map.shp
+</span></span><span style="display:flex;"><span>map.shx
+</span></span></code></pre></div><ul>
+<li><code>shp</code>는 전체 <code>geometry</code>를 의미한다.</li>
+<li><code>dbf</code>는 각 <code>geometry</code>에 대한 속성(<code>atrributes</code>)값을 가지고 있다.</li>
+<li><code>shx</code>는 각 속성 값을 <code>shp</code>안에 있는 <code>geometry</code>를 연결한다.</li>
+</ul>
+<h2 id="geopandas-의존성">Geopandas 의존성</h2>
+<ul>
+<li><code>GeoJSON</code>은 MultiPoint, MultiLineString, MultiPolygon을 포함한 MultiGeometry를 지원함.</li>
+<li><code>geojson</code>을 <code>geopandas</code>로 읽게 될 경우, <code>properties</code>는 <code>GeoDataFrame</code>이 된다.</li>
+</ul>
+<h3 id="1-geopandas의-개념">(1) Geopandas의 개념</h3>
+<ul>
+<li><code>geopandas</code>는 크게 2가지의 데이터 의존성이 있다.
+<ul>
+<li><code>Vector</code>: points, lines, and polygons.</li>
+<li><code>RASTER</code>: 일종의 격자(grid)로 생각하면 된다. (예: Topographical Map)</li>
+</ul>
+</li>
+<li>크게 2개의 Library가 필요하다.
+<ul>
+<li><code>Fiona</code>: <code>Open GIS Simple Features</code>와 파이썬과 <code>geopandas</code>를 연결하는 일종의 다리 역할을 수행한다.</li>
+<li><code>GDAL</code>은 <code>rater</code> 데이터를 변환하는 것</li>
+<li><code>OGR</code>은 vector 데이터를 변환하는 것</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://i.stack.imgur.com/r2wim.png" alt=""></p>
+<h2 id="coordinate-system">Coordinate System</h2>
+<ul>
+<li>Coordinate 시스템은 크게 2가지로 구분된다.
+<ul>
+<li>EPSG: 4326
+<ul>
+<li>구글 Earth가 사용하는 시스템이며, <code>decimal degree</code>를 사용한다.</li>
+</ul>
+</li>
+<li>EPSG: 3857
+<ul>
+<li>Google Maps, Bing Maps, Open Street Maps 등이 사용하는 시스템이며, <code>meter</code>를 거리계로 사용한다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-shapely-package">(1) shapely package</h3>
+<ul>
+<li><code>geometry</code>는 geoDataFrame의 필수적인 요소이다.</li>
+<li>판다스 데이터프레임에 존재하는 <code>위도</code> &amp; <code>경도</code>를 geoDataFrame <code>geometry</code>로 변환할 때 사용된다.</li>
+</ul>
+<h2 id="예제-실습-구현">예제 실습 구현</h2>
+<ul>
+<li>이제 간단하게 <code>geojson</code> 데이터를 활용해서 구현해본다.</li>
+</ul>
+<h3 id="1-예제-데이터-수집-및-변환">(1) 예제 데이터 수집 및 변환</h3>
+<ul>
+<li><code>geojson</code> 데이터를 가져와서 확인해본다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> geopandas <span style="color:#66d9ef">as</span> gpd
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://assets.datacamp.com/production/repositories/2409/datasets/9ea668811fb71fa77ad29362ea5299f05ad150af/school_districts.geojson&#34;</span>
+</span></span><span style="display:flex;"><span>school_districts <span style="color:#f92672">=</span> gpd<span style="color:#f92672">.</span>read_file(url)
+</span></span><span style="display:flex;"><span>school_districts<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><style>
+  #customers {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+  }
+
+  #customers td,
+  #customers th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+
+  #customers tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  #customers tr:hover {
+    background-color: #ddd;
+  }
+
+  #customers th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: rgb(175, 107, 76);
+    color: white;
+  }
+</style>
+
+<div style="width:100%; height:200px; overflow:auto">
+  <table border="1" id="customers">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>first_name</th>
+          <th>city</th>
+          <th>zip</th>
+          <th>email</th>
+          <th>state</th>
+          <th>last_name</th>
+          <th>address</th>
+          <th>position</th>
+          <th>term_expir</th>
+          <th>district</th>
+          <th>phone</th>
+          <th>geometry</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>0</th>
+          <td>Dr. Sharon</td>
+          <td>Nashville</td>
+          <td>37218</td>
+          <td>gentryfordistrict1@comcast.net</td>
+          <td>TN</td>
+          <td>Gentry</td>
+          <td>6108 Beals Lane</td>
+          <td>Member</td>
+          <td>2016</td>
+          <td>1</td>
+          <td>615-268-5269</td>
+          <td>MULTIPOLYGON (((-86.77136 36.38357, -86.77134 ...</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+<h3 id="2-예제-데이터-시각화">(2) 예제 데이터 시각화</h3>
+<ul>
+<li><code>plot()</code> 함수를 활용하여 시각화를 그려본다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 범례</span>
+</span></span><span style="display:flex;"><span>legend_styles <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;title&#39;</span>: <span style="color:#e6db74">&#39;학교 구역&#39;</span>,
+</span></span><span style="display:flex;"><span>               <span style="color:#e6db74">&#39;loc&#39;</span>: <span style="color:#e6db74">&#39;upper left&#39;</span>, <span style="color:#e6db74">&#39;bbox_to_anchor&#39;</span>: (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1.03</span>), <span style="color:#e6db74">&#39;ncol&#39;</span>: <span style="color:#ae81ff">1</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>school_districts<span style="color:#f92672">.</span>plot(column <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;district&#39;</span>, cmap <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;tab20&#39;</span>, legend <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>, legend_kwds <span style="color:#f92672">=</span> legend_styles)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;위도&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;경도&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Nashville 학교 구역&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show();
+</span></span></code></pre></div><p><img src="/img/programming/2020/08/Chapter_2_3_1_Geospatial_Analysis_Using_Python/output_39_0.png" alt="png"></p>
+<ul>
+<li>이번에는 <code>tab20</code>을 <code>summer</code>로 바꿔본다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>school_districts<span style="color:#f92672">.</span>plot(column <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;district&#39;</span>, cmap <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;summer&#39;</span>, legend <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>, legend_kwds <span style="color:#f92672">=</span> legend_styles)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;위도&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;경도&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Nashville 학교 구역&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show();
+</span></span></code></pre></div><p><img src="/img/programming/2020/08/Chapter_2_3_1_Geospatial_Analysis_Using_Python/output_41_0.png" alt="png"></p>
+<ul>
+<li><code>cmap</code>에 인수값을 변환하여 적용할 수 있다.</li>
+</ul>
+<h3 id="3-coordinate-시스템-변환">(3) Coordinate 시스템 변환</h3>
+<ul>
+<li>현재 <code>school_districs</code>는 <code>epsg:4326</code> 시스템에 의해 운용되고 있다. 이를 구글 맵과 같은 것으로 바꿔준다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(school_districts<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>print(school_districts<span style="color:#f92672">.</span>crs)
+</span></span></code></pre></div><pre><code>   first_name  ...                                           geometry
+0  Dr. Sharon  ...  MULTIPOLYGON (((-86.77136 36.38357, -86.77134 ...
+
+[1 rows x 12 columns]
+epsg:4326
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>school_districts<span style="color:#f92672">.</span>geometry <span style="color:#f92672">=</span> school_districts<span style="color:#f92672">.</span>geometry<span style="color:#f92672">.</span>to_crs(epsg <span style="color:#f92672">=</span> <span style="color:#ae81ff">3857</span>)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(school_districts<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>print(school_districts<span style="color:#f92672">.</span>crs)
+</span></span></code></pre></div><pre><code>   first_name  ...                                           geometry
+0  Dr. Sharon  ...  MULTIPOLYGON (((-9659344.056 4353528.767, -965...
+
+[1 rows x 12 columns]
+epsg:3857
+</code></pre>
+<ul>
+<li>
+<p><code>geometry</code>의 값이 변환된 것을 알 수 있다.</p>
+</li>
+<li>
+<p>이번에는 <code>Nashville Neighborhoods</code> GIS 데이터를 변환하도록 한다.</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> geopandas <span style="color:#66d9ef">as</span> gpd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://assets.datacamp.com/production/repositories/2409/datasets/a534dea1e6a99373a5a8e9c2060ad8fb6b74e13c/neighborhoods.geojson&#39;</span>
+</span></span><span style="display:flex;"><span>neighborhoods <span style="color:#f92672">=</span> gpd<span style="color:#f92672">.</span>read_file(url)
+</span></span><span style="display:flex;"><span>neighborhoods<span style="color:#f92672">.</span>geometry <span style="color:#f92672">=</span> neighborhoods<span style="color:#f92672">.</span>geometry<span style="color:#f92672">.</span>to_crs(epsg <span style="color:#f92672">=</span> <span style="color:#ae81ff">3857</span>)
+</span></span><span style="display:flex;"><span>print(neighborhoods<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>print(neighborhoods<span style="color:#f92672">.</span>crs)
+</span></span></code></pre></div><pre><code>                   name                                           geometry
+0  Historic Buena Vista  MULTIPOLYGON (((-9661987.512 4324832.657, -966...
+epsg:3857
+</code></pre>
+<h3 id="4-데이터-변환">(4) 데이터 변환</h3>
+<ul>
+<li><code>shapely</code> 패키지를 활용해서 <code>pandas DataFrame</code>에서 <code>GeoDataFrame</code>으로 변환한다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://assets.datacamp.com/production/repositories/2409/datasets/284dd5ef16418d161af519d30ecc8471a23210ea/public_art.csv&#39;</span>
+</span></span><span style="display:flex;"><span>art <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(url)
+</span></span><span style="display:flex;"><span>art<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Mapped Location&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(art<span style="color:#f92672">.</span>info())
+</span></span></code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 132 entries, 0 to 131
+Data columns (total 9 columns):
+ #   Column       Non-Null Count  Dtype  
+---  ------       --------------  -----  
+ 0   Title        132 non-null    object 
+ 1   Last Name    132 non-null    object 
+ 2   First Name   122 non-null    object 
+ 3   Location     131 non-null    object 
+ 4   Medium       128 non-null    object 
+ 5   Type         132 non-null    object 
+ 6   Description  87 non-null     object 
+ 7   Latitude     132 non-null    float64
+ 8   Longitude    132 non-null    float64
+dtypes: float64(2), object(7)
+memory usage: 9.4+ KB
+None
+</code></pre>
+<ul>
+<li><code>art</code> 데이터에, art[&lsquo;geometry&rsquo;]를 추가하도록 해본다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> geopandas <span style="color:#66d9ef">as</span> gpd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> shapely.geometry <span style="color:#f92672">import</span> Point
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Print the first few rows of the art DataFrame</span>
+</span></span><span style="display:flex;"><span>print(art<span style="color:#f92672">.</span>head())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create a geometry column from lng &amp; lat</span>
+</span></span><span style="display:flex;"><span>art[<span style="color:#e6db74">&#39;geometry&#39;</span>] <span style="color:#f92672">=</span> art<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: Point(float(x<span style="color:#f92672">.</span>Longitude), float(x<span style="color:#f92672">.</span>Latitude)), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create a GeoDataFrame from art and verify the type</span>
+</span></span><span style="display:flex;"><span>art_geo <span style="color:#f92672">=</span> gpd<span style="color:#f92672">.</span>GeoDataFrame(art, crs <span style="color:#f92672">=</span> neighborhoods<span style="color:#f92672">.</span>crs, geometry <span style="color:#f92672">=</span> art<span style="color:#f92672">.</span>geometry)
+</span></span><span style="display:flex;"><span>print(type(art_geo))
+</span></span></code></pre></div><pre><code>                             Title  ... Longitude
+0          [Cross Country Runners]  ... -86.83660
+1  [Fourth and Commerce Sculpture]  ... -86.77774
+2              12th &amp; Porter Mural  ... -86.78817
+3                A Splash of Color  ... -86.79975
+4             A Story of Nashville  ... -86.78205
+
+[5 rows x 9 columns]
+&lt;class 'geopandas.geodataframe.GeoDataFrame'&gt;
+</code></pre>
+<h3 id="5-공간-데이터-조인">(5) 공간 데이터 조인</h3>
+<ul>
+<li>공간데이터를 방법은 <code>sjoin()</code> 함수를 사용한다.
+<ul>
+<li>함수에 대한 구체적인 사용 예제는 <a href="https://geopandas.org/reference/geopandas.sjoin.html">sjoin()</a>을 활용한다.</li>
+</ul>
+</li>
+<li>이 때, <code>intersects</code>, <code>within</code>, <code>contains</code>의 차이점에 대해 이해한다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> geopandas <span style="color:#66d9ef">as</span> gpd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://assets.datacamp.com/production/repositories/2409/datasets/a534dea1e6a99373a5a8e9c2060ad8fb6b74e13c/neighborhoods.geojson&#39;</span>
+</span></span><span style="display:flex;"><span>neighborhoods <span style="color:#f92672">=</span> gpd<span style="color:#f92672">.</span>read_file(url)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>art_intersects_neighborhoods <span style="color:#f92672">=</span> gpd<span style="color:#f92672">.</span>sjoin(art_geo, neighborhoods, op <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;intersects&#39;</span>)
+</span></span><span style="display:flex;"><span>print(art_intersects_neighborhoods<span style="color:#f92672">.</span>shape)
+</span></span></code></pre></div><pre><code>(40, 12)
+
+
+/usr/local/lib/python3.6/dist-packages/ipykernel_launcher.py:1: UserWarning: CRS mismatch between the CRS of left geometries and the CRS of right geometries.
+Use `to_crs()` to reproject one of the input geometries to match the CRS of the other.
+
+Left CRS: EPSG:3857
+Right CRS: EPSG:4326
+
+  &quot;&quot;&quot;Entry point for launching an IPython kernel.
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>art_within_neighborhoods <span style="color:#f92672">=</span> gpd<span style="color:#f92672">.</span>sjoin(art_geo, neighborhoods, op <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;within&#39;</span>)
+</span></span><span style="display:flex;"><span>print(art_within_neighborhoods<span style="color:#f92672">.</span>shape)
+</span></span></code></pre></div><pre><code>(40, 12)
+
+
+/usr/local/lib/python3.6/dist-packages/ipykernel_launcher.py:1: UserWarning: CRS mismatch between the CRS of left geometries and the CRS of right geometries.
+Use `to_crs()` to reproject one of the input geometries to match the CRS of the other.
+
+Left CRS: EPSG:3857
+Right CRS: EPSG:4326
+
+  &quot;&quot;&quot;Entry point for launching an IPython kernel.
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>art_contains_neighborhoods <span style="color:#f92672">=</span> gpd<span style="color:#f92672">.</span>sjoin(art_geo, neighborhoods, op <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;contains&#39;</span>)
+</span></span><span style="display:flex;"><span>print(art_contains_neighborhoods<span style="color:#f92672">.</span>shape)
+</span></span></code></pre></div><pre><code>(0, 12)
+
+
+/usr/local/lib/python3.6/dist-packages/ipykernel_launcher.py:1: UserWarning: CRS mismatch between the CRS of left geometries and the CRS of right geometries.
+Use `to_crs()` to reproject one of the input geometries to match the CRS of the other.
+
+Left CRS: EPSG:3857
+Right CRS: EPSG:4326
+
+  &quot;&quot;&quot;Entry point for launching an IPython kernel.
+</code></pre>
+<ul>
+<li>위 객체 중에서는 <code>art_within_neighborhoods</code>을 사용하도록 해본다.</li>
+</ul>
+<h3 id="6-집계함수">(6) 집계함수</h3>
+<ul>
+<li>이제 각 <code>column</code>에 따라 집계를 하도록 해본다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>neighborhood_art_grouped <span style="color:#f92672">=</span> art_within_neighborhoods[[<span style="color:#e6db74">&#39;name&#39;</span>, <span style="color:#e6db74">&#39;Title&#39;</span>]]<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;name&#39;</span>)
+</span></span><span style="display:flex;"><span>print(neighborhood_art_grouped<span style="color:#f92672">.</span>agg(<span style="color:#e6db74">&#39;count&#39;</span>)<span style="color:#f92672">.</span>sort_values(by <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Title&#39;</span>, ascending <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>))
+</span></span></code></pre></div><pre><code>                          Title
+name                           
+Urban Residents              22
+Lockeland Springs             3
+Edgehill (ONE)                2
+Germantown                    2
+Hillsboro-West End            2
+Inglewood                     2
+Sunnyside                     2
+Chestnut Hill (TAG)           1
+Historic Edgefield            1
+McFerrin Park                 1
+Renraw                        1
+Wedgewood Houston (SNAP)      1
+</code></pre>
+<h3 id="6-공간-시각화-구현">(6) 공간 시각화 구현</h3>
+<ul>
+<li>이렇게 집계된 데이터를 기준으로 공간 시각화를 구현한다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>urban_art <span style="color:#f92672">=</span> art_within_neighborhoods<span style="color:#f92672">.</span>loc[art_within_neighborhoods<span style="color:#f92672">.</span>name <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Urban Residents&#34;</span>]
+</span></span><span style="display:flex;"><span>urban_polygon <span style="color:#f92672">=</span> neighborhoods<span style="color:#f92672">.</span>loc[neighborhoods<span style="color:#f92672">.</span>name <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Urban Residents&#34;</span>]
+</span></span><span style="display:flex;"><span>ax <span style="color:#f92672">=</span> urban_polygon<span style="color:#f92672">.</span>plot(color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;lightgreen&#39;</span>)
+</span></span><span style="display:flex;"><span>urban_art<span style="color:#f92672">.</span>plot(ax <span style="color:#f92672">=</span> ax, column <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Type&#39;</span>, legend <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>);
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img src="/img/programming/2020/08/Chapter_2_3_1_Geospatial_Analysis_Using_Python/output_63_0.png" alt="png"></p>
+<h2 id="고양시-데이터-시각화-구현">고양시 데이터 시각화 구현</h2>
+<ul>
+<li>이제 고양시 데이터를 수집해서 시각화를 그려보도록 한다.</li>
+</ul>
+<h3 id="1-고양시-데이터-수집-및-변환">(1) 고양시 데이터 수집 및 변환</h3>
+<ul>
+<li>이번에는 고양시의 <code>geojson</code> 데이터를 수집 및 변환해본다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>koyang_districts <span style="color:#f92672">=</span> gpd<span style="color:#f92672">.</span>read_file(<span style="color:#e6db74">&#39;city.geojson&#39;</span>)
+</span></span><span style="display:flex;"><span>koyang_districts<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><style>
+    #customers {
+      font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+    }
+  
+    #customers td,
+    #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+  
+    #customers tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  
+    #customers tr:hover {
+      background-color: #ddd;
+    }
+  
+    #customers th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: rgb(175, 107, 76);
+      color: white;
+    }
+  </style>
+
+<div style="width:100%; height:200px; overflow:auto">
+    <table border="1" id="customers">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>EMD_CD</th>
+          <th>EMD_KOR_NM</th>
+          <th>geometry</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>0</th>
+          <td>41281101</td>
+          <td>주교동</td>
+          <td>MULTIPOLYGON (((126.81068 37.65820, 126.81069 ...</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+<h3 id="2-시각화를-구현">(2) 시각화를 구현</h3>
+<ul>
+<li>주어진 데이터를 토대로 시각화를 구현한다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>koyang_districts<span style="color:#f92672">.</span>plot(cmap <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;tab20&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;위도&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;경도&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;고양시의 구역&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show();
+</span></span></code></pre></div><p><img src="/img/programming/2020/08/Chapter_2_3_1_Geospatial_Analysis_Using_Python/output_68_0.png" alt="png"></p>
+<ul>
+<li>고양시의 지도가 그려진 것을 확인할 수 있다.</li>
+<li><code>cmap</code>에 어떤 인수가 들어가는지 확인하기 위해서는 공식 메뉴얼을 참조해본다.
+<ul>
+<li><a href="https://geopandas.org/mapping.html#choosing-colors">choosing-colors</a></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>One can also modify the colors used by plot with the cmap option (for a full list of colormaps, see the <a href="http://matplotlib.org/users/colormaps.html">matplotlib website</a>:</p>
+</blockquote>
+<ul>
+<li><code>cmap</code>의 시각화 색상을 선택하려면 <code>matplotlib</code>에 들어가서 확인해야 한다.</li>
+</ul>
+<h3 id="3-coordinate-시스템-변환-1">(3) Coordinate 시스템 변환</h3>
+<ul>
+<li>현재 <code>koyang_districts</code>는 <code>epsg:4326</code> 시스템에 의해 운용되고 있다. 이를 구글 맵과 같은 것으로 바꿔준다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(koyang_districts<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>print(koyang_districts<span style="color:#f92672">.</span>crs)
+</span></span></code></pre></div><pre><code>     EMD_CD EMD_KOR_NM                                           geometry
+0  41281101        주교동  MULTIPOLYGON (((126.81068 37.65820, 126.81069 ...
+epsg:4326
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>koyang_districts<span style="color:#f92672">.</span>geometry <span style="color:#f92672">=</span> school_districts<span style="color:#f92672">.</span>geometry<span style="color:#f92672">.</span>to_crs(epsg <span style="color:#f92672">=</span> <span style="color:#ae81ff">3857</span>)
+</span></span><span style="display:flex;"><span>print(koyang_districts<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>print(koyang_districts<span style="color:#f92672">.</span>crs)
+</span></span></code></pre></div><pre><code>     EMD_CD EMD_KOR_NM                                           geometry
+0  41281101        주교동  MULTIPOLYGON (((-9659344.056 4353528.767, -965...
+epsg:3857
+</code></pre>
+<ul>
+<li><code>4326</code>에서 <code>3857</code>로 바꿔준 것을 확인할 수 있다.</li>
+</ul>
+<h3 id="4-인구-데이터-불러오기">(4) 인구 데이터 불러오기</h3>
+<ul>
+<li>이제 고양시의 인구 데이터를 불러온다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>census <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;census.csv&#39;</span>)
+</span></span><span style="display:flex;"><span>print(census<span style="color:#f92672">.</span>info())
+</span></span></code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 1584 entries, 0 to 1583
+Data columns (total 8 columns):
+ #   Column  Non-Null Count  Dtype  
+---  ------  --------------  -----  
+ 0   행정구역    1584 non-null   object 
+ 1   조회기준    1584 non-null   object 
+ 2   총인구수    1584 non-null   object 
+ 3   세대수     1584 non-null   object 
+ 4   세대당 인구  1584 non-null   float64
+ 5   남자 인구수  1584 non-null   object 
+ 6   여자 인구수  1584 non-null   object 
+ 7   남여 비율   1584 non-null   float64
+dtypes: float64(2), object(6)
+memory usage: 99.1+ KB
+None
+</code></pre>
+<ul>
+<li>현재 위 데이터를 보면 위도와 경도가 없다.
+<ul>
+<li>따라서, 각 행정구역마다 위도 경도가 들어간 합체 데이터가 필요하다.</li>
+<li>어떻게 해야 할까?</li>
+</ul>
+</li>
+<li>이 부분 해결방법에 대한 고민이 필요한 시기이다.</li>
+</ul>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/exploratory-data-analysis/" rel="tag">Exploratory Data Analysis</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/eda/" rel="tag">EDA</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/python/" rel="tag">Python</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/geospatial-analysis/" rel="tag">Geospatial Analysis</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<p class="authorbox__warning">
+		<strong>WARNING:</strong> Authorbox is activated, but [Author] parameters are not specified.
+	</p>
+</div>
+
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH…" value="" name="q" aria-label="SEARCH…">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://dschloe.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/programming/2026/02/ds_certificate/">빅데이터 분석기사 실기 (Python)</a></li>
+			<li class="widget__item"><a class="widget__link" href="/programming/2025/10/regression_interaction_example_in_r/">ADsP 회귀분석 상호작용 예시</a></li>
+			<li class="widget__item"><a class="widget__link" href="/programming/2025/10/openai_anthropic_api/">Open AI와 앤트로픽 API 키 발급받기</a></li>
+			<li class="widget__item"><a class="widget__link" href="/programming/2025/06/logstash_basic_install/">Logstash 실행 및 확인 - 기본예제</a></li>
+			<li class="widget__item"><a class="widget__link" href="/programming/2025/06/transformers_embedding_elasticsearch/">Elasticsearch - Transformers 임베딩 입력 저장 (Local Mode)</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/acea/">ACEA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/adsp/">ADsP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/airflow/">Airflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/airport-lounge/">Airport Lounge</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/anaconda/">Anaconda</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/android-studio/">Android Studio</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/anova/">ANOVA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/anthropic/">Anthropic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/api/">Api</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/apps-script/">Apps Script</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/astype/">Astype</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/automation/">Automation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws/">AWS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws-toolkit/">AWS Toolkit</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">Bar Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-data-transformation/">Basic Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-statistics/">Basic Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/batch/">Batch</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/batch-file/">Batch File</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/big-data-analyst-exam/">Big Data Analyst Exam</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-machine-learning/">BigQuery Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-machine-learning/">BigQuery With Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-python/">BigQuery With Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blog/">Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blueprint/">Blueprint</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/categorical-features/">Categorical Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/certification/">Certification</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/chatbot/">Chatbot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/chocolatey/">Chocolatey</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/chromedriver/">ChromeDriver</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/class/">Class</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/columntransformer/">ColumnTransformer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/compute-engine/">Compute Engine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conda/">Conda</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conditional-statements/">Conditional Statements</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/crawling/">Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/crontab/">Crontab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/cursor-ai/">Cursor AI</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dash/">Dash</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dashboard/">Dashboard</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-collection/">Data Collection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-crawling/">Data Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-engineering/">Data Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-leakage/">Data Leakage</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-science-project/">Data Science Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-structures/">Data Structures</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/database-navigator/">Database Navigator</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decision-tree/">Decision Tree</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decorators/">Decorators</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deployment/">Deployment</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/design/">Design</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development-settings/">Development Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dictionary/">Dictionary</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dictionary-comprehension/">Dictionary Comprehension</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/discrete-features/">Discrete Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/django/">Django</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/docker/">Docker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/docker-compose/">Docker-Compose</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dotenv/">Dotenv</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">Dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/eda/">EDA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/elastic/">Elastic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/elastic-beanstalk/">Elastic Beanstalk</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/elasticsearch/">Elasticsearch</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/embedding/">Embedding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/encoding/">Encoding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/environment-variables/">Environment Variables</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/erd/">ERD</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/exam-type-2/">Exam Type 2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/exam-type-3/">Exam Type 3</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/excel/">Excel</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/exploratory-data-analysis/">Exploratory Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/factory-pattern/">Factory Pattern</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/faker/">Faker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/feature-engineering/">Feature Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ffmpeg/">Ffmpeg</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/figure-object/">Figure Object</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-download/">File Download</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-i/o/">File I/O</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/financial-data/">Financial Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/flask/">Flask</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/flutter/">Flutter</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/folium/">Folium</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/font/">Font</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/function/">Function</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ga4/">GA4</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gce/">GCE</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/generative-ai/">Generative AI</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/geojson/">GeoJson</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/git/">Git</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github-actions/">Github Actions</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github-blog/">Github Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github-portfoilo/">Github Portfoilo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github-portfolio/">GitHub Portfolio</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/global-development/">Global Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-adsense/">Google Adsense</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-analytics/">Google Analytics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud-platform/">Google Cloud Platform</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-colab/">Google Colab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-compute-engine/">Google Compute Engine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-tag-manager/">Google Tag Manager</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gpu/">GPU</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/grafana/">Grafana</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/group-by/">GROUP BY</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/heroku/">Heroku</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hexo/">Hexo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/histogram/">Histogram</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/html/">HTML</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugging-face/">Hugging Face</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iam/">IAM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/image-preprocessing/">Image Preprocessing</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/intermediate/">Intermediate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/international-development/">International Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interview/">Interview</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iteration/">Iteration</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/java/">Java</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/jupyter-notebook/">Jupyter Notebook</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle/">Kaggle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle-api/">Kaggle API</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kakao-chatbot/">Kakao Chatbot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kakao-open-builder/">Kakao Open Builder</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kibana/">Kibana</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/konlp/">KoNLP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/korean-font/">Korean Font</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/langchain/">LangChain</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/library/">Library</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lightgbm/">LightGBM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-graph/">Line Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">Line Grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/linux/">Linux</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/logstash/">Logstash</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lstm/">LSTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/m1-mac/">M1 Mac</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mac/">Mac</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning-project/">Machine Learning Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/macos-m1/">MacOS M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/make_column_transformer/">Make_column_transformer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mask-r-cnn/">Mask R-CNN</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mecab/">Mecab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/merging-data/">Merging Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/missing-values/">Missing Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/multipages/">Multipages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mysql/">MySQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/naver-api/">Naver API</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/naver-news-crawling/">Naver News Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/neural-network/">Neural Network</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nginx/">Nginx</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nha-trang/">Nha Trang</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nifi/">NiFi</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nohup/">Nohup</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nonparametric/">Nonparametric</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/numeric-features/">Numeric Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/object-detection/">Object Detection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oce/">OCE</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/one-hot-encoding/">One-Hot Encoding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oop/">OOP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/open-builder/">Open Builder</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/openai/">OpenAI</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/openapi/">OpenAPI</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/opencv/">OpenCV</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/openpyxl/">Openpyxl</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/optimizer/">Optimizer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oracle/">Oracle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oracle-vm-box/">Oracle VM Box</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/outlier-values/">Outlier Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pgadmin/">PgAdmin</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pipeline/">Pipeline</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pivot-table/">Pivot Table</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/plot_tree/">Plot_tree</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/plotly/">Plotly</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pls-sem/">PLS-SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/portfolio/">Portfolio</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/postgresql/">PostgreSQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/powershell-execution-policy/">PowerShell Execution Policy</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/programming/">Programming</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/project/">Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/psycopg2/">Psycopg2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/py-openaq/">Py-Openaq</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pycaret/">PyCaret</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pycharm/">PyCharm</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pydataset/">PyDataset</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pymysql/">PyMySQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pyspark/">PySpark</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-crawling/">Python Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-portfolio/">Python Portfolio</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/qgis/">QGIS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-installation/">R Installation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ranzcr/">Ranzcr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rcppmecab/">RcppMeCab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rds/">RDS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/reading-list/">Reading List</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/recommendation/">Recommendation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regression/">Regression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regular-expression/">Regular Expression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/report-automation/">Report Automation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/reticulate/">Reticulate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/retrospective/">Retrospective</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rpa/">RPA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rtweet/">Rtweet</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sagemaker/">SageMaker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sales/">Sales</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scikit-learn/">Scikit-Learn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scrapy/">Scrapy</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/seaborn/">Seaborn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/selenium/">Selenium</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sem/">SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/singapore/">Singapore</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sklearn/">Sklearn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/spark/">Spark</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/spss/">SPSS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sql/">SQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sql-developer/">SQL Developer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ssh/">SSH</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/st-pages/">St-Pages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statsmodels/">Statsmodels</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/streamlit/">Streamlit</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tableau/">Tableau</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow/">TensorFlow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/text-mining/">Text Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/text-preprocessing/">Text Preprocessing</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/timing/">Timing</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/transformers/">Transformers</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/travel/">Travel</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tuber/">Tuber</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ubuntu/">Ubuntu</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ubuntu-18.04/">Ubuntu 18.04</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/utm/">UTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vagrant/">Vagrant</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vc-code/">VC Code</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">Vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vietnam/">Vietnam</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/virtualbox/">VirtualBox</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/virtualenv/">Virtualenv</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/visual-studio-code/">Visual Studio Code</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vs-code/">VS Code</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vscode/">VSCode</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/wandb/">Wandb</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/web-crawling/">Web Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/web-development/">Web Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/whisper/">Whisper</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/windows/">Windows</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/windows11/">Windows11</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/wsl2/">WSL2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/xgboost/">XGBoost</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/youtube/">YouTube</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/acea/" title="ACEA">ACEA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/adsp/" title="ADsP">ADsP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/airflow/" title="Airflow">Airflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/airport-lounge/" title="Airport Lounge">Airport Lounge</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/anaconda/" title="Anaconda">Anaconda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/android-studio/" title="Android Studio">Android Studio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/anova/" title="ANOVA">ANOVA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/anthropic/" title="Anthropic">Anthropic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/api/" title="Api">Api</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/append/" title="Append">Append</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apps-script/" title="Apps Script">Apps Script</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/astype/" title="Astype">Astype</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/auto-encoder/" title="Auto Encoder">Auto Encoder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/automation/" title="Automation">Automation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws/" title="AWS">AWS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws-toolkit/" title="AWS Toolkit">AWS Toolkit</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="Bar Chart">Bar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-structures/" title="Basic Data Structures">Basic Data Structures</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-transformation/" title="Basic Data Transformation">Basic Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-statistics/" title="Basic Statistics">Basic Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/batch/" title="Batch">Batch</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/batch-file/" title="Batch File">Batch File</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/big-data-analyst-exam/" title="Big Data Analyst Exam">Big Data Analyst Exam</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-machine-learning/" title="BigQuery Machine Learning">BigQuery Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-machine-learning/" title="BigQuery With Machine Learning">BigQuery With Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery With Python">BigQuery With Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery With R">BigQuery With R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blog/" title="Blog">Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blueprint/" title="Blueprint">Blueprint</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/categorical-features/" title="Categorical Features">Categorical Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/certification/" title="Certification">Certification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chatbot/" title="Chatbot">Chatbot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chocolatey/" title="Chocolatey">Chocolatey</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chromedriver/" title="ChromeDriver">ChromeDriver</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/class/" title="Class">Class</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/clustering/" title="Clustering">Clustering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/colab-with-kaggle/" title="Colab With Kaggle">Colab With Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/columntransformer/" title="ColumnTransformer">ColumnTransformer</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/compute-engine/" title="Compute Engine">Compute Engine</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conda/" title="Conda">Conda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-expressions/" title="Conditional Expressions">Conditional Expressions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-statements/" title="Conditional Statements">Conditional Statements</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/crawling/" title="Crawling">Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/crontab/" title="Crontab">Crontab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cross-join/" title="Cross Join">Cross Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cursor-ai/" title="Cursor AI">Cursor AI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dash/" title="Dash">Dash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dashboard/" title="Dashboard">Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-collection/" title="Data Collection">Data Collection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-crawling/" title="Data Crawling">Data Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-engineering/" title="Data Engineering">Data Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-leakage/" title="Data Leakage">Data Leakage</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-science-project/" title="Data Science Project">Data Science Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-types/" title="Data Types">Data Types</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/database-navigator/" title="Database Navigator">Database Navigator</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dataframe/" title="DataFrame">DataFrame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decision-tree/" title="Decision Tree">Decision Tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decorators/" title="Decorators">Decorators</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deployment/" title="Deployment">Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/design/" title="Design">Design</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development-settings/" title="Development Settings">Development Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary/" title="Dictionary">Dictionary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary-comprehension/" title="Dictionary Comprehension">Dictionary Comprehension</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/discrete-features/" title="Discrete Features">Discrete Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/disk.frame/" title="Disk.frame">Disk.frame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/django/" title="Django">Django</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/docker/" title="Docker">Docker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/docker-compose/" title="Docker-Compose">Docker-Compose</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dotenv/" title="Dotenv">Dotenv</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="Dplyr">Dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/eda/" title="EDA">EDA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/elastic/" title="Elastic">Elastic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/elastic-beanstalk/" title="Elastic Beanstalk">Elastic Beanstalk</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/elasticsearch/" title="Elasticsearch">Elasticsearch</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/embedding/" title="Embedding">Embedding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/emr/" title="EMR">EMR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/encoding/" title="Encoding">Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enumerate/" title="Enumerate">Enumerate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/environment-variables/" title="Environment Variables">Environment Variables</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/erd/" title="ERD">ERD</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exam-type-2/" title="Exam Type 2">Exam Type 2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exam-type-3/" title="Exam Type 3">Exam Type 3</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/excel/" title="Excel">Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exploratory-data-analysis/" title="Exploratory Data Analysis">Exploratory Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/extend/" title="Extend">Extend</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/factory-pattern/" title="Factory Pattern">Factory Pattern</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/faker/" title="Faker">Faker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/feature-engineering/" title="Feature Engineering">Feature Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ffmpeg/" title="Ffmpeg">Ffmpeg</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/figure-object/" title="Figure Object">Figure Object</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-download/" title="File Download">File Download</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-i/o/" title="File I/O">File I/O</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="Filter">Filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/financial-data/" title="Financial Data">Financial Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/flask/" title="Flask">Flask</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/flutter/" title="Flutter">Flutter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/folium/" title="Folium">Folium</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/font/" title="Font">Font</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/for-loop/" title="For-Loop">For-Loop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ga4/" title="GA4">GA4</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gce/" title="GCE">GCE</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/generative-ai/" title="Generative AI">Generative AI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geojson/" title="GeoJson">GeoJson</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geospatial-analysis/" title="Geospatial Analysis">Geospatial Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gghistostats/" title="Gghistostats">Gghistostats</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/git/" title="Git">Git</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github-actions/" title="Github Actions">Github Actions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github-blog/" title="Github Blog">Github Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github-portfoilo/" title="Github Portfoilo">Github Portfoilo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github-portfolio/" title="GitHub Portfolio">GitHub Portfolio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/global-development/" title="Global Development">Global Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-adsense/" title="Google Adsense">Google Adsense</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-analytics/" title="Google Analytics">Google Analytics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud-platform/" title="Google Cloud Platform">Google Cloud Platform</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-compute-engine/" title="Google Compute Engine">Google Compute Engine</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-tag-manager/" title="Google Tag Manager">Google Tag Manager</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gpu/" title="GPU">GPU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/grafana/" title="Grafana">Grafana</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="Gt">Gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gtsummary/" title="Gtsummary">Gtsummary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hadoop/" title="Hadoop">Hadoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heatmap/" title="Heatmap">Heatmap</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heroku/" title="Heroku">Heroku</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hexo/" title="Hexo">Hexo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/histogram/" title="Histogram">Histogram</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html/" title="HTML">HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugging-face/" title="Hugging Face">Hugging Face</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iam/" title="IAM">IAM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-preprocessing/" title="Image Preprocessing">Image Preprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-segmentation/" title="Image Segmentation">Image Segmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-settings/" title="Image Settings">Image Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/insert/" title="Insert">Insert</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/intermediate/" title="Intermediate">Intermediate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/international-development/" title="International Development">International Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interview/" title="Interview">Interview</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iteration/" title="Iteration">Iteration</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="Iterrows">Iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/java/" title="Java">Java</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/join/" title="JOIN">JOIN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle/" title="Kaggle">Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle-api/" title="Kaggle API">Kaggle API</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kakao-chatbot/" title="Kakao Chatbot">Kakao Chatbot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kakao-open-builder/" title="Kakao Open Builder">Kakao Open Builder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kibana/" title="Kibana">Kibana</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/konlp/" title="KoNLP">KoNLP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/korean-font/" title="Korean Font">Korean Font</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/label-encoding/" title="Label Encoding">Label Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lambda/" title="Lambda">Lambda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/langchain/" title="LangChain">LangChain</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="Leaflet">Leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/library/" title="Library">Library</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lightgbm/" title="LightGBM">LightGBM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-graph/" title="Line Graph">Line Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="Line Grpah">Line Grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linux/" title="Linux">Linux</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/list/" title="List">List</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="Lists">Lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists-and-tuples/" title="Lists and Tuples">Lists and Tuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/logstash/" title="Logstash">Logstash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m1-mac/" title="M1 Mac">M1 Mac</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m5-forecasting/" title="M5 Forecasting">M5 Forecasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mac/" title="Mac">Mac</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning-project/" title="Machine Learning Project">Machine Learning Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/macos-m1/" title="MacOS M1">MacOS M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/make_column_transformer/" title="Make_column_transformer">Make_column_transformer</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mask-r-cnn/" title="Mask R-CNN">Mask R-CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathematical-functions/" title="Mathematical Functions">Mathematical Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mecab/" title="Mecab">Mecab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multipages/" title="Multipages">Multipages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiprocessing/" title="Multiprocessing">Multiprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mysql/" title="MySQL">MySQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/naver-api/" title="Naver API">Naver API</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/naver-news-crawling/" title="Naver News Crawling">Naver News Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/neural-network/" title="Neural Network">Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="Nginx">Nginx</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nha-trang/" title="Nha Trang">Nha Trang</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nifi/" title="NiFi">NiFi</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nohup/" title="Nohup">Nohup</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nonparametric/" title="Nonparametric">Nonparametric</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numeric-features/" title="Numeric Features">Numeric Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numpy/" title="NumPy">NumPy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/object-detection/" title="Object Detection">Object Detection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oce/" title="OCE">OCE</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/one-hot-encoding/" title="One-Hot Encoding">One-Hot Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oop/" title="OOP">OOP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/open-builder/" title="Open Builder">Open Builder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/openai/" title="OpenAI">OpenAI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/openapi/" title="OpenAPI">OpenAPI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/opencv/" title="OpenCV">OpenCV</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/openpyxl/" title="Openpyxl">Openpyxl</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oracle/" title="Oracle">Oracle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oracle-vm-box/" title="Oracle VM Box">Oracle VM Box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outer-join/" title="Outer Join">Outer Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outlier-values/" title="Outlier Values">Outlier Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outliers/" title="Outliers">Outliers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pd.concat/" title="Pd.concat">Pd.concat</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pgadmin/" title="PgAdmin">PgAdmin</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pins/" title="Pins">Pins</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pipeline/" title="Pipeline">Pipeline</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pivot-table/" title="Pivot Table">Pivot Table</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plot_tree/" title="Plot_tree">Plot_tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="Plotly">Plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pls-sem/" title="PLS-SEM">PLS-SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/polar-chart/" title="Polar Chart">Polar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/portfolio/" title="Portfolio">Portfolio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/postgresql/" title="PostgreSQL">PostgreSQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/powershell-execution-policy/" title="PowerShell Execution Policy">PowerShell Execution Policy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/probability/" title="Probability">Probability</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-mining/" title="Process Mining">Process Mining</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/productive-box/" title="Productive-Box">Productive-Box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/psycopg2/" title="Psycopg2">Psycopg2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/py-openaq/" title="Py-Openaq">Py-Openaq</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pycaret/" title="PyCaret">PyCaret</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pycharm/" title="PyCharm">PyCharm</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pydataset/" title="PyDataset">PyDataset</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pymysql/" title="PyMySQL">PyMySQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pyspark/" title="PySpark">PySpark</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-crawling/" title="Python Crawling">Python Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-excel/" title="Python Excel">Python Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-numpy-broadcasting/" title="Python NumPy Broadcasting">Python NumPy Broadcasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-portfolio/" title="Python Portfolio">Python Portfolio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/qgis/" title="QGIS">QGIS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-basic/" title="R Basic">R Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-installation/" title="R Installation">R Installation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ranzcr/" title="Ranzcr">Ranzcr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rcppmecab/" title="RcppMeCab">RcppMeCab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rds/" title="RDS">RDS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="Reactivity">Reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reading-list/" title="Reading List">Reading List</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recommendation/" title="Recommendation">Recommendation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regular-expression/" title="Regular Expression">Regular Expression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reticulate/" title="Reticulate">Reticulate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/retrospective/" title="Retrospective">Retrospective</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rpa/" title="RPA">RPA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rstudio/" title="RStudio">RStudio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rtweet/" title="Rtweet">Rtweet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sagemaker/" title="SageMaker">SageMaker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sales/" title="Sales">Sales</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scikit-learn/" title="Scikit-Learn">Scikit-Learn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scrapy/" title="Scrapy">Scrapy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/seaborn/" title="Seaborn">Seaborn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/selenium/" title="Selenium">Selenium</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sem/" title="SEM">SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="Shinydashboard">Shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/singapore/" title="Singapore">Singapore</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sklearn/" title="Sklearn">Sklearn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="Sort_values">Sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/spark/" title="Spark">Spark</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/spectra-show/" title="Spectra Show">Spectra Show</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/spss/" title="SPSS">SPSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sql/" title="SQL">SQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sql-developer/" title="SQL Developer">SQL Developer</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sqlalchemy/" title="SQLAlchemy">SQLAlchemy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sqlite/" title="SQLite">SQLite</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ssh/" title="SSH">SSH</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/st-pages/" title="St-Pages">St-Pages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statsmodels/" title="Statsmodels">Statsmodels</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/streamlit/" title="Streamlit">Streamlit</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/super-resolution/" title="Super Resolution">Super Resolution</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/swifter/" title="Swifter">Swifter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tableau/" title="Tableau">Tableau</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow/" title="TensorFlow">TensorFlow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text/" title="Text">Text</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text-mining/" title="Text Mining">Text Mining</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text-preprocessing/" title="Text Preprocessing">Text Preprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tidymodels/" title="Tidymodels">Tidymodels</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/timing/" title="Timing">Timing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transformers/" title="Transformers">Transformers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/travel/" title="Travel">Travel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tuber/" title="Tuber">Tuber</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/types-of-functions/" title="Types of Functions">Types of Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ubuntu/" title="Ubuntu">Ubuntu</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ubuntu-18.04/" title="Ubuntu 18.04">Ubuntu 18.04</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/utm/" title="UTM">UTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vagrant/" title="Vagrant">Vagrant</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vc-code/" title="VC Code">VC Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="Vcrs">Vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vietnam/" title="Vietnam">Vietnam</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/virtualbox/" title="VirtualBox">VirtualBox</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/virtualenv/" title="Virtualenv">Virtualenv</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/visual-studio-code/" title="Visual Studio Code">Visual Studio Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vscode/" title="VSCode">VSCode</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/wandb/" title="Wandb">Wandb</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/web-crawling/" title="Web Crawling">Web Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/web-development/" title="Web Development">Web Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/whisper/" title="Whisper">Whisper</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/windows/" title="Windows">Windows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/windows11/" title="Windows11">Windows11</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/wsl2/" title="WSL2">WSL2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xgboost/" title="XGBoost">XGBoost</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/youtube/" title="YouTube">YouTube</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2026 DSChloe.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>

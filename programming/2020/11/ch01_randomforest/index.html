@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>입문자를 위한 머신러닝 - 랜덤 포레스트 - Data Science | DSChloe</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+
+	
+	
+	  
+	  
+	  <script>
+	   
+		var dataLayer = window.dataLayer = window.dataLayer || [];
+		dataLayer.push({
+		  page:'입문자를 위한 머신러닝 - 랜덤 포레스트',
+		  categories:'Your dataLayer'
+		});
+	  </script>
+	  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	  })(window,document,'script','dataLayer','GTM-PJBZL2Z');</script>
+	  
+	
+		<meta property="og:url" content="https://dschloe.github.io/programming/2020/11/ch01_randomforest/">
+  <meta property="og:site_name" content="Data Science | DSChloe">
+  <meta property="og:title" content="입문자를 위한 머신러닝 - 랜덤 포레스트">
+  <meta property="og:description" content="공지 본 포스트는 교재 파이썬 머신러닝 완벽 가이드 코드를 제 수업을 드는 학생들이 보다 편하게 구글 코랩에서 사용할 수 있도록 만든 예제입니다. 책 구매하세요! http://www.yes24.com/Product/Goods/87044746?OzSrank=1 Random Forest 랜덤 포레스트의 개요
+배깅의 대표적인 알고리즘 랜덤 포레스트는 개별 트리가 학습하는 데이터 세트는 전체 데이터에서 일부가 중첩되게 샘플링 된 데이터 세트 부트스트래핑 부할 방식 채택 참고 강의 이론 https://www.youtube.com/watch?v=Z97uDTsvojY https://www.youtube.com/watch?v=J4Wdy0Wc_xQ !wget https://archive.ics.uci.edu/ml/machine-learning-databases/00240/UCI%20HAR%20Dataset.zip !unzip &#39;UCI HAR Dataset.zip&#39; !mv UCI\ HAR\ Dataset human_activity --2020-11-27 05:21:51-- https://archive.ics.uci.edu/ml/machine-learning-databases/00240/UCI%20HAR%20Dataset.zip Resolving archive.ics.uci.edu (archive.ics.uci.edu)... 128.195.10.252 Connecting to archive.ics.uci.edu (archive.ics.uci.edu)|128.195.10.252|:443... connected. HTTP request sent, awaiting response... 200 OK Length: 60999314 (58M) [application/x-httpd-php] Saving to: ‘UCI HAR Dataset.zip’ UCI HAR Dataset.zip 100%[===================&gt;] 58.17M 33.8MB/s in 1.7s 2020-11-27 05:21:53 (33.8 MB/s) - ‘UCI HAR Dataset.zip’ saved [60999314/60999314] Archive: UCI HAR Dataset.zip creating: UCI HAR Dataset/ inflating: UCI HAR Dataset/.DS_Store creating: __MACOSX/ creating: __MACOSX/UCI HAR Dataset/ inflating: __MACOSX/UCI HAR Dataset/._.DS_Store inflating: UCI HAR Dataset/activity_labels.txt inflating: __MACOSX/UCI HAR Dataset/._activity_labels.txt inflating: UCI HAR Dataset/features.txt inflating: __MACOSX/UCI HAR Dataset/._features.txt inflating: UCI HAR Dataset/features_info.txt inflating: __MACOSX/UCI HAR Dataset/._features_info.txt inflating: UCI HAR Dataset/README.txt inflating: __MACOSX/UCI HAR Dataset/._README.txt creating: UCI HAR Dataset/test/ creating: UCI HAR Dataset/test/Inertial Signals/ inflating: UCI HAR Dataset/test/Inertial Signals/body_acc_x_test.txt creating: __MACOSX/UCI HAR Dataset/test/ creating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/ inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_acc_x_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/body_acc_y_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_acc_y_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/body_acc_z_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_acc_z_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/body_gyro_x_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_gyro_x_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/body_gyro_y_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_gyro_y_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/body_gyro_z_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_gyro_z_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/total_acc_x_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._total_acc_x_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/total_acc_y_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._total_acc_y_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/total_acc_z_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._total_acc_z_test.txt inflating: __MACOSX/UCI HAR Dataset/test/._Inertial Signals inflating: UCI HAR Dataset/test/subject_test.txt inflating: __MACOSX/UCI HAR Dataset/test/._subject_test.txt inflating: UCI HAR Dataset/test/X_test.txt inflating: __MACOSX/UCI HAR Dataset/test/._X_test.txt inflating: UCI HAR Dataset/test/y_test.txt inflating: __MACOSX/UCI HAR Dataset/test/._y_test.txt inflating: __MACOSX/UCI HAR Dataset/._test creating: UCI HAR Dataset/train/ creating: UCI HAR Dataset/train/Inertial Signals/ inflating: UCI HAR Dataset/train/Inertial Signals/body_acc_x_train.txt creating: __MACOSX/UCI HAR Dataset/train/ creating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/ inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_acc_x_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/body_acc_y_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_acc_y_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/body_acc_z_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_acc_z_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/body_gyro_x_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_gyro_x_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/body_gyro_y_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_gyro_y_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/body_gyro_z_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_gyro_z_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/total_acc_x_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._total_acc_x_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/total_acc_y_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._total_acc_y_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/total_acc_z_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._total_acc_z_train.txt inflating: __MACOSX/UCI HAR Dataset/train/._Inertial Signals inflating: UCI HAR Dataset/train/subject_train.txt inflating: __MACOSX/UCI HAR Dataset/train/._subject_train.txt inflating: UCI HAR Dataset/train/X_train.txt inflating: __MACOSX/UCI HAR Dataset/train/._X_train.txt inflating: UCI HAR Dataset/train/y_train.txt inflating: __MACOSX/UCI HAR Dataset/train/._y_train.txt inflating: __MACOSX/UCI HAR Dataset/._train inflating: __MACOSX/._UCI HAR Dataset import pandas as pd def get_new_feature_name_df(old_feature_name_df): feature_dup_df = pd.DataFrame(data=old_feature_name_df.groupby(&#39;column_name&#39;).cumcount(), columns=[&#39;dup_cnt&#39;]) feature_dup_df = feature_dup_df.reset_index() new_feature_name_df = pd.merge(old_feature_name_df.reset_index(), feature_dup_df, how=&#39;outer&#39;) new_feature_name_df[&#39;column_name&#39;] = new_feature_name_df[[&#39;column_name&#39;, &#39;dup_cnt&#39;]].apply(lambda x : x[0]&#43;&#39;_&#39;&#43;str(x[1]) if x[1] &gt;0 else x[0] , axis=1) new_feature_name_df = new_feature_name_df.drop([&#39;index&#39;], axis=1) return new_feature_name_df def get_human_dataset( ): # 각 데이터 파일들은 공백으로 분리되어 있으므로 read_csv에서 공백 문자를 sep으로 할당. feature_name_df = pd.read_csv(&#39;./human_activity/features.txt&#39;,sep=&#39;\s&#43;&#39;, header=None,names=[&#39;column_index&#39;,&#39;column_name&#39;]) # 중복된 피처명을 수정하는 get_new_feature_name_df()를 이용, 신규 피처명 DataFrame생성. new_feature_name_df = get_new_feature_name_df(feature_name_df) # DataFrame에 피처명을 컬럼으로 부여하기 위해 리스트 객체로 다시 변환 feature_name = new_feature_name_df.iloc[:, 1].values.tolist() # 학습 피처 데이터 셋과 테스트 피처 데이터을 DataFrame으로 로딩. 컬럼명은 feature_name 적용 X_train = pd.read_csv(&#39;./human_activity/train/X_train.txt&#39;,sep=&#39;\s&#43;&#39;, names=feature_name ) X_test = pd.read_csv(&#39;./human_activity/test/X_test.txt&#39;,sep=&#39;\s&#43;&#39;, names=feature_name) # 학습 레이블과 테스트 레이블 데이터을 DataFrame으로 로딩하고 컬럼명은 action으로 부여 y_train = pd.read_csv(&#39;./human_activity/train/y_train.txt&#39;,sep=&#39;\s&#43;&#39;,header=None,names=[&#39;action&#39;]) y_test = pd.read_csv(&#39;./human_activity/test/y_test.txt&#39;,sep=&#39;\s&#43;&#39;,header=None,names=[&#39;action&#39;]) # 로드된 학습/테스트용 DataFrame을 모두 반환 return X_train, X_test, y_train, y_test from sklearn.ensemble import RandomForestClassifier from sklearn.metrics import accuracy_score import pandas as pd import warnings warnings.filterwarnings(&#39;ignore&#39;) # 결정 트리에서 사용한 get_human_dataset( )을 이용해 학습/테스트용 DataFrame 반환 X_train, X_test, y_train, y_test = get_human_dataset() print(&#34;## 학습 피처 데이터 정보 ##&#34;) print(X_train.info()) ## 학습 피처 데이터 정보 ## &lt;class &#39;pandas.core.frame.DataFrame&#39;&gt; RangeIndex: 7352 entries, 0 to 7351 Columns: 561 entries, tBodyAcc-mean()-X to angle(Z,gravityMean) dtypes: float64(561) memory usage: 31.5 MB None 간단한 랜덤포레스트 모형을 만들어 학습 시킨다. 매우 간단한 모형이기 때문에 학습에 시간이 많이 걸리지는 않는다. # 랜덤 포레스트 학습 및 별도의 테스트 셋으로 예측 성능 평가 rf_clf = RandomForestClassifier(random_state=0) rf_clf.fit(X_train , y_train) pred = rf_clf.predict(X_test) accuracy = accuracy_score(y_test , pred) print(&#39;랜덤 포레스트 정확도: {0:.4f}&#39;.format(accuracy)) 랜덤 포레스트 정확도: 0.9253 하이퍼 파라미터 및 튜닝 튜닝이란, 모형이 가지고 있는 여러 조건들을 변형 시키는 것 대표적인 파라미터 소개 n_estimators: 결정 트리의 개수 지정, 디폴트는 10개이며, 많이 설정할수록 좋은 성능 기대 가능, 그러나 시간도 오래 소요됨 max_features: 최적의 분할을 위해 고려할 피처의 개수 int 형으로 지정 시, 대상 피처의 개수, float형으로 지정 시, 대상 피처의 퍼센트 만약 전체 피처가 16개라면 분할 위해 4개 참조 max_depth: 트리의 최대 깊이 규정 min_samples_split: 자식 규칙 노드를 분할해 만들기 위한 최소한의 샘플 데이터 개수 min_samples_leaf: 말단 노드(Leaf)가 되기 위한 최소한의 샘플 데이터 수 그리드 서치 GridSearchCV API를 활용하여 모형에 사용되는 하이퍼 파라미터를 순차적으로 입력하며서 편리하게 최적의 파라미터를 도출할 수 있는 방안 제공 즉, 랜덤포레스트의 파라미터를 순차적으로 변경 및 조정하면서 모형을 학습시키는 방법 이를 통해, 머신러닝 모형 개발자의 코드량을 줄여주는 매우 편리한 기법 estimator: 머신러닝 모형의 객체가 온다. param_grid: 딕셔너리 형태로 조정하며, estimator의 튜닝을 위해 파라미터명과 사용될 여러 파라미터 값 지정, 이 부분은 각 머신러닝 모형의 Manual을 참조한다. scoring: 예측 성능을 측정할 평가 방법 지정하지만, 대개 별도의 성능 평가 지표 함수 활용 cv: 교차 검증을 위해 분할되는 학습/테스트 세트의 개수 지정 이 때에는 시간이 다소 소요될 수 있다. (5-10분) from sklearn.model_selection import GridSearchCV params = { &#39;n_estimators&#39;:[100], &#39;max_depth&#39; : [6, 8, 10, 12], &#39;min_samples_leaf&#39; : [8, 12, 18 ], &#39;min_samples_split&#39; : [8, 16, 20] } # RandomForestClassifier 객체 생성 후 GridSearchCV 수행 rf_clf = RandomForestClassifier(random_state=0, n_jobs=-1) grid_cv = GridSearchCV(rf_clf , param_grid=params , cv=2, n_jobs=-1 ) # n_job=-1 현재 모든 CPU를 활용한다는 뜻. grid_cv.fit(X_train , y_train) print(&#39;최적 하이퍼 파라미터:\n&#39;, grid_cv.best_params_) print(&#39;최고 예측 정확도: {0:.4f}&#39;.format(grid_cv.best_score_)) 최적 하이퍼 파라미터: {&#39;max_depth&#39;: 10, &#39;min_samples_leaf&#39;: 8, &#39;min_samples_split&#39;: 8, &#39;n_estimators&#39;: 100} 최고 예측 정확도: 0.9180 (옵션 체크) 구글 코랩 개발환경 확인 간단하게 구글 코랩 개발환경을 확인한다. !cat /proc/cpuinfo processor	: 0 vendor_id	: GenuineIntel cpu family	: 6 model	: 63 model name	: Intel(R) Xeon(R) CPU @ 2.30GHz stepping	: 0 microcode	: 0x1 cpu MHz	: 2300.000 cache size	: 46080 KB physical id	: 0 siblings	: 2 core id	: 0 cpu cores	: 1 apicid	: 0 initial apicid	: 0 fpu	: yes fpu_exception	: yes cpuid level	: 13 wp	: yes flags	: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt arat md_clear arch_capabilities bugs	: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs bogomips	: 4600.00 clflush size	: 64 cache_alignment	: 64 address sizes	: 46 bits physical, 48 bits virtual power management: processor	: 1 vendor_id	: GenuineIntel cpu family	: 6 model	: 63 model name	: Intel(R) Xeon(R) CPU @ 2.30GHz stepping	: 0 microcode	: 0x1 cpu MHz	: 2300.000 cache size	: 46080 KB physical id	: 0 siblings	: 2 core id	: 0 cpu cores	: 1 apicid	: 1 initial apicid	: 1 fpu	: yes fpu_exception	: yes cpuid level	: 13 wp	: yes flags	: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt arat md_clear arch_capabilities bugs	: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs bogomips	: 4600.00 clflush size	: 64 cache_alignment	: 64 address sizes	: 46 bits physical, 48 bits virtual power management: 모형의 개수 심기 최적의 파라미터를 활용하여 n_estimators의 개수를 100개에서 300개로 늘려봅니다. rf_clf1 = RandomForestClassifier(n_estimators=300, max_depth=10, min_samples_leaf=8, \ min_samples_split=8, random_state=0) rf_clf1.fit(X_train , y_train) pred = rf_clf1.predict(X_test) print(&#39;예측 정확도: {0:.4f}&#39;.format(accuracy_score(y_test , pred))) 예측 정확도: 0.9165 import matplotlib.pyplot as plt import seaborn as sns %matplotlib inline ftr_importances_values = rf_clf1.feature_importances_ ftr_importances = pd.Series(ftr_importances_values,index=X_train.columns ) ftr_top20 = ftr_importances.sort_values(ascending=False)[:20] plt.figure(figsize=(8,6)) plt.title(&#39;Feature importances Top 20&#39;) sns.barplot(x=ftr_top20 , y = ftr_top20.index) plt.show()">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="programming">
+    <meta property="article:published_time" content="2020-11-27T21:00:47+09:00">
+    <meta property="article:modified_time" content="2020-11-27T21:00:47+09:00">
+    <meta property="article:tag" content="Machine Learning">
+    <meta property="article:tag" content="Python">
+
+		
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="입문자를 위한 머신러닝 - 랜덤 포레스트">
+  <meta name="twitter:description" content="공지 본 포스트는 교재 파이썬 머신러닝 완벽 가이드 코드를 제 수업을 드는 학생들이 보다 편하게 구글 코랩에서 사용할 수 있도록 만든 예제입니다. 책 구매하세요! http://www.yes24.com/Product/Goods/87044746?OzSrank=1 Random Forest 랜덤 포레스트의 개요
+배깅의 대표적인 알고리즘 랜덤 포레스트는 개별 트리가 학습하는 데이터 세트는 전체 데이터에서 일부가 중첩되게 샘플링 된 데이터 세트 부트스트래핑 부할 방식 채택 참고 강의 이론 https://www.youtube.com/watch?v=Z97uDTsvojY https://www.youtube.com/watch?v=J4Wdy0Wc_xQ !wget https://archive.ics.uci.edu/ml/machine-learning-databases/00240/UCI%20HAR%20Dataset.zip !unzip &#39;UCI HAR Dataset.zip&#39; !mv UCI\ HAR\ Dataset human_activity --2020-11-27 05:21:51-- https://archive.ics.uci.edu/ml/machine-learning-databases/00240/UCI%20HAR%20Dataset.zip Resolving archive.ics.uci.edu (archive.ics.uci.edu)... 128.195.10.252 Connecting to archive.ics.uci.edu (archive.ics.uci.edu)|128.195.10.252|:443... connected. HTTP request sent, awaiting response... 200 OK Length: 60999314 (58M) [application/x-httpd-php] Saving to: ‘UCI HAR Dataset.zip’ UCI HAR Dataset.zip 100%[===================&gt;] 58.17M 33.8MB/s in 1.7s 2020-11-27 05:21:53 (33.8 MB/s) - ‘UCI HAR Dataset.zip’ saved [60999314/60999314] Archive: UCI HAR Dataset.zip creating: UCI HAR Dataset/ inflating: UCI HAR Dataset/.DS_Store creating: __MACOSX/ creating: __MACOSX/UCI HAR Dataset/ inflating: __MACOSX/UCI HAR Dataset/._.DS_Store inflating: UCI HAR Dataset/activity_labels.txt inflating: __MACOSX/UCI HAR Dataset/._activity_labels.txt inflating: UCI HAR Dataset/features.txt inflating: __MACOSX/UCI HAR Dataset/._features.txt inflating: UCI HAR Dataset/features_info.txt inflating: __MACOSX/UCI HAR Dataset/._features_info.txt inflating: UCI HAR Dataset/README.txt inflating: __MACOSX/UCI HAR Dataset/._README.txt creating: UCI HAR Dataset/test/ creating: UCI HAR Dataset/test/Inertial Signals/ inflating: UCI HAR Dataset/test/Inertial Signals/body_acc_x_test.txt creating: __MACOSX/UCI HAR Dataset/test/ creating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/ inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_acc_x_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/body_acc_y_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_acc_y_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/body_acc_z_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_acc_z_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/body_gyro_x_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_gyro_x_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/body_gyro_y_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_gyro_y_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/body_gyro_z_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_gyro_z_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/total_acc_x_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._total_acc_x_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/total_acc_y_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._total_acc_y_test.txt inflating: UCI HAR Dataset/test/Inertial Signals/total_acc_z_test.txt inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._total_acc_z_test.txt inflating: __MACOSX/UCI HAR Dataset/test/._Inertial Signals inflating: UCI HAR Dataset/test/subject_test.txt inflating: __MACOSX/UCI HAR Dataset/test/._subject_test.txt inflating: UCI HAR Dataset/test/X_test.txt inflating: __MACOSX/UCI HAR Dataset/test/._X_test.txt inflating: UCI HAR Dataset/test/y_test.txt inflating: __MACOSX/UCI HAR Dataset/test/._y_test.txt inflating: __MACOSX/UCI HAR Dataset/._test creating: UCI HAR Dataset/train/ creating: UCI HAR Dataset/train/Inertial Signals/ inflating: UCI HAR Dataset/train/Inertial Signals/body_acc_x_train.txt creating: __MACOSX/UCI HAR Dataset/train/ creating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/ inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_acc_x_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/body_acc_y_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_acc_y_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/body_acc_z_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_acc_z_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/body_gyro_x_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_gyro_x_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/body_gyro_y_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_gyro_y_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/body_gyro_z_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_gyro_z_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/total_acc_x_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._total_acc_x_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/total_acc_y_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._total_acc_y_train.txt inflating: UCI HAR Dataset/train/Inertial Signals/total_acc_z_train.txt inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._total_acc_z_train.txt inflating: __MACOSX/UCI HAR Dataset/train/._Inertial Signals inflating: UCI HAR Dataset/train/subject_train.txt inflating: __MACOSX/UCI HAR Dataset/train/._subject_train.txt inflating: UCI HAR Dataset/train/X_train.txt inflating: __MACOSX/UCI HAR Dataset/train/._X_train.txt inflating: UCI HAR Dataset/train/y_train.txt inflating: __MACOSX/UCI HAR Dataset/train/._y_train.txt inflating: __MACOSX/UCI HAR Dataset/._train inflating: __MACOSX/._UCI HAR Dataset import pandas as pd def get_new_feature_name_df(old_feature_name_df): feature_dup_df = pd.DataFrame(data=old_feature_name_df.groupby(&#39;column_name&#39;).cumcount(), columns=[&#39;dup_cnt&#39;]) feature_dup_df = feature_dup_df.reset_index() new_feature_name_df = pd.merge(old_feature_name_df.reset_index(), feature_dup_df, how=&#39;outer&#39;) new_feature_name_df[&#39;column_name&#39;] = new_feature_name_df[[&#39;column_name&#39;, &#39;dup_cnt&#39;]].apply(lambda x : x[0]&#43;&#39;_&#39;&#43;str(x[1]) if x[1] &gt;0 else x[0] , axis=1) new_feature_name_df = new_feature_name_df.drop([&#39;index&#39;], axis=1) return new_feature_name_df def get_human_dataset( ): # 각 데이터 파일들은 공백으로 분리되어 있으므로 read_csv에서 공백 문자를 sep으로 할당. feature_name_df = pd.read_csv(&#39;./human_activity/features.txt&#39;,sep=&#39;\s&#43;&#39;, header=None,names=[&#39;column_index&#39;,&#39;column_name&#39;]) # 중복된 피처명을 수정하는 get_new_feature_name_df()를 이용, 신규 피처명 DataFrame생성. new_feature_name_df = get_new_feature_name_df(feature_name_df) # DataFrame에 피처명을 컬럼으로 부여하기 위해 리스트 객체로 다시 변환 feature_name = new_feature_name_df.iloc[:, 1].values.tolist() # 학습 피처 데이터 셋과 테스트 피처 데이터을 DataFrame으로 로딩. 컬럼명은 feature_name 적용 X_train = pd.read_csv(&#39;./human_activity/train/X_train.txt&#39;,sep=&#39;\s&#43;&#39;, names=feature_name ) X_test = pd.read_csv(&#39;./human_activity/test/X_test.txt&#39;,sep=&#39;\s&#43;&#39;, names=feature_name) # 학습 레이블과 테스트 레이블 데이터을 DataFrame으로 로딩하고 컬럼명은 action으로 부여 y_train = pd.read_csv(&#39;./human_activity/train/y_train.txt&#39;,sep=&#39;\s&#43;&#39;,header=None,names=[&#39;action&#39;]) y_test = pd.read_csv(&#39;./human_activity/test/y_test.txt&#39;,sep=&#39;\s&#43;&#39;,header=None,names=[&#39;action&#39;]) # 로드된 학습/테스트용 DataFrame을 모두 반환 return X_train, X_test, y_train, y_test from sklearn.ensemble import RandomForestClassifier from sklearn.metrics import accuracy_score import pandas as pd import warnings warnings.filterwarnings(&#39;ignore&#39;) # 결정 트리에서 사용한 get_human_dataset( )을 이용해 학습/테스트용 DataFrame 반환 X_train, X_test, y_train, y_test = get_human_dataset() print(&#34;## 학습 피처 데이터 정보 ##&#34;) print(X_train.info()) ## 학습 피처 데이터 정보 ## &lt;class &#39;pandas.core.frame.DataFrame&#39;&gt; RangeIndex: 7352 entries, 0 to 7351 Columns: 561 entries, tBodyAcc-mean()-X to angle(Z,gravityMean) dtypes: float64(561) memory usage: 31.5 MB None 간단한 랜덤포레스트 모형을 만들어 학습 시킨다. 매우 간단한 모형이기 때문에 학습에 시간이 많이 걸리지는 않는다. # 랜덤 포레스트 학습 및 별도의 테스트 셋으로 예측 성능 평가 rf_clf = RandomForestClassifier(random_state=0) rf_clf.fit(X_train , y_train) pred = rf_clf.predict(X_test) accuracy = accuracy_score(y_test , pred) print(&#39;랜덤 포레스트 정확도: {0:.4f}&#39;.format(accuracy)) 랜덤 포레스트 정확도: 0.9253 하이퍼 파라미터 및 튜닝 튜닝이란, 모형이 가지고 있는 여러 조건들을 변형 시키는 것 대표적인 파라미터 소개 n_estimators: 결정 트리의 개수 지정, 디폴트는 10개이며, 많이 설정할수록 좋은 성능 기대 가능, 그러나 시간도 오래 소요됨 max_features: 최적의 분할을 위해 고려할 피처의 개수 int 형으로 지정 시, 대상 피처의 개수, float형으로 지정 시, 대상 피처의 퍼센트 만약 전체 피처가 16개라면 분할 위해 4개 참조 max_depth: 트리의 최대 깊이 규정 min_samples_split: 자식 규칙 노드를 분할해 만들기 위한 최소한의 샘플 데이터 개수 min_samples_leaf: 말단 노드(Leaf)가 되기 위한 최소한의 샘플 데이터 수 그리드 서치 GridSearchCV API를 활용하여 모형에 사용되는 하이퍼 파라미터를 순차적으로 입력하며서 편리하게 최적의 파라미터를 도출할 수 있는 방안 제공 즉, 랜덤포레스트의 파라미터를 순차적으로 변경 및 조정하면서 모형을 학습시키는 방법 이를 통해, 머신러닝 모형 개발자의 코드량을 줄여주는 매우 편리한 기법 estimator: 머신러닝 모형의 객체가 온다. param_grid: 딕셔너리 형태로 조정하며, estimator의 튜닝을 위해 파라미터명과 사용될 여러 파라미터 값 지정, 이 부분은 각 머신러닝 모형의 Manual을 참조한다. scoring: 예측 성능을 측정할 평가 방법 지정하지만, 대개 별도의 성능 평가 지표 함수 활용 cv: 교차 검증을 위해 분할되는 학습/테스트 세트의 개수 지정 이 때에는 시간이 다소 소요될 수 있다. (5-10분) from sklearn.model_selection import GridSearchCV params = { &#39;n_estimators&#39;:[100], &#39;max_depth&#39; : [6, 8, 10, 12], &#39;min_samples_leaf&#39; : [8, 12, 18 ], &#39;min_samples_split&#39; : [8, 16, 20] } # RandomForestClassifier 객체 생성 후 GridSearchCV 수행 rf_clf = RandomForestClassifier(random_state=0, n_jobs=-1) grid_cv = GridSearchCV(rf_clf , param_grid=params , cv=2, n_jobs=-1 ) # n_job=-1 현재 모든 CPU를 활용한다는 뜻. grid_cv.fit(X_train , y_train) print(&#39;최적 하이퍼 파라미터:\n&#39;, grid_cv.best_params_) print(&#39;최고 예측 정확도: {0:.4f}&#39;.format(grid_cv.best_score_)) 최적 하이퍼 파라미터: {&#39;max_depth&#39;: 10, &#39;min_samples_leaf&#39;: 8, &#39;min_samples_split&#39;: 8, &#39;n_estimators&#39;: 100} 최고 예측 정확도: 0.9180 (옵션 체크) 구글 코랩 개발환경 확인 간단하게 구글 코랩 개발환경을 확인한다. !cat /proc/cpuinfo processor	: 0 vendor_id	: GenuineIntel cpu family	: 6 model	: 63 model name	: Intel(R) Xeon(R) CPU @ 2.30GHz stepping	: 0 microcode	: 0x1 cpu MHz	: 2300.000 cache size	: 46080 KB physical id	: 0 siblings	: 2 core id	: 0 cpu cores	: 1 apicid	: 0 initial apicid	: 0 fpu	: yes fpu_exception	: yes cpuid level	: 13 wp	: yes flags	: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt arat md_clear arch_capabilities bugs	: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs bogomips	: 4600.00 clflush size	: 64 cache_alignment	: 64 address sizes	: 46 bits physical, 48 bits virtual power management: processor	: 1 vendor_id	: GenuineIntel cpu family	: 6 model	: 63 model name	: Intel(R) Xeon(R) CPU @ 2.30GHz stepping	: 0 microcode	: 0x1 cpu MHz	: 2300.000 cache size	: 46080 KB physical id	: 0 siblings	: 2 core id	: 0 cpu cores	: 1 apicid	: 1 initial apicid	: 1 fpu	: yes fpu_exception	: yes cpuid level	: 13 wp	: yes flags	: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt arat md_clear arch_capabilities bugs	: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs bogomips	: 4600.00 clflush size	: 64 cache_alignment	: 64 address sizes	: 46 bits physical, 48 bits virtual power management: 모형의 개수 심기 최적의 파라미터를 활용하여 n_estimators의 개수를 100개에서 300개로 늘려봅니다. rf_clf1 = RandomForestClassifier(n_estimators=300, max_depth=10, min_samples_leaf=8, \ min_samples_split=8, random_state=0) rf_clf1.fit(X_train , y_train) pred = rf_clf1.predict(X_test) print(&#39;예측 정확도: {0:.4f}&#39;.format(accuracy_score(y_test , pred))) 예측 정확도: 0.9165 import matplotlib.pyplot as plt import seaborn as sns %matplotlib inline ftr_importances_values = rf_clf1.feature_importances_ ftr_importances = pd.Series(ftr_importances_values,index=X_train.columns ) ftr_top20 = ftr_importances.sort_values(ascending=False)[:20] plt.figure(figsize=(8,6)) plt.title(&#39;Feature importances Top 20&#39;) sns.barplot(x=ftr_top20 , y = ftr_top20.index) plt.show()">
+
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-K95C7LSPRK');
+        }
+      </script>
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo">
+		<a class="logo__link" href="/" title="Data Science | DSChloe" rel="home">
+			<div class="logo__item logo__text">
+					<div class="logo__title">Data Science | DSChloe</div>
+					<div class="logo__tagline">Love your beloved one forever</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/programming/">
+				
+				<span class="menu__text">Programming</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/data-analysis/">
+				
+				<span class="menu__text">Data Analysis</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/trip/">
+				
+				<span class="menu__text">Trip</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About DSChloe</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/privacyinfo/">
+				
+				<span class="menu__text">개인정보처리방침</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9871603218577546"
+		crossorigin="anonymous"></script>
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">입문자를 위한 머신러닝 - 랜덤 포레스트</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-11-27T21:00:47&#43;09:00">2020-11-27</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/programming/" rel="category">Programming</a>, <a class="meta__link" href="/categories/machine-learning/" rel="category">Machine Learning</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#공지">공지</a></li>
+    <li><a href="#random-forest">Random Forest</a>
+      <ul>
+        <li><a href="#하이퍼-파라미터-및-튜닝">하이퍼 파라미터 및 튜닝</a></li>
+        <li><a href="#그리드-서치">그리드 서치</a></li>
+        <li><a href="#옵션-체크-구글-코랩-개발환경-확인">(옵션 체크) 구글 코랩 개발환경 확인</a></li>
+        <li><a href="#모형의-개수-심기">모형의 개수 심기</a></li>
+      </ul>
+    </li>
+    <li><a href="#reference">Reference</a></li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="공지">공지</h2>
+<ul>
+<li>본 포스트는 교재 <code>파이썬 머신러닝 완벽 가이드</code> 코드를 제 수업을 드는 학생들이 보다 편하게 구글 코랩에서 사용할 수 있도록 만든 예제입니다.</li>
+<li>책 구매하세요!
+<ul>
+<li><a href="http://www.yes24.com/Product/Goods/87044746?OzSrank=1">http://www.yes24.com/Product/Goods/87044746?OzSrank=1</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="random-forest">Random Forest</h2>
+<p>랜덤 포레스트의 개요</p>
+<ul>
+<li>배깅의 대표적인 알고리즘</li>
+<li>랜덤 포레스트는 개별 트리가 학습하는 데이터 세트는 전체 데이터에서 일부가 중첩되게 샘플링 된 데이터 세트</li>
+<li>부트스트래핑 부할 방식 채택</li>
+<li>참고 강의 이론
+<ul>
+<li><a href="https://www.youtube.com/watch?v=Z97uDTsvojY">https://www.youtube.com/watch?v=Z97uDTsvojY</a></li>
+<li><a href="https://www.youtube.com/watch?v=J4Wdy0Wc_xQ">https://www.youtube.com/watch?v=J4Wdy0Wc_xQ</a></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>wget https:<span style="color:#f92672">//</span>archive<span style="color:#f92672">.</span>ics<span style="color:#f92672">.</span>uci<span style="color:#f92672">.</span>edu<span style="color:#f92672">/</span>ml<span style="color:#f92672">/</span>machine<span style="color:#f92672">-</span>learning<span style="color:#f92672">-</span>databases<span style="color:#f92672">/</span><span style="color:#ae81ff">00240</span><span style="color:#f92672">/</span>UCI<span style="color:#f92672">%</span><span style="color:#ae81ff">20</span>HAR<span style="color:#f92672">%</span><span style="color:#ae81ff">20</span>Dataset<span style="color:#f92672">.</span>zip
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>unzip <span style="color:#e6db74">&#39;UCI HAR Dataset.zip&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>mv UCI\ HAR\ Dataset human_activity
+</span></span></code></pre></div><pre><code>--2020-11-27 05:21:51--  https://archive.ics.uci.edu/ml/machine-learning-databases/00240/UCI%20HAR%20Dataset.zip
+Resolving archive.ics.uci.edu (archive.ics.uci.edu)... 128.195.10.252
+Connecting to archive.ics.uci.edu (archive.ics.uci.edu)|128.195.10.252|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 60999314 (58M) [application/x-httpd-php]
+Saving to: ‘UCI HAR Dataset.zip’
+
+UCI HAR Dataset.zip 100%[===================&gt;]  58.17M  33.8MB/s    in 1.7s    
+
+2020-11-27 05:21:53 (33.8 MB/s) - ‘UCI HAR Dataset.zip’ saved [60999314/60999314]
+
+Archive:  UCI HAR Dataset.zip
+   creating: UCI HAR Dataset/
+  inflating: UCI HAR Dataset/.DS_Store  
+   creating: __MACOSX/
+   creating: __MACOSX/UCI HAR Dataset/
+  inflating: __MACOSX/UCI HAR Dataset/._.DS_Store  
+  inflating: UCI HAR Dataset/activity_labels.txt  
+  inflating: __MACOSX/UCI HAR Dataset/._activity_labels.txt  
+  inflating: UCI HAR Dataset/features.txt  
+  inflating: __MACOSX/UCI HAR Dataset/._features.txt  
+  inflating: UCI HAR Dataset/features_info.txt  
+  inflating: __MACOSX/UCI HAR Dataset/._features_info.txt  
+  inflating: UCI HAR Dataset/README.txt  
+  inflating: __MACOSX/UCI HAR Dataset/._README.txt  
+   creating: UCI HAR Dataset/test/
+   creating: UCI HAR Dataset/test/Inertial Signals/
+  inflating: UCI HAR Dataset/test/Inertial Signals/body_acc_x_test.txt  
+   creating: __MACOSX/UCI HAR Dataset/test/
+   creating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/
+  inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_acc_x_test.txt  
+  inflating: UCI HAR Dataset/test/Inertial Signals/body_acc_y_test.txt  
+  inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_acc_y_test.txt  
+  inflating: UCI HAR Dataset/test/Inertial Signals/body_acc_z_test.txt  
+  inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_acc_z_test.txt  
+  inflating: UCI HAR Dataset/test/Inertial Signals/body_gyro_x_test.txt  
+  inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_gyro_x_test.txt  
+  inflating: UCI HAR Dataset/test/Inertial Signals/body_gyro_y_test.txt  
+  inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_gyro_y_test.txt  
+  inflating: UCI HAR Dataset/test/Inertial Signals/body_gyro_z_test.txt  
+  inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._body_gyro_z_test.txt  
+  inflating: UCI HAR Dataset/test/Inertial Signals/total_acc_x_test.txt  
+  inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._total_acc_x_test.txt  
+  inflating: UCI HAR Dataset/test/Inertial Signals/total_acc_y_test.txt  
+  inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._total_acc_y_test.txt  
+  inflating: UCI HAR Dataset/test/Inertial Signals/total_acc_z_test.txt  
+  inflating: __MACOSX/UCI HAR Dataset/test/Inertial Signals/._total_acc_z_test.txt  
+  inflating: __MACOSX/UCI HAR Dataset/test/._Inertial Signals  
+  inflating: UCI HAR Dataset/test/subject_test.txt  
+  inflating: __MACOSX/UCI HAR Dataset/test/._subject_test.txt  
+  inflating: UCI HAR Dataset/test/X_test.txt  
+  inflating: __MACOSX/UCI HAR Dataset/test/._X_test.txt  
+  inflating: UCI HAR Dataset/test/y_test.txt  
+  inflating: __MACOSX/UCI HAR Dataset/test/._y_test.txt  
+  inflating: __MACOSX/UCI HAR Dataset/._test  
+   creating: UCI HAR Dataset/train/
+   creating: UCI HAR Dataset/train/Inertial Signals/
+  inflating: UCI HAR Dataset/train/Inertial Signals/body_acc_x_train.txt  
+   creating: __MACOSX/UCI HAR Dataset/train/
+   creating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/
+  inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_acc_x_train.txt  
+  inflating: UCI HAR Dataset/train/Inertial Signals/body_acc_y_train.txt  
+  inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_acc_y_train.txt  
+  inflating: UCI HAR Dataset/train/Inertial Signals/body_acc_z_train.txt  
+  inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_acc_z_train.txt  
+  inflating: UCI HAR Dataset/train/Inertial Signals/body_gyro_x_train.txt  
+  inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_gyro_x_train.txt  
+  inflating: UCI HAR Dataset/train/Inertial Signals/body_gyro_y_train.txt  
+  inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_gyro_y_train.txt  
+  inflating: UCI HAR Dataset/train/Inertial Signals/body_gyro_z_train.txt  
+  inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._body_gyro_z_train.txt  
+  inflating: UCI HAR Dataset/train/Inertial Signals/total_acc_x_train.txt  
+  inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._total_acc_x_train.txt  
+  inflating: UCI HAR Dataset/train/Inertial Signals/total_acc_y_train.txt  
+  inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._total_acc_y_train.txt  
+  inflating: UCI HAR Dataset/train/Inertial Signals/total_acc_z_train.txt  
+  inflating: __MACOSX/UCI HAR Dataset/train/Inertial Signals/._total_acc_z_train.txt  
+  inflating: __MACOSX/UCI HAR Dataset/train/._Inertial Signals  
+  inflating: UCI HAR Dataset/train/subject_train.txt  
+  inflating: __MACOSX/UCI HAR Dataset/train/._subject_train.txt  
+  inflating: UCI HAR Dataset/train/X_train.txt  
+  inflating: __MACOSX/UCI HAR Dataset/train/._X_train.txt  
+  inflating: UCI HAR Dataset/train/y_train.txt  
+  inflating: __MACOSX/UCI HAR Dataset/train/._y_train.txt  
+  inflating: __MACOSX/UCI HAR Dataset/._train  
+  inflating: __MACOSX/._UCI HAR Dataset  
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_new_feature_name_df</span>(old_feature_name_df):
+</span></span><span style="display:flex;"><span>    feature_dup_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(data<span style="color:#f92672">=</span>old_feature_name_df<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;column_name&#39;</span>)<span style="color:#f92672">.</span>cumcount(),
+</span></span><span style="display:flex;"><span>                                  columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;dup_cnt&#39;</span>])
+</span></span><span style="display:flex;"><span>    feature_dup_df <span style="color:#f92672">=</span> feature_dup_df<span style="color:#f92672">.</span>reset_index()
+</span></span><span style="display:flex;"><span>    new_feature_name_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>merge(old_feature_name_df<span style="color:#f92672">.</span>reset_index(), feature_dup_df, how<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;outer&#39;</span>)
+</span></span><span style="display:flex;"><span>    new_feature_name_df[<span style="color:#e6db74">&#39;column_name&#39;</span>] <span style="color:#f92672">=</span> new_feature_name_df[[<span style="color:#e6db74">&#39;column_name&#39;</span>, <span style="color:#e6db74">&#39;dup_cnt&#39;</span>]]<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x : x[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;_&#39;</span><span style="color:#f92672">+</span>str(x[<span style="color:#ae81ff">1</span>]) 
+</span></span><span style="display:flex;"><span>                                                                                         <span style="color:#66d9ef">if</span> x[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#66d9ef">else</span> x[<span style="color:#ae81ff">0</span>] ,  axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    new_feature_name_df <span style="color:#f92672">=</span> new_feature_name_df<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;index&#39;</span>], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> new_feature_name_df
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_human_dataset</span>( ):
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 각 데이터 파일들은 공백으로 분리되어 있으므로 read_csv에서 공백 문자를 sep으로 할당.</span>
+</span></span><span style="display:flex;"><span>    feature_name_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;./human_activity/features.txt&#39;</span>,sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;\s+&#39;</span>,
+</span></span><span style="display:flex;"><span>                        header<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>,names<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;column_index&#39;</span>,<span style="color:#e6db74">&#39;column_name&#39;</span>])
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 중복된 피처명을 수정하는 get_new_feature_name_df()를 이용, 신규 피처명 DataFrame생성. </span>
+</span></span><span style="display:flex;"><span>    new_feature_name_df <span style="color:#f92672">=</span> get_new_feature_name_df(feature_name_df)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># DataFrame에 피처명을 컬럼으로 부여하기 위해 리스트 객체로 다시 변환</span>
+</span></span><span style="display:flex;"><span>    feature_name <span style="color:#f92672">=</span> new_feature_name_df<span style="color:#f92672">.</span>iloc[:, <span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>values<span style="color:#f92672">.</span>tolist()
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 학습 피처 데이터 셋과 테스트 피처 데이터을 DataFrame으로 로딩. 컬럼명은 feature_name 적용</span>
+</span></span><span style="display:flex;"><span>    X_train <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;./human_activity/train/X_train.txt&#39;</span>,sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;\s+&#39;</span>, names<span style="color:#f92672">=</span>feature_name )
+</span></span><span style="display:flex;"><span>    X_test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;./human_activity/test/X_test.txt&#39;</span>,sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;\s+&#39;</span>, names<span style="color:#f92672">=</span>feature_name)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 학습 레이블과 테스트 레이블 데이터을 DataFrame으로 로딩하고 컬럼명은 action으로 부여</span>
+</span></span><span style="display:flex;"><span>    y_train <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;./human_activity/train/y_train.txt&#39;</span>,sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;\s+&#39;</span>,header<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>,names<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;action&#39;</span>])
+</span></span><span style="display:flex;"><span>    y_test <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;./human_activity/test/y_test.txt&#39;</span>,sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;\s+&#39;</span>,header<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>,names<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;action&#39;</span>])
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 로드된 학습/테스트용 DataFrame을 모두 반환 </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> X_train, X_test, y_train, y_test
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.ensemble <span style="color:#f92672">import</span> RandomForestClassifier
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> accuracy_score
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> warnings
+</span></span><span style="display:flex;"><span>warnings<span style="color:#f92672">.</span>filterwarnings(<span style="color:#e6db74">&#39;ignore&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 결정 트리에서 사용한 get_human_dataset( )을 이용해 학습/테스트용 DataFrame 반환</span>
+</span></span><span style="display:flex;"><span>X_train, X_test, y_train, y_test <span style="color:#f92672">=</span> get_human_dataset()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;## 학습 피처 데이터 정보 ##&#34;</span>)
+</span></span><span style="display:flex;"><span>print(X_train<span style="color:#f92672">.</span>info())
+</span></span></code></pre></div><pre><code>## 학습 피처 데이터 정보 ##
+&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 7352 entries, 0 to 7351
+Columns: 561 entries, tBodyAcc-mean()-X to angle(Z,gravityMean)
+dtypes: float64(561)
+memory usage: 31.5 MB
+None
+</code></pre>
+<ul>
+<li>간단한 랜덤포레스트 모형을 만들어 학습 시킨다.</li>
+<li>매우 간단한 모형이기 때문에 학습에 시간이 많이 걸리지는 않는다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 랜덤 포레스트 학습 및 별도의 테스트 셋으로 예측 성능 평가</span>
+</span></span><span style="display:flex;"><span>rf_clf <span style="color:#f92672">=</span> RandomForestClassifier(random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>rf_clf<span style="color:#f92672">.</span>fit(X_train , y_train)
+</span></span><span style="display:flex;"><span>pred <span style="color:#f92672">=</span> rf_clf<span style="color:#f92672">.</span>predict(X_test)
+</span></span><span style="display:flex;"><span>accuracy <span style="color:#f92672">=</span> accuracy_score(y_test , pred)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;랜덤 포레스트 정확도: </span><span style="color:#e6db74">{0:.4f}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(accuracy))
+</span></span></code></pre></div><pre><code>랜덤 포레스트 정확도: 0.9253
+</code></pre>
+<h3 id="하이퍼-파라미터-및-튜닝">하이퍼 파라미터 및 튜닝</h3>
+<ul>
+<li>튜닝이란, 모형이 가지고 있는 여러 조건들을 변형 시키는 것</li>
+<li>대표적인 파라미터 소개
+<ul>
+<li>n_estimators: 결정 트리의 개수 지정, 디폴트는 10개이며, 많이 설정할수록 좋은 성능 기대 가능, 그러나 시간도 오래 소요됨</li>
+<li>max_features: 최적의 분할을 위해 고려할 피처의 개수
+<ul>
+<li><code>int</code> 형으로 지정 시, 대상 피처의 개수, <code>float</code>형으로 지정 시, 대상 피처의 퍼센트</li>
+<li>만약 전체 피처가 16개라면 분할 위해 4개 참조</li>
+</ul>
+</li>
+<li>max_depth: 트리의 최대 깊이 규정</li>
+<li>min_samples_split: 자식 규칙 노드를 분할해 만들기 위한 최소한의 샘플 데이터 개수</li>
+<li>min_samples_leaf: 말단 노드(Leaf)가 되기 위한 최소한의 샘플 데이터 수</li>
+</ul>
+</li>
+</ul>
+<h3 id="그리드-서치">그리드 서치</h3>
+<ul>
+<li>GridSearchCV API를 활용하여 모형에 사용되는 하이퍼 파라미터를 순차적으로 입력하며서 편리하게 최적의 파라미터를 도출할 수 있는 방안 제공</li>
+<li>즉, 랜덤포레스트의 파라미터를 순차적으로 변경 및 조정하면서 모형을 학습시키는 방법</li>
+<li>이를 통해, 머신러닝 모형 개발자의 코드량을 줄여주는 매우 편리한 기법
+<ul>
+<li>estimator: 머신러닝 모형의 객체가 온다.</li>
+<li>param_grid: 딕셔너리 형태로 조정하며, <code>estimator</code>의 튜닝을 위해 파라미터명과 사용될 여러 파라미터 값 지정, 이 부분은 각 머신러닝 모형의 <code>Manual</code>을 참조한다.</li>
+<li>scoring: 예측 성능을 측정할 평가 방법 지정하지만, 대개 별도의 성능 평가 지표 함수 활용</li>
+<li>cv: 교차 검증을 위해 분할되는 학습/테스트 세트의 개수 지정</li>
+</ul>
+</li>
+<li>이 때에는 시간이 다소 소요될 수 있다. (5-10분)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.model_selection <span style="color:#f92672">import</span> GridSearchCV
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>params <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;n_estimators&#39;</span>:[<span style="color:#ae81ff">100</span>],
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;max_depth&#39;</span> : [<span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>], 
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;min_samples_leaf&#39;</span> : [<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">18</span> ],
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;min_samples_split&#39;</span> : [<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">20</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># RandomForestClassifier 객체 생성 후 GridSearchCV 수행</span>
+</span></span><span style="display:flex;"><span>rf_clf <span style="color:#f92672">=</span> RandomForestClassifier(random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, n_jobs<span style="color:#f92672">=-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>grid_cv <span style="color:#f92672">=</span> GridSearchCV(rf_clf , param_grid<span style="color:#f92672">=</span>params , cv<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, n_jobs<span style="color:#f92672">=-</span><span style="color:#ae81ff">1</span> ) <span style="color:#75715e"># n_job=-1 현재 모든 CPU를 활용한다는 뜻. </span>
+</span></span><span style="display:flex;"><span>grid_cv<span style="color:#f92672">.</span>fit(X_train , y_train)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;최적 하이퍼 파라미터:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>, grid_cv<span style="color:#f92672">.</span>best_params_)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;최고 예측 정확도: </span><span style="color:#e6db74">{0:.4f}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(grid_cv<span style="color:#f92672">.</span>best_score_))
+</span></span></code></pre></div><pre><code>최적 하이퍼 파라미터:
+ {'max_depth': 10, 'min_samples_leaf': 8, 'min_samples_split': 8, 'n_estimators': 100}
+최고 예측 정확도: 0.9180
+</code></pre>
+<h3 id="옵션-체크-구글-코랩-개발환경-확인">(옵션 체크) 구글 코랩 개발환경 확인</h3>
+<ul>
+<li>간단하게 구글 코랩 개발환경을 확인한다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>cat <span style="color:#f92672">/</span>proc<span style="color:#f92672">/</span>cpuinfo
+</span></span></code></pre></div><pre><code>processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU @ 2.30GHz
+stepping	: 0
+microcode	: 0x1
+cpu MHz		: 2300.000
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 2
+core id		: 0
+cpu cores	: 1
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt arat md_clear arch_capabilities
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs
+bogomips	: 4600.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU @ 2.30GHz
+stepping	: 0
+microcode	: 0x1
+cpu MHz		: 2300.000
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 2
+core id		: 0
+cpu cores	: 1
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt arat md_clear arch_capabilities
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs
+bogomips	: 4600.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+</code></pre>
+<h3 id="모형의-개수-심기">모형의 개수 심기</h3>
+<ul>
+<li>최적의 파라미터를 활용하여 <code>n_estimators</code>의 개수를 100개에서 300개로 늘려봅니다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>rf_clf1 <span style="color:#f92672">=</span> RandomForestClassifier(n_estimators<span style="color:#f92672">=</span><span style="color:#ae81ff">300</span>, max_depth<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, min_samples_leaf<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>, \
+</span></span><span style="display:flex;"><span>                                 min_samples_split<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>, random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>rf_clf1<span style="color:#f92672">.</span>fit(X_train , y_train)
+</span></span><span style="display:flex;"><span>pred <span style="color:#f92672">=</span> rf_clf1<span style="color:#f92672">.</span>predict(X_test)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;예측 정확도: </span><span style="color:#e6db74">{0:.4f}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(accuracy_score(y_test , pred)))
+</span></span></code></pre></div><pre><code>예측 정확도: 0.9165
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> seaborn <span style="color:#66d9ef">as</span> sns
+</span></span><span style="display:flex;"><span><span style="color:#f92672">%</span>matplotlib inline
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ftr_importances_values <span style="color:#f92672">=</span> rf_clf1<span style="color:#f92672">.</span>feature_importances_
+</span></span><span style="display:flex;"><span>ftr_importances <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>Series(ftr_importances_values,index<span style="color:#f92672">=</span>X_train<span style="color:#f92672">.</span>columns  )
+</span></span><span style="display:flex;"><span>ftr_top20 <span style="color:#f92672">=</span> ftr_importances<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)[:<span style="color:#ae81ff">20</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">8</span>,<span style="color:#ae81ff">6</span>))
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Feature importances Top 20&#39;</span>)
+</span></span><span style="display:flex;"><span>sns<span style="color:#f92672">.</span>barplot(x<span style="color:#f92672">=</span>ftr_top20 , y <span style="color:#f92672">=</span> ftr_top20<span style="color:#f92672">.</span>index)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img src="/img/programming/2020/11/ch01_randomForest/output_13_0.png" alt="png"></p>
+<h2 id="reference">Reference</h2>
+<p>권철민. (2020). 파이썬 머신러닝 완벽가이드. 경기, 파주: 위키북스</p>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/machine-learning/" rel="tag">Machine Learning</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/python/" rel="tag">Python</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<p class="authorbox__warning">
+		<strong>WARNING:</strong> Authorbox is activated, but [Author] parameters are not specified.
+	</p>
+</div>
+
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH…" value="" name="q" aria-label="SEARCH…">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://dschloe.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/programming/2026/02/ds_certificate/">빅데이터 분석기사 실기 (Python)</a></li>
+			<li class="widget__item"><a class="widget__link" href="/programming/2025/10/regression_interaction_example_in_r/">ADsP 회귀분석 상호작용 예시</a></li>
+			<li class="widget__item"><a class="widget__link" href="/programming/2025/10/openai_anthropic_api/">Open AI와 앤트로픽 API 키 발급받기</a></li>
+			<li class="widget__item"><a class="widget__link" href="/programming/2025/06/logstash_basic_install/">Logstash 실행 및 확인 - 기본예제</a></li>
+			<li class="widget__item"><a class="widget__link" href="/programming/2025/06/transformers_embedding_elasticsearch/">Elasticsearch - Transformers 임베딩 입력 저장 (Local Mode)</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/acea/">ACEA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/adsp/">ADsP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/airflow/">Airflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/airport-lounge/">Airport Lounge</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/anaconda/">Anaconda</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/android-studio/">Android Studio</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/anova/">ANOVA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/anthropic/">Anthropic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/api/">Api</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/apps-script/">Apps Script</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/astype/">Astype</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/automation/">Automation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws/">AWS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws-toolkit/">AWS Toolkit</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">Bar Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-data-transformation/">Basic Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-statistics/">Basic Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/batch/">Batch</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/batch-file/">Batch File</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/big-data-analyst-exam/">Big Data Analyst Exam</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-machine-learning/">BigQuery Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-machine-learning/">BigQuery With Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-python/">BigQuery With Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blog/">Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blueprint/">Blueprint</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/categorical-features/">Categorical Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/certification/">Certification</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/chatbot/">Chatbot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/chocolatey/">Chocolatey</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/chromedriver/">ChromeDriver</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/class/">Class</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/columntransformer/">ColumnTransformer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/compute-engine/">Compute Engine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conda/">Conda</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conditional-statements/">Conditional Statements</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/crawling/">Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/crontab/">Crontab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/cursor-ai/">Cursor AI</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dash/">Dash</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dashboard/">Dashboard</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-collection/">Data Collection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-crawling/">Data Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-engineering/">Data Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-leakage/">Data Leakage</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-science-project/">Data Science Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-structures/">Data Structures</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/database-navigator/">Database Navigator</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decision-tree/">Decision Tree</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decorators/">Decorators</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deployment/">Deployment</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/design/">Design</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development-settings/">Development Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dictionary/">Dictionary</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dictionary-comprehension/">Dictionary Comprehension</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/discrete-features/">Discrete Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/django/">Django</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/docker/">Docker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/docker-compose/">Docker-Compose</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dotenv/">Dotenv</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">Dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/eda/">EDA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/elastic/">Elastic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/elastic-beanstalk/">Elastic Beanstalk</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/elasticsearch/">Elasticsearch</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/embedding/">Embedding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/encoding/">Encoding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/environment-variables/">Environment Variables</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/erd/">ERD</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/exam-type-2/">Exam Type 2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/exam-type-3/">Exam Type 3</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/excel/">Excel</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/exploratory-data-analysis/">Exploratory Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/factory-pattern/">Factory Pattern</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/faker/">Faker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/feature-engineering/">Feature Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ffmpeg/">Ffmpeg</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/figure-object/">Figure Object</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-download/">File Download</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-i/o/">File I/O</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/financial-data/">Financial Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/flask/">Flask</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/flutter/">Flutter</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/folium/">Folium</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/font/">Font</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/function/">Function</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ga4/">GA4</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gce/">GCE</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/generative-ai/">Generative AI</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/geojson/">GeoJson</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/git/">Git</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github-actions/">Github Actions</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github-blog/">Github Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github-portfoilo/">Github Portfoilo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github-portfolio/">GitHub Portfolio</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/global-development/">Global Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-adsense/">Google Adsense</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-analytics/">Google Analytics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud-platform/">Google Cloud Platform</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-colab/">Google Colab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-compute-engine/">Google Compute Engine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-tag-manager/">Google Tag Manager</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gpu/">GPU</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/grafana/">Grafana</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/group-by/">GROUP BY</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/heroku/">Heroku</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hexo/">Hexo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/histogram/">Histogram</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/html/">HTML</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugging-face/">Hugging Face</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iam/">IAM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/image-preprocessing/">Image Preprocessing</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/intermediate/">Intermediate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/international-development/">International Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interview/">Interview</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iteration/">Iteration</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/java/">Java</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/jupyter-notebook/">Jupyter Notebook</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle/">Kaggle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle-api/">Kaggle API</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kakao-chatbot/">Kakao Chatbot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kakao-open-builder/">Kakao Open Builder</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kibana/">Kibana</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/konlp/">KoNLP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/korean-font/">Korean Font</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/langchain/">LangChain</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/library/">Library</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lightgbm/">LightGBM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-graph/">Line Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">Line Grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/linux/">Linux</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/logstash/">Logstash</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lstm/">LSTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/m1-mac/">M1 Mac</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mac/">Mac</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning-project/">Machine Learning Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/macos-m1/">MacOS M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/make_column_transformer/">Make_column_transformer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mask-r-cnn/">Mask R-CNN</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mecab/">Mecab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/merging-data/">Merging Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/missing-values/">Missing Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/multipages/">Multipages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mysql/">MySQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/naver-api/">Naver API</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/naver-news-crawling/">Naver News Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/neural-network/">Neural Network</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nginx/">Nginx</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nha-trang/">Nha Trang</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nifi/">NiFi</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nohup/">Nohup</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nonparametric/">Nonparametric</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/numeric-features/">Numeric Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/object-detection/">Object Detection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oce/">OCE</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/one-hot-encoding/">One-Hot Encoding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oop/">OOP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/open-builder/">Open Builder</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/openai/">OpenAI</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/openapi/">OpenAPI</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/opencv/">OpenCV</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/openpyxl/">Openpyxl</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/optimizer/">Optimizer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oracle/">Oracle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oracle-vm-box/">Oracle VM Box</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/outlier-values/">Outlier Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pgadmin/">PgAdmin</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pipeline/">Pipeline</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pivot-table/">Pivot Table</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/plot_tree/">Plot_tree</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/plotly/">Plotly</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pls-sem/">PLS-SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/portfolio/">Portfolio</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/postgresql/">PostgreSQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/powershell-execution-policy/">PowerShell Execution Policy</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/programming/">Programming</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/project/">Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/psycopg2/">Psycopg2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/py-openaq/">Py-Openaq</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pycaret/">PyCaret</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pycharm/">PyCharm</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pydataset/">PyDataset</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pymysql/">PyMySQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pyspark/">PySpark</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-crawling/">Python Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-portfolio/">Python Portfolio</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/qgis/">QGIS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-installation/">R Installation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ranzcr/">Ranzcr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rcppmecab/">RcppMeCab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rds/">RDS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/reading-list/">Reading List</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/recommendation/">Recommendation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regression/">Regression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regular-expression/">Regular Expression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/report-automation/">Report Automation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/reticulate/">Reticulate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/retrospective/">Retrospective</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rpa/">RPA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rtweet/">Rtweet</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sagemaker/">SageMaker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sales/">Sales</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scikit-learn/">Scikit-Learn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scrapy/">Scrapy</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/seaborn/">Seaborn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/selenium/">Selenium</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sem/">SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/singapore/">Singapore</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sklearn/">Sklearn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/spark/">Spark</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/spss/">SPSS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sql/">SQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sql-developer/">SQL Developer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ssh/">SSH</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/st-pages/">St-Pages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statsmodels/">Statsmodels</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/streamlit/">Streamlit</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tableau/">Tableau</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow/">TensorFlow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/text-mining/">Text Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/text-preprocessing/">Text Preprocessing</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/timing/">Timing</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/transformers/">Transformers</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/travel/">Travel</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tuber/">Tuber</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ubuntu/">Ubuntu</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ubuntu-18.04/">Ubuntu 18.04</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/utm/">UTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vagrant/">Vagrant</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vc-code/">VC Code</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">Vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vietnam/">Vietnam</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/virtualbox/">VirtualBox</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/virtualenv/">Virtualenv</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/visual-studio-code/">Visual Studio Code</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vs-code/">VS Code</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vscode/">VSCode</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/wandb/">Wandb</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/web-crawling/">Web Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/web-development/">Web Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/whisper/">Whisper</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/windows/">Windows</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/windows11/">Windows11</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/wsl2/">WSL2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/xgboost/">XGBoost</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/youtube/">YouTube</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/acea/" title="ACEA">ACEA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/adsp/" title="ADsP">ADsP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/airflow/" title="Airflow">Airflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/airport-lounge/" title="Airport Lounge">Airport Lounge</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/anaconda/" title="Anaconda">Anaconda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/android-studio/" title="Android Studio">Android Studio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/anova/" title="ANOVA">ANOVA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/anthropic/" title="Anthropic">Anthropic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/api/" title="Api">Api</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/append/" title="Append">Append</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apps-script/" title="Apps Script">Apps Script</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/astype/" title="Astype">Astype</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/auto-encoder/" title="Auto Encoder">Auto Encoder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/automation/" title="Automation">Automation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws/" title="AWS">AWS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws-toolkit/" title="AWS Toolkit">AWS Toolkit</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="Bar Chart">Bar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-structures/" title="Basic Data Structures">Basic Data Structures</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-transformation/" title="Basic Data Transformation">Basic Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-statistics/" title="Basic Statistics">Basic Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/batch/" title="Batch">Batch</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/batch-file/" title="Batch File">Batch File</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/big-data-analyst-exam/" title="Big Data Analyst Exam">Big Data Analyst Exam</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-machine-learning/" title="BigQuery Machine Learning">BigQuery Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-machine-learning/" title="BigQuery With Machine Learning">BigQuery With Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery With Python">BigQuery With Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery With R">BigQuery With R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blog/" title="Blog">Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blueprint/" title="Blueprint">Blueprint</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/categorical-features/" title="Categorical Features">Categorical Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/certification/" title="Certification">Certification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chatbot/" title="Chatbot">Chatbot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chocolatey/" title="Chocolatey">Chocolatey</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chromedriver/" title="ChromeDriver">ChromeDriver</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/class/" title="Class">Class</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/clustering/" title="Clustering">Clustering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/colab-with-kaggle/" title="Colab With Kaggle">Colab With Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/columntransformer/" title="ColumnTransformer">ColumnTransformer</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/compute-engine/" title="Compute Engine">Compute Engine</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conda/" title="Conda">Conda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-expressions/" title="Conditional Expressions">Conditional Expressions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-statements/" title="Conditional Statements">Conditional Statements</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/crawling/" title="Crawling">Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/crontab/" title="Crontab">Crontab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cross-join/" title="Cross Join">Cross Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cursor-ai/" title="Cursor AI">Cursor AI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dash/" title="Dash">Dash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dashboard/" title="Dashboard">Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-collection/" title="Data Collection">Data Collection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-crawling/" title="Data Crawling">Data Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-engineering/" title="Data Engineering">Data Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-leakage/" title="Data Leakage">Data Leakage</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-science-project/" title="Data Science Project">Data Science Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-types/" title="Data Types">Data Types</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/database-navigator/" title="Database Navigator">Database Navigator</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dataframe/" title="DataFrame">DataFrame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decision-tree/" title="Decision Tree">Decision Tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decorators/" title="Decorators">Decorators</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deployment/" title="Deployment">Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/design/" title="Design">Design</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development-settings/" title="Development Settings">Development Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary/" title="Dictionary">Dictionary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary-comprehension/" title="Dictionary Comprehension">Dictionary Comprehension</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/discrete-features/" title="Discrete Features">Discrete Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/disk.frame/" title="Disk.frame">Disk.frame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/django/" title="Django">Django</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/docker/" title="Docker">Docker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/docker-compose/" title="Docker-Compose">Docker-Compose</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dotenv/" title="Dotenv">Dotenv</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="Dplyr">Dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/eda/" title="EDA">EDA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/elastic/" title="Elastic">Elastic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/elastic-beanstalk/" title="Elastic Beanstalk">Elastic Beanstalk</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/elasticsearch/" title="Elasticsearch">Elasticsearch</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/embedding/" title="Embedding">Embedding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/emr/" title="EMR">EMR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/encoding/" title="Encoding">Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enumerate/" title="Enumerate">Enumerate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/environment-variables/" title="Environment Variables">Environment Variables</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/erd/" title="ERD">ERD</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exam-type-2/" title="Exam Type 2">Exam Type 2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exam-type-3/" title="Exam Type 3">Exam Type 3</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/excel/" title="Excel">Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exploratory-data-analysis/" title="Exploratory Data Analysis">Exploratory Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/extend/" title="Extend">Extend</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/factory-pattern/" title="Factory Pattern">Factory Pattern</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/faker/" title="Faker">Faker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/feature-engineering/" title="Feature Engineering">Feature Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ffmpeg/" title="Ffmpeg">Ffmpeg</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/figure-object/" title="Figure Object">Figure Object</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-download/" title="File Download">File Download</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-i/o/" title="File I/O">File I/O</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="Filter">Filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/financial-data/" title="Financial Data">Financial Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/flask/" title="Flask">Flask</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/flutter/" title="Flutter">Flutter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/folium/" title="Folium">Folium</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/font/" title="Font">Font</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/for-loop/" title="For-Loop">For-Loop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ga4/" title="GA4">GA4</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gce/" title="GCE">GCE</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/generative-ai/" title="Generative AI">Generative AI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geojson/" title="GeoJson">GeoJson</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geospatial-analysis/" title="Geospatial Analysis">Geospatial Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gghistostats/" title="Gghistostats">Gghistostats</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/git/" title="Git">Git</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github-actions/" title="Github Actions">Github Actions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github-blog/" title="Github Blog">Github Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github-portfoilo/" title="Github Portfoilo">Github Portfoilo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github-portfolio/" title="GitHub Portfolio">GitHub Portfolio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/global-development/" title="Global Development">Global Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-adsense/" title="Google Adsense">Google Adsense</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-analytics/" title="Google Analytics">Google Analytics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud-platform/" title="Google Cloud Platform">Google Cloud Platform</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-compute-engine/" title="Google Compute Engine">Google Compute Engine</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-tag-manager/" title="Google Tag Manager">Google Tag Manager</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gpu/" title="GPU">GPU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/grafana/" title="Grafana">Grafana</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="Gt">Gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gtsummary/" title="Gtsummary">Gtsummary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hadoop/" title="Hadoop">Hadoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heatmap/" title="Heatmap">Heatmap</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heroku/" title="Heroku">Heroku</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hexo/" title="Hexo">Hexo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/histogram/" title="Histogram">Histogram</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html/" title="HTML">HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugging-face/" title="Hugging Face">Hugging Face</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iam/" title="IAM">IAM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-preprocessing/" title="Image Preprocessing">Image Preprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-segmentation/" title="Image Segmentation">Image Segmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-settings/" title="Image Settings">Image Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/insert/" title="Insert">Insert</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/intermediate/" title="Intermediate">Intermediate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/international-development/" title="International Development">International Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interview/" title="Interview">Interview</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iteration/" title="Iteration">Iteration</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="Iterrows">Iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/java/" title="Java">Java</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/join/" title="JOIN">JOIN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle/" title="Kaggle">Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle-api/" title="Kaggle API">Kaggle API</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kakao-chatbot/" title="Kakao Chatbot">Kakao Chatbot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kakao-open-builder/" title="Kakao Open Builder">Kakao Open Builder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kibana/" title="Kibana">Kibana</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/konlp/" title="KoNLP">KoNLP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/korean-font/" title="Korean Font">Korean Font</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/label-encoding/" title="Label Encoding">Label Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lambda/" title="Lambda">Lambda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/langchain/" title="LangChain">LangChain</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="Leaflet">Leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/library/" title="Library">Library</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lightgbm/" title="LightGBM">LightGBM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-graph/" title="Line Graph">Line Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="Line Grpah">Line Grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linux/" title="Linux">Linux</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/list/" title="List">List</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="Lists">Lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists-and-tuples/" title="Lists and Tuples">Lists and Tuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/logstash/" title="Logstash">Logstash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m1-mac/" title="M1 Mac">M1 Mac</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m5-forecasting/" title="M5 Forecasting">M5 Forecasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mac/" title="Mac">Mac</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning-project/" title="Machine Learning Project">Machine Learning Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/macos-m1/" title="MacOS M1">MacOS M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/make_column_transformer/" title="Make_column_transformer">Make_column_transformer</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mask-r-cnn/" title="Mask R-CNN">Mask R-CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathematical-functions/" title="Mathematical Functions">Mathematical Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mecab/" title="Mecab">Mecab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multipages/" title="Multipages">Multipages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiprocessing/" title="Multiprocessing">Multiprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mysql/" title="MySQL">MySQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/naver-api/" title="Naver API">Naver API</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/naver-news-crawling/" title="Naver News Crawling">Naver News Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/neural-network/" title="Neural Network">Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="Nginx">Nginx</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nha-trang/" title="Nha Trang">Nha Trang</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nifi/" title="NiFi">NiFi</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nohup/" title="Nohup">Nohup</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nonparametric/" title="Nonparametric">Nonparametric</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numeric-features/" title="Numeric Features">Numeric Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numpy/" title="NumPy">NumPy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/object-detection/" title="Object Detection">Object Detection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oce/" title="OCE">OCE</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/one-hot-encoding/" title="One-Hot Encoding">One-Hot Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oop/" title="OOP">OOP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/open-builder/" title="Open Builder">Open Builder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/openai/" title="OpenAI">OpenAI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/openapi/" title="OpenAPI">OpenAPI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/opencv/" title="OpenCV">OpenCV</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/openpyxl/" title="Openpyxl">Openpyxl</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oracle/" title="Oracle">Oracle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oracle-vm-box/" title="Oracle VM Box">Oracle VM Box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outer-join/" title="Outer Join">Outer Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outlier-values/" title="Outlier Values">Outlier Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outliers/" title="Outliers">Outliers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pd.concat/" title="Pd.concat">Pd.concat</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pgadmin/" title="PgAdmin">PgAdmin</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pins/" title="Pins">Pins</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pipeline/" title="Pipeline">Pipeline</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pivot-table/" title="Pivot Table">Pivot Table</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plot_tree/" title="Plot_tree">Plot_tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="Plotly">Plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pls-sem/" title="PLS-SEM">PLS-SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/polar-chart/" title="Polar Chart">Polar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/portfolio/" title="Portfolio">Portfolio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/postgresql/" title="PostgreSQL">PostgreSQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/powershell-execution-policy/" title="PowerShell Execution Policy">PowerShell Execution Policy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/probability/" title="Probability">Probability</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-mining/" title="Process Mining">Process Mining</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/productive-box/" title="Productive-Box">Productive-Box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/psycopg2/" title="Psycopg2">Psycopg2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/py-openaq/" title="Py-Openaq">Py-Openaq</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pycaret/" title="PyCaret">PyCaret</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pycharm/" title="PyCharm">PyCharm</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pydataset/" title="PyDataset">PyDataset</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pymysql/" title="PyMySQL">PyMySQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pyspark/" title="PySpark">PySpark</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-crawling/" title="Python Crawling">Python Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-excel/" title="Python Excel">Python Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-numpy-broadcasting/" title="Python NumPy Broadcasting">Python NumPy Broadcasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-portfolio/" title="Python Portfolio">Python Portfolio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/qgis/" title="QGIS">QGIS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-basic/" title="R Basic">R Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-installation/" title="R Installation">R Installation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ranzcr/" title="Ranzcr">Ranzcr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rcppmecab/" title="RcppMeCab">RcppMeCab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rds/" title="RDS">RDS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="Reactivity">Reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reading-list/" title="Reading List">Reading List</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recommendation/" title="Recommendation">Recommendation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regular-expression/" title="Regular Expression">Regular Expression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reticulate/" title="Reticulate">Reticulate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/retrospective/" title="Retrospective">Retrospective</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rpa/" title="RPA">RPA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rstudio/" title="RStudio">RStudio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rtweet/" title="Rtweet">Rtweet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sagemaker/" title="SageMaker">SageMaker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sales/" title="Sales">Sales</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scikit-learn/" title="Scikit-Learn">Scikit-Learn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scrapy/" title="Scrapy">Scrapy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/seaborn/" title="Seaborn">Seaborn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/selenium/" title="Selenium">Selenium</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sem/" title="SEM">SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="Shinydashboard">Shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/singapore/" title="Singapore">Singapore</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sklearn/" title="Sklearn">Sklearn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="Sort_values">Sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/spark/" title="Spark">Spark</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/spectra-show/" title="Spectra Show">Spectra Show</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/spss/" title="SPSS">SPSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sql/" title="SQL">SQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sql-developer/" title="SQL Developer">SQL Developer</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sqlalchemy/" title="SQLAlchemy">SQLAlchemy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sqlite/" title="SQLite">SQLite</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ssh/" title="SSH">SSH</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/st-pages/" title="St-Pages">St-Pages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statsmodels/" title="Statsmodels">Statsmodels</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/streamlit/" title="Streamlit">Streamlit</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/super-resolution/" title="Super Resolution">Super Resolution</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/swifter/" title="Swifter">Swifter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tableau/" title="Tableau">Tableau</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow/" title="TensorFlow">TensorFlow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text/" title="Text">Text</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text-mining/" title="Text Mining">Text Mining</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text-preprocessing/" title="Text Preprocessing">Text Preprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tidymodels/" title="Tidymodels">Tidymodels</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/timing/" title="Timing">Timing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transformers/" title="Transformers">Transformers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/travel/" title="Travel">Travel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tuber/" title="Tuber">Tuber</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/types-of-functions/" title="Types of Functions">Types of Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ubuntu/" title="Ubuntu">Ubuntu</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ubuntu-18.04/" title="Ubuntu 18.04">Ubuntu 18.04</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/utm/" title="UTM">UTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vagrant/" title="Vagrant">Vagrant</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vc-code/" title="VC Code">VC Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="Vcrs">Vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vietnam/" title="Vietnam">Vietnam</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/virtualbox/" title="VirtualBox">VirtualBox</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/virtualenv/" title="Virtualenv">Virtualenv</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/visual-studio-code/" title="Visual Studio Code">Visual Studio Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vscode/" title="VSCode">VSCode</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/wandb/" title="Wandb">Wandb</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/web-crawling/" title="Web Crawling">Web Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/web-development/" title="Web Development">Web Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/whisper/" title="Whisper">Whisper</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/windows/" title="Windows">Windows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/windows11/" title="Windows11">Windows11</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/wsl2/" title="WSL2">WSL2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xgboost/" title="XGBoost">XGBoost</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/youtube/" title="YouTube">YouTube</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2026 DSChloe.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Tensorflow 2.0 Tutorial ch7.1 - RNN 이론 (1) - Data Science | DSChloe</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+
+	
+	
+	  
+	  
+	  <script>
+	   
+		var dataLayer = window.dataLayer = window.dataLayer || [];
+		dataLayer.push({
+		  page:'Tensorflow 2.0 Tutorial ch7.1 - RNN 이론 (1)',
+		  categories:'Your dataLayer'
+		});
+	  </script>
+	  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	  })(window,document,'script','dataLayer','GTM-PJBZL2Z');</script>
+	  
+	
+		<meta property="og:url" content="https://dschloe.github.io/programming/2020/04/ch7_1_2_rnn_theory1/">
+  <meta property="og:site_name" content="Data Science | DSChloe">
+  <meta property="og:title" content="Tensorflow 2.0 Tutorial ch7.1 - RNN 이론 (1)">
+  <meta property="og:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2.0 Tutorial ch3.3.2 - 난수 생성 및 시그모이드 함수 편향성 Tensorflow 2.0 Tutorial ch3.3.3 - 첫번째 신경망 네트워크 - AND Tensorflow 2.0 Tutorial ch3.3.4 - 두번째 신경망 네트워크 - OR Tensorflow 2.0 Tutorial ch3.3.5 - 세번째 신경망 네트워크 - XOR Tensorflow 2.0 Tutorial ch4.1 - 선형회귀 Tensorflow 2.0 Tutorial ch4.2 - 다항회귀 Tensorflow 2.0 Tutorial ch4.3 - 딥러닝 네트워크를 이용한 회귀 Tensorflow 2.0 Tutorial ch4.4 - 보스턴 주택 가격 데이터세트 Tensorflow 2.0 Tutorial ch5.1 - 분류 Tensorflow 2.0 Tutorial ch5.2 - 다항분류 Tensorflow 2.0 Tutorial ch5.3 - Fashion MNIST Tensorflow 2.0 Tutorial ch6.1-2 - CNN 이론 Tensorflow 2.0 Tutorial ch6.3 - Fashion MNIST with CNN 실습 Tensorflow 2.0 Tutorial ch6.4 - 모형의 성능 높이기 I. 개요 순환 신경망(Recurrent Neural Network; RNN)은 지금까지 살펴본 네트워크와는 입력을 받아들이는 방식과 처리하는 방식에 약간 차이가 있습니다. 순환 신경망은 순서가 있는 데이터를 입력으로 받고, 같은 네트워크를 이용해 변화하는 입력에 대한 출력을 얻어냅니다.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="programming">
+    <meta property="article:published_time" content="2020-04-22T15:08:30+09:00">
+    <meta property="article:modified_time" content="2020-04-22T15:08:30+09:00">
+    <meta property="article:tag" content="Deep Learning">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="Google Colab">
+    <meta property="article:tag" content="TensorFlow">
+    <meta property="article:tag" content="Binary Classification">
+    <meta property="article:tag" content="Classification">
+
+		
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Tensorflow 2.0 Tutorial ch7.1 - RNN 이론 (1)">
+  <meta name="twitter:description" content="공지 본 Tutorial은 교재 시작하세요 텐서플로 2.0 프로그래밍의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.
+강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.
+본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다. Tutorial 이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.
+Google Colab Tensorflow 2.0 Installation Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수 Tensorflow 2.0 Tutorial ch3.3.2 - 난수 생성 및 시그모이드 함수 편향성 Tensorflow 2.0 Tutorial ch3.3.3 - 첫번째 신경망 네트워크 - AND Tensorflow 2.0 Tutorial ch3.3.4 - 두번째 신경망 네트워크 - OR Tensorflow 2.0 Tutorial ch3.3.5 - 세번째 신경망 네트워크 - XOR Tensorflow 2.0 Tutorial ch4.1 - 선형회귀 Tensorflow 2.0 Tutorial ch4.2 - 다항회귀 Tensorflow 2.0 Tutorial ch4.3 - 딥러닝 네트워크를 이용한 회귀 Tensorflow 2.0 Tutorial ch4.4 - 보스턴 주택 가격 데이터세트 Tensorflow 2.0 Tutorial ch5.1 - 분류 Tensorflow 2.0 Tutorial ch5.2 - 다항분류 Tensorflow 2.0 Tutorial ch5.3 - Fashion MNIST Tensorflow 2.0 Tutorial ch6.1-2 - CNN 이론 Tensorflow 2.0 Tutorial ch6.3 - Fashion MNIST with CNN 실습 Tensorflow 2.0 Tutorial ch6.4 - 모형의 성능 높이기 I. 개요 순환 신경망(Recurrent Neural Network; RNN)은 지금까지 살펴본 네트워크와는 입력을 받아들이는 방식과 처리하는 방식에 약간 차이가 있습니다. 순환 신경망은 순서가 있는 데이터를 입력으로 받고, 같은 네트워크를 이용해 변화하는 입력에 대한 출력을 얻어냅니다.">
+
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-K95C7LSPRK"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-K95C7LSPRK');
+        }
+      </script>
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo">
+		<a class="logo__link" href="/" title="Data Science | DSChloe" rel="home">
+			<div class="logo__item logo__text">
+					<div class="logo__title">Data Science | DSChloe</div>
+					<div class="logo__tagline">Love your beloved one forever</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/programming/">
+				
+				<span class="menu__text">Programming</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/data-analysis/">
+				
+				<span class="menu__text">Data Analysis</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/trip/">
+				
+				<span class="menu__text">Trip</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/about/">
+				
+				<span class="menu__text">About DSChloe</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/privacyinfo/">
+				
+				<span class="menu__text">개인정보처리방침</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9871603218577546"
+		crossorigin="anonymous"></script>
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">Tensorflow 2.0 Tutorial ch7.1 - RNN 이론 (1)</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2020-04-22T15:08:30&#43;09:00">2020-04-22</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/programming/" rel="category">Programming</a>, <a class="meta__link" href="/categories/deep-learning/" rel="category">Deep Learning</a>, <a class="meta__link" href="/categories/tensorflow/" rel="category">TensorFlow</a>, <a class="meta__link" href="/categories/python/" rel="category">Python</a>
+	</span>
+</div></div>
+		</header>
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#공지">공지</a></li>
+    <li><a href="#tutorial">Tutorial</a></li>
+    <li><a href="#i-개요">I. 개요</a></li>
+    <li><a href="#ii-순환-신경망의-구조">II. 순환 신경망의 구조</a></li>
+    <li><a href="#iii-주요-레이어-정리">III. 주요 레이어 정리</a>
+      <ul>
+        <li><a href="#1-simplernn-레이어">(1) SimpleRNN 레이어</a></li>
+        <li><a href="#2-lstm-레이어">(2) LSTM 레이어</a></li>
+      </ul>
+    </li>
+    <li><a href="#iv-연습-파일">IV. 연습 파일</a></li>
+    <li><a href="#vi-reference">VI. Reference</a></li>
+  </ul>
+</nav>
+	</div>
+</div>
+<div class="content post__content clearfix">
+			<h2 id="공지">공지</h2>
+<ul>
+<li>
+<p>본 Tutorial은 교재 <code>시작하세요 텐서플로 2.0 프로그래밍</code>의 강사에게 국비교육 강의를 듣는 사람들에게 자료 제공을 목적으로 제작하였습니다.</p>
+</li>
+<li>
+<p>강사의 주관적인 판단으로 압축해서 자료를 정리하였기 때문에, 자세하게 공부를 하고 싶은 반드시 교재를 구매하실 것을 권해드립니다.</p>
+</li>
+</ul>
+<p><img src="/img/programming/2020/04/ch3_3_1_random_signoid/book.jpg" alt=""></p>
+<ul>
+<li>본 교재 외에 강사가 추가한 내용에 대한 Reference를 확인하셔서, 추가적으로 학습하시는 것을 권유드립니다.</li>
+</ul>
+<h2 id="tutorial">Tutorial</h2>
+<p>이전 강의가 궁금하신 분들은 아래에서 선택하여 추가 학습 하시기를 바랍니다.</p>
+<ul>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/googlecolab/">Google Colab Tensorflow 2.0 Installation</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch3_3_1_random_signoid/">Tensorflow 2.0 Tutorial ch3.3.1 - 난수 생성 및 시그모이드 함수</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch3_3_2_random_signoid_bias/">Tensorflow 2.0 Tutorial ch3.3.2 - 난수 생성 및 시그모이드 함수 편향성</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch3_3_3_network_and/">Tensorflow 2.0 Tutorial ch3.3.3 - 첫번째 신경망 네트워크 - AND</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch3_3_4_network_or/">Tensorflow 2.0 Tutorial ch3.3.4 - 두번째 신경망 네트워크 - OR</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch3_3_5_network_xor/">Tensorflow 2.0 Tutorial ch3.3.5 - 세번째 신경망 네트워크 - XOR</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch4_1_linear_regression/">Tensorflow 2.0 Tutorial ch4.1 - 선형회귀</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch4_2_multiple_linear_regression/">Tensorflow 2.0 Tutorial ch4.2 - 다항회귀</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch4_3_regression_with_deeplearning/">Tensorflow 2.0 Tutorial ch4.3 - 딥러닝 네트워크를 이용한 회귀</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch4_4_boston_housing_deeplearning/">Tensorflow 2.0 Tutorial ch4.4 - 보스턴 주택 가격 데이터세트</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch5_1_binary_classification/">Tensorflow 2.0 Tutorial ch5.1 - 분류</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch5_2_multi_classification/">Tensorflow 2.0 Tutorial ch5.2 - 다항분류</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch5_3_fashion_mnist/">Tensorflow 2.0 Tutorial ch5.3 - Fashion MNIST</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch6_1_2_cnn_theory/">Tensorflow 2.0 Tutorial ch6.1-2 - CNN 이론</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch6_3_fashion_mnist_with_cnn/">Tensorflow 2.0 Tutorial ch6.3 - Fashion MNIST with CNN 실습</a></li>
+<li><a href="https://dschloe.github.io/python/tensorflow2.0/ch6_4_improve_performance/">Tensorflow 2.0 Tutorial ch6.4 - 모형의 성능 높이기</a></li>
+</ul>
+<h2 id="i-개요">I. 개요</h2>
+<p>순환 신경망(Recurrent Neural Network; RNN)은 지금까지 살펴본 네트워크와는 입력을 받아들이는 방식과 처리하는 방식에 약간 차이가 있습니다. 순환 신경망은 순서가 있는 데이터를 입력으로 받고, 같은 네트워크를 이용해 변화하는 입력에 대한 출력을 얻어냅니다.</p>
+<p>순서가 있는 데이터는 음악, 자연어, 날씨, 주가 등 시간의 흐름에 따라 변화하고 그 변화가 의미를 갖는 데이터입니다.</p>
+<h2 id="ii-순환-신경망의-구조">II. 순환 신경망의 구조</h2>
+<p>우선 <code>CNN</code>과 <code>RNN</code>의 딥러닝 구조의 차이점에 대해 이미지<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>로 확인하면 보다 직관적으로 이해가 될 수 있습니다.</p>
+<p>CNN의 구조는 본 교재를 계속 따라오셨다면 익숙하다시피, 아래와 같은 구조로 되어 있습니다.</p>
+<p><img src="/img/programming/2020/04/ch7_1_2_RNN_theory(1)/tutorial_01_CNN.png" alt=""></p>
+<p>그러나, RNN의 구조는 아래에서 확인할 수 있는 것처럼, 순환 모양의 화살표가 있다는 것이 차이점입니다.</p>
+<p><img src="/img/programming/2020/04/ch7_1_2_RNN_theory(1)/tutorial_01_RNN.png" alt=""></p>
+<p>순환 신경망의 특징에 대해 간단하게 요약하면 다음과 같습니다.</p>
+<ul>
+<li>입력 X를 받아서, 출력 Y를 반환합니다.</li>
+<li>순환구조를 가지고 있다; 어떤 레이어의 출력을 다시 입력으로 받는 구조를 말합니다.</li>
+<li>순환 신경망은 입력과 출력의 길이에 제한이 없습니다.</li>
+<li>순환 신경망은 이미지에 대한 설명을 생성하는 이미지 설명 생성, 문장의 긍정/부정을 판단하는 감성 분석, 하나의 언어를 다른 언어로 번역하는 기계 번역(Machine Translation) 등 다양한 용도로 활용됩니다.</li>
+</ul>
+<p>순환 신경망의 이론에 대한 자세한 설명은 교재 (<code>p. 174-5</code>)를 참조하시기를 바랍니다.</p>
+<h2 id="iii-주요-레이어-정리">III. 주요 레이어 정리</h2>
+<p>순환 신경망의 가장 기초적인 레이어는 <code>SimpleRNN</code> 레이어이며, 이 레이어에서 출발한 <code>LSTM</code> 레이어 또는 <code>GRU</code>레이어가 주로 쓰입니다. 그리고, 자연어 처리를 위해서 꼭 알아둬야 하는 임베딩(<code>Embedding</code>)레이어도 같이 알아봅니다.</p>
+<h3 id="1-simplernn-레이어">(1) SimpleRNN 레이어</h3>
+<p><code>SimpleRNN</code>레이어는 가장 간단한 형태의 <code>RNN</code>레이업니다. 수식에 대한 설명은 교재(<code>p. 176</code>)를 참고합니다. 이 때 주로 사용되는 활성화 함수로는 <code>tanh</code>가 사용됩니다. <code>tanh</code>는 실수 입력을 받아 -1에서 1사이의 출력 값을 반환하는 활성하 함수이며, 이 활성화 함수 자리에 <code>ReLU</code>같은 다른 활성화함수를 쓸 수도 있습니다.</p>
+<p><code>SimpleRNN</code> 레이어는 <code>tf.keras</code>에서 한 줄로 간단하게 생성이 가능합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>rnn1 <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>SimpleRNN(units<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;tanh&#39;</span>, return_sequences<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><ul>
+<li><code>units</code>는 <code>SimpleRNN</code>의 레이어에 존재하는 뉴런의 수를 의미합니다. <code>return_sequences</code>는 출력으로 시퀀스 전체를 출력할지 여부를 나타내는 옵션이며, 여러 개의 <code>RNN 레이어</code>를 쌓을 때 쓰입니다.</li>
+</ul>
+<p>간단한 예제를 통해서 학습을 해봅니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>X <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>Y <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">6</span>):
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># [0, 1, 2, 3], [1, 2, 3, 4]</span>
+</span></span><span style="display:flex;"><span>  lst <span style="color:#f92672">=</span> list(range(i,i<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 위에서 구한 시퀀스의 숫자들을 각각 10으로 나눈 다음 저장합니다. </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># SimpleRNN에 각 타임스텝에 하나씩 숫자가 들어가기 때문에 여기서도 하나씩 분리해서 배열에 저장합니다. </span>
+</span></span><span style="display:flex;"><span>  X<span style="color:#f92672">.</span>append(list(map(<span style="color:#66d9ef">lambda</span> c:[c<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>], lst)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 정답에 해당하는 4, 5 등의 정수 역시 앞에서처럼 10으로 나눠서 저장합니다. </span>
+</span></span><span style="display:flex;"><span>  Y<span style="color:#f92672">.</span>append((i<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(X)
+</span></span><span style="display:flex;"><span>Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(Y)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(X)): 
+</span></span><span style="display:flex;"><span>  print(X[i], Y[i])
+</span></span></code></pre></div><pre><code>[[0. ]
+ [0.1]
+ [0.2]
+ [0.3]] 0.4
+[[0.1]
+ [0.2]
+ [0.3]
+ [0.4]] 0.5
+[[0.2]
+ [0.3]
+ [0.4]
+ [0.5]] 0.6
+[[0.3]
+ [0.4]
+ [0.5]
+ [0.6]] 0.7
+[[0.4]
+ [0.5]
+ [0.6]
+ [0.7]] 0.8
+[[0.5]
+ [0.6]
+ [0.7]
+ [0.8]] 0.9
+</code></pre>
+<p>이제 <code>SimpleRNN</code> 레이어를 사용한 네트워크를 정의합니다. 모델 구조는 지금까지 계속 봐온 시퀀셜 모델이고, 출력을 위한 <code>Dense</code> 레이어가 뒤에 추가되어 있습니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 7.3 시퀀스 예측 모델 정의</span>
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>SimpleRNN(units<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, return_sequences<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>, input_shape<span style="color:#f92672">=</span>[<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">1</span>]),
+</span></span><span style="display:flex;"><span>    tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>summary()
+</span></span></code></pre></div><pre><code>Model: &quot;sequential_1&quot;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+simple_rnn_1 (SimpleRNN)     (None, 10)                120       
+_________________________________________________________________
+dense_1 (Dense)              (None, 1)                 11        
+=================================================================
+Total params: 131
+Trainable params: 131
+Non-trainable params: 0
+_________________________________________________________________
+</code></pre>
+<p>여기에서 주목해야 하는 코드는 <code>input_shape</code>입니다. 여기에서 <code>[4,1]</code>은 각각 <code>timesteps</code>, <code>input_dim</code>을 나타냅니다. 타입스텝은(timesteps)이란 순환 신경망이 입력에 대해 계산을 반복하는 횟수를 말하고, <code>input_dim</code>은 벡터의 크기를 나타냅니다.</p>
+<pre tabindex="0"><code>[[0. ]
+ [0.1]
+ [0.2]
+ [0.3]] 0.4
+</code></pre><p>두번째의 4는 타임스텝, 세번째의 1은 <code>input_dim</code>이 됩니다. 그림을 참조하면 훨씬 이해하기 쉽습니다. (교재, p.180)</p>
+<p>시퀀스 예측 모델은 4 타임스텝에 걸쳐 입력을 받고, 마지막에 출력값을 다음 레이어로 반환합니다. 우리가 추가한 <code>Dense</code>레이어에는 별도의 활성화함수가 없기 때문에 $h_{3}$는 바로 $y_{3}$이 됩니다. 그리고 이 값과 0.4와의 차이가 <code>mse</code>, 즉 평균 제곱 오차(<code>Mean Squared Error</code>)가 됩니다.</p>
+<p>이제 훈련을 시킵니다. 이 때, <code>verbose</code>값을 0으로 놓으면 훈련 과정에서의 출력이 나오지 않습니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model<span style="color:#f92672">.</span>fit(X, Y, epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>print(model<span style="color:#f92672">.</span>predict(X))
+</span></span></code></pre></div><pre><code>[[0.37582147]
+ [0.5110225 ]
+ [0.6267948 ]
+ [0.72202194]
+ [0.7992587 ]
+ [0.86209536]]
+</code></pre>
+<p>X가 주어졌을 때 학습된 모델이 시퀀스를 어떻게 예측하는지 확인해보면 얼추 비슷하게 예측하고 있음을 확인할 수 있습니다. 그렇다면 학습과정에서 본 적이 없는 테스트 데이터를 넣으면 어떨까요? <code>X</code>의 범위가 0.0~0.9 였으니, 양쪽으로 한 칸씩 더 나간 데이터를 입력합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>array([[[<span style="color:#ae81ff">0.6</span>], [<span style="color:#ae81ff">0.7</span>], [<span style="color:#ae81ff">0.8</span>], [<span style="color:#ae81ff">0.9</span>]]])))
+</span></span><span style="display:flex;"><span>print(model<span style="color:#f92672">.</span>predict(np<span style="color:#f92672">.</span>array([[[<span style="color:#f92672">-</span><span style="color:#ae81ff">0.1</span>], [<span style="color:#ae81ff">0.0</span>], [<span style="color:#ae81ff">0.1</span>], [<span style="color:#ae81ff">0.2</span>]]])))
+</span></span></code></pre></div><pre><code>[[0.9137889]]
+[[0.22816285]]
+</code></pre>
+<p>1을 예측하기를 원한 데이터의 출력으로는 0.91을 0.3을 예측하기 원한 데이터의 출력으로는 0.22의 값을 반환했습니다.</p>
+<p>실무에서는 <code>SimpleRNN</code>보다는 <code>LSTM</code> 레이어와 <code>GRU</code>레이어를 사용합니다.</p>
+<h3 id="2-lstm-레이어">(2) LSTM 레이어</h3>
+<p><code>SimpleRNN</code> 레이어에는 한 가지 치명적인 단점이 존재합니다. 입력 데이터가 길어질수록, 즉 데이터의 타임스텝이 길어질수록 학습 능력이 떨어진다는 점입니다. 이를 장기의존성(Long-Term Dependency)문제라고 하며, 입력 데이터와 출력 사이의 길이가 멀어질수록 연관 관계가 적어집니다.</p>
+<p><img src="/img/programming/2020/04/ch7_1_2_RNN_theory(1)/tutorial_02_LongTermDependency.png" alt=""></p>
+<p>위 그림이 이러한 문제를 적절하게 표현한 것입니다. 입력 데이터가 길어지면 길어질수록 출력값의 연관 관계가 적어지는 것을 볼 수 있습니다.</p>
+<p>이러한 문제점을 해결하기 위해 <code>LSTM</code>이 제안 되었습니다.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> 셀로 나타낸 SimpleRNN과 LSTM의 계산 흐름을 보면 조금 이해가 될 것입니다.</p>
+<ul>
+<li>먼저 SimpleRNN의 그림은 아래와 같습니다.</li>
+</ul>
+<p><img src="/img/programming/2020/04/ch7_1_2_RNN_theory(1)/tutorial_02_SimpleRNN.png" alt=""></p>
+<p>여기에서는 타임스텝의 방향으로 $h_{t}$만 전달되고 있음을 확인할 수 있습니다.</p>
+<p><img src="/img/programming/2020/04/ch7_1_2_RNN_theory(1)/tutorial_02_LSTM.png" alt=""></p>
+<p>그런데, 여기에서는 셀 상테인 $c_{t}$가 평생선을 그리며 함께 전달되고 있습니다. 이처럼 타임스텝을 가로지르며 <code>LSTM</code> 셀 상태가 보존되기 때문에 장기의존성 문제를 해결할 수 있다는 것이 <code>LSTM</code>의 핵심 아이디어입니다.</p>
+<p>교재 184페이지를 보면 위 셀에 대한 수식이 존재합니다만, 수식에 대한 구체적인 이해가 자료가 필요하다면 크리스토퍼 올라(<code>Christopher Olah</code>)의 블로그 글을 참고합니다.<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
+<p><code>LSTM</code>의 학습 능력을 확인하기 위한 예제는 <code>LSTM</code>을 처음 제안한 논문에 나온 실험 여섯개 중 다섯 번째인 곱셈 문제(<code>Multiplication Problem</code>)입니다. 이 문제는 말 그대로 실수에 대해 곱셈을 하는 문제인데, 고려해야 할 실수의 범위가 100개이고 그 중에서 마킹된 두개의 숫자만 곱해야 한다는 특이한 문제입니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 텐서플로 2 버전 선택</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># %tensorflow_version only exists in Colab.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">%</span>tensorflow_version <span style="color:#ae81ff">2.</span>x
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>X <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>Y <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">3000</span>): 
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 0 ~ 1 범위의 랜덤한 숫자 100개를 만듭니다. </span>
+</span></span><span style="display:flex;"><span>  lst <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>rand(<span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 마킹할 숫자 2개의 인덱스를 뽑습니다. </span>
+</span></span><span style="display:flex;"><span>  idx <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>choice(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">2</span>, replace<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 마킹 인덱스가 저장된 원-핫 인코딩 벡터를 만듭니다. </span>
+</span></span><span style="display:flex;"><span>  zeros<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>zeros(<span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>  zeros[idx]<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 마킹 인덱스와 랜덤한 숫자를 합쳐서 X에 저장합니다. </span>
+</span></span><span style="display:flex;"><span>  X<span style="color:#f92672">.</span>append(np<span style="color:#f92672">.</span>array(list(zip(zeros, lst))))
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 마킹 인덱스가 1인 값만 서로 곱해서 Y에 저장합니다. </span>
+</span></span><span style="display:flex;"><span>  Y<span style="color:#f92672">.</span>append(np<span style="color:#f92672">.</span>prod(lst[idx]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(X[<span style="color:#ae81ff">0</span>], Y[<span style="color:#ae81ff">0</span>])
+</span></span></code></pre></div><pre><code>[[0.         0.56858055]
+..
+ [0.         0.12100308]
+ [1.         0.14539513]
+ [0.         0.43342875]
+..
+ [0.         0.5772363 ]
+ [1.         0.21461413]
+ [0.         0.95933064]
+..
+ [0.         0.55055634]
+ [0.         0.20978592]] 0.03120384949137252
+</code></pre>
+<p>입력된 값이 길지만, 1은 두번만 들어가 있기 때문에, 1이 찍인 원소를 찾습니다. <code>[1.    0.08361932]</code>과 <code>[1.         0.66439549]</code>이 확인이 됩니다.</p>
+<p><code>0.08361932</code>와 <code>0.66439549</code>를 곱하면 <code>0.055556298045436</code>값이 나옵니다. <code>SimpleRNN</code> 레이어를 이용한 곱셈 문제 모델을 정의합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>SimpleRNN(units<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>, return_sequences<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, input_shape<span style="color:#f92672">=</span>[<span style="color:#ae81ff">100</span>,<span style="color:#ae81ff">2</span>]), 
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>SimpleRNN(units<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>), 
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>summary()
+</span></span></code></pre></div><pre><code>Model: &quot;sequential&quot;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+simple_rnn (SimpleRNN)       (None, 100, 30)           990       
+_________________________________________________________________
+simple_rnn_1 (SimpleRNN)     (None, 30)                1830      
+_________________________________________________________________
+dense (Dense)                (None, 1)                 31        
+=================================================================
+Total params: 2,851
+Trainable params: 2,851
+Non-trainable params: 0
+_________________________________________________________________
+</code></pre>
+<p><code>RNN</code> 레이어를 겹치기 위해 첫 번째 <code>SimpleRNN</code>레이어에서 <code>return_sequences=True</code>로 설정된 것을 확인할 수 있습니다. <code>return_sequences</code>는 레이어의 출력을 다음 레이어로 그대로 넘겨주게 됩니다.</p>
+<p>겹치는 레이어의 구조에 대한 이론 설명은 교재 <code>188페이지</code>를 참조하시기를 바랍니다. <code>RNN</code>은 <code>CNN</code>보다 학습 시간이 오래 걸리는 편이기 때문에 반드시 가속기를 <code>GPU</code>로 바꿔줍니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(X)
+</span></span><span style="display:flex;"><span>Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(Y)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 2560개의 데이터만 학습시킵니다. 검증 데이터는 20%로 저장합니다. </span>
+</span></span><span style="display:flex;"><span>history<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>fit(X[:<span style="color:#ae81ff">2560</span>], Y[:<span style="color:#ae81ff">2560</span>], epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, validation_split<span style="color:#f92672">=</span><span style="color:#ae81ff">0.2</span>)
+</span></span></code></pre></div><pre><code>Epoch 1/100
+64/64 [==============================] - 8s 118ms/step - loss: 0.0559 - val_loss: 0.0494
+Epoch 2/100
+64/64 [==============================] - 8s 119ms/step - loss: 0.0493 - val_loss: 0.0480
+Epoch 3/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0480 - val_loss: 0.0479
+Epoch 4/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0487 - val_loss: 0.0471
+Epoch 5/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0478 - val_loss: 0.0539
+Epoch 6/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0477 - val_loss: 0.0518
+Epoch 7/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0481 - val_loss: 0.0473
+Epoch 8/100
+64/64 [==============================] - 7s 112ms/step - loss: 0.0472 - val_loss: 0.0490
+Epoch 9/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0468 - val_loss: 0.0486
+Epoch 10/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0464 - val_loss: 0.0507
+Epoch 11/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0482 - val_loss: 0.0481
+Epoch 12/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0481 - val_loss: 0.0488
+Epoch 13/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0475 - val_loss: 0.0491
+Epoch 14/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0468 - val_loss: 0.0473
+Epoch 15/100
+64/64 [==============================] - 7s 112ms/step - loss: 0.0464 - val_loss: 0.0496
+Epoch 16/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0474 - val_loss: 0.0493
+Epoch 17/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0458 - val_loss: 0.0495
+Epoch 18/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0458 - val_loss: 0.0495
+Epoch 19/100
+64/64 [==============================] - 7s 111ms/step - loss: 0.0452 - val_loss: 0.0487
+Epoch 20/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0456 - val_loss: 0.0505
+Epoch 21/100
+64/64 [==============================] - 7s 112ms/step - loss: 0.0449 - val_loss: 0.0490
+Epoch 22/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0447 - val_loss: 0.0475
+Epoch 23/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0444 - val_loss: 0.0494
+Epoch 24/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0456 - val_loss: 0.0492
+Epoch 25/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0446 - val_loss: 0.0501
+Epoch 26/100
+64/64 [==============================] - 7s 112ms/step - loss: 0.0450 - val_loss: 0.0508
+Epoch 27/100
+64/64 [==============================] - 7s 112ms/step - loss: 0.0442 - val_loss: 0.0519
+Epoch 28/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0433 - val_loss: 0.0489
+Epoch 29/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0436 - val_loss: 0.0497
+Epoch 30/100
+64/64 [==============================] - 8s 118ms/step - loss: 0.0441 - val_loss: 0.0519
+Epoch 31/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0442 - val_loss: 0.0501
+Epoch 32/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0422 - val_loss: 0.0488
+Epoch 33/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0427 - val_loss: 0.0564
+Epoch 34/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0429 - val_loss: 0.0511
+Epoch 35/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0417 - val_loss: 0.0525
+Epoch 36/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0411 - val_loss: 0.0520
+Epoch 37/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0429 - val_loss: 0.0525
+Epoch 38/100
+64/64 [==============================] - 7s 112ms/step - loss: 0.0412 - val_loss: 0.0502
+Epoch 39/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0410 - val_loss: 0.0556
+Epoch 40/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0407 - val_loss: 0.0520
+Epoch 41/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0404 - val_loss: 0.0493
+Epoch 42/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0388 - val_loss: 0.0541
+Epoch 43/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0391 - val_loss: 0.0563
+Epoch 44/100
+64/64 [==============================] - 7s 116ms/step - loss: 0.0392 - val_loss: 0.0506
+Epoch 45/100
+64/64 [==============================] - 7s 111ms/step - loss: 0.0400 - val_loss: 0.0556
+Epoch 46/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0390 - val_loss: 0.0554
+Epoch 47/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0385 - val_loss: 0.0515
+Epoch 48/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0373 - val_loss: 0.0522
+Epoch 49/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0373 - val_loss: 0.0556
+Epoch 50/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0379 - val_loss: 0.0587
+Epoch 51/100
+64/64 [==============================] - 7s 112ms/step - loss: 0.0371 - val_loss: 0.0550
+Epoch 52/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0362 - val_loss: 0.0537
+Epoch 53/100
+64/64 [==============================] - 7s 112ms/step - loss: 0.0364 - val_loss: 0.0591
+Epoch 54/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0356 - val_loss: 0.0537
+Epoch 55/100
+64/64 [==============================] - 7s 112ms/step - loss: 0.0348 - val_loss: 0.0591
+Epoch 56/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0351 - val_loss: 0.0572
+Epoch 57/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0339 - val_loss: 0.0585
+Epoch 58/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0336 - val_loss: 0.0593
+Epoch 59/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0337 - val_loss: 0.0587
+Epoch 60/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0339 - val_loss: 0.0574
+Epoch 61/100
+64/64 [==============================] - 7s 112ms/step - loss: 0.0323 - val_loss: 0.0582
+Epoch 62/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0328 - val_loss: 0.0586
+Epoch 63/100
+64/64 [==============================] - 7s 112ms/step - loss: 0.0329 - val_loss: 0.0572
+Epoch 64/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0318 - val_loss: 0.0610
+Epoch 65/100
+64/64 [==============================] - 7s 116ms/step - loss: 0.0315 - val_loss: 0.0537
+Epoch 66/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0309 - val_loss: 0.0599
+Epoch 67/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0305 - val_loss: 0.0585
+Epoch 68/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0303 - val_loss: 0.0599
+Epoch 69/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0297 - val_loss: 0.0633
+Epoch 70/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0296 - val_loss: 0.0600
+Epoch 71/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0289 - val_loss: 0.0612
+Epoch 72/100
+64/64 [==============================] - 8s 120ms/step - loss: 0.0284 - val_loss: 0.0619
+Epoch 73/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0287 - val_loss: 0.0637
+Epoch 74/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0291 - val_loss: 0.0568
+Epoch 75/100
+64/64 [==============================] - 7s 111ms/step - loss: 0.0287 - val_loss: 0.0617
+Epoch 76/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0287 - val_loss: 0.0605
+Epoch 77/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0272 - val_loss: 0.0614
+Epoch 78/100
+64/64 [==============================] - 7s 116ms/step - loss: 0.0269 - val_loss: 0.0606
+Epoch 79/100
+64/64 [==============================] - 7s 116ms/step - loss: 0.0264 - val_loss: 0.0630
+Epoch 80/100
+64/64 [==============================] - 8s 117ms/step - loss: 0.0258 - val_loss: 0.0701
+Epoch 81/100
+64/64 [==============================] - 7s 117ms/step - loss: 0.0263 - val_loss: 0.0633
+Epoch 82/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0267 - val_loss: 0.0635
+Epoch 83/100
+64/64 [==============================] - 7s 117ms/step - loss: 0.0261 - val_loss: 0.0666
+Epoch 84/100
+64/64 [==============================] - 8s 119ms/step - loss: 0.0254 - val_loss: 0.0624
+Epoch 85/100
+64/64 [==============================] - 8s 119ms/step - loss: 0.0253 - val_loss: 0.0601
+Epoch 86/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0263 - val_loss: 0.0647
+Epoch 87/100
+64/64 [==============================] - 7s 116ms/step - loss: 0.0238 - val_loss: 0.0676
+Epoch 88/100
+64/64 [==============================] - 7s 115ms/step - loss: 0.0239 - val_loss: 0.0661
+Epoch 89/100
+64/64 [==============================] - 8s 118ms/step - loss: 0.0237 - val_loss: 0.0641
+Epoch 90/100
+64/64 [==============================] - 7s 116ms/step - loss: 0.0239 - val_loss: 0.0680
+Epoch 91/100
+64/64 [==============================] - 7s 116ms/step - loss: 0.0222 - val_loss: 0.0672
+Epoch 92/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0230 - val_loss: 0.0659
+Epoch 93/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0222 - val_loss: 0.0668
+Epoch 94/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0235 - val_loss: 0.0634
+Epoch 95/100
+64/64 [==============================] - 7s 114ms/step - loss: 0.0231 - val_loss: 0.0660
+Epoch 96/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0224 - val_loss: 0.0654
+Epoch 97/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0211 - val_loss: 0.0657
+Epoch 98/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0217 - val_loss: 0.0689
+Epoch 99/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0212 - val_loss: 0.0667
+Epoch 100/100
+64/64 [==============================] - 7s 113ms/step - loss: 0.0216 - val_loss: 0.0664
+</code></pre>
+<p>훈련 데이터의 손실(<code>loss</code>)과 검증 데이터의 손실(<code>var_loss</code>)는 감소하지 않고 오히려 증가하는 것 같습니다. 경향을 직관적으로 파악하기 위해 <code>history</code> 변수에 저장된 값으로 그래프를 그려봅니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;loss&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;loss&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_loss&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_loss&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>legend()
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><p><img src="/img/programming/2020/04/ch7_1_2_RNN_theory(1)/output_18_0.png" alt="png"></p>
+<p>학습 결과는 전형적인 과적합 그래프를 보여줍니다. 테스트 데이터에 대한 예측은 어떨까요? 논문에서는 오차가 0.04 이상일 때 오답으로 처리합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model<span style="color:#f92672">.</span>evaluate(X[<span style="color:#ae81ff">2560</span>:], Y[<span style="color:#ae81ff">2560</span>:])
+</span></span><span style="display:flex;"><span>prediction<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>predict(X[<span style="color:#ae81ff">2560</span>:<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span><span style="color:#ae81ff">5</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 5개 테스트 데이터에 대한 예측을 표시합니다. </span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>): 
+</span></span><span style="display:flex;"><span>  print(Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i], <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>, prediction[i][<span style="color:#ae81ff">0</span>], <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">diff:&#39;</span>, abs(prediction[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>prediction <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(X[<span style="color:#ae81ff">2560</span>:])
+</span></span><span style="display:flex;"><span>fail <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(prediction)):
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 오차가 0.04 이상이면 오답입니다. </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> abs(prediction[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i]) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.04</span>:
+</span></span><span style="display:flex;"><span>    fail <span style="color:#f92672">+=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;correctness:&#39;</span>, (<span style="color:#ae81ff">440</span><span style="color:#f92672">-</span>fail)<span style="color:#f92672">/</span><span style="color:#ae81ff">440</span><span style="color:#f92672">*</span><span style="color:#ae81ff">100</span>, <span style="color:#e6db74">&#39;%&#39;</span>)
+</span></span></code></pre></div><pre><code>14/14 [==============================] - 0s 16ms/step - loss: 0.0667
+0.009316712705671063 	 -0.05508966 	diff: 0.06440637269455123
+0.1595728709352136 	 0.051416673 	diff: 0.10815619816900496
+0.343633615267837 	 0.27744463 	diff: 0.06618898440655463
+0.047836290850227836 	 0.23675384 	diff: 0.1889175454239192
+0.07471709800989841 	 0.19511518 	diff: 0.12039808081357266
+correctness: 12.727272727272727 %
+</code></pre>
+<p>먼저 전체에 대한 평가는 <code>0.0667</code>의 <code>loss</code>가 나왔습니다. 위에서 본 100번째의 에포크의 <code>val_loss</code>인 <code>0.0664</code>보다도 높은 값으로, 네트워크가 학습 과정에서 한번도 못 본 테스트 데이터에 대해서는 잘 예측하지 못합니다. 5개의 테스트 데이터에 대한 샘플은 오차가 <code>0.01</code>에서 <code>0.18</code>까지 다양하게 나타나며, 가장 중요한 정확도는 <code>12.72</code>로 확인 됩니다.</p>
+<p>그렇다면 <code>LSTM</code>레이어는 어떨까요? 이 문제를 풀기 위해 시퀀셜 모델을 정의합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>Sequential([
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>LSTM(units<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>, return_sequences<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, input_shape<span style="color:#f92672">=</span>[<span style="color:#ae81ff">100</span>,<span style="color:#ae81ff">2</span>]), 
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>LSTM(units<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>), 
+</span></span><span style="display:flex;"><span>  tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;adam&#39;</span>, loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mse&#39;</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>summary()
+</span></span></code></pre></div><pre><code>Model: &quot;sequential_1&quot;
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+lstm (LSTM)                  (None, 100, 30)           3960      
+_________________________________________________________________
+lstm_1 (LSTM)                (None, 30)                7320      
+_________________________________________________________________
+dense_1 (Dense)              (None, 1)                 31        
+=================================================================
+Total params: 11,311
+Trainable params: 11,311
+Non-trainable params: 0
+_________________________________________________________________
+</code></pre>
+<p>차이점은 <code>SimpleRNN</code>을 <code>LSTM</code>으로 바꾼 것 뿐입니다. 네트워크의 학습코드도 동일합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(X)
+</span></span><span style="display:flex;"><span>Y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array(Y)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 2560개의 데이터만 학습시킵니다. 검증 데이터는 20%로 저장합니다. </span>
+</span></span><span style="display:flex;"><span>history<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>fit(X[:<span style="color:#ae81ff">2560</span>], Y[:<span style="color:#ae81ff">2560</span>], epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, validation_split<span style="color:#f92672">=</span><span style="color:#ae81ff">0.2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;loss&#39;</span>], <span style="color:#e6db74">&#39;b-&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;loss&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>plot(history<span style="color:#f92672">.</span>history[<span style="color:#e6db74">&#39;val_loss&#39;</span>], <span style="color:#e6db74">&#39;r--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;val_loss&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Epoch&#39;</span>)
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>legend()
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><pre><code>Epoch 1/100
+64/64 [==============================] - 3s 54ms/step - loss: 0.0507 - val_loss: 0.0470
+Epoch 2/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0472 - val_loss: 0.0469
+Epoch 3/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0473 - val_loss: 0.0482
+Epoch 4/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0474 - val_loss: 0.0482
+Epoch 5/100
+64/64 [==============================] - 3s 44ms/step - loss: 0.0474 - val_loss: 0.0471
+Epoch 6/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0474 - val_loss: 0.0476
+Epoch 7/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0471 - val_loss: 0.0474
+Epoch 8/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0477 - val_loss: 0.0474
+Epoch 9/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0472 - val_loss: 0.0472
+Epoch 10/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0469 - val_loss: 0.0471
+Epoch 11/100
+64/64 [==============================] - 3s 44ms/step - loss: 0.0471 - val_loss: 0.0484
+Epoch 12/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0473 - val_loss: 0.0472
+Epoch 13/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0467 - val_loss: 0.0483
+Epoch 14/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0466 - val_loss: 0.0471
+Epoch 15/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0470 - val_loss: 0.0470
+Epoch 16/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0466 - val_loss: 0.0471
+Epoch 17/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0464 - val_loss: 0.0470
+Epoch 18/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0464 - val_loss: 0.0483
+Epoch 19/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0465 - val_loss: 0.0467
+Epoch 20/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0462 - val_loss: 0.0465
+Epoch 21/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0481 - val_loss: 0.0468
+Epoch 22/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0467 - val_loss: 0.0474
+Epoch 23/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0465 - val_loss: 0.0468
+Epoch 24/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0463 - val_loss: 0.0471
+Epoch 25/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0461 - val_loss: 0.0478
+Epoch 26/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0457 - val_loss: 0.0464
+Epoch 27/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0456 - val_loss: 0.0462
+Epoch 28/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0459 - val_loss: 0.0485
+Epoch 29/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0454 - val_loss: 0.0460
+Epoch 30/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0474 - val_loss: 0.0464
+Epoch 31/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0457 - val_loss: 0.0475
+Epoch 32/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0455 - val_loss: 0.0461
+Epoch 33/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0451 - val_loss: 0.0455
+Epoch 34/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0448 - val_loss: 0.0450
+Epoch 35/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0438 - val_loss: 0.0524
+Epoch 36/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0453 - val_loss: 0.0448
+Epoch 37/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0427 - val_loss: 0.0408
+Epoch 38/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0481 - val_loss: 0.0462
+Epoch 39/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0457 - val_loss: 0.0455
+Epoch 40/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0447 - val_loss: 0.0443
+Epoch 41/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0419 - val_loss: 0.0390
+Epoch 42/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0353 - val_loss: 0.0254
+Epoch 43/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0223 - val_loss: 0.0199
+Epoch 44/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0188 - val_loss: 0.0155
+Epoch 45/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0117 - val_loss: 0.0099
+Epoch 46/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0092 - val_loss: 0.0070
+Epoch 47/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0060 - val_loss: 0.0046
+Epoch 48/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0062 - val_loss: 0.0043
+Epoch 49/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0131 - val_loss: 0.0063
+Epoch 50/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0050 - val_loss: 0.0041
+Epoch 51/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0035 - val_loss: 0.0033
+Epoch 52/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0032 - val_loss: 0.0034
+Epoch 53/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0029 - val_loss: 0.0029
+Epoch 54/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0033 - val_loss: 0.0024
+Epoch 55/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0034 - val_loss: 0.0025
+Epoch 56/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0026 - val_loss: 0.0031
+Epoch 57/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0023 - val_loss: 0.0023
+Epoch 58/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0022 - val_loss: 0.0020
+Epoch 59/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0017 - val_loss: 0.0023
+Epoch 60/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0018 - val_loss: 0.0032
+Epoch 61/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0024 - val_loss: 0.0017
+Epoch 62/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0018 - val_loss: 0.0040
+Epoch 63/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0018 - val_loss: 0.0015
+Epoch 64/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0018 - val_loss: 0.0016
+Epoch 65/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0013 - val_loss: 0.0017
+Epoch 66/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0012 - val_loss: 0.0017
+Epoch 67/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0016 - val_loss: 0.0021
+Epoch 68/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0013 - val_loss: 0.0015
+Epoch 69/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0011 - val_loss: 0.0010
+Epoch 70/100
+64/64 [==============================] - 3s 42ms/step - loss: 8.9019e-04 - val_loss: 0.0012
+Epoch 71/100
+64/64 [==============================] - 3s 43ms/step - loss: 9.5466e-04 - val_loss: 9.1598e-04
+Epoch 72/100
+64/64 [==============================] - 3s 43ms/step - loss: 0.0012 - val_loss: 0.0013
+Epoch 73/100
+64/64 [==============================] - 3s 42ms/step - loss: 9.1245e-04 - val_loss: 9.0190e-04
+Epoch 74/100
+64/64 [==============================] - 3s 43ms/step - loss: 7.8530e-04 - val_loss: 8.0207e-04
+Epoch 75/100
+64/64 [==============================] - 3s 42ms/step - loss: 9.1405e-04 - val_loss: 8.6976e-04
+Epoch 76/100
+64/64 [==============================] - 3s 42ms/step - loss: 8.3703e-04 - val_loss: 8.9048e-04
+Epoch 77/100
+64/64 [==============================] - 3s 42ms/step - loss: 7.5276e-04 - val_loss: 8.5232e-04
+Epoch 78/100
+64/64 [==============================] - 3s 42ms/step - loss: 7.6209e-04 - val_loss: 8.4933e-04
+Epoch 79/100
+64/64 [==============================] - 3s 42ms/step - loss: 6.7965e-04 - val_loss: 6.3633e-04
+Epoch 80/100
+64/64 [==============================] - 3s 43ms/step - loss: 7.7308e-04 - val_loss: 6.0886e-04
+Epoch 81/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0020 - val_loss: 7.1028e-04
+Epoch 82/100
+64/64 [==============================] - 3s 42ms/step - loss: 5.6736e-04 - val_loss: 6.5136e-04
+Epoch 83/100
+64/64 [==============================] - 3s 42ms/step - loss: 0.0012 - val_loss: 0.0010
+Epoch 84/100
+64/64 [==============================] - 3s 43ms/step - loss: 5.5983e-04 - val_loss: 6.3431e-04
+Epoch 85/100
+64/64 [==============================] - 3s 42ms/step - loss: 5.7588e-04 - val_loss: 6.2150e-04
+Epoch 86/100
+64/64 [==============================] - 3s 43ms/step - loss: 5.1412e-04 - val_loss: 4.9473e-04
+Epoch 87/100
+64/64 [==============================] - 3s 42ms/step - loss: 4.5491e-04 - val_loss: 6.0971e-04
+Epoch 88/100
+64/64 [==============================] - 3s 42ms/step - loss: 5.9710e-04 - val_loss: 5.0932e-04
+Epoch 89/100
+64/64 [==============================] - 3s 43ms/step - loss: 3.7854e-04 - val_loss: 7.4333e-04
+Epoch 90/100
+64/64 [==============================] - 3s 43ms/step - loss: 5.4616e-04 - val_loss: 5.6270e-04
+Epoch 91/100
+64/64 [==============================] - 3s 43ms/step - loss: 4.5601e-04 - val_loss: 5.5043e-04
+Epoch 92/100
+64/64 [==============================] - 3s 43ms/step - loss: 4.3344e-04 - val_loss: 4.6876e-04
+Epoch 93/100
+64/64 [==============================] - 3s 42ms/step - loss: 5.3680e-04 - val_loss: 4.5829e-04
+Epoch 94/100
+64/64 [==============================] - 3s 43ms/step - loss: 7.5234e-04 - val_loss: 6.1782e-04
+Epoch 95/100
+64/64 [==============================] - 3s 42ms/step - loss: 3.7421e-04 - val_loss: 3.6062e-04
+Epoch 96/100
+64/64 [==============================] - 3s 43ms/step - loss: 3.9064e-04 - val_loss: 5.2667e-04
+Epoch 97/100
+64/64 [==============================] - 3s 43ms/step - loss: 4.5003e-04 - val_loss: 4.0708e-04
+Epoch 98/100
+64/64 [==============================] - 3s 43ms/step - loss: 5.4694e-04 - val_loss: 0.0011
+Epoch 99/100
+64/64 [==============================] - 3s 42ms/step - loss: 5.4764e-04 - val_loss: 7.6580e-04
+Epoch 100/100
+64/64 [==============================] - 3s 43ms/step - loss: 5.1314e-04 - val_loss: 4.5973e-04
+</code></pre>
+<p><img src="/img/programming/2020/04/ch7_1_2_RNN_theory(1)/output_24_1.png" alt="png"></p>
+<p><code>loss</code>와 <code>val_loss</code>는 40에포크를 넘어가면서 매우 가파르게 줄어들어 0에 가까워집니다. <code>val_loss</code>는 변동폭이 <code>loss</code>보다 크지만 전체적으로는 계속 감소하는 경향을 보입니다. 학습이 매우 잘 된 것으로 보입니다.</p>
+<p>이번에는 실제로 테스트 데이터에 얼마나 정확하게 값을 예측하는지 확인해봅니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model<span style="color:#f92672">.</span>evaluate(X[<span style="color:#ae81ff">2560</span>:], Y[<span style="color:#ae81ff">2560</span>:])
+</span></span><span style="display:flex;"><span>prediction<span style="color:#f92672">=</span>model<span style="color:#f92672">.</span>predict(X[<span style="color:#ae81ff">2560</span>:<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span><span style="color:#ae81ff">5</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 5개 테스트 데이터에 대한 예측을 표시합니다. </span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>): 
+</span></span><span style="display:flex;"><span>  print(Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i], <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>, prediction[i][<span style="color:#ae81ff">0</span>], <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">diff:&#39;</span>, abs(prediction[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>prediction <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(X[<span style="color:#ae81ff">2560</span>:])
+</span></span><span style="display:flex;"><span>fail <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(prediction)):
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 오차가 0.04 이상이면 오답입니다. </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> abs(prediction[i][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> Y[<span style="color:#ae81ff">2560</span><span style="color:#f92672">+</span>i]) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.04</span>:
+</span></span><span style="display:flex;"><span>    fail <span style="color:#f92672">+=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;correctness:&#39;</span>, (<span style="color:#ae81ff">440</span><span style="color:#f92672">-</span>fail)<span style="color:#f92672">/</span><span style="color:#ae81ff">440</span><span style="color:#f92672">*</span><span style="color:#ae81ff">100</span>, <span style="color:#e6db74">&#39;%&#39;</span>)
+</span></span></code></pre></div><pre><code>14/14 [==============================] - 0s 13ms/step - loss: 3.9453e-04
+0.009316712705671063 	 0.02192213 	diff: 0.012605417432010898
+0.1595728709352136 	 0.15154022 	diff: 0.008032651151430648
+0.343633615267837 	 0.33932722 	diff: 0.004306399119460513
+0.047836290850227836 	 0.03347582 	diff: 0.014360470875090126
+0.07471709800989841 	 0.06377047 	diff: 0.01094662500651096
+correctness: 95.9090909090909 %
+</code></pre>
+<p>테스트 데이터에 대한 <code>loss</code>는 0에 가까운 값이 나오고, 다섯 개의 샘플에 대한 오차도 0.04를 넘는 값이 없습니다. 또한 정확도 역시, 95.9%로 거의 96%에 가까운 것을 확인할 수 있습니다.</p>
+<p>곱셈문제를 푸는데 있어서 <code>LSTM</code>이 보다 적합하다는 것을 알 수 있습니다.</p>
+<p>다음 포스트에서는 <code>GRU</code>레이어와 <code>임베딩</code>레이어에 대해 학습하도록 합니다.</p>
+<h2 id="iv-연습-파일">IV. 연습 파일</h2>
+<ul>
+<li><a href="https://colab.research.google.com/github/dschloe/deeplearningAI/blob/master/tensorflow2.0/ch7_1_2_RNN_theory(1).ipynb">구글 Colab에서 직접 연습해보자</a></li>
+</ul>
+<h2 id="vi-reference">VI. Reference</h2>
+<p>김환희. (2020). 시작하세요! 텐서플로 2.0 프로그래밍: 기초 이론부터 실전 예제까지 한번에 끝내는 머신러닝, 딥러닝 핵심 가이드. 서울: 위키북스.</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>Different between CNN，RNN（Quote） Retrieved from <a href="https://medium.com/@Aj.Cheng/different-between-cnn-rnn-quote-7c224795db58">https://medium.com/@Aj.Cheng/different-between-cnn-rnn-quote-7c224795db58</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>1997년 셉 호흐라이터(Sepp Hochreiter) 유르겐 슈미트후버(Jurgen Schmidhuber)에 의해 제안됨, (S. Hochreiter and J. Schmidhuber. Long short-term memory. Neural Computation, 1997. <a href="https://www.bioinf.jku.at/publications/older/2604.pdf">https://www.bioinf.jku.at/publications/older/2604.pdf</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p>Olah, Christopher. “Understanding LSTM Networks.” Understanding LSTM Networks &ndash; Colah&rsquo;s Blog, colah.github.io/posts/2015-08-Understanding-LSTMs/&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/deep-learning/" rel="tag">Deep Learning</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/python/" rel="tag">Python</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/google-colab/" rel="tag">Google Colab</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/tensorflow/" rel="tag">TensorFlow</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/binary-classification/" rel="tag">Binary Classification</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/classification/" rel="tag">Classification</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/recurrent-neural-network/" rel="tag">Recurrent Neural Network</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/rnn/" rel="tag">RNN</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/simplernn/" rel="tag">SimpleRNN</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/lstm/" rel="tag">LSTM</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/gru/" rel="tag">GRU</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/image-augmentation/" rel="tag">Image Augmentation</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<p class="authorbox__warning">
+		<strong>WARNING:</strong> Authorbox is activated, but [Author] parameters are not specified.
+	</p>
+</div>
+
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH…" value="" name="q" aria-label="SEARCH…">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="https://dschloe.github.io/" />
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/programming/2026/02/ds_certificate/">빅데이터 분석기사 실기 (Python)</a></li>
+			<li class="widget__item"><a class="widget__link" href="/programming/2025/10/regression_interaction_example_in_r/">ADsP 회귀분석 상호작용 예시</a></li>
+			<li class="widget__item"><a class="widget__link" href="/programming/2025/10/openai_anthropic_api/">Open AI와 앤트로픽 API 키 발급받기</a></li>
+			<li class="widget__item"><a class="widget__link" href="/programming/2025/06/logstash_basic_install/">Logstash 실행 및 확인 - 기본예제</a></li>
+			<li class="widget__item"><a class="widget__link" href="/programming/2025/06/transformers_embedding_elasticsearch/">Elasticsearch - Transformers 임베딩 입력 저장 (Local Mode)</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/acea/">ACEA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/adsp/">ADsP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/airflow/">Airflow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/airport-lounge/">Airport Lounge</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/anaconda/">Anaconda</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/android-studio/">Android Studio</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/anova/">ANOVA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/anthropic/">Anthropic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/api/">Api</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/apps-script/">Apps Script</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/astype/">Astype</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/automation/">Automation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws/">AWS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/aws-toolkit/">AWS Toolkit</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bar-chart/">Bar Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-data-transformation/">Basic Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/basic-statistics/">Basic Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/batch/">Batch</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/batch-file/">Batch File</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/big-data-analyst-exam/">Big Data Analyst Exam</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery/">BigQuery</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-machine-learning/">BigQuery Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-machine-learning/">BigQuery With Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/bigquery-with-python/">BigQuery With Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blog/">Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/blueprint/">Blueprint</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/categorical-features/">Categorical Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/certification/">Certification</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/chatbot/">Chatbot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/chocolatey/">Chocolatey</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/chromedriver/">ChromeDriver</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/class/">Class</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/columntransformer/">ColumnTransformer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/compute-engine/">Compute Engine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conda/">Conda</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/conditional-statements/">Conditional Statements</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/crawling/">Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/crontab/">Crontab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/cursor-ai/">Cursor AI</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dash/">Dash</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dashboard/">Dashboard</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-analysis/">Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-collection/">Data Collection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-crawling/">Data Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-engineering/">Data Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-leakage/">Data Leakage</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-science-project/">Data Science Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-structures/">Data Structures</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-transformation/">Data Transformation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/data-visualisation/">Data Visualisation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/database-navigator/">Database Navigator</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decision-tree/">Decision Tree</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/decorators/">Decorators</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deep-learning/">Deep Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/deployment/">Deployment</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/design/">Design</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/development-settings/">Development Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dictionary/">Dictionary</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dictionary-comprehension/">Dictionary Comprehension</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/discrete-features/">Discrete Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/django/">Django</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/docker/">Docker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/docker-compose/">Docker-Compose</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dotenv/">Dotenv</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/dplyr/">Dplyr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/eda/">EDA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/elastic/">Elastic</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/elastic-beanstalk/">Elastic Beanstalk</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/elasticsearch/">Elasticsearch</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/embedding/">Embedding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/encoding/">Encoding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/environment-variables/">Environment Variables</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/erd/">ERD</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/exam-type-2/">Exam Type 2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/exam-type-3/">Exam Type 3</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/excel/">Excel</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/exploratory-data-analysis/">Exploratory Data Analysis</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/factory-pattern/">Factory Pattern</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/faker/">Faker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/feature-engineering/">Feature Engineering</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ffmpeg/">Ffmpeg</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/figure-object/">Figure Object</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-download/">File Download</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/file-i/o/">File I/O</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/financial-data/">Financial Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/flask/">Flask</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/flutter/">Flutter</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/folium/">Folium</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/font/">Font</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/function/">Function</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ga4/">GA4</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gce/">GCE</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/generative-ai/">Generative AI</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/geojson/">GeoJson</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/git/">Git</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github-actions/">Github Actions</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github-blog/">Github Blog</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github-portfoilo/">Github Portfoilo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/github-portfolio/">GitHub Portfolio</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/global-development/">Global Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-adsense/">Google Adsense</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-analytics/">Google Analytics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud/">Google Cloud</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-cloud-platform/">Google Cloud Platform</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-colab/">Google Colab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-compute-engine/">Google Compute Engine</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/google-tag-manager/">Google Tag Manager</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/gpu/">GPU</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/grafana/">Grafana</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/group-by/">GROUP BY</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/heroku/">Heroku</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hexo/">Hexo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/histogram/">Histogram</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/html/">HTML</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugging-face/">Hugging Face</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/hugo/">Hugo</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iam/">IAM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/image-preprocessing/">Image Preprocessing</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interactive-graph/">Interactive Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/intermediate/">Intermediate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/international-development/">International Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/interview/">Interview</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/iteration/">Iteration</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/java/">Java</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/jupyter-notebook/">Jupyter Notebook</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle/">Kaggle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kaggle-api/">Kaggle API</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kakao-chatbot/">Kakao Chatbot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kakao-open-builder/">Kakao Open Builder</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/kibana/">Kibana</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/konlp/">KoNLP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/korean-font/">Korean Font</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/langchain/">LangChain</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/library/">Library</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lightgbm/">LightGBM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-graph/">Line Graph</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/line-grpah/">Line Grpah</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/linux/">Linux</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/logstash/">Logstash</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/lstm/">LSTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/m1-mac/">M1 Mac</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mac/">Mac</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning/">Machine Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/machine-learning-project/">Machine Learning Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/macos-m1/">MacOS M1</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/make_column_transformer/">Make_column_transformer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mask-r-cnn/">Mask R-CNN</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mathjax/">MathJax</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/matplotlib/">Matplotlib</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mecab/">Mecab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/merging-data/">Merging Data</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/missing-values/">Missing Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/multipages/">Multipages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/mysql/">MySQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/naver-api/">Naver API</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/naver-news-crawling/">Naver News Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/neural-network/">Neural Network</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nginx/">Nginx</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nha-trang/">Nha Trang</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nifi/">NiFi</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nohup/">Nohup</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/nonparametric/">Nonparametric</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/numeric-features/">Numeric Features</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/object-detection/">Object Detection</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oce/">OCE</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/one-hot-encoding/">One-Hot Encoding</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oop/">OOP</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/open-builder/">Open Builder</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/openai/">OpenAI</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/openapi/">OpenAPI</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/opencv/">OpenCV</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/openpyxl/">Openpyxl</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/optimizer/">Optimizer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oracle/">Oracle</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/oracle-vm-box/">Oracle VM Box</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/outlier-values/">Outlier Values</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pandas/">Pandas</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pgadmin/">PgAdmin</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pie-plot/">Pie Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pipeline/">Pipeline</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pivot-table/">Pivot Table</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/plot_tree/">Plot_tree</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/plotly/">Plotly</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pls-sem/">PLS-SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/portfolio/">Portfolio</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/postgresql/">PostgreSQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/powershell-execution-policy/">PowerShell Execution Policy</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/process-mining/">Process Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/programming/">Programming</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/project/">Project</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/psycopg2/">Psycopg2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/py-openaq/">Py-Openaq</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pycaret/">PyCaret</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pycharm/">PyCharm</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pydataset/">PyDataset</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pymysql/">PyMySQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/pyspark/">PySpark</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python/">Python</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-crawling/">Python Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/python-portfolio/">Python Portfolio</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/qgis/">QGIS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r/">R</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-installation/">R Installation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/r-markdown/">R Markdown</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ranzcr/">Ranzcr</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rcppmecab/">RcppMeCab</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rds/">RDS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/reading-list/">Reading List</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/recommendation/">Recommendation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regression/">Regression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/regular-expression/">Regular Expression</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/report-automation/">Report Automation</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/reticulate/">Reticulate</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/retrospective/">Retrospective</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rpa/">RPA</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/rtweet/">Rtweet</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sagemaker/">SageMaker</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sales/">Sales</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scatter-plot/">Scatter Plot</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scikit-learn/">Scikit-Learn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/scrapy/">Scrapy</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/seaborn/">Seaborn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/selenium/">Selenium</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sem/">SEM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/settings/">Settings</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/shiny/">Shiny</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/singapore/">Singapore</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sklearn/">Sklearn</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/spark/">Spark</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/spss/">SPSS</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sql/">SQL</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sql-developer/">SQL Developer</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ssh/">SSH</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/st-pages/">St-Pages</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statistics/">Statistics</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/statsmodels/">Statsmodels</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/streamlit/">Streamlit</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/supervised-learning/">Supervised Learning</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/table-chart/">Table Chart</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tableau/">Tableau</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tensorflow/">TensorFlow</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/text-mining/">Text Mining</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/text-preprocessing/">Text Preprocessing</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/timing/">Timing</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/transformers/">Transformers</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/travel/">Travel</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/tuber/">Tuber</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ubuntu/">Ubuntu</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/ubuntu-18.04/">Ubuntu 18.04</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/utm/">UTM</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vagrant/">Vagrant</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vc-code/">VC Code</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vcrs/">Vcrs</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vietnam/">Vietnam</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/virtualbox/">VirtualBox</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/virtualenv/">Virtualenv</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/visual-studio-code/">Visual Studio Code</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vs-code/">VS Code</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/vscode/">VSCode</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/wandb/">Wandb</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/web-crawling/">Web Crawling</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/web-development/">Web Development</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/whisper/">Whisper</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/windows/">Windows</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/windows11/">Windows11</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/wsl2/">WSL2</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/xgboost/">XGBoost</a>
+			</li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/youtube/">YouTube</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/acea/" title="ACEA">ACEA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/across-datasets/" title="Across Datasets">Across Datasets</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/adsp/" title="ADsP">ADsP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aggregates/" title="Aggregates">Aggregates</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/airflow/" title="Airflow">Airflow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/airport-lounge/" title="Airport Lounge">Airport Lounge</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/anaconda/" title="Anaconda">Anaconda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/and-network/" title="AND Network">AND Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/android-studio/" title="Android Studio">Android Studio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/anova/" title="ANOVA">ANOVA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/anthropic/" title="Anthropic">Anthropic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/api/" title="Api">Api</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/append/" title="Append">Append</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apply/" title="Apply">Apply</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/apps-script/" title="Apps Script">Apps Script</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/area-plot/" title="Area Plot">Area Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/array_agg/" title="ARRAY_AGG">ARRAY_AGG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/astype/" title="Astype">Astype</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/auto-encoder/" title="Auto Encoder">Auto Encoder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/automation/" title="Automation">Automation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws/" title="AWS">AWS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/aws-toolkit/" title="AWS Toolkit">AWS Toolkit</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bar-chart/" title="Bar Chart">Bar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-structures/" title="Basic Data Structures">Basic Data Structures</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-data-transformation/" title="Basic Data Transformation">Basic Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/basic-statistics/" title="Basic Statistics">Basic Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/batch/" title="Batch">Batch</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/batch-file/" title="Batch File">Batch File</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/big-data-analyst-exam/" title="Big Data Analyst Exam">Big Data Analyst Exam</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery/" title="BigQuery">BigQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-machine-learning/" title="BigQuery Machine Learning">BigQuery Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-machine-learning/" title="BigQuery With Machine Learning">BigQuery With Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-python/" title="BigQuery With Python">BigQuery With Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bigquery-with-r/" title="BigQuery With R">BigQuery With R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/binary-classification/" title="Binary Classification">Binary Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blog/" title="Blog">Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/blueprint/" title="Blueprint">Blueprint</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bubble-chart/" title="Bubble Chart">Bubble Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/categorical-features/" title="Categorical Features">Categorical Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/certification/" title="Certification">Certification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chatbot/" title="Chatbot">Chatbot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chocolatey/" title="Chocolatey">Chocolatey</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chromedriver/" title="ChromeDriver">ChromeDriver</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/class/" title="Class">Class</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/classification/" title="Classification">Classification</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/clustering/" title="Clustering">Clustering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cnn/" title="CNN">CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/colab-with-kaggle/" title="Colab With Kaggle">Colab With Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/columntransformer/" title="ColumnTransformer">ColumnTransformer</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/combining-vectors/" title="Combining Vectors">Combining Vectors</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/compute-engine/" title="Compute Engine">Compute Engine</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conda/" title="Conda">Conda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-expressions/" title="Conditional Expressions">Conditional Expressions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/conditional-statements/" title="Conditional Statements">Conditional Statements</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/convolutional-neural-network/" title="Convolutional Neural Network">Convolutional Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona/" title="Corona">Corona</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/corona-dashboard/" title="Corona Dashboard">Corona Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/crawling/" title="Crawling">Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/crontab/" title="Crontab">Crontab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cross-join/" title="Cross Join">Cross Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/cursor-ai/" title="Cursor AI">Cursor AI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dash/" title="Dash">Dash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dashboard/" title="Dashboard">Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-analysis/" title="Data Analysis">Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-collection/" title="Data Collection">Data Collection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-crawling/" title="Data Crawling">Data Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-engineering/" title="Data Engineering">Data Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-leakage/" title="Data Leakage">Data Leakage</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-science-project/" title="Data Science Project">Data Science Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-transformation/" title="Data Transformation">Data Transformation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-types/" title="Data Types">Data Types</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-visualisation/" title="Data Visualisation">Data Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/database-navigator/" title="Database Navigator">Database Navigator</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dataframe/" title="DataFrame">DataFrame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decision-tree/" title="Decision Tree">Decision Tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/decorators/" title="Decorators">Decorators</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning/" title="Deep Learning">Deep Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deep-learning-linear-regression/" title="Deep Learning Linear Regression">Deep Learning Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deployment/" title="Deployment">Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/design/" title="Design">Design</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/development-settings/" title="Development Settings">Development Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary/" title="Dictionary">Dictionary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dictionary-comprehension/" title="Dictionary Comprehension">Dictionary Comprehension</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/discrete-features/" title="Discrete Features">Discrete Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/disk.frame/" title="Disk.frame">Disk.frame</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/distinct/" title="Distinct">Distinct</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/django/" title="Django">Django</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/docker/" title="Docker">Docker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/docker-compose/" title="Docker-Compose">Docker-Compose</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dotenv/" title="Dotenv">Dotenv</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/dplyr/" title="Dplyr">Dplyr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/eda/" title="EDA">EDA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/elastic/" title="Elastic">Elastic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/elastic-beanstalk/" title="Elastic Beanstalk">Elastic Beanstalk</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/elasticsearch/" title="Elasticsearch">Elasticsearch</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/embedding/" title="Embedding">Embedding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/emr/" title="EMR">EMR</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/encoding/" title="Encoding">Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enumerate/" title="Enumerate">Enumerate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/environment-variables/" title="Environment Variables">Environment Variables</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/erd/" title="ERD">ERD</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exam-type-2/" title="Exam Type 2">Exam Type 2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exam-type-3/" title="Exam Type 3">Exam Type 3</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/excel/" title="Excel">Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/exploratory-data-analysis/" title="Exploratory Data Analysis">Exploratory Data Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/extend/" title="Extend">Extend</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/factory-pattern/" title="Factory Pattern">Factory Pattern</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/faker/" title="Faker">Faker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/fashion-mnist/" title="Fashion MNIST">Fashion MNIST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/feature-engineering/" title="Feature Engineering">Feature Engineering</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ffmpeg/" title="Ffmpeg">Ffmpeg</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/figure-object/" title="Figure Object">Figure Object</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-download/" title="File Download">File Download</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/file-i/o/" title="File I/O">File I/O</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/filter/" title="Filter">Filter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/financial-data/" title="Financial Data">Financial Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/flask/" title="Flask">Flask</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/flutter/" title="Flutter">Flutter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/folium/" title="Folium">Folium</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/font/" title="Font">Font</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/for-loop/" title="For-Loop">For-Loop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ga4/" title="GA4">GA4</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gce/" title="GCE">GCE</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/generative-ai/" title="Generative AI">Generative AI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geojson/" title="GeoJson">GeoJson</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/geospatial-analysis/" title="Geospatial Analysis">Geospatial Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gghistostats/" title="Gghistostats">Gghistostats</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/git/" title="Git">Git</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github-actions/" title="Github Actions">Github Actions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github-blog/" title="Github Blog">Github Blog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github-portfoilo/" title="Github Portfoilo">Github Portfoilo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/github-portfolio/" title="GitHub Portfolio">GitHub Portfolio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/global-development/" title="Global Development">Global Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-adsense/" title="Google Adsense">Google Adsense</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-analytics/" title="Google Analytics">Google Analytics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud/" title="Google Cloud">Google Cloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-cloud-platform/" title="Google Cloud Platform">Google Cloud Platform</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-colab/" title="Google Colab">Google Colab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-compute-engine/" title="Google Compute Engine">Google Compute Engine</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/google-tag-manager/" title="Google Tag Manager">Google Tag Manager</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gpu/" title="GPU">GPU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/grafana/" title="Grafana">Grafana</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="Gt">Gt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/gtsummary/" title="Gtsummary">Gtsummary</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hadoop/" title="Hadoop">Hadoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/having/" title="Having">Having</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heatmap/" title="Heatmap">Heatmap</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/heroku/" title="Heroku">Heroku</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hexo/" title="Hexo">Hexo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/histogram/" title="Histogram">Histogram</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html/" title="HTML">HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/html5/" title="HTML5">HTML5</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugging-face/" title="Hugging Face">Hugging Face</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iam/" title="IAM">IAM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-augmentation/" title="Image Augmentation">Image Augmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-preprocessing/" title="Image Preprocessing">Image Preprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-segmentation/" title="Image Segmentation">Image Segmentation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/image-settings/" title="Image Settings">Image Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/indexing/" title="Indexing">Indexing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/insert/" title="Insert">Insert</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interactive-graph/" title="Interactive Graph">Interactive Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/intermediate/" title="Intermediate">Intermediate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/international-development/" title="International Development">International Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/interview/" title="Interview">Interview</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iteration/" title="Iteration">Iteration</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/iterrows/" title="Iterrows">Iterrows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/itertuples/" title="Itertuples">Itertuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/java/" title="Java">Java</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/join/" title="JOIN">JOIN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/jupyter-notebook/" title="Jupyter Notebook">Jupyter Notebook</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle/" title="Kaggle">Kaggle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kaggle-api/" title="Kaggle API">Kaggle API</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kakao-chatbot/" title="Kakao Chatbot">Kakao Chatbot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kakao-open-builder/" title="Kakao Open Builder">Kakao Open Builder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/kibana/" title="Kibana">Kibana</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/konlp/" title="KoNLP">KoNLP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/korean-font/" title="Korean Font">Korean Font</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/label-encoding/" title="Label Encoding">Label Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lambda/" title="Lambda">Lambda</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/langchain/" title="LangChain">LangChain</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/leaflet/" title="Leaflet">Leaflet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/library/" title="Library">Library</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lightgbm/" title="LightGBM">LightGBM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-graph/" title="Line Graph">Line Graph</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/line-grpah/" title="Line Grpah">Line Grpah</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linear-regression/" title="Linear Regression">Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/linux/" title="Linux">Linux</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/list/" title="List">List</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists/" title="Lists">Lists</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lists-and-tuples/" title="Lists and Tuples">Lists and Tuples</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/logstash/" title="Logstash">Logstash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/lstm/" title="LSTM">LSTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m1-mac/" title="M1 Mac">M1 Mac</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/m5-forecasting/" title="M5 Forecasting">M5 Forecasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mac/" title="Mac">Mac</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning/" title="Machine Learning">Machine Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/machine-learning-project/" title="Machine Learning Project">Machine Learning Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/macos-m1/" title="MacOS M1">MacOS M1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/make_column_transformer/" title="Make_column_transformer">Make_column_transformer</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/map-chart/" title="Map Chart">Map Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mask-r-cnn/" title="Mask R-CNN">Mask R-CNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathematical-functions/" title="Mathematical Functions">Mathematical Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mathjax-settings/" title="Mathjax Settings">Mathjax Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/matplotlib/" title="Matplotlib">Matplotlib</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mecab/" title="Mecab">Mecab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multipages/" title="Multipages">Multipages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiple-linear-regression/" title="Multiple Linear Regression">Multiple Linear Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/multiprocessing/" title="Multiprocessing">Multiprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mysql/" title="MySQL">MySQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/natural-language-generation/" title="Natural Language Generation">Natural Language Generation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/naver-api/" title="Naver API">Naver API</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/naver-news-crawling/" title="Naver News Crawling">Naver News Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/neural-network/" title="Neural Network">Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="Nginx">Nginx</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nha-trang/" title="Nha Trang">Nha Trang</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nifi/" title="NiFi">NiFi</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nohup/" title="Nohup">Nohup</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nonparametric/" title="Nonparametric">Nonparametric</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numeric-features/" title="Numeric Features">Numeric Features</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/numpy/" title="NumPy">NumPy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/object-detection/" title="Object Detection">Object Detection</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oce/" title="OCE">OCE</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/one-hot-encoding/" title="One-Hot Encoding">One-Hot Encoding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oop/" title="OOP">OOP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/open-builder/" title="Open Builder">Open Builder</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/openai/" title="OpenAI">OpenAI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/openapi/" title="OpenAPI">OpenAPI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/opencv/" title="OpenCV">OpenCV</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/openpyxl/" title="Openpyxl">Openpyxl</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/or-network/" title="OR Network">OR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oracle/" title="Oracle">Oracle</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/oracle-vm-box/" title="Oracle VM Box">Oracle VM Box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outer-join/" title="Outer Join">Outer Join</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outlier-values/" title="Outlier Values">Outlier Values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/outliers/" title="Outliers">Outliers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas/" title="Pandas">Pandas</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-dataframe/" title="Pandas Dataframe">Pandas Dataframe</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pandas-excel/" title="Pandas Excel">Pandas Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pd.concat/" title="Pd.concat">Pd.concat</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pgadmin/" title="PgAdmin">PgAdmin</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pie-plot/" title="Pie Plot">Pie Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pins/" title="Pins">Pins</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pipeline/" title="Pipeline">Pipeline</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pivot-table/" title="Pivot Table">Pivot Table</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plot_tree/" title="Plot_tree">Plot_tree</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/plotly/" title="Plotly">Plotly</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pls-sem/" title="PLS-SEM">PLS-SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/polar-chart/" title="Polar Chart">Polar Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/portfolio/" title="Portfolio">Portfolio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/postgresql/" title="PostgreSQL">PostgreSQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/powershell-execution-policy/" title="PowerShell Execution Policy">PowerShell Execution Policy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/probability/" title="Probability">Probability</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-analysis/" title="Process Analysis">Process Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/process-mining/" title="Process Mining">Process Mining</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/productive-box/" title="Productive-Box">Productive-Box</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/psycopg2/" title="Psycopg2">Psycopg2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/py-openaq/" title="Py-Openaq">Py-Openaq</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pycaret/" title="PyCaret">PyCaret</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pycharm/" title="PyCharm">PyCharm</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pydataset/" title="PyDataset">PyDataset</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pymysql/" title="PyMySQL">PyMySQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pyspark/" title="PySpark">PySpark</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python/" title="Python">Python</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-crawling/" title="Python Crawling">Python Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-excel/" title="Python Excel">Python Excel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-numpy-broadcasting/" title="Python NumPy Broadcasting">Python NumPy Broadcasting</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/python-portfolio/" title="Python Portfolio">Python Portfolio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/qgis/" title="QGIS">QGIS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r/" title="R">R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-basic/" title="R Basic">R Basic</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-installation/" title="R Installation">R Installation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/r-markdown/" title="R Markdown">R Markdown</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid/" title="Random Signoid">Random Signoid</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/random-signoid-bias/" title="Random Signoid Bias">Random Signoid Bias</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ranzcr/" title="Ranzcr">Ranzcr</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rcppmecab/" title="RcppMeCab">RcppMeCab</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rds/" title="RDS">RDS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reactivity/" title="Reactivity">Reactivity</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reading-list/" title="Reading List">Reading List</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recommendation/" title="Recommendation">Recommendation</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/recurrent-neural-network/" title="Recurrent Neural Network">Recurrent Neural Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regression/" title="Regression">Regression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/regular-expression/" title="Regular Expression">Regular Expression</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/reticulate/" title="Reticulate">Reticulate</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/retrospective/" title="Retrospective">Retrospective</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rnn/" title="RNN">RNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/round/" title="Round">Round</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rpa/" title="RPA">RPA</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rstudio/" title="RStudio">RStudio</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rtweet/" title="Rtweet">Rtweet</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sagemaker/" title="SageMaker">SageMaker</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sales/" title="Sales">Sales</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scatter-plot/" title="Scatter Plot">Scatter Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scikit-learn/" title="Scikit-Learn">Scikit-Learn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/scrapy/" title="Scrapy">Scrapy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/seaborn/" title="Seaborn">Seaborn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/selenium/" title="Selenium">Selenium</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sem/" title="SEM">SEM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sentiment-analysis/" title="Sentiment Analysis">Sentiment Analysis</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/settings/" title="Settings">Settings</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny/" title="Shiny">Shiny</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-dashboard/" title="Shiny Dashboard">Shiny Dashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-deployment/" title="Shiny Deployment">Shiny Deployment</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-html/" title="Shiny HTML">Shiny HTML</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-layout/" title="Shiny Layout">Shiny Layout</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shiny-project/" title="Shiny Project">Shiny Project</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shinydashboard/" title="Shinydashboard">Shinydashboard</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/simplernn/" title="SimpleRNN">SimpleRNN</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/singapore/" title="Singapore">Singapore</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sklearn/" title="Sklearn">Sklearn</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sort_values/" title="Sort_values">Sort_values</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/spark/" title="Spark">Spark</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/spectra-show/" title="Spectra Show">Spectra Show</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/split/" title="SPLIT">SPLIT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/spss/" title="SPSS">SPSS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sql/" title="SQL">SQL</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sql-developer/" title="SQL Developer">SQL Developer</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sqlalchemy/" title="SQLAlchemy">SQLAlchemy</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sqlite/" title="SQLite">SQLite</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ssh/" title="SSH">SSH</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/st-pages/" title="St-Pages">St-Pages</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/stacked-plot/" title="Stacked Plot">Stacked Plot</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statistics/" title="Statistics">Statistics</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/statsmodels/" title="Statsmodels">Statsmodels</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/streamlit/" title="Streamlit">Streamlit</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/struct/" title="STRUCT">STRUCT</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/subquery/" title="SubQuery">SubQuery</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/super-resolution/" title="Super Resolution">Super Resolution</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/swifter/" title="Swifter">Swifter</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-chart/" title="Table Chart">Table Chart</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/table-handling/" title="Table Handling">Table Handling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tableau/" title="Tableau">Tableau</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow/" title="TensorFlow">TensorFlow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tensorflow-for-r/" title="Tensorflow for R">Tensorflow for R</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text/" title="Text">Text</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text-mining/" title="Text Mining">Text Mining</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/text-preprocessing/" title="Text Preprocessing">Text Preprocessing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tidymodels/" title="Tidymodels">Tidymodels</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/timing/" title="Timing">Timing</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transfer-learning/" title="Transfer Learning">Transfer Learning</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/transformers/" title="Transformers">Transformers</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/travel/" title="Travel">Travel</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tuber/" title="Tuber">Tuber</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/types-of-functions/" title="Types of Functions">Types of Functions</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ubuntu/" title="Ubuntu">Ubuntu</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ubuntu-18.04/" title="Ubuntu 18.04">Ubuntu 18.04</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/unnest/" title="UNNEST">UNNEST</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/utm/" title="UTM">UTM</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vagrant/" title="Vagrant">Vagrant</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vc-code/" title="VC Code">VC Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vcrs/" title="Vcrs">Vcrs</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector/" title="Vector">Vector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vietnam/" title="Vietnam">Vietnam</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/virtualbox/" title="VirtualBox">VirtualBox</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/virtualenv/" title="Virtualenv">Virtualenv</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/visual-studio-code/" title="Visual Studio Code">Visual Studio Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vs-code/" title="VS Code">VS Code</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vscode/" title="VSCode">VSCode</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/wandb/" title="Wandb">Wandb</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/web-crawling/" title="Web Crawling">Web Crawling</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/web-development/" title="Web Development">Web Development</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/whisper/" title="Whisper">Whisper</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/windows/" title="Windows">Windows</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/windows11/" title="Windows11">Windows11</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/wsl2/" title="WSL2">WSL2</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xgboost/" title="XGBoost">XGBoost</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/xor-network/" title="XOR Network">XOR Network</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/youtube/" title="YouTube">YouTube</a>
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2026 DSChloe.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async>
+MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+           extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+    });
+    MathJax.Hub.Queue(function() {
+      
+      
+      
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i = 0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  
+    MathJax.Hub.Config({
+    
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+</script>
+</body>
+</html>
