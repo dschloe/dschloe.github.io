@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="ElasticSearch & Kibana 설치 in WSL2">
   <meta property="og:description" content="Step 1. 사전 필수 패키지 설치 우선 시스템 패키지를 업데이트 하고, HTTPS와 관련된 패키지를 설치한다. $ sudo apt update $ sudo apt install apt-transport-https 자바를 설치한다. 이미 설치가 되어 있다면 버전만 확인한다. $ sudo apt install openjdk-11-jdk 설치한 버전을 확인한다. $ java -version openjdk version &#34;11.0.14.1&#34; 2022-02-08 OpenJDK Runtime Environment (build 11.0.14.1&#43;1-Ubuntu-0ubuntu1.20.04) OpenJDK 64-Bit Server VM (build 11.0.14.1&#43;1-Ubuntu-0ubuntu1.20.04, mixed mode, sharing) 자바 환경 변수를 설정하기 위해 아래와 같이 에디터를 입력한다. $ sudo vi /etc/environment 그리고 아래와 같이 추가한다. JAVA_HOME=&#34;/usr/lib/jvm/java-11-openjdk-amd64&#34; 환경변수를 업데이트 한다. $ source /etc/environment 실제 경로가 나오는지 확인한다. $ echo $JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64 Step 2. ElasticSearch 설치 GPG Keys를 확인하여 설치를 진행한다. $ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add - OK 라이브러리를 아래와 같이 추가한다. $ sudo sh -c &#39;echo &#34;deb https://artifacts.elastic.co/packages/7.x/apt stable main&#34; &gt; /etc/apt/sources.list.d/elastic-7.x.list&#39; 이제 elasticsearch를 설치한다. $ sudo apt-get update Hit:1 https://artifacts.elastic.co/packages/7.x/apt stable InRelease Hit:2 http://security.ubuntu.com/ubuntu focal-security InRelease Hit:3 http://archive.ubuntu.com/ubuntu focal InRelease Hit:4 http://archive.ubuntu.com/ubuntu focal-updates InRelease Hit:5 http://archive.ubuntu.com/ubuntu focal-backports InRelease Reading package lists... Done $ sudo apt-get install elasticsearch Reading package lists... Done Building dependency tree Reading state information... Done The following NEW packages will be installed: elasticsearch 0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded. Need to get 312 MB of archives. After this operation, 517 MB of additional disk space will be used. Get:1 https://artifacts.elastic.co/packages/7.x/apt stable/main amd64 elasticsearch amd64 7.17.2 [312 MB] Fetched 312 MB in 8s (40.9 MB/s) Selecting previously unselected package elasticsearch. (Reading database ... 32942 files and directories currently installed.) Preparing to unpack .../elasticsearch_7.17.2_amd64.deb ... Creating elasticsearch group... OK Creating elasticsearch user... OK Unpacking elasticsearch (7.17.2) ... Setting up elasticsearch (7.17.2) ... ### NOT starting on installation, please execute the following statements to configure elasticsearch service to start automatically using systemd sudo systemctl daemon-reload sudo systemctl enable elasticsearch.service ### You can start elasticsearch service by executing sudo systemctl start elasticsearch.service warning: usage of JAVA_HOME is deprecated, use ES_JAVA_HOME Created elasticsearch keystore in /etc/elasticsearch/elasticsearch.keystore Processing triggers for systemd (245.4-4ubuntu3.15) ... Step 3. Elasticsearch 서비스 시작 이번에는 elasticsearch 서비스를 시작한다. $ sudo systemctl start elasticsearch 만약 아래와 같은 에러 메시지가 뜬다면, 추가해야 한다. 참조 : https://askubuntu.com/questions/1379425/system-has-not-been-booted-with-systemd-as-init-system-pid-1-cant-operate System has not been booted with systemd as init system (PID 1). Can&#39;t operate. Failed to connect to bus: Host is down 다음 명령어를 추가한다. $ sudo -b unshare --pid --fork --mount-proc /lib/systemd/systemd --system-unit=basic.target $ sudo -E nsenter --all -t $(pgrep -xo systemd) runuser -P -l $USER -c &#34;exec $SHELL&#34; 서비스가 가능하도록 한다. $ sudo systemctl enable elasticsearch Synchronizing state of elasticsearch.service with SysV service script with /lib/systemd/systemd-sysv-install. Executing: /lib/systemd/systemd-sysv-install enable elasticsearch Created symlink /etc/systemd/system/multi-user.target.wants/elasticsearch.service → /lib/systemd/system/elasticsearch.service. 서비스를 시작한다. $ sudo systemctl start elasticsearch 실제 서비스가 작동하는지 확인한다. $ curl -X GET &#34;localhost:9200/&#34; { &#34;name&#34; : &#34;evan&#34;, &#34;cluster_name&#34; : &#34;elasticsearch&#34;, &#34;cluster_uuid&#34; : &#34;vATWEOO1T9yOFGLc7G3L4w&#34;, &#34;version&#34; : { &#34;number&#34; : &#34;7.17.2&#34;, &#34;build_flavor&#34; : &#34;default&#34;, &#34;build_type&#34; : &#34;deb&#34;, &#34;build_hash&#34; : &#34;de7261de50d90919ae53b0eff9413fd7e5307301&#34;, &#34;build_date&#34; : &#34;2022-03-28T15:12:21.446567561Z&#34;, &#34;build_snapshot&#34; : false, &#34;lucene_version&#34; : &#34;8.11.1&#34;, &#34;minimum_wire_compatibility_version&#34; : &#34;6.8.0&#34;, &#34;minimum_index_compatibility_version&#34; : &#34;6.0.0-beta1&#34; }, &#34;tagline&#34; : &#34;You Know, for Search&#34; } 만약 위와 같은 메시지가 뜨면, 윈도우 화면에서 재 확인해본다.">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2022-04-11T11:00:47+09:00">
@@ -870,7 +870,7 @@ Can&#39;t operate. Failed to connect to bus: Host is down
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1119,7 +1119,7 @@ Can&#39;t operate. Failed to connect to bus: Host is down
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1447,7 +1447,7 @@ Can&#39;t operate. Failed to connect to bus: Host is down
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

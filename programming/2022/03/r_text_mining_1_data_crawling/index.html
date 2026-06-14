@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="R 텍스트 마이닝 1일차 - 빅카인즈 데이터 수집">
   <meta property="og:description" content="Step 01 - 빅카인즈 접속 후, 데이터 내려받기 싸이트 : https://www.bigkinds.or.kr/v2/news/index.do 해당 싸이트에서 키워드를 입력 한다. 이 때, 기간, 신문사 등을 선택할 수 있다. 필자는 키워드는 ‘사회적 경제’ 신문사는 국민일보, 조선일보, 중앙일보를 선택한다. 하단으로 내려 적용하기 버튼을 클릭한다. Step 03 - 분석 결과 및 시각화 탭을 클릭한다. 데이터 다운로드 탭 하단에 엑셀 다운로드 버튼을 클릭한다. 해당 파일에는 본문이 있지만, 보통 200자 내외로 짧게 요약이 되어 있다. Step 02 - 웹 크롤링 소스 코드 작성을 위한 사전 준비 먼저 기 다운로드 된 파일을 불러온다. 전체 데이터에서 필요한 컬럼만 재추출한다. &gt; library(dplyr) &gt; library(readxl) &gt; raw_df = read_excel(&#34;data/NewsResult_20211213-20220313.xlsx&#34;, sheet = 1) &gt; raw_df2 = raw_df %&gt;% select(일자, 언론사, 제목, URL) &gt; raw_df2 %&gt;% group_by(언론사) %&gt;% summarise(n = n()) # A tibble: 3 × 2 언론사 n &lt;chr&gt; &lt;int&gt; 1 국민일보 180 2 조선일보 115 3 중앙일보 256 각 신문사별로 나눠서 객체를 저장한다. 여기에서는 국민일보만 추출하는 코드를 예시로 하였다. &gt; kmib_df = raw_df2 %&gt;% filter(언론사 == &#34;국민일보&#34;) &gt; head(kmib_df, 3) # A tibble: 3 × 4 일자 언론사 제목 URL &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; 1 20220312 국민일보 팬데믹의 비극 무너지는 가정, 스러지는 아이들 http://news.kmib.co… 2 20220312 국민일보 ‘장로’ 디딤돌인가 걸림돌인가 http://news.kmib.co… 3 20220311 국민일보 [기고]대전은 우리가 지킨다 http://news.kmib.co… 이번에는 URL만 추출하여 특이점이 있는지 확인한다. 전체적으로 주소는 비슷하다. 몇몇 주소에서는 &amp;cp=kd 같은 문자가 더 추가된 것을 확인할 수 있다. 서로 다른 싸이트에서 본문의 위치 등이 동일한지 다른지 확인할 필요가 있다. (확인 결과, 차이는 없다!) &gt; kmib_df$URL[1:5] [1] &#34;http://news.kmib.co.kr/article/view.asp?arcid=0924235144&amp;code=11131100&#34; [2] &#34;http://news.kmib.co.kr/article/view.asp?arcid=0924235120&amp;code=23111111&#34; [3] &#34;http://news.kmib.co.kr/article/view.asp?arcid=0016856942&amp;code=61221514&amp;cp=kd&#34; [4] &#34;http://news.kmib.co.kr/article/view.asp?arcid=0016853803&amp;code=61111711&amp;cp=kd&#34; [5] &#34;http://news.kmib.co.kr/article/view.asp?arcid=0016847353&amp;code=61131111&amp;cp=kd&#34; Step 03 - 웹 크롤링 본문 내용 발췌 이번에는 본문만 크롤링 하도록 한다. 1개의 데이터만 가져와서 테스트를 해본다. &gt; url = kmib_df$URL[1] &gt; news = read_html(url, encoding = &#34;EUC-KR&#34;) &gt; news {html_document}&lt;html xmlns=&#34;http://www.w3.org/1999/xhtml&#34; xml:lang=&#34;ko&#34;&gt; [1] &lt;head&gt;\n&lt;title&gt;팬데믹의 비극… 무너지는 가정, 스러지는 아이들-국민일보&lt;/title&gt;\n&lt;meta http-equiv=&#34;Cont ... [2] &lt;body&gt;\r\n&lt;div id=&#34;wrap&#34;&gt;\r\n\r\n&lt;!-- header --&gt;\r\n\r\n&lt;script src=&#34;http://ww ... 여기에서 div 태그 안에 있는 class tx 하단에 텍스트가 있는 것을 확인할 수 있다.">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2022-03-13T17:38:15+09:00">
@@ -795,7 +795,7 @@
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1044,7 +1044,7 @@
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1372,7 +1372,7 @@
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="엘라스틱 클라우드에 데이터 추가하기 - 예제 (2025, 06)">
   <meta property="og:description" content="CH03 - 데이터 추가 개요 Cloud에 데이터 추가 이전 예제 확인 링크 : https://dschloe.github.io/de/2025/06/elk_install_sample_01/ 파이썬 코드 # 필요한 라이브러리들을 가져옵니다 import time # 시간 지연을 위한 라이브러리 import requests # HTTP 요청을 위한 라이브러리 from bs4 import BeautifulSoup # HTML 파싱을 위한 라이브러리 from elasticsearch import Elasticsearch # Elasticsearch 클라이언트 # ✅ Elastic Cloud 연결 (API 키 인증 방식) # Elastic Cloud의 클러스터에 API 키를 사용하여 연결합니다 # API 키는 사용자명/비밀번호 대신 더 안전한 인증 방식입니다 es = Elasticsearch( &#34;your_cloud_url&#34;, # Elastic Cloud 클러스터 URL api_key=&#34;your_api_key&#34; # API 키 ) # 저장할 인덱스 이름을 상수로 정의합니다 INDEX_NAME = &#34;evan-elk-search&#34; # ✅ 인덱스 생성 (존재하지 않으면 새로 생성) # Elasticsearch에서 데이터를 저장할 인덱스가 있는지 확인하고, 없으면 새로 생성합니다 if not es.indices.exists(index=INDEX_NAME): es.indices.create(index=INDEX_NAME) # 새 인덱스 생성 print(f&#34;✅ Index &#39;{INDEX_NAME}&#39; created.&#34;) else: print(f&#34;✅ Index &#39;{INDEX_NAME}&#39; already exists.&#34;) # ✅ 명언 수집 함수 정의 def get_quotes(): &#34;&#34;&#34; quotes.toscrape.com 웹사이트에서 명언들을 수집하는 함수 Returns: list: 수집된 명언 요소들의 리스트 (BeautifulSoup 객체들) &#34;&#34;&#34; res = requests.get(&#34;http://quotes.toscrape.com&#34;) # 웹사이트에 GET 요청 soup = BeautifulSoup(res.text, &#34;html.parser&#34;) # HTML을 파싱 return soup.select(&#34;.quote&#34;) # .quote 클래스를 가진 요소들을 선택하여 반환 # ✅ 30초 간격으로 명언들을 하나씩 저장 # 수집된 명언들을 가져옵니다 quotes = get_quotes() # 각 명언을 순회하면서 Elastic Cloud에 저장합니다 for i, q in enumerate(quotes): # 명언 데이터를 딕셔너리 형태로 구성합니다 doc = { &#34;text&#34;: q.select_one(&#34;.text&#34;).text.strip(), # 명언 텍스트 추출 (공백 제거) &#34;author&#34;: q.select_one(&#34;.author&#34;).text.strip(), # 저자 이름 추출 (공백 제거) &#34;tags&#34;: [tag.text for tag in q.select(&#34;.tag&#34;)] # 태그들을 리스트로 추출 } # Elastic Cloud에 문서를 저장합니다 res = es.index(index=INDEX_NAME, document=doc) print(f&#34;[{i&#43;1}] ✅ Saved to Elastic Cloud: {res[&#39;_id&#39;]}&#34;) # 저장된 문서의 ID 출력 # 30초 대기 (다음 명언 저장 전) time.sleep(30) 클라우드에서 확인">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2025-06-26T01:03:28+09:00">
@@ -757,7 +757,7 @@
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1006,7 +1006,7 @@
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1334,7 +1334,7 @@
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

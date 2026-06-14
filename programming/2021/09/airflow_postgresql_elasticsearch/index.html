@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="Airflow를 활용한 PostgreSQL에서 Elasticsearch로 데이터 마이그레이션 예제">
   <meta property="og:description" content="강의 홍보 취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다. 스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다. [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기 개요 Airflow를 활용하여 PostgreSQL에 저장된 데이터를 디스크로 다운로드 받고, 그리고 그 파일을 다시 읽어서 Elasticsearch에 저장하도록 한다. 전체적인 흐름은 getData from PostgreSQL &gt;&gt; insertData to Elasticsearch 로 저장할 수 있다. 전체 코드 실행 우선 전체 코드를 실행하도록 한다. import datetime as dt from datetime import timedelta from airflow import DAG from airflow.operators.bash import BashOperator from airflow.operators.python import PythonOperator import pandas as pd import psycopg2 as db from elasticsearch import Elasticsearch def queryPostgresql(): conn_string=&#34;dbname=&#39;python_dataengineering&#39; host=&#39;localhost&#39; user=&#39;postgres&#39; password=&#39;evan&#39;&#34; conn = db.connect(conn_string) df = pd.read_sql(&#34;select name, city from users&#34;, conn) df.to_csv(&#34;dags/postgresqldata.csv&#34;) print(&#34;----------Data Saved------------&#34;) def insertElasticsearch(): es=Elasticsearch() df = pd.read_csv(&#34;dags/postgresqldata.csv&#34;) print(df.head()) for i, r in df.iterrows(): doc = r.to_json() res = es.index(index=&#34;frompostgresql&#34;, doc_type=&#34;doc&#34;, body=doc) print(res) default_args = { &#39;owner&#39;: &#39;evan&#39;, &#39;start_date&#39;: dt.datetime(2021, 9, 15), &#39;retries&#39;: 1, &#39;retry_delay&#39;: dt.timedelta(minutes=5), } with DAG(&#39;MyDBdag&#39;, default_args = default_args, schedule_interval=timedelta(minutes=5), ) as dag: print_starting = BashOperator(task_id=&#39;starting&#39;, bash_command=&#39;echo &#34;I am reading the PostgreSQL now.....&#34;&#39;) getData = PythonOperator(task_id=&#39;QueryPostgreSQL&#39;, python_callable=queryPostgresql) insertData = PythonOperator(task_id=&#34;InsertDataElasticsearch&#34;, python_callable=insertElasticsearch) print_starting &gt;&gt; getData &gt;&gt; insertData 위 함수를 실행하려면 $AIRFLOW_HOME/dags 폴더에 저장해야 하며, 필자는 step04_7_airflow.py 형태로 저장했다. 참고: Apache Airflow를 활용한 CSV에서 JSON으로 변환하기 그리고, 다음과 같이 실행하면 된다. (두개의 터미널이 필요) (venv) $ airflow webserver (venv) $ airflow scheduler 결과 확인 브라우저로 [http://localhost:8080](http://localhost:8080) 에 접속한다. MyDBdag 를 실행 후, 클릭한다.">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2021-09-18T20:10:47+09:00">
@@ -862,7 +862,7 @@
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1111,7 +1111,7 @@
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1439,7 +1439,7 @@
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

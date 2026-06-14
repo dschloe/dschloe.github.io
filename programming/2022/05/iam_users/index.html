@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="IAM User Practice">
   <meta property="og:description" content="라이브러리 불러오기 기 설치된 라이브러리를 불러오도록 한다. import boto3 print(boto3.__version__) 1.23.5 IAM User 관련 주요 코드 다음 코드는 유저를 생성하는 코드이다. def create_user(username): iam = boto3.client(&#39;iam&#39;) response = iam.create_user(UserName=username) print(response) create_user(&#39;testuser2fromwsl2&#39;) {&#39;User&#39;: {&#39;Path&#39;: &#39;/&#39;, &#39;UserName&#39;: &#39;testuser2fromwsl2&#39;, &#39;UserId&#39;: &#39;AIDAVRRRQ3HFXFQPOOY7Q&#39;, &#39;Arn&#39;: &#39;arn:aws:iam::381282212299:user/testuser2fromwsl2&#39;, &#39;CreateDate&#39;: datetime.datetime(2022, 5, 24, 5, 30, 6, tzinfo=tzutc())}, &#39;ResponseMetadata&#39;: {&#39;RequestId&#39;: &#39;d5fa242b-9aa9-4ad9-a75a-ed23e041d4ba&#39;, &#39;HTTPStatusCode&#39;: 200, &#39;HTTPHeaders&#39;: {&#39;x-amzn-requestid&#39;: &#39;d5fa242b-9aa9-4ad9-a75a-ed23e041d4ba&#39;, &#39;content-type&#39;: &#39;text/xml&#39;, &#39;content-length&#39;: &#39;495&#39;, &#39;date&#39;: &#39;Tue, 24 May 2022 05:30:05 GMT&#39;}, &#39;RetryAttempts&#39;: 0}} 이번에는 모든 사용자를 가져오는 코드를 작성한다. def all_users(): iam = boto3.client(&#39;iam&#39;) paginator = iam.get_paginator(&#39;list_users&#39;) for response in paginator.paginate(): for user in response[&#39;Users&#39;]: username = user[&#39;UserName&#39;] Arn = user[&#39;Arn&#39;] print(&#39;Username : {} Arn : {}&#39;.format(username, Arn)) all_users() Username : aws-wsl2 Arn : arn:aws:iam::381282212299:user/aws-wsl2 Username : human Arn : arn:aws:iam::381282212299:user/human Username : human-m1 Arn : arn:aws:iam::381282212299:user/human-m1 Username : testuser Arn : arn:aws:iam::381282212299:user/testuser Username : testuser2 Arn : arn:aws:iam::381282212299:user/testuser2 Username : testuser2fromwsl2 Arn : arn:aws:iam::381282212299:user/testuser2fromwsl2 Username : testuser3 Arn : arn:aws:iam::381282212299:user/testuser3 이번에는 사용자 이름을 변경한다. testuser2fromwsl2 이름을 updatetest로 변경하는 코드다. def update_user(old_username, new_username): iam = boto3.client(&#39;iam&#39;) response = iam.update_user( UserName=old_username, NewUserName=new_username ) print(response) update_user(&#39;testuser2fromwsl2&#39;, &#39;updatetest&#39;) all_users() {&#39;ResponseMetadata&#39;: {&#39;RequestId&#39;: &#39;4a567c96-d5ce-4e76-9344-6ab762fc9e01&#39;, &#39;HTTPStatusCode&#39;: 200, &#39;HTTPHeaders&#39;: {&#39;x-amzn-requestid&#39;: &#39;4a567c96-d5ce-4e76-9344-6ab762fc9e01&#39;, &#39;content-type&#39;: &#39;text/xml&#39;, &#39;content-length&#39;: &#39;200&#39;, &#39;date&#39;: &#39;Tue, 24 May 2022 05:30:16 GMT&#39;}, &#39;RetryAttempts&#39;: 0}} Username : aws-wsl2 Arn : arn:aws:iam::381282212299:user/aws-wsl2 Username : human Arn : arn:aws:iam::381282212299:user/human Username : human-m1 Arn : arn:aws:iam::381282212299:user/human-m1 Username : testuser Arn : arn:aws:iam::381282212299:user/testuser Username : testuser2 Arn : arn:aws:iam::381282212299:user/testuser2 Username : testuser3 Arn : arn:aws:iam::381282212299:user/testuser3 Username : updatetest Arn : arn:aws:iam::381282212299:user/updatetest Python AWS 연동 예제 보통 정책을 추가할 때는 Web UI Console창에서 지정하지만, 코드를 통해서 구현할 수도 있다. 참조 : https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/iam.html#IAM.Client.create_policy import boto3 import json def create_policy(): iam = boto3.client(&#39;iam&#39;) user_policy = { &#34;Version&#34;:&#34;2012-10-17&#34;, &#34;Statement&#34;:[ { &#34;Effect&#34;: &#34;Allow&#34;, &#34;Action&#34;: &#34;*&#34;, &#34;Resource&#34;: &#34;*&#34; } ] } response = iam.create_policy( PolicyName = &#39;pyFullAccess&#39;, PolicyDocument=json.dumps(user_policy) ) print(response) create_policy() {&#39;Policy&#39;: {&#39;PolicyName&#39;: &#39;pyFullAccess&#39;, &#39;PolicyId&#39;: &#39;ANPAVRRRQ3HFQIRVWB2MX&#39;, &#39;Arn&#39;: &#39;arn:aws:iam::381282212299:policy/pyFullAccess&#39;, &#39;Path&#39;: &#39;/&#39;, &#39;DefaultVersionId&#39;: &#39;v1&#39;, &#39;AttachmentCount&#39;: 0, &#39;PermissionsBoundaryUsageCount&#39;: 0, &#39;IsAttachable&#39;: True, &#39;CreateDate&#39;: datetime.datetime(2022, 5, 23, 5, 40, 21, tzinfo=tzutc()), &#39;UpdateDate&#39;: datetime.datetime(2022, 5, 23, 5, 40, 21, tzinfo=tzutc())}, &#39;ResponseMetadata&#39;: {&#39;RequestId&#39;: &#39;8da83bae-6c24-4104-9da4-22795e46652a&#39;, &#39;HTTPStatusCode&#39;: 200, &#39;HTTPHeaders&#39;: {&#39;x-amzn-requestid&#39;: &#39;8da83bae-6c24-4104-9da4-22795e46652a&#39;, &#39;content-type&#39;: &#39;text/xml&#39;, &#39;content-length&#39;: &#39;759&#39;, &#39;date&#39;: &#39;Mon, 23 May 2022 05:40:21 GMT&#39;}, &#39;RetryAttempts&#39;: 0}} AWS 콘솔창에서 IAM 대시보드에서 정책을 클릭하면 PolicyName인 pyFullAccess가 등록되어 있는 것을 확인할 수 있다.">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2022-05-28T10:00:30+09:00">
@@ -1031,7 +1031,7 @@ Username : updatetest Arn : arn:aws:iam::381282212299:user/updatetest
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1280,7 +1280,7 @@ Username : updatetest Arn : arn:aws:iam::381282212299:user/updatetest
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1608,7 +1608,7 @@ Username : updatetest Arn : arn:aws:iam::381282212299:user/updatetest
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

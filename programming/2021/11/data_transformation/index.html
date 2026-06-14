@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="Kaggle Survey Data Transformation Tip">
   <meta property="og:description" content="Intro Data Transformation is always important to visualise. Here, I just introduced to get value counts in different dataset. If you are newbie, please be aware of this code before you dive into visualization. # This Python 3 environment comes with many helpful analytics libraries installed # It is defined by the kaggle/python Docker image: https://github.com/kaggle/docker-python # For example, here&#39;s several helpful packages to load import numpy as np # linear algebra import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv) # Input data files are available in the read-only &#34;../input/&#34; directory # For example, running this (by clicking run or pressing Shift&#43;Enter) will list all files under the input directory import os for dirname, _, filenames in os.walk(&#39;/kaggle/input&#39;): for filename in filenames: print(os.path.join(dirname, filename)) # You can write up to 20GB to the current directory (/kaggle/working/) that gets preserved as output when you create a version using &#34;Save &amp; Run All&#34; # You can also write temporary files to /kaggle/temp/, but they won&#39;t be saved outside of the current session /kaggle/input/kaggle-survey-2021/kaggle_survey_2021_responses.csv /kaggle/input/kaggle-survey-2021/supplementary_data/kaggle_survey_2021_methodology.pdf /kaggle/input/kaggle-survey-2021/supplementary_data/kaggle_survey_2021_answer_choices.pdf Data Import Import raw data and split into questions dataset and survey dataset. df = pd.read_csv(&#34;../input/kaggle-survey-2021/kaggle_survey_2021_responses.csv&#34;) questions = df.iloc[0, :].T questions /opt/conda/lib/python3.7/site-packages/IPython/core/interactiveshell.py:3441: DtypeWarning: Columns (0,195,201,285,286,287,288,289,290,291,292) have mixed types.Specify dtype option on import or set low_memory=False. exec(code_obj, self.user_global_ns, self.user_ns) Time from Start to Finish (seconds) Duration (in seconds) Q1 What is your age (# years)? Q2 What is your gender? - Selected Choice Q3 In which country do you currently reside? Q4 What is the highest level of formal education ... ... Q38_B_Part_8 In the next 2 years, do you hope to become mor... Q38_B_Part_9 In the next 2 years, do you hope to become mor... Q38_B_Part_10 In the next 2 years, do you hope to become mor... Q38_B_Part_11 In the next 2 years, do you hope to become mor... Q38_B_OTHER In the next 2 years, do you hope to become mor... Name: 0, Length: 369, dtype: object df = df.iloc[1:, :] Quick Data Review All survey responses are count-based dataset. It’s easy to check using value counts() df[&#39;Q1&#39;].value_counts() 25-29 4931 18-21 4901 22-24 4694 30-34 3441 35-39 2504 40-44 1890 45-49 1375 50-54 964 55-59 592 60-69 553 70&#43; 128 Name: Q1, dtype: int64 Problem Some questions are not easy to counts because of Supplementary Questions. questions.index.tolist()[7:20] [&#39;Q7_Part_1&#39;, &#39;Q7_Part_2&#39;, &#39;Q7_Part_3&#39;, &#39;Q7_Part_4&#39;, &#39;Q7_Part_5&#39;, &#39;Q7_Part_6&#39;, &#39;Q7_Part_7&#39;, &#39;Q7_Part_8&#39;, &#39;Q7_Part_9&#39;, &#39;Q7_Part_10&#39;, &#39;Q7_Part_11&#39;, &#39;Q7_Part_12&#39;, &#39;Q7_OTHER&#39;] For this we need another way to combine into one dataset. Many Questions are very similar like Q7. Let’s Create function. Main Reference is here: https://www.kaggle.com/ruchi798/kaggle-ml-ds-survey-analysis Just add some if_condition. def sub_questions_count(question_num, part_num, text = False): part_questions = [] if text in [&#34;A&#34;, &#34;B&#34;]: part_questions = [&#39;Q&#39; &#43; str(question_num) &#43; &#34;_&#34; &#43; text &#43; &#39;_Part_&#39; &#43; str(j) for j in range(1, part_num)] part_questions.append(&#39;Q&#39; &#43; str(question_num) &#43; &#34;_&#34; &#43; text &#43; &#39;_OTHER&#39;) else: part_questions = [&#39;Q&#39; &#43; str(question_num) &#43; &#39;_Part_&#39; &#43; str(j) for j in range(1, part_num)] part_questions.append(&#39;Q&#39; &#43; str(question_num) &#43; &#39;_OTHER&#39;) # category count categories = [] counts = [] for i in part_questions: category = df[i].value_counts().index[0] val = df[i].value_counts()[0] categories.append(category) counts.append(val) combined_df = pd.DataFrame() combined_df[&#39;Category&#39;] = categories combined_df[&#39;Count&#39;] = counts combined_df = combined_df.sort_values([&#39;Count&#39;], ascending = False) return combined_df Test Case 1 # Test # &#39;Q38_B_Part_11&#39;, print(sub_questions_count(38, 11, &#34;B&#34;).reset_index(drop=True)) Category Count 0 TensorBoard 4239 1 MLflow 2747 2 Weights &amp; Biases 1583 3 Neptune.ai 1276 4 ClearML 1020 5 Polyaxon 737 6 Guild.ai 729 7 Domino Model Monitor 666 8 Comet.ml 633 9 Sacred &#43; Omniboard 591 10 Other 377 Case 2.">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2021-11-18T18:30:47+09:00">
@@ -857,7 +857,7 @@ Name: Q1, dtype: int64
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1106,7 +1106,7 @@ Name: Q1, dtype: int64
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1434,7 +1434,7 @@ Name: Q1, dtype: int64
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

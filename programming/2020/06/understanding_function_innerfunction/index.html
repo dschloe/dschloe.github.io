@@ -32,7 +32,7 @@
   <meta property="og:title" content="Python 사용자 정의 함수에 대한 이해 1편 - Inner Function">
   <meta property="og:description" content="공지 제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 Reference는 꼭 확인하셔서 교재 구매 또는 관련 Reference를 확인하시기를 바랍니다.
 I. 개요 Functions와 Decorators에 관해 나누려고 한다. function는 우리가 생각하는 그 함수가 맞다. decorator도 함수인데, 일종의 확장 개념으로 생각하면 좋다. II. Simple Tutorial 먼저 간단한 함수를 만들자. def add_one(number): return number &#43; 1 add_one(2) 3 일반적으로 파이썬의 함수들은 단지 입출력에 대한 단순한 내용 보다는 side effects 또한 함의하고 있다. print()함수가 대표적인 예인데, 코드에 print()를 실행하면 아무것도 출력되지 않는다. decorator를 이해하기 위해서 필요한 가설 1개는 arguments를 value로 바꾸는 것이다. print() III. First-Class Objects 파이썬에서 함수는 first-class objects이다. 이것은 다른 객체(문자열, int, float, list 등)와 마찬가지로 기능들이 다양한 경로로 전달되어 인수로 사용될 수 있다는 것을 의미한다. 다음 예제를 확인해보자. def _hello(name): return f&#34;안녕하세요 {name}&#34; def _friend(name): return f&#34;와~ {name}, 우리는 이제 친구야&#34; def will_greet(greeter_func): return greeter_func(&#34;Chloe&#34;) 여기에서 will_greet() 함수만 사용할 것이다. 그런데, _greet() 함수 안에는 다른 함수들 _hello()나 _friend()만 사용할 것이다. will_greet(_hello) &#39;안녕하세요 Chloe&#39; will_greet(_friend) &#39;와~ Chloe, 우리는 이제 친구야&#39; will_greet(_hello)는 두개의 함수가 사용되었지만, 조금 작동법이 다르다. 먼저 _hello는 인수값이 사용된 것은 아니며 그저 참조된 것이지만, will_greet()함수는 인수값이 사용되었다는 차이점이 있다. IV. Inner Functions Inner functions는 정의된 함수안에 또다른 함수를 정의하는 것이다. def mother(): print(&#34;저는 두 아이의 엄마입니다.&#34;) def child_1st(): print(&#34;저는 첫째이며 3살입니다.&#34;) def child_2nd(): print(&#34;저는 둘째이며 2살입니다.&#34;) child_1st() child_2nd() mother() 저는 두 아이의 엄마입니다. 저는 첫째이며 3살입니다. 저는 둘째이며 2살입니다. 위 내용은 매우 간단하지만, mother()를 불러야 첫째와 둘째를 같이 볼 수 있다. 이유는 첫째와 둘째 모두 엄마 없이는 살 수 없기 때문이다. 만약에 child_1st()만 호출해보자. 엄마 없이 아이를 불러서는 안된다. child_1st() --------------------------------------------------------------------------- NameError Traceback (most recent call last) &lt;ipython-input-14-8d46572507ad&gt; in &lt;module&gt;() ----&gt; 1 child_1st() NameError: name &#39;child_1st&#39; is not defined V. Returning Functions from Functions 함수의 return 값으로 inner function을 사용할 수 있다. def mother(num): def child_1st(): return &#34;안녕하세요, 저는 첫째, Chloe입니다.&#34; def child_2nd(): return &#34;안녕하세요, 저는 둘째, Evan입니다.&#34; if num==1: print(&#34;저는 첫째 아이의 엄마입니다.&#34;) return child_1st else: print(&#34;저는 둘째 아이의 엄마입니다.&#34;) return child_2nd 괄호 없이 child_1st와 child_2nd를 반환한다는 점에 주목한다. 이는 함수에 대한 참조를 먼저 반환함을 의미한다. my1stBaby = mother(1) my2ndBaby = mother(2) 저는 첫째 아이의 엄마입니다. 저는 둘째 아이의 엄마입니다. 여기에서 각각의 객체를 출력해보고 어떤 결과가 나오는지 확인해보자. my1stBaby &lt;function __main__.mother.&lt;locals&gt;.child_1st&gt; my2ndBaby &lt;function __main__.mother.&lt;locals&gt;.child_2nd&gt; mother 함수 안에 필요한 함수들만 호출되는 것을 볼 수 있다. 이 때, my1stBaby()와 my2ndBaby() 함수를 호출하면 어떤 결과가 나타내는지 확인해보자. my1stBaby() &#39;안녕하세요, 저는 첫째, Chloe입니다.&#39; my2ndBaby() &#39;안녕하세요, 저는 둘째, Evan입니다.&#39; 마지막으로, 앞의 예에서 상위 함수 mother() 내에서 inner function(예: child_1st()) 함수를 실행했다는 점에 유의한다. 그러나 이 마지막 예에서는 결과값을 반환할 때 내부 함수인 child_1st 괄호를 하지 않았다는 것도 확인한다. That way, you got a reference to each function that you could call in the future. VI. Reference Hjelle, G. A. (2020, May 04). Primer on Python Decorators. Retrieved June 10, 2020, from https://realpython.com/primer-on-python-decorators">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2020-06-10T01:15:47+09:00">
@@ -818,7 +818,7 @@ NameError: name 'child_1st' is not defined
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1067,7 +1067,7 @@ NameError: name 'child_1st' is not defined
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1395,7 +1395,7 @@ NameError: name 'child_1st' is not defined
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

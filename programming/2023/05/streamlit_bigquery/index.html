@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="Streamlit와 BigQuery 활용한 배포 (API)">
   <meta property="og:description" content="사전학습 이 글을 읽기전에 한번 Streamlit 라이브러리를 활용한 배포 - BigQuery 사용 을 읽고 오기를 바란다. 실습 순서 서울시 부동산 실거래가를 API 크롤링으로 가져온다. JSON 형태의 데이터를 pandas 데이터프레임으로 변환한다. 데이터프레임을 BigQuery에 전체 데이터를 저장한다. 저장된 데이터프레임을 BigQuery에서 일부 컬럼만 불러온다. 실습 1 - API 크롤링에서 빅쿼리로 데이터 저장 .streamlit/secrets.toml 을 열고 아래와 같이 설정한다. seoul_api_key는 서울 열린데이터 광장을 의미한다. gcp_service_account 아래 내용은 api key를 json 파일로 열면 확인할 수 있다. # .streamlit/secrets.toml [public_data_api] seoul_api_key = &#39;your_api_key&#39; [gcp_service_account] type = &#34;service_account&#34; project_id = &#34;your_project_id&#34; private_key_id = &#34;your_private_key_id&#34; private_key = &#34;your_private_key&#34; client_email = &#34;your_client_email&#34; client_id = &#34;your_client_id&#34; auth_uri = &#34;https://accounts.google.com/o/oauth2/auth&#34; token_uri = &#34;https://oauth2.googleapis.com/token&#34; auth_provider_x509_cert_url = &#34;https://www.googleapis.com/oauth2/v1/certs&#34; client_x509_cert_url = &#34;your_client_x509_cert_url&#34; utils.py를 생성하고 아래와 같이 설정을 저장한다. import streamlit as st from google.oauth2 import service_account SERVICE_KEY = st.secrets.public_data_api.seoul_api_key # Create API client. credentials = service_account.Credentials.from_service_account_info( # Very Important Point st.secrets[&#34;gcp_service_account&#34;] ) [aptCrawling.py](http://aptCrawling.py) 를 아래와 같이 작성한다. # -*- coding:utf-8 -*- import requests import pandas as pd # Google Cloud from google.cloud import bigquery import pandas_gbq # API Key Settings from utils import credentials, SERVICE_KEY client = bigquery.Client(credentials=credentials) def aptCrawling(SERVICE_KEY): data = None for j in range(1,2): url = f&#39;http://openapi.seoul.go.kr:8088/{SERVICE_KEY}/json/tbLnOpendataRtmsV/{1&#43;((j-1)*1000)}/{j*1000}&#39; print(url) req = requests.get(url) content = req.json() con = content[&#39;tbLnOpendataRtmsV&#39;][&#39;row&#39;] result = pd.DataFrame(con) data = pd.concat([data, result]) data = data.reset_index(drop=True) data[&#39;DEAL_YMD&#39;] = pd.to_datetime(data[&#39;DEAL_YMD&#39;], format=(&#34;%Y%m%d&#34;)) return data def save2BQ(data): table_name = &#34;seoul.realestate&#34; project_id = &#34;streamlit-dashboard-369600&#34; # Save the DataFrame to BigQuery pandas_gbq.to_gbq(data, table_name, project_id=project_id, if_exists=&#39;replace&#39;) if __name__ == &#34;__main__&#34;: data = aptCrawling(SERVICE_KEY) save2BQ(data) 아래와 같이 실행해보자. $ python aptCrawling.py http://openapi.seoul.go.kr:8088/your_api_key/json/tbLnOpendataRtmsV/1/1000 100%|████████████████████████████████████████████████████████████| 1/1 [00:00&lt;?, ?it/s] 이번에는 BigQuery 콘솔에서 확인해본다.">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2023-05-18T10:30:30+09:00">
@@ -824,7 +824,7 @@
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1073,7 +1073,7 @@
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1401,7 +1401,7 @@
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

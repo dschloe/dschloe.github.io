@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="Python Dash를 활용한 대시보드에서 엑셀 데이터로 다운로드 받기">
   <meta property="og:description" content="강의 홍보 취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다. 스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다. [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기 [대시보드] Dash Project - Excel 다운로드 개요 각 레벨에 따라 달라지는 데이터를 시각화로 표현하고 결과치를 엑셀로 다운로드 받는 기능을 구현한다. 데이터 다운로드 데이터는 로그 분석을 통한 보안 위험도 예측 AI 경진대회 에서 가져왔다. (회원가입 필수) Data: https://dacon.io/competitions/official/235717/data 데이터는 train 데이터만 활용한다. import pandas as pd train_df = pd.read_csv(&#34;train.csv&#34;) id level full_log 0 0 0 Sep 24 10:02:22 localhost kibana: {&#34;type&#34;:&#34;err... 1 1 0 Feb 8 16:21:00 localhost logstash: [2021-02-0... 2 2 0 Jan 13 01:50:40 localhost kibana: {&#34;type&#34;:&#34;err... 3 3 0 Jan 4 10:18:31 localhost kibana: {&#34;type&#34;:&#34;err... 4 4 1 type=SYSCALL msg=audit(1603094402.016:52981): ... 함수 작성 각 레벨에 따른 첫번째 글자수의 빈도를 구하는 데이터를 구하도록 한다. 예를 들면, level 1에 대한 첫번째 글자 수를 집계한 결과는 아래와 같다. 아래와 같은 결과값이 나오는 함수를 작성할 것이다. index cnt 0 type=SYSCALL 116496 1 Jan 3019 2 Oct 2904 3 Nov 2646 4 Feb 2381 먼저 함수를 작성해본다. def get_df(data, level=0): # pandas dataframe lvl_df = data.loc[data.level == level].full_log.apply(lambda x: x.split(&#39; &#39;)[0]).value_counts().rename( &#39;cnt&#39;).to_frame().reset_index() return lvl_df data = get_df(train_df, level = 1) print(data.head()) index cnt 0 type=SYSCALL 116496 1 Jan 3019 2 Oct 2904 3 Nov 2646 4 Feb 2381 위 데이터를 토대로 시각화를 작성하고, 그 후에는 엑셀로 된 데이터로 변환하는 것이 목표이다. 이 때, 각 레벨의 값에 따라 데이터 결괏값과 시각화의 그림도 달라지게 된다. 프로젝트 폴더 정리 최종적인 프로젝트 폴더 및 파일은 아래와 같다. C:. │ .gitignore │ app.py │ README.md │ │ ├─assets │ style.css │ ├─data │ train.csv (1) 데이터 불러오기 이제 app.py를 작성하도록 한다. 먼저 데이터를 불러오는 코드 사용자 정의 함수는 다음과 같다. import dash import dash_table import dash_core_components as dcc import dash_html_components as html import pandas as pd from dash.dependencies import Input, Output # 함수 정의 def get_df(data, level=0): # pandas dataframe lvl_df = data.loc[data.level == level].full_log.apply(lambda x: x.split(&#39; &#39;)[0]).value_counts().rename( &#39;cnt&#39;).to_frame().reset_index() return lvl_df DATA_PATH = &#34;data/&#34; train_df = pd.read_csv(DATA_PATH &#43; &#34;train.csv&#34;) print(train_df.head()) data = get_df(train_df, level=1) print(data.head()) # 결과치가 잘 나오는지 확인하다. level=1 에서, 숫자를 변경하여 결괏값이 서로 다르게 나타나는지 반드시 확인하도록 한다. (2) Dash 객체 생성 dash 클래스를 호출화여 app 인스턴스화를 진행한다. 또한, app.title 과 app.layout 작성한다. . . external_stylesheets = [ { &#34;href&#34;: &#34;https://fonts.googleapis.com/css2?&#34; &#34;family=Lato:wght@400;700&amp;display=swap&#34;, &#34;rel&#34;: &#34;stylesheet&#34;, }, ] app = dash.Dash(__name__, external_stylesheets=external_stylesheets) app.title = &#34;Temp Analytics: Understand Your Data!&#34; app.layout = html.Div( html.P(&#34;Hello World&#34;) ) if __name__ == &#34;__main__&#34;: app.run_server(debug=True) 앱을 실행하면 아래와 같이 결괏값이 나타날 것이다. id level full_log 0 0 0 Sep 24 10:02:22 localhost kibana: {&#34;type&#34;:&#34;err... 1 1 0 Feb 8 16:21:00 localhost logstash: [2021-02-0... 2 2 0 Jan 13 01:50:40 localhost kibana: {&#34;type&#34;:&#34;err... 3 3 0 Jan 4 10:18:31 localhost kibana: {&#34;type&#34;:&#34;err... 4 4 1 type=SYSCALL msg=audit(1603094402.016:52981): ... index cnt 0 type=SYSCALL 116496 1 Jan 3019 2 Oct 2904 3 Nov 2646 4 Feb 2381 Dash is running on http://127.0.0.1:8050/ [http://127.0.0.1:8050/](http://127.0.0.1:8050/) 을 클릭하면 Hello World 만 나타날 것이다. (3) HTML 상단 머리글 입력 이제 HTML 코드를 추가로 입력한다. 이제 app.layout 을 입력 하는 코드를 작성해보도록 한다. HTML 코드는 DIV 태그가 기준이 된다. 따라서, DIV 태그가 완성될 때마다 화면을 공유하도록 했다. 먼저, 화면의 상단 DIV 태그를 작업한다. . . app.layout = html.Div( children=[ html.Div( children=[ html.P(children=&#34;📈&#34;, className=&#34;header_emoji&#34;), html.H1(children=&#34;Temp Analytics&#34;, className=&#34;header_title&#34;, ), html.P(children=&#34;Temp&#34;, className=&#34;header_description&#34;, ), ], className=&#39;header&#39;, ), ] ) . . 아직 style.css을 입히기 전의 화면을 보면 다음과 같이 출력될 것이다.">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2021-08-12T09:10:47+09:00">
@@ -1164,7 +1164,7 @@
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1413,7 +1413,7 @@
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1741,7 +1741,7 @@
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

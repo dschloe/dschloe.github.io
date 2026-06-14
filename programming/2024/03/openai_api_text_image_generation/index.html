@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="openAI API, Text & Image 생성 예제">
   <meta property="og:description" content="강의소개 인프런에서 Streamlit 관련 강의를 진행하고 있습니다. 인프런 : https://inf.run/YPniH 소스 참조 후루카와 히데카즈 저/트랜스메이트 역. (2023). GPT-4, ChatGPT, 라마인덱스, 랭체인을 활용한 인공지능 프로그래밍 한권으로 끝내는 OpenAI API 기반 LLM 애플리케이션 구축. 위키북스, 판매처 : https://www.yes24.com/Product/Goods/122533123 라이브러리 설치 openai 패키지를 설치한다. !pip install openai Collecting openai Obtaining dependency information for openai from https://files.pythonhosted.org/packages/26/a1/75474477af2a1dae3a25f80b72bbaf20e8296191ece7fff2f67984206f33/openai-1.12.0-py3-none-any.whl.metadata Downloading openai-1.12.0-py3-none-any.whl.metadata (18 kB) . . . [notice] A new release of pip is available: 23.2.1 -&gt; 24.0 [notice] To update, run: python.exe -m pip install --upgrade pip 환경변수 준비 python-dotenv를 설치 한다. !pip install python-dotenv Collecting python-dotenv Obtaining dependency information for python-dotenv from https://files.pythonhosted.org/packages/6a/3e/b68c118422ec867fa7ab88444e1274aa40681c606d59ac27de5a5588f082/python_dotenv-1.0.1-py3-none-any.whl.metadata Downloading python_dotenv-1.0.1-py3-none-any.whl.metadata (23 kB) Downloading python_dotenv-1.0.1-py3-none-any.whl (19 kB) Installing collected packages: python-dotenv Successfully installed python-dotenv-1.0.1 [notice] A new release of pip is available: 23.2.1 -&gt; 24.0 [notice] To update, run: python.exe -m pip install --upgrade pip .env 파일 저장 .env 파일 생성 후, OpenAI Key값을 아래와 같이 저장한다. OPENAI_API_KEY = &#39;your_id&#39; 저장한 값 불러오기 OPENAI_API_KEY를 불러오고 싶다면 다음 코드를 사용한다. import dotenv import os env_file = dotenv.find_dotenv() dotenv.load_dotenv(env_file) print(os.environ[&#39;OPENAI_API_KEY&#39;]) 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 프롬프트 준비 여러줄에 걸친 문자열 정의 prompt = &#39;&#39;&#39;다음 이야기를 써주세요기타를 좋아하지만 컴맹인 여고생이 어떤 계기로 록밴드에 가입하고, 낯선 인간관계를 통해 활동하게 되는 이야기&#39;&#39;&#39; 각 매개변수에 대한 설명은 https://platform.openai.com/docs/api-reference/chat/create 링크 참조 import os from openai import OpenAI client = OpenAI( # This is the default and can be omitted api_key=os.environ.get(&#34;OPENAI_API_KEY&#34;), ) response = client.chat.completions.create( model=&#34;gpt-3.5-turbo&#34;, messages=[ {&#34;role&#34;: &#34;system&#34;, &#34;content&#34;: &#34;이 채팅은 좋습니다. 남동생과 대하를 하겠습니다. &#34;}, {&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: &#34;안녕&#34;}, {&#34;role&#34;: &#34;assistant&#34;, &#34;content&#34;: &#34;남동생은 현재 컴퓨터를 하고 있습니다.&#34;}, {&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: &#34;너 지금 뭐하고 있어?&#34;} ], temperature=0) response.choices[0].message.content &#39;남동생은 지금 사용자와 대화하고 있습니다. 대하를 하고 있습니다.&#39; 이미지 생성 텍스트에서 이미지 생성을 하는 예제는 다음과 같다. image generation 생성 및 매개변수에 대한 공식 문서는 다음과 같다. 참고 : https://platform.openai.com/docs/guides/images/introduction?context=node from openai import OpenAI client = OpenAI( # This is the default and can be omitted api_key=os.environ.get(&#34;OPENAI_API_KEY&#34;), ) response = client.images.generate( model=&#34;dall-e-3&#34;, prompt=&#34;cat dancing on car&#34;, size=&#34;1024x1024&#34;, quality=&#34;standard&#34;, n=1, ) image_url = response.data[0].url image_url &#39;https://oaidalleapiprodscus.blob.core.windows.net/private/org-znknr4OkH2n7N79B7CFhmUj9/user-fyfrdMeg75Lew6QIXrb6JCzr/img-QI9YCiwm7w4N99SeSaFuverT.png?st=2024-02-27T05%3A20%3A01Z&amp;se=2024-02-27T07%3A20%3A01Z&amp;sp=r&amp;sv=2021-08-06&amp;sr=b&amp;rscd=inline&amp;rsct=image/png&amp;skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&amp;sktid=a48cca56-e6da-484e-a814-9c849652bcb3&amp;skt=2024-02-26T20%3A01%3A40Z&amp;ske=2024-02-27T20%3A01%3A40Z&amp;sks=b&amp;skv=2021-08-06&amp;sig=O9MYsIZUoSy2jjDjTVLeHbhPGyWtnHP%2BfFEJUgVNSvU%3D&#39;">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2024-03-01T01:40:47+09:00">
@@ -779,7 +779,7 @@ Successfully installed python-dotenv-1.0.1
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1028,7 +1028,7 @@ Successfully installed python-dotenv-1.0.1
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1356,7 +1356,7 @@ Successfully installed python-dotenv-1.0.1
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

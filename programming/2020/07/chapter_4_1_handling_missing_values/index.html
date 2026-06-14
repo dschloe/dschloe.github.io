@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="머신러닝 데이터 전처리 1 - 결측치 처리">
   <meta property="og:description" content="개요 EDA를 진행할 때, 결측치가 있는 데이터를 시각화 하여 결측치 유무를 파악하였다. 참조: EDA with Housing Price Prediction - Handling Missing Values 이번 포스트에서는 결측치를 처리하는 코드를 작성할 것이다. I. 구글 드라이브 연동 구글 코랩을 시작하면 언제든지 가장 먼저 해야 하는 것은 드라이브 연동이다. from google.colab import drive # 패키지 불러오기 from os.path import join ROOT = &#34;/content/drive&#34; # 드라이브 기본 경로 print(ROOT) # print content of ROOT (Optional) drive.mount(ROOT) # 드라이브 기본 경로 Mount MY_GOOGLE_DRIVE_PATH = &#39;My Drive/Colab Notebooks/inflearn_kaggle/&#39; # 프로젝트 경로 PROJECT_PATH = join(ROOT, MY_GOOGLE_DRIVE_PATH) # 프로젝트 경로 print(PROJECT_PATH) /content/drive Drive already mounted at /content/drive; to attempt to forcibly remount, call drive.mount(&#34;/content/drive&#34;, force_remount=True). /content/drive/My Drive/Colab Notebooks/inflearn_kaggle/ %cd &#34;{PROJECT_PATH}&#34; /content/drive/My Drive/Colab Notebooks/inflearn_kaggle !ls data docs source 필자는 inflearn_kaggle 폴더안에 data, docs, source 등의 하위 폴더를 추가로 만들었다. 즉, data 안에 다운로드 받은 파일이 있을 것이다. II. 프로젝트 관련 패키지 불러오기 데이터 과학 관련 패키지들을 불러온다. import pandas as pd import pandas_profiling import numpy as np import matplotlib as mpl import matplotlib.pyplot as plt from matplotlib.pyplot import figure import seaborn as sns from IPython.core.display import display, HTML 시각화 진행 시, 일정한 Template을 작성한다. %matplotlib inline import matplotlib.pylab as plt plt.rcParams[&#34;figure.figsize&#34;] = (14,4) plt.rcParams[&#39;lines.linewidth&#39;] = 2 plt.rcParams[&#39;lines.color&#39;] = &#39;r&#39; plt.rcParams[&#39;axes.grid&#39;] = True III. 데이터 불러오기 train.csv와 test.csv 데이터를 불러와서 확인해보는 소스코드를 작성한다. train = pd.read_csv(&#39;data/train.csv&#39;) test = pd.read_csv(&#39;data/test.csv&#39;) print(&#34;data import is done&#34;) data import is done 실제로 데이터가 잘 불러와졌는지 다시한번 확인해본다. train.shape, test.shape ((1460, 81), (1459, 80)) 이제 데이터 전처리를 위한 사적 작업이 모두 종료된 것이다. IV. 결측치 처리방법 1 - “None” 또는 0으로 채우기 결측치 처리방법은 크게 2가지가 있다. 데이터 삭제 또는 데이터 채우기 데이터 삭제 진행하는 코드는 아래 튜토리얼을 확인한다. Pandas Data Handling 1편 본 포스트에서는 데이터를 채우는 방법에 대해 소개한다. (1) 전체 데이터 결측치 확인 전체 데이터 결측치를 확인하는 방법은 아래와 같다. new_df = train.copy() new_df_na = (new_df.isnull().sum() / len(new_df)) * 100 new_df_na.sort_values(ascending=False).reset_index(drop=True) new_df_na = new_df_na.drop(new_df_na[new_df_na == 0].index).sort_values(ascending=False)[:30] new_df_na PoolQC 99.520548 MiscFeature 96.301370 Alley 93.767123 Fence 80.753425 FireplaceQu 47.260274 LotFrontage 17.739726 GarageYrBlt 5.547945 GarageType 5.547945 GarageFinish 5.547945 GarageQual 5.547945 GarageCond 5.547945 BsmtFinType2 2.602740 BsmtExposure 2.602740 BsmtFinType1 2.534247 BsmtCond 2.534247 BsmtQual 2.534247 MasVnrArea 0.547945 MasVnrType 0.547945 Electrical 0.068493 dtype: float64 위 데이터를 가지고 시각화를 진행한다. f, ax = plt.subplots(figsize=(15, 12)) plt.xticks(rotation=&#39;90&#39;) sns.barplot(x=new_df_na.index, y=new_df_na) plt.xlabel(&#39;Variables&#39;, fontsize=24) plt.ylabel(&#39;Percent of missing values&#39;, fontsize=24) plt.title(&#39;Percent missing data by Variable&#39;, fontsize=32) plt.show()">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2020-07-08T18:00:47+09:00">
@@ -908,7 +908,7 @@ Length: 81, dtype: int64
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1157,7 +1157,7 @@ Length: 81, dtype: int64
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1485,7 +1485,7 @@ Length: 81, dtype: int64
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

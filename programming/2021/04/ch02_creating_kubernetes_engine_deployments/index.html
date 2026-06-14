@@ -31,14 +31,14 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="GCP Kubernetes Engine을 통한 배포(2)">
   <meta property="og:description" content="인프런 강의 취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다. 스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다. [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기 1줄 요약 (GCP) GKE를 활용하여 nginx를 실행해보자. Step 1. GCP Shell 활성화 You can list the active account name with this command: (your_project_id)$ gcloud auth list Credentialed Accounts ACTIVE ACCOUNT * student-04-e46af1f1cd7b@qwiklabs.net To set the active account, run: $ gcloud config set account `ACCOUNT` You can list the project ID with this command: (your_project_id)$ gcloud config list project [core] project = qwiklabs-gcp-04-79efc1e4ae0f Your active configuration is: [cloudshell-24251] Step 2. Create Deployment manifests Task 1. Create deployment manifests and deploy to the cluster (1) Connect to the lab GKE cluster In Cloud Shell, type the following command to set the environment variable for the zone and cluster name. (your_project_id)$ export my_zone=us-central1-a (your_project_id)$ export my_cluster=standard-cluster-1 Configure kubectl tab completion in Cloud Shell. (your_project_id)$ source &lt;(kubectl completion bash) In Cloud Shell, configure access to your cluster for the kubectl command-line tool, using the following command: $ gcloud container clusters get-credentials $my_cluster --zone $my_zone Fetching cluster endpoint and auth data. kubeconfig entry generated for standard-cluster-1. In Cloud Shell enter the following command to clone the repository to the lab Cloud Shell. (your_project_id)$ git clone https://github.com/GoogleCloudPlatform/training-data-analyst Create a soft link as a shortcut to the working directory. (your_project_id)$ ln -s ~/training-data-analyst/courses/ak8s/v1.1 ~/ak8s Change to the directory that contains the sample files for this lab. (your_project_id)$ cd ~/ak8s/Deployments/ your_id@cloudshell:~/ak8s/Deployments (your_project_id)$ (2) Create a deployment manifest You will create a deployment using a sample deployment manifest called nginx-deployment.yaml that has been provided for you. This deployment is configured to run three Pod replicas with a single nginx container in each Pod listening on TCP port 80. Let’s create nginx-deployment.yaml apiVersion: apps/v1 kind: Deployment metadata: name: nginx-deployment labels: app: nginx spec: replicas: 3 selector: matchLabels: app: nginx template: metadata: labels: app: nginx spec: containers: - name: nginx image: nginx:1.7.9 ports: - containerPort: 80 To deploy your manifest, execute the following command: ~/ak8s/Deployments (your_project_id)$ kubectl apply -f ./nginx-deployment.yaml To view a list of deployments, execute the following command: ~/ak8s/Deployments (your_project_id)$ kubectl get deployments NAME READY UP-TO-DATE AVAILABLE AGE nginx-deployment 3/3 3 3 24s Step 3.Manually scale up and down the number of Pods in deployments Sometimes, you want to shut down a Pod instance. Other times, you want ten Pods running. In Kubernetes, you can scale a specific Pod to the desired number of instances. To shut them down, you scale to zero. In this task, you scale Pods up and down in the Google Cloud Console and Cloud Shell.">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2021-04-13T19:30:47+09:00">
     <meta property="article:modified_time" content="2021-04-13T19:30:47+09:00">
     <meta property="article:tag" content="Google Cloud">
     <meta property="article:tag" content="Docker">
-    <meta property="article:tag" content="MLOps">
+    <meta property="article:tag" content="MLops">
 
 		
   <meta name="twitter:card" content="summary">
@@ -140,7 +140,7 @@
 			<h1 class="post__title">GCP Kubernetes Engine을 통한 배포(2)</h1>
 			<div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-04-13T19:30:47&#43;09:00">2021-04-13</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/programming/" rel="category">Programming</a>, <a class="meta__link" href="/categories/google-cloud/" rel="category">Google Cloud</a>, <a class="meta__link" href="/categories/docker/" rel="category">Docker</a>, <a class="meta__link" href="/categories/mlops/" rel="category">MLops</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2021-04-13T19:30:47&#43;09:00">2021-04-13</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/programming/" rel="category">Programming</a>, <a class="meta__link" href="/categories/google-cloud/" rel="category">Google Cloud</a>, <a class="meta__link" href="/categories/docker/" rel="category">Docker</a>, <a class="meta__link" href="/categories/mlops/" rel="category">MLOps</a>
 	</span>
 </div></div>
 		</header>
@@ -1020,7 +1020,7 @@
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1269,7 +1269,7 @@
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1597,7 +1597,7 @@
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

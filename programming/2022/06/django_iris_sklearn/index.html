@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="django Web 개발 - IRIS Prediction">
   <meta property="og:description" content="개요 Python Django와 Sklearn을 활용하여 간단한 iris prediction 웹을 만들어본다. 사전준비 머신러닝 기본 이론 및 원리는 어느정도 알고 있다고 가정한다. Django 앱에 대해 어느정도 알고 있다고 가정한다. 무엇을 배우는가? 머신러닝 모델을 활용하여 배포하는 과정을 배운다. 가상환경 설정 가상환경을 생성한다. $ virtualenv venv created virtual environment CPython3.9.1.final.0-64 in 475ms creator CPython3Posix(dest=/Users/evan/Desktop/django-iris-tutorial/venv, clear=False, no_vcs_ignore=False, global=False) seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/Users/evan/Library/Application Support/virtualenv) added seed packages: pip==22.1.1, setuptools==62.3.2, wheel==0.37.1 activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator 만들어진 가상환경에 접속한다. $ source venv/bin/activate (venv) $ 크게 3개의 라이브러리를 설치한다. jupyterlab : 머신러닝 개발 과정을 진행할 에디터로 활용한다. sklearn : 머신러닝 개발 관련 라이브러리이다. django : django 웹 프레임워크 라이브러리이다. (venv) $ pip install jupyterlab sklearn django 머신러닝 개발 iris 데이터를 불러오고 sklearn을 활용하여 모형 개발을 진행한다. 모형 개발 시, 주요 Feature Engineering 과정은 생략한다. (1) 모형 개발 jupyterlab을 실행한다. (venv) $ python -m jupyterlab 아래와 같이 코드를 입력한다. # Module 불러오기 from pandas import read_csv from sklearn.model_selection import train_test_split from sklearn.svm import SVC import pandas as pd # 데이터셋 불러오기 df = pd.read_csv(&#34;data/iris.csv&#34;) # 독립변수와 종속변수 분리 X = df[[&#39;sepal_length&#39;,&#39;sepal_width&#39;,&#39;petal_length&#39;,&#39;petal_width&#39;]] y = df[&#39;classification&#39;] # 훈련데이터와 종속데이터 분리 X_train, X_test, Y_train, Y_test = train_test_split(X, y, test_size=0.20, random_state=1) # 모형 학습 model = SVC(gamma=&#39;auto&#39;) model.fit(X_train, Y_train) # 모형 예측 sepal_length = float(1.5) sepal_width = float(5) petal_length = float(4) petal_width = float(3) result = model.predict([[sepal_length,sepal_width,petal_length,petal_width]]) # input must be 2D array print(result) [&#39;Iris-virginica&#39;] /Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/sklearn/base.py:445: UserWarning: X does not have valid feature names, but SVC was fitted with feature names warnings.warn( (2) 모형 저장 pickle을 통해 모형 저장을 할 수 있다. pd.to_pickle(model, r&#39;models/svc_model.pickle&#39;) Django 시작 django 웹사이트 프로젝트를 시작한다. (venv) $ django-admin startproject iris (venv) $ cd iris (venv) $ python manage.py startapp predict settings.py iris/settings.py를 열고 아래와 같이 수정한다. . . # Application definition INSTALLED_APPS = [ &#39;django.contrib.admin&#39;, &#39;django.contrib.auth&#39;, &#39;django.contrib.contenttypes&#39;, &#39;django.contrib.sessions&#39;, &#39;django.contrib.messages&#39;, &#39;django.contrib.staticfiles&#39;, &#39;predict&#39;, ] . . urls.py iris/urls.py를 열고 아래와 같이 수정한다. from django.contrib import admin from django.urls import path, include urlpatterns = [ path(&#39;admin/&#39;, admin.site.urls), path(&#39;&#39;, include(&#39;predict.urls&#39;, namespace=&#39;predict&#39;)) ] predict/urls.py를 새로 생성하고 아래와 같이 코드를 추가한다. from django.urls import path from . import views app_name = &#39;predict&#39; urlpatterns = [ path(&#39;&#39;, views.predict, name=&#39;predict&#39;), ] views.py 이제 predict/views.py에서 predict 함수를 만들어 백엔드 처리를 진행하고, 최종 결괏값을 predict.html로 돌려주는 함수를 구현할 것이다. from django.shortcuts import render # Create your views here. def predict(request): return render(request, &#39;predict.html&#39;, {}) predict.html predict/templates 폴더를 만들고, predict.html 파일을 새로 생성한다. hello predict.html 파일이 잘 열리는지 확인한다. (venv) iris$ python manage.py runserver">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2022-06-25T10:10:47+09:00">
@@ -1156,7 +1156,7 @@
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1405,7 +1405,7 @@
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1733,7 +1733,7 @@
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

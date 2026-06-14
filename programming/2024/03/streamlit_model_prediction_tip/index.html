@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="Streamlit ML Model Prediction Sample (feat. Pipeline)">
   <meta property="og:description" content="강의소개 인프런에서 Streamlit 관련 강의를 진행하고 있습니다. 인프런 : https://inf.run/YPniH 개요 tips 데이터셋을 활용하여 Streamlit ML Model을 배포한다. 각 코드에 대한 자세한 설명은 여기에서는 생략한다. 모델 개발 다음 코드는 모델을 개발하는 코드이다. 주어진 데이터셋에서 tip을 예측하는 모델을 구성했다. 파일명 : model.py import streamlit as st import pandas as pd import seaborn as sns from sklearn.model_selection import train_test_split from sklearn.linear_model import LinearRegression from sklearn.compose import ColumnTransformer from sklearn.pipeline import Pipeline from sklearn.preprocessing import OneHotEncoder from joblib import dump, load import os # 데이터셋 불러오기 tips = sns.load_dataset(&#39;tips&#39;) # 데이터셋 컬럼 추출 categorical_features = [&#39;sex&#39;, &#39;smoker&#39;, &#39;day&#39;, &#39;time&#39;] numerical_features = [&#39;total_bill&#39;, &#39;size&#39;] # pipeline 모델 만들기 preprocessor = ColumnTransformer( transformers=[ (&#39;num&#39;, &#39;passthrough&#39;, numerical_features), (&#39;cat&#39;, OneHotEncoder(), categorical_features) ]) pipeline = Pipeline(steps=[(&#39;preprocessor&#39;, preprocessor), (&#39;model&#39;, LinearRegression())]) # 데이터셋 분류 / 종속 변수 tip을 예측하는 모델 X = tips.drop(&#39;tip&#39;, axis=1) y = tips[&#39;tip&#39;] # 데이터셋 분류 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) # 모델 학습 pipeline.fit(X_train, y_train) # 모델 저장 model_directory = &#39;model&#39; if not os.path.exists(model_directory): os.makedirs(model_directory) model_path = os.path.join(model_directory, &#39;tip_prediction_pipeline.joblib&#39;) dump(pipeline, model_path) 위 코드에서 핵심은 모델을 저장하는 것이다. 마지막 코드이다. 해당하는 폴더에 model 폴더가 없으면 model 폴더를 생성하고 tip_prediction_pipeline.joblib 이름으로 모델을 저장한다. model.py를 실행한다. python model.py 정상적으로 모델이 만들어졌으면, model 폴더가 생겼을 것이고, 그 다음에 해당 모델이 저장되어 있을 것이다. Streamlit App 개발 다음 코드는 Streamlit App 개발을 하는 코드이다. 파일명 : app.py import streamlit as st import pandas as pd from joblib import load import os model_directory = &#39;model&#39; model_path = os.path.join(model_directory, &#39;tip_prediction_pipeline.joblib&#39;) def predict_tip(model_path, total_bill, size, sex, smoker, day, time): # 모델 불러오기 pipeline = load(model_path) # 예측 데이터 생성 df = pd.DataFrame([{&#39;total_bill&#39;: total_bill, &#39;size&#39;: size, &#39;sex&#39;: sex, &#39;smoker&#39;: smoker, &#39;day&#39;: day, &#39;time&#39;: time}]) # 예측값 생성 prediction = pipeline.predict(df) return prediction[0] def main(): st.title(&#39;팁 예측 모델&#39;) st.write(&#39;total_bill과 다른 요인을 고려하여 tip 예측 모델 생성&#39;) total_bill = st.number_input(&#39;Total Bill ($)&#39;, min_value=0.0, format=&#39;%f&#39;) size = st.number_input(&#39;Size of the Party&#39;, min_value=1, step=1) sex = st.selectbox(&#39;Sex&#39;, [&#39;Male&#39;, &#39;Female&#39;]) smoker = st.selectbox(&#39;Smoker&#39;, [&#39;Yes&#39;, &#39;No&#39;]) day = st.selectbox(&#39;Day&#39;, [&#39;Thur&#39;, &#39;Fri&#39;, &#39;Sat&#39;, &#39;Sun&#39;]) time = st.selectbox(&#39;Time&#39;, [&#39;Lunch&#39;, &#39;Dinner&#39;]) if st.button(&#39;예상 Tip 예측&#39;): result = predict_tip(model_path, total_bill, size, sex, smoker, day, time) st.success(f&#39;예측 Tip: ${result:.2f}&#39;) if __name__ == &#34;__main__&#34;: main() 위 코드에서 핵심은 predict_tip 함수이다. pipeline으로 모델을 설계하면 곧바로 predict() 저장된 모델을 불러온 후, 함수 사용이 가능하다. 테스트 테스트 결과는 아래와 같이 나온다. streamlit run app.py">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2024-03-05T01:40:47+09:00">
@@ -808,7 +808,7 @@
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1057,7 +1057,7 @@
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1385,7 +1385,7 @@
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

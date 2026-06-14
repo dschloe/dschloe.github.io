@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="DataFrame의 변수 추가 및 삭제">
   <meta property="og:description" content="강의 홍보 취준생을 위한 강의를 제작하였습니다. 본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다. 스타벅스 아이스 아메리카노를 선물로 보내드리겠습니다. [비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기 데이터 개요 German Credit Card를 활용하여 데이터를 가공하도록 한다. 데이터셋에 대한 설명은 Kaggle에서 확인한다. import pandas as pd print(pd.__version__) 1.0.5 url = &#39;https://raw.githubusercontent.com/chloevan/kaggle2portpolio/master/datasets/german_credit_data.csv&#39; german_credit = pd.read_csv(url) german_credit.head(3) Unnamed: 0 Age Sex Job Housing Saving accounts Checking account Credit amount Duration Purpose 0 0 67 male 2 own NaN little 1169 6 radio/TV 1 1 22 female 2 own little moderate 5951 48 radio/TV 2 2 49 male 1 own little NaN 2096 12 education Pandas DataFrame은 Index와 나머지 열로 구성이 되어 있다. 데이터의 행과 크기를 알아보는 가장 좋은 방법은 DataFrame객체의 shape변수를 이용하는 것이다. print(&#39;DataFrame 크기: &#39;, german_credit.shape) DataFrame 크기: (1000, 10) 생성된 DataFrame 객체인 german_credit은 10개의 칼럼으로 이루어져 있다. 이번에는 describe() 함수를 활용하여 개략적인 분포도를 확인한다. german_credit.describe() Unnamed: 0 Age Job Credit amount Duration count 1000.000000 1000.000000 1000.000000 1000.000000 1000.000000 mean 499.500000 35.546000 1.904000 3271.258000 20.903000 std 288.819436 11.375469 0.653614 2822.736876 12.058814 min 0.000000 19.000000 0.000000 250.000000 4.000000 25% 249.750000 27.000000 2.000000 1365.500000 12.000000 50% 499.500000 33.000000 2.000000 2319.500000 18.000000 75% 749.250000 42.000000 2.000000 3972.250000 24.000000 max 999.000000 75.000000 3.000000 18424.000000 72.000000 german_credit[&#39;Sex&#39;].value_counts() male 690 female 310 Name: Sex, dtype: int64 Sex의 반환 결과는 1이 700개, 0이 300개로 확인할 수 있다. 이 때 value_counts()는 많은 건수 순서로 정렬되어 값을 반환한다. 새로운 변수 추가 기존 데이터에서 변수를 추가하고 삭제하는 것을 진행해본다. 이러한 과정을 보통 도출변수로 표현되기도 한다. german_credit[&#39;Age&#43;100&#39;] = german_credit[&#39;Age&#39;] &#43; 100 german_credit.shape (1000, 11) (1) 수치형 조건에 따른 변수 추가 수치형 변수의 특성에 따라 새로운 변수를 추가한다. Age를 기준으로 크게 &#34;&gt;50&#34;과 &lt;=50이하로 구분한다. 그러기 위해서는 각 조건이 맞는지를 확인하는 if 조건과 반복 수행을 위한 for-loop 조건이 필요하다. # 빈 리스트 객체 생성 age_group = [] for age in german_credit[&#39;Age&#39;]: if age &gt; 50: age_group.append(&#39;&gt;50&#39;) else: age_group.append(&#39;&lt;=50&#39;) (age_group[0:3]) [&#39;&gt;50&#39;, &#39;&lt;=50&#39;, &#39;&lt;=50&#39;] 출력된 결과물은 위와 같은 형태로 저장된 것을 확인할 수 있다. age_group에 저장된 리스트 값을 새로운 변수로 추가한다. german_credit[&#39;Age_group&#39;] = age_group german_credit[&#39;Age_group&#39;].value_counts() &lt;=50 887 &gt;50 113 Name: Age_group, dtype: int64 (2) 문자형 조건에 따른 변수 추가 이번에는 특정문자열의 존재 유무에 따라 새로운 column is_own을 추가한다. german_credit[&#39;Housing&#39;].value_counts() own 713 rent 179 free 108 Name: Housing, dtype: int64 위 데이터에서 own인 경우는 True 그렇지 않은 경우는 False로 저장한다. np.where을 사용하면 if처럼 매우 쉽게 사용이 가능하다. import numpy as np german_credit[&#39;is_own&#39;] = np.where(german_credit[&#39;Housing&#39;] == &#34;own&#34;, True, False) german_credit[&#39;is_own&#39;].value_counts() True 713 False 287 Name: is_own, dtype: int64 변수 삭제 이렇게 생성된 변수를 삭제하도록 한다. 이 때, 가장 많이 사용되는 함수는 drop() 메서드를 이용한다. 함수 사용 시, 주의해야 하는 것 중 하나는 axis 0은 행의 방향, axis 1은 열의 방향 축으로 움직인다. 즉, drop()함수를 사용 시에는 axis 1를 같이 입력한다. german_credit = german_credit.drop(&#39;Age&#43;100&#39;, axis = 1) german_credit.shape (1000, 12) 이번에는 두개의 변수를 추가한 뒤, 한꺼번에 삭제하는 예제를 실습해본다. german_credit[&#39;age&#43;10&#39;] = german_credit[&#39;Age&#39;] &#43; 10 german_credit[&#39;age&#43;20&#39;] = german_credit[&#39;Age&#39;] &#43; 20 german_credit.shape (1000, 14) 이제 새로 추가된 변수 2개를 삭제 한다. german_credit = german_credit.drop([&#39;age&#43;10&#39;, &#39;age&#43;20&#39;], axis = 1) german_credit.shape (1000, 12) 이렇게 두개 이상의 변수를 삭제할 때는 list를 활용해서 삭제가 가능하다. 정리 DataFrame에서 간단하게 변수를 추가 및 삭제하는 방법에 대해 배웠다. 수치형 변수를 활용한 변수 추가, 문자형 변수를 활용한 변수 추가의 기본적인 내용을 숙지한다. 변수를 삭제할 때는 drop()메서드를 사용하는 데, 행을 삭제할 때는 axis = 0, 열을 삭제할 때는 axis = 1 활용한다.">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2020-08-30T01:00:47+09:00">
@@ -1024,7 +1024,7 @@ Name: is_own, dtype: int64
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1273,7 +1273,7 @@ Name: is_own, dtype: int64
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1601,7 +1601,7 @@ Name: is_own, dtype: int64
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>

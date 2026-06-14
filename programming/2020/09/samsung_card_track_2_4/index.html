@@ -31,7 +31,7 @@
   <meta property="og:site_name" content="Data Science | DSChloe">
   <meta property="og:title" content="삼성카드 대회 Track-2 - 포지셔닝 분석(2)">
   <meta property="og:description" content="대회 소개 삼성카드 데이터분석 공모전이 시행되고 있다. 대회에 처음 참여하는 아시아경제-수강생들을 위해 일종의 가이드라인으로 제안하고자 한다. 본 포스트에서는 기본적인 내용만 전달하고자 함을 밝힌다. Track2 과정은 마케팅 전략 제안이 중요하다! 포지셔닝 분석 개요 마케팅에서 자주 보는 분석 방법중의 하나는 포지셔닝(Positioning) 기법이다. 포지셔닝 분석은 마케팅 통계분석 기법중의 하나로, 기업이나, 상품, 브랜드 같은 개체들의 포지셔닝을 수행하는 다차원 척도법(MDS: Multi-Dimensional Scaling)과 상응분석(Correspondence Analysis)이 있다. 위 두가지 분석 방법 중 무엇을 사용해야 할까? 만약 데이터셋이 주로 등간척도, 비율척도와 같이 구성되어 있다면 다차원 척도법 만약 데이터셋이 주로 명목척도, 서열척도와 같이 구성되어 있다면 상응분석 현재 삼성카드 대회의 주 데이터셋은 명목척도 및 서열척도로 구성되어 있기 때문에 상응분석으로 시작하면 된다. 상응분석 Correspondence Analysis는 범주형 변수(수준)들 간의 연관성을 분석한 후, 그 결과를 시각적 해석이 용이하도록 그래프화 하는 것임 삼성카드 대회 Track-2 - 포지셔닝 분석(1) (1) 기본 개념 상응분석을 사용하려면 빈도교차표를 만들어야 한다. 요약하면, 상응분석은 범주형 변수의 빈도를 나타내고 있는 빈도교차표의 행과 열(명목변수의 범주 값들)을 그래프상의 자극점 형태로 표시하는 방법. 이 때, 단순 상응분석은 2개의 변수, 다중 상응분석은 3개 이상의 변수 활용한다. 이 때, 상응분석은 카이제곱 검정과 같이 범주형 변수간의 상호연관성을 바탕으로 진행된다. 따라서, 두 개의 범주형 변수가 서로 연관성을 가지고 있다는 전제하에서 진행된다. (2) 데이터 불러오기 먼저 필요한 데이터를 불러온다. 필자는 구글 코랩에서 데이터를 불러오기 때문에 %config InlineBackend.figure_format = &#39;retina&#39; !sudo apt-get -qq -y install fonts-nanum The following package was automatically installed and is no longer required: libnvidia-common-440 Use &#39;apt autoremove&#39; to remove it. The following NEW packages will be installed: fonts-nanum 0 upgraded, 1 newly installed, 0 to remove and 39 not upgraded. Need to get 9,604 kB of archives. After this operation, 29.5 MB of additional disk space will be used. Selecting previously unselected package fonts-nanum. (Reading database ... 144579 files and directories currently installed.) Preparing to unpack .../fonts-nanum_20170925-1_all.deb ... Unpacking fonts-nanum (20170925-1) ... Setting up fonts-nanum (20170925-1) ... Processing triggers for fontconfig (2.12.6-0ubuntu2) ... import seaborn as sns import pandas as pd import matplotlib.pyplot as plt import matplotlib as mpl import matplotlib.font_manager as fm /usr/local/lib/python3.6/dist-packages/statsmodels/tools/_testing.py:19: FutureWarning: pandas.util.testing is deprecated. Use the functions in the public API at pandas.testing instead. import pandas.util.testing as tm for font in fm.fontManager.ttflist: if &#39;Nanum&#39; in font.name: print(font.name, font.fname) NanumGothic /usr/share/fonts/truetype/nanum/NanumGothic.ttf NanumSquareRound /usr/share/fonts/truetype/nanum/NanumSquareRoundR.ttf NanumSquare /usr/share/fonts/truetype/nanum/NanumSquareR.ttf NanumSquareRound /usr/share/fonts/truetype/nanum/NanumSquareRoundB.ttf NanumBarunGothic /usr/share/fonts/truetype/nanum/NanumBarunGothicBold.ttf NanumMyeongjo /usr/share/fonts/truetype/nanum/NanumMyeongjo.ttf NanumMyeongjo /usr/share/fonts/truetype/nanum/NanumMyeongjoBold.ttf NanumBarunGothic /usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf NanumSquare /usr/share/fonts/truetype/nanum/NanumSquareB.ttf NanumGothic /usr/share/fonts/truetype/nanum/NanumGothicBold.ttf fontpath = &#39;/usr/share/fonts/truetype/nanum/NanumGothic.ttf&#39; font = fm.FontProperties(fname=fontpath, size=9) plt.rc(&#39;font&#39;, family=&#39;NanumGothic&#39;) plt.rcParams[&#34;figure.figsize&#34;] = (20, 10) plt.rcParams[&#39;lines.linewidth&#39;] = 2 plt.rcParams[&#39;lines.color&#39;] = &#39;r&#39; plt.rcParams[&#39;axes.grid&#39;] = True mpl.font_manager._rebuild() fm._rebuild() 한글 텍스트가 잘 나오는지 확인해본다. font = {&#39;family&#39; : &#39;NanumGothic&#39;, &#39;weight&#39; : &#39;bold&#39;, &#39;size&#39; : 22} plt.rc(&#39;font&#39;, **font) plt.text(0.3, 0.3, &#39;한글&#39;, size=100) Text(0.3, 0.3, &#39;한글&#39;)">
-  <meta property="og:locale" content="en_us">
+  <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="programming">
     <meta property="article:published_time" content="2020-09-04T10:00:47+09:00">
@@ -1080,7 +1080,7 @@ Successfully installed prince-0.7.0
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLops</a>
+				<a class="widget__link" href="/categories/mlops/">MLOps</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -1329,7 +1329,7 @@ Successfully installed prince-0.7.0
 				<a class="widget__link" href="/categories/sqlalchemy/">SQLAlchemy</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/sqlite/">Sqlite</a>
+				<a class="widget__link" href="/categories/sqlite/">SQLite</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ssh/">SSH</a>
@@ -1657,7 +1657,7 @@ Successfully installed prince-0.7.0
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>
