@@ -172,6 +172,12 @@
     <li><a href="#연수-프로그램">연수 프로그램</a></li>
     <li><a href="#주요-상훈">주요 상훈</a></li>
     <li><a href="#주요-자격증">주요 자격증</a></li>
+    <li><a href="#블로그-개발-로그">블로그 개발 로그</a>
+      <ul>
+        <li><a href="#2026-06-14--대대적-리모델링">2026-06-14 — 대대적 리모델링</a></li>
+        <li><a href="#향후-발전-방향-2026">향후 발전 방향 (2026~)</a></li>
+      </ul>
+    </li>
     <li><a href="#전체-글-수">전체 글 수</a></li>
   </ul>
 </nav>
@@ -1194,6 +1200,157 @@ TPS-April SkLearn, PyCaret for Newbies</a></li>
 <li>유통관리사 2급</li>
 <li>은행FP</li>
 </ul>
+<h2 id="블로그-개발-로그">블로그 개발 로그</h2>
+<p>블로그 구조 변경·배포·기술 부채 정리 이력을 기록합니다.</p>
+<h3 id="2026-06-14--대대적-리모델링">2026-06-14 — 대대적 리모델링</h3>
+<p>2020년부터 쌓인 <strong>567편</strong>의 글을 주제별 폴더(Python, R, GCP, Settings 등 13개 섹션)에서 <strong>연도·월 기준 단일 구조</strong>로 통합했습니다. 테마(mainroad)와 기존 이미지 자산은 유지했습니다.</p>
+<h4 id="콘텐츠-구조">콘텐츠 구조</h4>
+<table>
+  <thead>
+      <tr>
+          <th>변경 전</th>
+          <th>변경 후</th>
+          <th>비고</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Python/</code>, <code>R/</code>, <code>GCP/</code>, <code>Settings/</code> 등 13개 섹션</td>
+          <td><code>programming/YYYY/MM/</code></td>
+          <td>562편</td>
+      </tr>
+      <tr>
+          <td><code>SPSS/</code></td>
+          <td><code>data-analysis/YYYY/MM/</code></td>
+          <td>2편</td>
+      </tr>
+      <tr>
+          <td><code>Trip/</code></td>
+          <td><code>trip/YYYY/MM/</code></td>
+          <td>2편, 유지</td>
+      </tr>
+  </tbody>
+</table>
+<ul>
+<li>URL 예: <code>/programming/2025/06/aws_ec2_s3_streamlit/</code></li>
+<li>기존 URL <strong>1,222개 <code>aliases</code></strong> 등록 → <code>/python/...</code>, <code>/gcp/...</code> 등 구 링크 리다이렉트</li>
+<li>카테고리: 한글·중복 제거, <strong>영문 canonical</strong> 통합 (예: <code>빅쿼리</code> → <code>BigQuery</code>, <code>장고</code> → <code>Django</code>)</li>
+<li>programming 글 공통 카테고리: <code>Programming</code> + 주제 태그</li>
+</ul>
+<h4 id="메뉴-configtoml">메뉴 (<code>config.toml</code>)</h4>
+<ul>
+<li><strong>Programming</strong> → <code>/programming/</code></li>
+<li><strong>Data Analysis</strong> → <code>/data-analysis/</code></li>
+<li><strong>Trip</strong> → <code>/trip/</code></li>
+</ul>
+<h4 id="이미지">이미지</h4>
+<ul>
+<li>경로 규칙: <code>content</code>와 1:1 미러 — <code>static/img/programming/YYYY/MM/post-slug/</code></li>
+<li>마이그레이션 스크립트: <code>scripts/migrate_blog.py</code></li>
+<li>URL 공백·괄호 인코딩: <code>scripts/fix_image_urls.py</code> (1,629경로 수정)</li>
+<li>구 주제별 폴더(<code>img/python/</code>, <code>img/gcp/</code> 등) → <code>static/img/_archive/legacy/</code> 보관</li>
+<li>미사용 루트 폴더 <code>gcloud_windows11_vscode/</code> 삭제 (이미지는 <code>static/img/programming/2024/04/</code>에 존재)</li>
+</ul>
+<h4 id="hugo--테마--ui">Hugo · 테마 · UI</h4>
+<ul>
+<li><code>languageCode</code> → <code>locale = &quot;en-US&quot;</code> (Hugo 0.158+ deprecation 대응)</li>
+<li>Goldmark <code>unsafe = true</code> — 레거시 HTML 콘텐츠 렌더링</li>
+<li>페이지네이션: 57개 번호 전부 표시 → <strong>현재 ±2 + 첫/끝 + …</strong> (<code>pagination.html</code>, <code>static/css/custom.css</code>)</li>
+<li>Hugo 0.161 호환: authorbox, analytics, disqus 템플릿 수정</li>
+</ul>
+<h4 id="배포">배포</h4>
+<ul>
+<li><code>deploy.sh</code>: GitHub Pages(<code>public</code>) push 시 <strong>dschloe SSH</strong> 호스트(<code>github.com-dschloe</code>) 사용</li>
+<li>blog 소스: HTTPS <code>dschloe/blog</code>, Pages: <code>dschloe/dschloe.github.io</code></li>
+</ul>
+<h4 id="알려진-잔여-이슈">알려진 잔여 이슈</h4>
+<ul>
+<li>원본 파일 없는 이미지 <strong>11건</strong> (마이그레이션 전부터 broken)</li>
+<li>front matter 없는 <code>rmarkdownintro.md</code> 1건 미포함</li>
+<li><code>public/</code> 내 구 URL 디렉터리(<code>/python/</code>, <code>/gcp/</code> 등)는 aliases HTML로 리다이렉트</li>
+</ul>
+<hr>
+<h3 id="향후-발전-방향-2026">향후 발전 방향 (2026~)</h3>
+<p>블로그 방향을 <strong>「코드·클라우드·패키지는 실무 노트, AI 논문·AI×사회과학은 읽기 쉬운 리뷰」</strong> 로 재정의합니다. 기존 560+ 편은 <strong>legacy 아카이브</strong>로 두고, 신규 글부터 아래 체계를 적용합니다.</p>
+<h4 id="콘텐츠-5대-기둥">콘텐츠 5대 기둥</h4>
+<table>
+  <thead>
+      <tr>
+          <th>기둥</th>
+          <th>예시</th>
+          <th>글 형식</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Python Syntax</strong></td>
+          <td>typing, asyncio, dataclass</td>
+          <td>짧은 코드 + Before/After</td>
+      </tr>
+      <tr>
+          <td><strong>Cloud</strong></td>
+          <td>GCP BigQuery, AWS 배포·비용</td>
+          <td>튜토리얼 + 아키텍처</td>
+      </tr>
+      <tr>
+          <td><strong>Data Packages</strong></td>
+          <td>pandas, polars, statsmodels</td>
+          <td>문제 → 코드 → 결과</td>
+      </tr>
+      <tr>
+          <td><strong>AI Papers</strong></td>
+          <td>Transformer, RAG, Agent</td>
+          <td>논문 카드 (문제·방법·한계)</td>
+      </tr>
+      <tr>
+          <td><strong>AI × Social Science</strong></td>
+          <td>인과추론+ML, NLP 설문, LLM 코딩</td>
+          <td>논문 요약 + SS 함의</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="신규-섹션-계획">신규 섹션 (계획)</h4>
+<pre tabindex="0"><code>content/
+├── programming/          ← 기존 + Syntax · Package · Cloud 실습
+├── papers/               ← AI 논문 리뷰 (신규, 2026~)
+├── ai-social-science/    ← AI×사회과학 (신규, 2026~)
+├── data-analysis/
+└── trip/
+</code></pre><h4 id="운영-리듬-목표">운영 리듬 (목표)</h4>
+<table>
+  <thead>
+      <tr>
+          <th>주기</th>
+          <th>내용</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>매일</strong></td>
+          <td>Inbox 1줄 (논문·에러·스니펫), 링크 클립</td>
+      </tr>
+      <tr>
+          <td><strong>매주</strong></td>
+          <td>Python Syntax 1 + Package/Cloud 1 + Paper 1 → <strong>주 2~3편</strong></td>
+      </tr>
+      <tr>
+          <td><strong>매월</strong></td>
+          <td>Cloud deep dive 1, 태그 정리, 월간 논문 인덱스</td>
+      </tr>
+      <tr>
+          <td><strong>분기</strong></td>
+          <td>Search Console 분석, 레거시 글 선별 리라이트</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="기술-todo">기술 TODO</h4>
+<ul>
+<li><input disabled="" type="checkbox"> <code>papers/</code>, <code>ai-social-science/</code> 섹션 및 메뉴 추가</li>
+<li><input disabled="" type="checkbox"> archetype: <code>paper.md</code>, <code>package-tip.md</code>, <code>syntax.md</code></li>
+<li><input disabled="" type="checkbox"> arXiv RSS → inbox 자동화 (선택)</li>
+<li><input disabled="" type="checkbox"> 레거시 글 점진적 <code>draft</code> / 「Updated for 2026」 리라이트</li>
+</ul>
+<hr>
 <h2 id="전체-글-수">전체 글 수</h2>
 <ul>
 <li>현재 블로그 작성된 글 수는 다음과 같다.
@@ -1788,7 +1945,7 @@ TPS-April SkLearn, PyCaret for Newbies</a></li>
 				<a class="widget__link" href="/categories/mlflow/">MLFlow</a>
 			</li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/mlops/">MLOps</a>
+				<a class="widget__link" href="/categories/mlops/">MLops</a>
 			</li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/ms-sql/">MS-SQL</a>
@@ -2296,7 +2453,7 @@ TPS-April SkLearn, PyCaret for Newbies</a></li>
 		<a class="widget-taglist__link widget__link btn" href="/tags/google-tag-manager/" title="Google Tag Manager">Google Tag Manager</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/gpu/" title="GPU">GPU</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/grafana/" title="Grafana">Grafana</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="GROUP BY">GROUP BY</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/group-by/" title="Group By">Group By</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/gru/" title="GRU">GRU</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/gt/" title="Gt">Gt</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/gtsummary/" title="Gtsummary">Gtsummary</a>
@@ -2365,7 +2522,7 @@ TPS-April SkLearn, PyCaret for Newbies</a></li>
 		<a class="widget-taglist__link widget__link btn" href="/tags/merging-data/" title="Merging Data">Merging Data</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/missing-values/" title="Missing Values">Missing Values</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/mlflow/" title="MLFlow">MLFlow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLops">MLops</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mlops/" title="MLOps">MLOps</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/modeling-visualisation/" title="Modeling Visualisation">Modeling Visualisation</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/module/" title="Module">Module</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ms-sql/" title="MS-SQL">MS-SQL</a>
