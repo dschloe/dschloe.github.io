@@ -1,19 +1,231 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Openpyxl on Data Science | DSChloe</title>
-    <link>https://dschloe.github.io/tags/openpyxl/</link>
-    <description>Recent content in Openpyxl on Data Science | DSChloe</description>
-    <generator>Hugo</generator>
-    <language>en-US</language>
-    <lastBuildDate>Mon, 12 Jul 2021 05:10:47 +0900</lastBuildDate>
-    <atom:link href="https://dschloe.github.io/tags/openpyxl/rss.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>엑셀 데이터 가공하기 변환</title>
-      <link>https://dschloe.github.io/programming/2021/07/excel_multipleheaders/</link>
-      <pubDate>Mon, 12 Jul 2021 05:10:47 +0900</pubDate>
-      <guid>https://dschloe.github.io/programming/2021/07/excel_multipleheaders/</guid>
-      <description>&lt;h2 id=&#34;강의-홍보&#34;&gt;강의 홍보&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;취준생을 위한 강의를 제작하였습니다.&lt;/li&gt;&#xA;&lt;li&gt;본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;스타벅스 아이스 아메리카노를 선물&lt;/code&gt;로 보내드리겠습니다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://www.inflearn.com/course/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EC%BA%90%EA%B8%80%EC%9E%85%EB%AC%B8?inst=46ae3c78&#34;&gt;[비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기&lt;/a&gt;&#xA;&lt;img src=&#34;https://dschloe.github.io/img/lecture_ad/lecture_ad_01.png&#34; alt=&#34;&#34;&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;개요&#34;&gt;개요&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;정리되지 못한 엑셀 파일을 불러와서 하나의 테이블을 만드는 과정을 진행해본다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;&lt;img src=&#34;https://dschloe.github.io/img/programming/2021/07/excel_multipleheaders/tutorial_01.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;위 데이터를 원본 그대로 받아서 pandas 데이터 프레임에 추가한다.&lt;/li&gt;&#xA;&lt;li&gt;A3 셀에 있는 &lt;code&gt;[시·도지사선거][서울특별시][강남구]&lt;/code&gt; 분리하여 각 column에 추가한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;라이브러리-불러오기&#34;&gt;라이브러리 불러오기&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;3개의 라이브러리를 불러온다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; pd&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; openpyxl&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; os&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;파일-확인&#34;&gt;파일 확인&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;data 폴더 내 데이터를 확인한다.&lt;/li&gt;&#xA;&lt;li&gt;추후, 엑셀 데이터만 추려서 반복문을 활용하여 동일하게 처리할 수 있도록 상상을 한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print(os&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;listdir(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;data&amp;#39;&lt;/span&gt;))&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[&#39;1 강남구-[2021년_재·보궐선거]_개표단위별_개표결과.xlsx&#39;, &#39;.DS_Store&#39;, &#39;~$1 강남구-[2021년_재·보궐선거]_개표단위별_개표결과.xlsx&#39;]&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;h2 id=&#34;openpyxl-라이브러리-할용&#34;&gt;openpyxl 라이브러리 할용&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;openpyxl&lt;/code&gt; 라이브러리는 &lt;code&gt;A Python library to read/write Excel 2010 xlsx/xlsm files&lt;/code&gt;을 가지고 있다.&lt;/li&gt;&#xA;&lt;li&gt;먼저 A3 셀에 있는 &lt;code&gt;[시·도지사선거][서울특별시][강남구]&lt;/code&gt; 데이터를 가져오도록 한다.&lt;/li&gt;&#xA;&lt;li&gt;이 때, &lt;code&gt;openpyxl&lt;/code&gt; 라이브리를 활용하면 각 셀에 접근해서 개별적으로 데이터를 가져올 수 있다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;DATA_PATH &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;data&amp;#34;&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;FILE_PATH &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; os&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;listdir(DATA_PATH)[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;wb_obt&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; openpyxl&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;load_workbook(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;data/&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; FILE_PATH) &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sheet &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; wb_obt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;active&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;values &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sheet[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;A3&amp;#34;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;value&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;values&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;&#39;[시·도지사선거][서울특별시][강남구]&#39;&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;h2 id=&#34;문자열-전처리&#34;&gt;문자열 전처리&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;먼저 하나의 셀로 연결되어 있는 것을 각각 분리하도록 하는 코드를 작성한다.&lt;/li&gt;&#xA;&lt;li&gt;strip(&amp;lsquo;pattern&amp;rsquo;)는 특정 문자를 제거하는 것이고, split(&amp;lsquo;pattern&amp;rsquo;)는 문자열을 특수문자로 분리하는 것이다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;city_list &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; values&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[]&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;][&amp;#34;&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;city_list&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[&#39;시·도지사선거&#39;, &#39;서울특별시&#39;, &#39;강남구&#39;]&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;h2 id=&#34;데이터-수집-및-전처리&#34;&gt;데이터 수집 및 전처리&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;이 때 중요한 parameters는 skiprows, header이다.&lt;/li&gt;&#xA;&lt;li&gt;먼저 skiprows는 특정 행은 건너 뛴다는 의미를 가지고 있다. 즉, 데이터프레임에 접근하기 전까지의 행은 건너 뛴다는 의미다.&lt;/li&gt;&#xA;&lt;li&gt;header는 엑셀의 열에 해당하는데, 본 데이터에서는 &lt;code&gt;multiple headers&lt;/code&gt;가 있다. 따라서, 이를 리스트 처리하면 해당 열은 모두 가져올 수 있다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;df &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_excel(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;data/1 강남구-[2021년_재·보궐선거]_개표단위별_개표결과.xlsx&amp;#34;&lt;/span&gt;, skiprows&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;,  header&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;], )&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;drop(columns&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;columns[&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;], axis&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, inplace&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;# 마지막 column은 NAN라 삭제.  &lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print(df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head())&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;                읍면동명               투표구명               선거인수                투표수  \&#xA;  Unnamed: 0_level_1 Unnamed: 1_level_1 Unnamed: 2_level_1 Unnamed: 3_level_1   &#xA;0                 합계                              452344.0           276485.0   &#xA;1               거소투표                                3062.0             2877.0   &#xA;2             관외사전투표                               12957.0            12955.0   &#xA;3                신사동                 소계            13922.0             8672.0   &#xA;4                                관내사전투표             2667.0             2667.0   &#xA;&#xA;     후보자별 득표수                                                               \&#xA;  더불어민주당\n박영선 국민의힘\n오세훈 기본소득당\n신지혜 국가혁명당\n허경영 미래당\n오태양 민생당\n이수봉 민생당\n이수봉.1   &#xA;0     66907.0  202320.0      909.0     2005.0    229.0    424.0        NaN   &#xA;1       595.0    1995.0       14.0       97.0     11.0     24.0        NaN   &#xA;2      4393.0    8171.0       48.0      100.0     18.0     18.0        NaN   &#xA;3      1581.0    6910.0       20.0       45.0      6.0     15.0        NaN   &#xA;4       632.0    1977.0        6.0       12.0      3.0      6.0        NaN   &#xA;&#xA;                                                                        \&#xA;  신자유민주연합\n배영규 여성의당\n김진아 진보당\n송명숙 무소속\n정동희 무소속\n이도엽 무소속\n신지예         계   &#xA;0         20.0    1212.0    274.0     82.0     47.0    655.0  275084.0   &#xA;1          3.0       2.0      6.0      8.0      2.0      8.0    2765.0   &#xA;2          0.0      67.0     23.0      6.0      2.0     39.0   12885.0   &#xA;3          1.0      36.0      5.0      3.0      1.0     20.0    8643.0   &#xA;4          0.0       8.0      3.0      1.0      1.0      5.0    2654.0   &#xA;&#xA;              무효\n투표수                 기권수  &#xA;  Unnamed: 18_level_1 Unnamed: 19_level_1  &#xA;0              1401.0            175859.0  &#xA;1               112.0               185.0  &#xA;2                70.0                 2.0  &#xA;3                29.0              5250.0  &#xA;4                13.0                 0.0  &#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;header[0]&lt;/code&gt;값은 읍면동명, 투표구명, 선거인수, 투표수 등으로 정리가 되어 있다.&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;header[1]&lt;/code&gt;값은 각 후보들의 값이 나타난 것을 확인할 수 있다.&lt;/li&gt;&#xA;&lt;li&gt;여기에서 후보자별 득표수만 지우기만 하면 된다. 다만, 각각 가져와야 하는 값이 서로 다르다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;이 때, MultiIndex에 대응하기 위해 get_level_values() 함수를 사용한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;columns&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;MultiIndex([(    &#39;읍면동명&#39;,  &#39;Unnamed: 0_level_1&#39;),&#xA;            (    &#39;투표구명&#39;,  &#39;Unnamed: 1_level_1&#39;),&#xA;            (    &#39;선거인수&#39;,  &#39;Unnamed: 2_level_1&#39;),&#xA;            (     &#39;투표수&#39;,  &#39;Unnamed: 3_level_1&#39;),&#xA;            (&#39;후보자별 득표수&#39;,         &#39;더불어민주당\n박영선&#39;),&#xA;            (&#39;후보자별 득표수&#39;,           &#39;국민의힘\n오세훈&#39;),&#xA;            (&#39;후보자별 득표수&#39;,          &#39;기본소득당\n신지혜&#39;),&#xA;            (&#39;후보자별 득표수&#39;,          &#39;국가혁명당\n허경영&#39;),&#xA;            (&#39;후보자별 득표수&#39;,            &#39;미래당\n오태양&#39;),&#xA;            (&#39;후보자별 득표수&#39;,            &#39;민생당\n이수봉&#39;),&#xA;            (&#39;후보자별 득표수&#39;,          &#39;민생당\n이수봉.1&#39;),&#xA;            (&#39;후보자별 득표수&#39;,        &#39;신자유민주연합\n배영규&#39;),&#xA;            (&#39;후보자별 득표수&#39;,           &#39;여성의당\n김진아&#39;),&#xA;            (&#39;후보자별 득표수&#39;,            &#39;진보당\n송명숙&#39;),&#xA;            (&#39;후보자별 득표수&#39;,            &#39;무소속\n정동희&#39;),&#xA;            (&#39;후보자별 득표수&#39;,            &#39;무소속\n이도엽&#39;),&#xA;            (&#39;후보자별 득표수&#39;,            &#39;무소속\n신지예&#39;),&#xA;            (&#39;후보자별 득표수&#39;,                   &#39;계&#39;),&#xA;            ( &#39;무효\n투표수&#39;, &#39;Unnamed: 18_level_1&#39;),&#xA;            (     &#39;기권수&#39;, &#39;Unnamed: 19_level_1&#39;)],&#xA;           )&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;columns&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_level_values(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Index([&#39;읍면동명&#39;, &#39;투표구명&#39;, &#39;선거인수&#39;, &#39;투표수&#39;, &#39;후보자별 득표수&#39;, &#39;후보자별 득표수&#39;, &#39;후보자별 득표수&#39;,&#xA;       &#39;후보자별 득표수&#39;, &#39;후보자별 득표수&#39;, &#39;후보자별 득표수&#39;, &#39;후보자별 득표수&#39;, &#39;후보자별 득표수&#39;, &#39;후보자별 득표수&#39;,&#xA;       &#39;후보자별 득표수&#39;, &#39;후보자별 득표수&#39;, &#39;후보자별 득표수&#39;, &#39;후보자별 득표수&#39;, &#39;후보자별 득표수&#39;, &#39;무효\n투표수&#39;,&#xA;       &#39;기권수&#39;],&#xA;      dtype=&#39;object&#39;)&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;columns&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_level_values(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Index([&#39;Unnamed: 0_level_1&#39;, &#39;Unnamed: 1_level_1&#39;, &#39;Unnamed: 2_level_1&#39;,&#xA;       &#39;Unnamed: 3_level_1&#39;, &#39;더불어민주당\n박영선&#39;, &#39;국민의힘\n오세훈&#39;, &#39;기본소득당\n신지혜&#39;,&#xA;       &#39;국가혁명당\n허경영&#39;, &#39;미래당\n오태양&#39;, &#39;민생당\n이수봉&#39;, &#39;민생당\n이수봉.1&#39;, &#39;신자유민주연합\n배영규&#39;,&#xA;       &#39;여성의당\n김진아&#39;, &#39;진보당\n송명숙&#39;, &#39;무소속\n정동희&#39;, &#39;무소속\n이도엽&#39;, &#39;무소속\n신지예&#39;, &#39;계&#39;,&#xA;       &#39;Unnamed: 18_level_1&#39;, &#39;Unnamed: 19_level_1&#39;],&#xA;      dtype=&#39;object&#39;)&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;이제, 각각의 index를 list로 변환후 하나의 column으로 합치는 과정을 진행한다.&lt;/li&gt;&#xA;&lt;li&gt;총 20개의 column이 정렬된 것을 확인할 수 있다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;col_1 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;columns&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_level_values(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;:&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;tolist()&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;col_2 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;columns&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_level_values(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)[&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;:&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;tolist()&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;col_3 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;columns&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_level_values(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)[&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;:&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;tolist()&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cols &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; col_1 &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; col_2 &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; col_3&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cols&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;[&#39;읍면동명&#39;,&#xA; &#39;투표구명&#39;,&#xA; &#39;선거인수&#39;,&#xA; &#39;투표수&#39;,&#xA; &#39;더불어민주당\n박영선&#39;,&#xA; &#39;국민의힘\n오세훈&#39;,&#xA; &#39;기본소득당\n신지혜&#39;,&#xA; &#39;국가혁명당\n허경영&#39;,&#xA; &#39;미래당\n오태양&#39;,&#xA; &#39;민생당\n이수봉&#39;,&#xA; &#39;민생당\n이수봉.1&#39;,&#xA; &#39;신자유민주연합\n배영규&#39;,&#xA; &#39;여성의당\n김진아&#39;,&#xA; &#39;진보당\n송명숙&#39;,&#xA; &#39;무소속\n정동희&#39;,&#xA; &#39;무소속\n이도엽&#39;,&#xA; &#39;무소속\n신지예&#39;,&#xA; &#39;계&#39;,&#xA; &#39;후보자별 득표수&#39;,&#xA; &#39;무효\n투표수&#39;]&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;columns &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; cols&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;columns&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Index([&#39;읍면동명&#39;, &#39;투표구명&#39;, &#39;선거인수&#39;, &#39;투표수&#39;, &#39;더불어민주당\n박영선&#39;, &#39;국민의힘\n오세훈&#39;, &#39;기본소득당\n신지혜&#39;,&#xA;       &#39;국가혁명당\n허경영&#39;, &#39;미래당\n오태양&#39;, &#39;민생당\n이수봉&#39;, &#39;민생당\n이수봉.1&#39;, &#39;신자유민주연합\n배영규&#39;,&#xA;       &#39;여성의당\n김진아&#39;, &#39;진보당\n송명숙&#39;, &#39;무소속\n정동희&#39;, &#39;무소속\n이도엽&#39;, &#39;무소속\n신지예&#39;, &#39;계&#39;,&#xA;       &#39;후보자별 득표수&#39;, &#39;무효\n투표수&#39;],&#xA;      dtype=&#39;object&#39;)&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;이제 시도와 시군구를 각각 추가한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;시도&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; city_list[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;]&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;시군구&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; city_list[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;]&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print(df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;))&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;     읍면동명    투표구명      선거인수       투표수  더불어민주당\n박영선  국민의힘\n오세훈  기본소득당\n신지혜  \&#xA;0      합계          452344.0  276485.0      66907.0   202320.0       909.0   &#xA;1    거소투표            3062.0    2877.0        595.0     1995.0        14.0   &#xA;2  관외사전투표           12957.0   12955.0       4393.0     8171.0        48.0   &#xA;3     신사동      소계   13922.0    8672.0       1581.0     6910.0        20.0   &#xA;4          관내사전투표    2667.0    2667.0        632.0     1977.0         6.0   &#xA;5          신사동제1투    2313.0    1052.0        205.0      827.0         1.0   &#xA;6          신사동제2투    1740.0     733.0        220.0      492.0         3.0   &#xA;7          신사동제3투    1896.0     813.0        261.0      508.0         6.0   &#xA;8          신사동제4투    2812.0    1736.0        112.0     1611.0         0.0   &#xA;9          신사동제5투    2494.0    1671.0        151.0     1495.0         4.0   &#xA;&#xA;   국가혁명당\n허경영  미래당\n오태양  민생당\n이수봉  ...  여성의당\n김진아  진보당\n송명숙  무소속\n정동희  \&#xA;0      2005.0     229.0     424.0  ...     1212.0     274.0      82.0   &#xA;1        97.0      11.0      24.0  ...        2.0       6.0       8.0   &#xA;2       100.0      18.0      18.0  ...       67.0      23.0       6.0   &#xA;3        45.0       6.0      15.0  ...       36.0       5.0       3.0   &#xA;4        12.0       3.0       6.0  ...        8.0       3.0       1.0   &#xA;5         8.0       1.0       1.0  ...        4.0       0.0       1.0   &#xA;6        10.0       0.0       2.0  ...        5.0       0.0       0.0   &#xA;7         8.0       0.0       3.0  ...       14.0       2.0       0.0   &#xA;8         2.0       1.0       2.0  ...        2.0       0.0       1.0   &#xA;9         5.0       1.0       1.0  ...        3.0       0.0       0.0   &#xA;&#xA;   무소속\n이도엽  무소속\n신지예         계  후보자별 득표수   무효\n투표수     시도  시군구  &#xA;0      47.0     655.0  275084.0    1401.0  175859.0  서울특별시  강남구  &#xA;1       2.0       8.0    2765.0     112.0     185.0  서울특별시  강남구  &#xA;2       2.0      39.0   12885.0      70.0       2.0  서울특별시  강남구  &#xA;3       1.0      20.0    8643.0      29.0    5250.0  서울특별시  강남구  &#xA;4       1.0       5.0    2654.0      13.0       0.0  서울특별시  강남구  &#xA;5       0.0       2.0    1050.0       2.0    1261.0  서울특별시  강남구  &#xA;6       0.0       1.0     733.0       0.0    1007.0  서울특별시  강남구  &#xA;7       0.0       6.0     809.0       4.0    1083.0  서울특별시  강남구  &#xA;8       0.0       1.0    1732.0       4.0    1076.0  서울특별시  강남구  &#xA;9       0.0       5.0    1665.0       6.0     823.0  서울특별시  강남구  &#xA;&#xA;[10 rows x 22 columns]&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;어느정도 정리가 된 것으로 보인다.&lt;/li&gt;&#xA;&lt;/ul&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Openpyxl on Data Science | DSChloe</title><link>https://dschloe.github.io/tags/openpyxl/</link><description>Recent content in Openpyxl on Data Science | DSChloe</description><generator>Hugo</generator><language>en-US</language><lastBuildDate>Mon, 12 Jul 2021 05:10:47 +0900</lastBuildDate><atom:link href="https://dschloe.github.io/tags/openpyxl/rss.xml" rel="self" type="application/rss+xml"/><item><title>엑셀 데이터 가공하기 변환</title><link>https://dschloe.github.io/programming/2021/07/excel_multipleheaders/</link><pubDate>Mon, 12 Jul 2021 05:10:47 +0900</pubDate><guid>https://dschloe.github.io/programming/2021/07/excel_multipleheaders/</guid><description>&lt;h2 id="강의-홍보"&gt;강의 홍보&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;취준생을 위한 강의를 제작하였습니다.&lt;/li&gt;
+&lt;li&gt;본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;스타벅스 아이스 아메리카노를 선물&lt;/code&gt;로 보내드리겠습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.inflearn.com/course/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EC%BA%90%EA%B8%80%EC%9E%85%EB%AC%B8?inst=46ae3c78"&gt;[비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기&lt;/a&gt;
+&lt;img src="https://dschloe.github.io/img/lecture_ad/lecture_ad_01.png" alt=""&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="개요"&gt;개요&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;정리되지 못한 엑셀 파일을 불러와서 하나의 테이블을 만드는 과정을 진행해본다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src="https://dschloe.github.io/img/programming/2021/07/excel_multipleheaders/tutorial_01.png" alt=""&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;위 데이터를 원본 그대로 받아서 pandas 데이터 프레임에 추가한다.&lt;/li&gt;
+&lt;li&gt;A3 셀에 있는 &lt;code&gt;[시·도지사선거][서울특별시][강남구]&lt;/code&gt; 분리하여 각 column에 추가한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="라이브러리-불러오기"&gt;라이브러리 불러오기&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;3개의 라이브러리를 불러온다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; pandas &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; pd
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; openpyxl
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; os
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="파일-확인"&gt;파일 확인&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;data 폴더 내 데이터를 확인한다.&lt;/li&gt;
+&lt;li&gt;추후, 엑셀 데이터만 추려서 반복문을 활용하여 동일하게 처리할 수 있도록 상상을 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;print(os&lt;span style="color:#f92672"&gt;.&lt;/span&gt;listdir(&lt;span style="color:#e6db74"&gt;&amp;#39;data&amp;#39;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;['1 강남구-[2021년_재·보궐선거]_개표단위별_개표결과.xlsx', '.DS_Store', '~$1 강남구-[2021년_재·보궐선거]_개표단위별_개표결과.xlsx']
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="openpyxl-라이브러리-할용"&gt;openpyxl 라이브러리 할용&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;openpyxl&lt;/code&gt; 라이브러리는 &lt;code&gt;A Python library to read/write Excel 2010 xlsx/xlsm files&lt;/code&gt;을 가지고 있다.&lt;/li&gt;
+&lt;li&gt;먼저 A3 셀에 있는 &lt;code&gt;[시·도지사선거][서울특별시][강남구]&lt;/code&gt; 데이터를 가져오도록 한다.&lt;/li&gt;
+&lt;li&gt;이 때, &lt;code&gt;openpyxl&lt;/code&gt; 라이브리를 활용하면 각 셀에 접근해서 개별적으로 데이터를 가져올 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;DATA_PATH &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;data&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;FILE_PATH &lt;span style="color:#f92672"&gt;=&lt;/span&gt; os&lt;span style="color:#f92672"&gt;.&lt;/span&gt;listdir(DATA_PATH)[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;wb_obt&lt;span style="color:#f92672"&gt;=&lt;/span&gt; openpyxl&lt;span style="color:#f92672"&gt;.&lt;/span&gt;load_workbook(&lt;span style="color:#e6db74"&gt;&amp;#34;data/&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;+&lt;/span&gt; FILE_PATH) 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sheet &lt;span style="color:#f92672"&gt;=&lt;/span&gt; wb_obt&lt;span style="color:#f92672"&gt;.&lt;/span&gt;active
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;values &lt;span style="color:#f92672"&gt;=&lt;/span&gt; sheet[&lt;span style="color:#e6db74"&gt;&amp;#34;A3&amp;#34;&lt;/span&gt;]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;value
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;values
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;'[시·도지사선거][서울특별시][강남구]'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="문자열-전처리"&gt;문자열 전처리&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;먼저 하나의 셀로 연결되어 있는 것을 각각 분리하도록 하는 코드를 작성한다.&lt;/li&gt;
+&lt;li&gt;strip(&amp;lsquo;pattern&amp;rsquo;)는 특정 문자를 제거하는 것이고, split(&amp;lsquo;pattern&amp;rsquo;)는 문자열을 특수문자로 분리하는 것이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;city_list &lt;span style="color:#f92672"&gt;=&lt;/span&gt; values&lt;span style="color:#f92672"&gt;.&lt;/span&gt;strip(&lt;span style="color:#e6db74"&gt;&amp;#34;[]&amp;#34;&lt;/span&gt;)&lt;span style="color:#f92672"&gt;.&lt;/span&gt;split(&lt;span style="color:#e6db74"&gt;&amp;#34;][&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;city_list
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;['시·도지사선거', '서울특별시', '강남구']
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="데이터-수집-및-전처리"&gt;데이터 수집 및 전처리&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;이 때 중요한 parameters는 skiprows, header이다.&lt;/li&gt;
+&lt;li&gt;먼저 skiprows는 특정 행은 건너 뛴다는 의미를 가지고 있다. 즉, 데이터프레임에 접근하기 전까지의 행은 건너 뛴다는 의미다.&lt;/li&gt;
+&lt;li&gt;header는 엑셀의 열에 해당하는데, 본 데이터에서는 &lt;code&gt;multiple headers&lt;/code&gt;가 있다. 따라서, 이를 리스트 처리하면 해당 열은 모두 가져올 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;df &lt;span style="color:#f92672"&gt;=&lt;/span&gt; pd&lt;span style="color:#f92672"&gt;.&lt;/span&gt;read_excel(&lt;span style="color:#e6db74"&gt;&amp;#34;data/1 강남구-[2021년_재·보궐선거]_개표단위별_개표결과.xlsx&amp;#34;&lt;/span&gt;, skiprows&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;, header&lt;span style="color:#f92672"&gt;=&lt;/span&gt;[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;], )
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;drop(columns&lt;span style="color:#f92672"&gt;=&lt;/span&gt;df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;columns[&lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;], axis&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, inplace&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;True&lt;/span&gt;) &lt;span style="color:#75715e"&gt;# 마지막 column은 NAN라 삭제. &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;print(df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;head())
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt; 읍면동명 투표구명 선거인수 투표수 \
+ Unnamed: 0_level_1 Unnamed: 1_level_1 Unnamed: 2_level_1 Unnamed: 3_level_1 
+0 합계 452344.0 276485.0 
+1 거소투표 3062.0 2877.0 
+2 관외사전투표 12957.0 12955.0 
+3 신사동 소계 13922.0 8672.0 
+4 관내사전투표 2667.0 2667.0 
+
+ 후보자별 득표수 \
+ 더불어민주당\n박영선 국민의힘\n오세훈 기본소득당\n신지혜 국가혁명당\n허경영 미래당\n오태양 민생당\n이수봉 민생당\n이수봉.1 
+0 66907.0 202320.0 909.0 2005.0 229.0 424.0 NaN 
+1 595.0 1995.0 14.0 97.0 11.0 24.0 NaN 
+2 4393.0 8171.0 48.0 100.0 18.0 18.0 NaN 
+3 1581.0 6910.0 20.0 45.0 6.0 15.0 NaN 
+4 632.0 1977.0 6.0 12.0 3.0 6.0 NaN 
+
+ \
+ 신자유민주연합\n배영규 여성의당\n김진아 진보당\n송명숙 무소속\n정동희 무소속\n이도엽 무소속\n신지예 계 
+0 20.0 1212.0 274.0 82.0 47.0 655.0 275084.0 
+1 3.0 2.0 6.0 8.0 2.0 8.0 2765.0 
+2 0.0 67.0 23.0 6.0 2.0 39.0 12885.0 
+3 1.0 36.0 5.0 3.0 1.0 20.0 8643.0 
+4 0.0 8.0 3.0 1.0 1.0 5.0 2654.0 
+
+ 무효\n투표수 기권수 
+ Unnamed: 18_level_1 Unnamed: 19_level_1 
+0 1401.0 175859.0 
+1 112.0 185.0 
+2 70.0 2.0 
+3 29.0 5250.0 
+4 13.0 0.0 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;header[0]&lt;/code&gt;값은 읍면동명, 투표구명, 선거인수, 투표수 등으로 정리가 되어 있다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;header[1]&lt;/code&gt;값은 각 후보들의 값이 나타난 것을 확인할 수 있다.&lt;/li&gt;
+&lt;li&gt;여기에서 후보자별 득표수만 지우기만 하면 된다. 다만, 각각 가져와야 하는 값이 서로 다르다.
+&lt;ul&gt;
+&lt;li&gt;이 때, MultiIndex에 대응하기 위해 get_level_values() 함수를 사용한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;columns
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;MultiIndex([( '읍면동명', 'Unnamed: 0_level_1'),
+ ( '투표구명', 'Unnamed: 1_level_1'),
+ ( '선거인수', 'Unnamed: 2_level_1'),
+ ( '투표수', 'Unnamed: 3_level_1'),
+ ('후보자별 득표수', '더불어민주당\n박영선'),
+ ('후보자별 득표수', '국민의힘\n오세훈'),
+ ('후보자별 득표수', '기본소득당\n신지혜'),
+ ('후보자별 득표수', '국가혁명당\n허경영'),
+ ('후보자별 득표수', '미래당\n오태양'),
+ ('후보자별 득표수', '민생당\n이수봉'),
+ ('후보자별 득표수', '민생당\n이수봉.1'),
+ ('후보자별 득표수', '신자유민주연합\n배영규'),
+ ('후보자별 득표수', '여성의당\n김진아'),
+ ('후보자별 득표수', '진보당\n송명숙'),
+ ('후보자별 득표수', '무소속\n정동희'),
+ ('후보자별 득표수', '무소속\n이도엽'),
+ ('후보자별 득표수', '무소속\n신지예'),
+ ('후보자별 득표수', '계'),
+ ( '무효\n투표수', 'Unnamed: 18_level_1'),
+ ( '기권수', 'Unnamed: 19_level_1')],
+ )
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;columns&lt;span style="color:#f92672"&gt;.&lt;/span&gt;get_level_values(&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Index(['읍면동명', '투표구명', '선거인수', '투표수', '후보자별 득표수', '후보자별 득표수', '후보자별 득표수',
+ '후보자별 득표수', '후보자별 득표수', '후보자별 득표수', '후보자별 득표수', '후보자별 득표수', '후보자별 득표수',
+ '후보자별 득표수', '후보자별 득표수', '후보자별 득표수', '후보자별 득표수', '후보자별 득표수', '무효\n투표수',
+ '기권수'],
+ dtype='object')
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;columns&lt;span style="color:#f92672"&gt;.&lt;/span&gt;get_level_values(&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Index(['Unnamed: 0_level_1', 'Unnamed: 1_level_1', 'Unnamed: 2_level_1',
+ 'Unnamed: 3_level_1', '더불어민주당\n박영선', '국민의힘\n오세훈', '기본소득당\n신지혜',
+ '국가혁명당\n허경영', '미래당\n오태양', '민생당\n이수봉', '민생당\n이수봉.1', '신자유민주연합\n배영규',
+ '여성의당\n김진아', '진보당\n송명숙', '무소속\n정동희', '무소속\n이도엽', '무소속\n신지예', '계',
+ 'Unnamed: 18_level_1', 'Unnamed: 19_level_1'],
+ dtype='object')
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;이제, 각각의 index를 list로 변환후 하나의 column으로 합치는 과정을 진행한다.&lt;/li&gt;
+&lt;li&gt;총 20개의 column이 정렬된 것을 확인할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;col_1 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;columns&lt;span style="color:#f92672"&gt;.&lt;/span&gt;get_level_values(&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;)[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;:&lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;tolist()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;col_2 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;columns&lt;span style="color:#f92672"&gt;.&lt;/span&gt;get_level_values(&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;)[&lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;:&lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;tolist()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;col_3 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;columns&lt;span style="color:#f92672"&gt;.&lt;/span&gt;get_level_values(&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;)[&lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;:&lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;tolist()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cols &lt;span style="color:#f92672"&gt;=&lt;/span&gt; col_1 &lt;span style="color:#f92672"&gt;+&lt;/span&gt; col_2 &lt;span style="color:#f92672"&gt;+&lt;/span&gt; col_3
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cols
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;['읍면동명',
+ '투표구명',
+ '선거인수',
+ '투표수',
+ '더불어민주당\n박영선',
+ '국민의힘\n오세훈',
+ '기본소득당\n신지혜',
+ '국가혁명당\n허경영',
+ '미래당\n오태양',
+ '민생당\n이수봉',
+ '민생당\n이수봉.1',
+ '신자유민주연합\n배영규',
+ '여성의당\n김진아',
+ '진보당\n송명숙',
+ '무소속\n정동희',
+ '무소속\n이도엽',
+ '무소속\n신지예',
+ '계',
+ '후보자별 득표수',
+ '무효\n투표수']
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;columns &lt;span style="color:#f92672"&gt;=&lt;/span&gt; cols
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;columns
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Index(['읍면동명', '투표구명', '선거인수', '투표수', '더불어민주당\n박영선', '국민의힘\n오세훈', '기본소득당\n신지혜',
+ '국가혁명당\n허경영', '미래당\n오태양', '민생당\n이수봉', '민생당\n이수봉.1', '신자유민주연합\n배영규',
+ '여성의당\n김진아', '진보당\n송명숙', '무소속\n정동희', '무소속\n이도엽', '무소속\n신지예', '계',
+ '후보자별 득표수', '무효\n투표수'],
+ dtype='object')
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;이제 시도와 시군구를 각각 추가한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;df[&lt;span style="color:#e6db74"&gt;&amp;#39;시도&amp;#39;&lt;/span&gt;] &lt;span style="color:#f92672"&gt;=&lt;/span&gt; city_list[&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;df[&lt;span style="color:#e6db74"&gt;&amp;#39;시군구&amp;#39;&lt;/span&gt;] &lt;span style="color:#f92672"&gt;=&lt;/span&gt; city_list[&lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;print(df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;head(&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt; 읍면동명 투표구명 선거인수 투표수 더불어민주당\n박영선 국민의힘\n오세훈 기본소득당\n신지혜 \
+0 합계 452344.0 276485.0 66907.0 202320.0 909.0 
+1 거소투표 3062.0 2877.0 595.0 1995.0 14.0 
+2 관외사전투표 12957.0 12955.0 4393.0 8171.0 48.0 
+3 신사동 소계 13922.0 8672.0 1581.0 6910.0 20.0 
+4 관내사전투표 2667.0 2667.0 632.0 1977.0 6.0 
+5 신사동제1투 2313.0 1052.0 205.0 827.0 1.0 
+6 신사동제2투 1740.0 733.0 220.0 492.0 3.0 
+7 신사동제3투 1896.0 813.0 261.0 508.0 6.0 
+8 신사동제4투 2812.0 1736.0 112.0 1611.0 0.0 
+9 신사동제5투 2494.0 1671.0 151.0 1495.0 4.0 
+
+ 국가혁명당\n허경영 미래당\n오태양 민생당\n이수봉 ... 여성의당\n김진아 진보당\n송명숙 무소속\n정동희 \
+0 2005.0 229.0 424.0 ... 1212.0 274.0 82.0 
+1 97.0 11.0 24.0 ... 2.0 6.0 8.0 
+2 100.0 18.0 18.0 ... 67.0 23.0 6.0 
+3 45.0 6.0 15.0 ... 36.0 5.0 3.0 
+4 12.0 3.0 6.0 ... 8.0 3.0 1.0 
+5 8.0 1.0 1.0 ... 4.0 0.0 1.0 
+6 10.0 0.0 2.0 ... 5.0 0.0 0.0 
+7 8.0 0.0 3.0 ... 14.0 2.0 0.0 
+8 2.0 1.0 2.0 ... 2.0 0.0 1.0 
+9 5.0 1.0 1.0 ... 3.0 0.0 0.0 
+
+ 무소속\n이도엽 무소속\n신지예 계 후보자별 득표수 무효\n투표수 시도 시군구 
+0 47.0 655.0 275084.0 1401.0 175859.0 서울특별시 강남구 
+1 2.0 8.0 2765.0 112.0 185.0 서울특별시 강남구 
+2 2.0 39.0 12885.0 70.0 2.0 서울특별시 강남구 
+3 1.0 20.0 8643.0 29.0 5250.0 서울특별시 강남구 
+4 1.0 5.0 2654.0 13.0 0.0 서울특별시 강남구 
+5 0.0 2.0 1050.0 2.0 1261.0 서울특별시 강남구 
+6 0.0 1.0 733.0 0.0 1007.0 서울특별시 강남구 
+7 0.0 6.0 809.0 4.0 1083.0 서울특별시 강남구 
+8 0.0 1.0 1732.0 4.0 1076.0 서울특별시 강남구 
+9 0.0 5.0 1665.0 6.0 823.0 서울특별시 강남구 
+
+[10 rows x 22 columns]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;어느정도 정리가 된 것으로 보인다.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

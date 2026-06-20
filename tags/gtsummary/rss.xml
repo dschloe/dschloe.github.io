@@ -1,26 +1,952 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Gtsummary on Data Science | DSChloe</title>
-    <link>https://dschloe.github.io/tags/gtsummary/</link>
-    <description>Recent content in Gtsummary on Data Science | DSChloe</description>
-    <generator>Hugo</generator>
-    <language>en-US</language>
-    <lastBuildDate>Tue, 04 Aug 2020 21:00:00 +0900</lastBuildDate>
-    <atom:link href="https://dschloe.github.io/tags/gtsummary/rss.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>ch 13 - Reliability</title>
-      <link>https://dschloe.github.io/programming/2020/08/ch_13_reliability/</link>
-      <pubDate>Tue, 04 Aug 2020 21:00:00 +0900</pubDate>
-      <guid>https://dschloe.github.io/programming/2020/08/ch_13_reliability/</guid>
-      <description>&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;PLS-SEM의 분석과정에서 척도(측정변수와 잠재변수)의 신뢰도와 타당도를 확보하는 것은 매우 중요하며, 신뢰도와 타당도가 확보되지 않으면 모델 추정 결과가 의미가 없기 때문임&lt;/li&gt;&#xA;&lt;li&gt;즉, 구조모델의 추정을 실행하려면 사전에 반드시 측정모델에 대한 평가과정을 통해 신뢰도와 타당도 확보 필요&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;i-주요-개념&#34;&gt;I. 주요 개념&lt;/h2&gt;&#xA;&lt;h3 id=&#34;1-신뢰도&#34;&gt;(1) 신뢰도&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;잠재변수의 측정에 있어서 얼마나 일관성이 있는가의 정도 의미&#xA;&lt;ul&gt;&#xA;&lt;li&gt;검사도구의 일관성을 말하며, 일관성이란 잠재변수를 여러 번에 걸쳐 측정했을 때 매번 같은 결과를 도출할 수 있는 정도.&lt;/li&gt;&#xA;&lt;li&gt;내적 일관성 신뢰(Internal Consistency Reliability)로 평가&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h3 id=&#34;2-타당도&#34;&gt;(2) 타당도&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;타당도의 기본 정의는 실제 측정하고자 하는 잠재변수를 정확하게 측정하고 있는 정도&#xA;&lt;ul&gt;&#xA;&lt;li&gt;PLS-SEM에서는 집중타당도(&lt;code&gt;Convergent Validity&lt;/code&gt;)와 판별타당도(&lt;code&gt;Discriminant Validity&lt;/code&gt;)를 사용한다.&lt;/li&gt;&#xA;&lt;li&gt;전자는 하나의 잠재변수를 측정하기 위해 사용되는 척도의 구성항목들 간에 상관관계가 높아야 집중타당도가 있다고 볼 수 있고, 후자는 하나의 잠재변수와 다른 잠재변수간 상관관계가 낮을수록 판별 타당도가 높다고 판단함.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h3 id=&#34;3-pls-sem-분석-결과의-쳬계적인-평가-단계&#34;&gt;(3) PLS-SEM 분석 결과의 쳬계적인 평가 단계&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;반영적 측정모델: 내적 일관성 신뢰도, 집중타당도, 판별타당도&lt;/li&gt;&#xA;&lt;li&gt;형성적 측정모델: 집중타당도, 다중공선성, 외부가중치와 외부적재치의 유의성과 적합성&lt;/li&gt;&#xA;&lt;li&gt;구조모델의 평가기준: 다중공선성, 결정계수 $R^2$, 효과크기 $f^2$, 예측적 적합성 $Q^2$, 경로계수의 유의성과 적합성&lt;/li&gt;&#xA;&lt;li&gt;PLS-SEM의 평가 단계: 제 1단계는 측정모델(Outer Model)을 평가하는 것이며, 제 2단계는 구조모델(Inner Model)을 평가하는 것이다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;ii-설문조사-데이터-분석&#34;&gt;II. 설문조사 데이터 분석&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;이제 설문지를 분석해본다.&lt;/li&gt;&#xA;&lt;li&gt;필수 패키지를 확인한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(readr) &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(dplyr)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(kableExtra) &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(psy) &lt;span style=&#34;color:#75715e&#34;&gt;# 신뢰도&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(corrplot) &lt;span style=&#34;color:#75715e&#34;&gt;# 상관계수&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(psychometric) &lt;span style=&#34;color:#75715e&#34;&gt;# 타당도 &lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;1-데이터-수집&#34;&gt;(1) 데이터 수집&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;먼저 수집된 설문조사 데이터를 확인한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;data &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;read_csv&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;data/thesis_mater.csv&amp;#39;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;distinct&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# 중복데이터 제거&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;rename&lt;/span&gt;(Position &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; founder_employee, &lt;span style=&#34;color:#75715e&#34;&gt;# 출력을 위한 변수명 정리&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         Age &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; age_of_respondent, &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         Education &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Education_Level) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;slice&lt;/span&gt;(&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;)) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  dplyr&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(Firm_Age&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;Business_Area))&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;data &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;head&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;kable&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;kable_styling&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;striped&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;scroll_box&lt;/span&gt;(width &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;100%&amp;#34;&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div style=&#34;border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; &#34;&gt;&lt;table class=&#34;table table-striped&#34; style=&#34;margin-left: auto; margin-right: auto;&#34;&gt;&#xA;    &lt;thead&gt;&#xA;     &lt;tr&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; EI_1 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; EI_2 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; EI_3 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; EP_1 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; EP_2 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; EP_3 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; ER_1 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; ER_2 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; ER_3 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; SS_1 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; SS_2 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; SS_3 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; SC_1 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; SC_2 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; SC_3 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; SR_1 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; SR_2 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; SR_3 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; F1 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; F2 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; F3 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; NF1 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; NF2 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:right;&#34;&gt; NF3 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:left;&#34;&gt; Firm_Age &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:left;&#34;&gt; Firm_Size &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:left;&#34;&gt; WE1 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:left;&#34;&gt; WE2 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:left;&#34;&gt; WE3 &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:left;&#34;&gt; gender &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:left;&#34;&gt; founder_employee &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:left;&#34;&gt; age_of_respondent &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:left;&#34;&gt; Education_Level &lt;/th&gt;&#xA;      &lt;th style=&#34;text-align:left;&#34;&gt; Business_Area &lt;/th&gt;&#xA;     &lt;/tr&gt;&#xA;    &lt;/thead&gt;&#xA;   &lt;tbody&gt;&#xA;     &lt;tr&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; 5 years above &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Above 15 members &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; No, I don&#39;t have experience &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Yes &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Yes &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Female &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Employee &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; 30-39 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Undergraduate School &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Others &lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Less than 2 years &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Less than 5 members &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; No, I don&#39;t have experience &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; No &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Yes &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Male &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Employee &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Younger than 30 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Undergraduate School &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Media and Entertainment &lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; 5 years above &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Less than 5 members &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; As founder or employee, I have startup experiences more than 3 times &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; No &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Yes &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Female &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Founder of Company &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Younger than 30 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Undergraduate School &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Others &lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Less than 2 years &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Less than 5 members &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; No, I don&#39;t have experience &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Yes &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Yes &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Male &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Employee &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Younger than 30 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Undergraduate School &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Others &lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 5 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; 3-4 years &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Less than 5 members &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; As founder or employee, I have startup experiences more than 3 times &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; No &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Yes &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Male &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Founder of Company &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; 30-39 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Undergraduate School &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Others &lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 4 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 2 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 3 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:right;&#34;&gt; 1 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; 5 years above &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; 5-9 members &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; As founder or employee,  I have startup experience, one time &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; No &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; No &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Female &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Employee &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Younger than 30 &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Undergraduate School &lt;/td&gt;&#xA;      &lt;td style=&#34;text-align:left;&#34;&gt; Others &lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;   &lt;/tbody&gt;&#xA;   &lt;/table&gt;&lt;/div&gt;&#xA;&lt;h3 id=&#34;2-상관관계-확인&#34;&gt;(2) 상관관계 확인&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;각 척도(Item)에서의 상관관계를 확인해본다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;M &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;cor&lt;/span&gt;(data)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;corrplot&lt;/span&gt;(M, type&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;upper&amp;#34;&lt;/span&gt;, order&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;hclust&amp;#34;&lt;/span&gt;, &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         col&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;RColorBrewer&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;brewer.pal&lt;/span&gt;(n&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;, name&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;RdBu&amp;#34;&lt;/span&gt;))&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://dschloe.github.io/img/programming/2020/08/ch_13_reliability/unnamed-chunk-3-1.png&#34; alt=&#34;&#34;&gt;&lt;!-- --&gt;&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>ch 12 - Demographic of Respondent in R</title>
-      <link>https://dschloe.github.io/programming/2020/07/ch_12_demographic_of_respondents_blog/</link>
-      <pubDate>Thu, 30 Jul 2020 16:00:00 +0900</pubDate>
-      <guid>https://dschloe.github.io/programming/2020/07/ch_12_demographic_of_respondents_blog/</guid>
-      <description>&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;지난 시간에 설문조사 전처리에 대해 배웠다면 이번에는 경영/사회과학 논문에서 필수적으로 기재해야 하는 &lt;code&gt;표본의 특성&lt;/code&gt;을 간단한 프로그램으로 요약하는 것을 코딩한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h3 id=&#34;1-주요-패키지&#34;&gt;(1) 주요 패키지&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;이번 포스트부터 &lt;a href=&#34;https://gt.rstudio.com/&#34;&gt;gt&lt;/a&gt; 패키지를 사용하려고 한다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;gt: &lt;a href=&#34;https://ggplot2.tidyverse.org/&#34;&gt;ggplot2&lt;/a&gt;와 같이 &lt;code&gt;Table&lt;/code&gt;를 문법으로 컨트롤 할 수 있도록 구현된 패키지이다.&lt;/li&gt;&#xA;&lt;li&gt;kableExtra: &lt;code&gt;HTML&lt;/code&gt;로 출력할 수 있도록 도와주는 패키지이다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(readr)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(dplyr)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(gt)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(gtsummary)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;i-데이터-가져오기&#34;&gt;I. 데이터 가져오기&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;우선 데이터를 불러온다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;data &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;read_csv&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;data/thesis_mater.csv&amp;#39;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;distinct&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# 중복데이터 제거&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;rename&lt;/span&gt;(Position &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; founder_employee, &lt;span style=&#34;color:#75715e&#34;&gt;# 출력을 위한 변수명 정리&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         Age &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; age_of_respondent, &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         Education &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Education_Level)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;(data &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(Firm_Age&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;Business_Area))&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;&#xA;&lt;li&gt;전체 34개의 변수 중에서, &lt;code&gt;문자열&lt;/code&gt; 관련 데이터만 추출하였다.&lt;/li&gt;&#xA;&lt;li&gt;어떤 데이터를 표본의 특성으로 삼아야 할까?&#xA;&lt;ul&gt;&#xA;&lt;li&gt;위 10개의 데이터에는 통제변수&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;가 들어가 있다.&lt;/li&gt;&#xA;&lt;li&gt;통제변수는 표본의 특징이 아니기 때문에 통제변인을 제외한 나머지 변수들을 추출한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;## Rows: 103&#xA;## Columns: 10&#xA;## $ Firm_Age      &amp;lt;chr&amp;gt; &amp;#34;5 years above&amp;#34;, &amp;#34;Less than 2 years&amp;#34;, &amp;#34;5 years above&amp;#34;, …&#xA;## $ Firm_Size     &amp;lt;chr&amp;gt; &amp;#34;Above 15 members&amp;#34;, &amp;#34;Less than 5 members&amp;#34;, &amp;#34;Less than 5…&#xA;## $ WE1           &amp;lt;chr&amp;gt; &amp;#34;No, I don&amp;#39;t have experience&amp;#34;, &amp;#34;No, I don&amp;#39;t have experi…&#xA;## $ WE2           &amp;lt;chr&amp;gt; &amp;#34;Yes&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;Yes&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;No&amp;#34;,…&#xA;## $ WE3           &amp;lt;chr&amp;gt; &amp;#34;Yes&amp;#34;, &amp;#34;Yes&amp;#34;, &amp;#34;Yes&amp;#34;, &amp;#34;Yes&amp;#34;, &amp;#34;Yes&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;Yes&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;…&#xA;## $ gender        &amp;lt;chr&amp;gt; &amp;#34;Female&amp;#34;, &amp;#34;Male&amp;#34;, &amp;#34;Female&amp;#34;, &amp;#34;Male&amp;#34;, &amp;#34;Male&amp;#34;, &amp;#34;Female&amp;#34;, &amp;#34;…&#xA;## $ Position      &amp;lt;chr&amp;gt; &amp;#34;Employee&amp;#34;, &amp;#34;Employee&amp;#34;, &amp;#34;Founder of Company&amp;#34;, &amp;#34;Employee…&#xA;## $ Age           &amp;lt;chr&amp;gt; &amp;#34;30-39&amp;#34;, &amp;#34;Younger than 30&amp;#34;, &amp;#34;Younger than 30&amp;#34;, &amp;#34;Younger…&#xA;## $ Education     &amp;lt;chr&amp;gt; &amp;#34;Undergraduate School&amp;#34;, &amp;#34;Undergraduate School&amp;#34;, &amp;#34;Underg…&#xA;## $ Business_Area &amp;lt;chr&amp;gt; &amp;#34;Others&amp;#34;, &amp;#34;Media and Entertainment&amp;#34;, &amp;#34;Others&amp;#34;, &amp;#34;Others&amp;#34;…&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;&#xA;&lt;li&gt;표본의 특성을 기술하는 데이터는 아래와 같이 추출한다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;gender, founder_employee, age_of_respondent, educational_level, business_area&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;data2 &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; data &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(gender, Position, Age, Education, Business_Area)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;(data2)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;## Rows: 103&#xA;## Columns: 5&#xA;## $ gender        &amp;lt;chr&amp;gt; &amp;#34;Female&amp;#34;, &amp;#34;Male&amp;#34;, &amp;#34;Female&amp;#34;, &amp;#34;Male&amp;#34;, &amp;#34;Male&amp;#34;, &amp;#34;Female&amp;#34;, &amp;#34;…&#xA;## $ Position      &amp;lt;chr&amp;gt; &amp;#34;Employee&amp;#34;, &amp;#34;Employee&amp;#34;, &amp;#34;Founder of Company&amp;#34;, &amp;#34;Employee…&#xA;## $ Age           &amp;lt;chr&amp;gt; &amp;#34;30-39&amp;#34;, &amp;#34;Younger than 30&amp;#34;, &amp;#34;Younger than 30&amp;#34;, &amp;#34;Younger…&#xA;## $ Education     &amp;lt;chr&amp;gt; &amp;#34;Undergraduate School&amp;#34;, &amp;#34;Undergraduate School&amp;#34;, &amp;#34;Underg…&#xA;## $ Business_Area &amp;lt;chr&amp;gt; &amp;#34;Others&amp;#34;, &amp;#34;Media and Entertainment&amp;#34;, &amp;#34;Others&amp;#34;, &amp;#34;Others&amp;#34;…&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;ii-표본-특성-표-출력&#34;&gt;II. 표본 특성 표 출력&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;보통 논문에 들어가는 표본의 특징은 Category, Frequency, and Percentage(%) 정도만 필요하다.&lt;/li&gt;&#xA;&lt;li&gt;이 때, &lt;code&gt;Table&lt;/code&gt;을 가공해줄 수 있는 &lt;a href=&#34;https://www.danieldsjoberg.com/gtsummary/index.html&#34;&gt;gtsummary&lt;/a&gt; 패키지를 활용한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;set_gtsummary_theme&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;theme_gtsummary_journal&lt;/span&gt;(journal &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;jama&amp;#34;&lt;/span&gt;))&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;data2 &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;tbl_summary&lt;/span&gt;(by &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; gender) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;add_overall&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;add_n&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;modify_header&lt;/span&gt;(label &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;**Variable**&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# update the column header&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;bold_labels&lt;/span&gt;()&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;html {&#xA;  font-family: -apple-system, BlinkMacSystemFont, &#39;Segoe UI&#39;, Roboto, Oxygen, Ubuntu, Cantarell, &#39;Helvetica Neue&#39;, &#39;Fira Sans&#39;, &#39;Droid Sans&#39;, Arial, sans-serif;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_table {&#xA;  display: table;&#xA;  border-collapse: collapse;&#xA;  margin-left: auto;&#xA;  margin-right: auto;&#xA;  color: #333333;&#xA;  font-size: 16px;&#xA;  background-color: #FFFFFF;&#xA;  width: auto;&#xA;  border-top-style: solid;&#xA;  border-top-width: 2px;&#xA;  border-top-color: #A8A8A8;&#xA;  border-right-style: none;&#xA;  border-right-width: 2px;&#xA;  border-right-color: #D3D3D3;&#xA;  border-bottom-style: solid;&#xA;  border-bottom-width: 2px;&#xA;  border-bottom-color: #A8A8A8;&#xA;  border-left-style: none;&#xA;  border-left-width: 2px;&#xA;  border-left-color: #D3D3D3;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_heading {&#xA;  background-color: #FFFFFF;&#xA;  text-align: center;&#xA;  border-bottom-color: #FFFFFF;&#xA;  border-left-style: none;&#xA;  border-left-width: 1px;&#xA;  border-left-color: #D3D3D3;&#xA;  border-right-style: none;&#xA;  border-right-width: 1px;&#xA;  border-right-color: #D3D3D3;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_title {&#xA;  color: #333333;&#xA;  font-size: 125%;&#xA;  font-weight: initial;&#xA;  padding-top: 4px;&#xA;  padding-bottom: 4px;&#xA;  border-bottom-color: #FFFFFF;&#xA;  border-bottom-width: 0;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_subtitle {&#xA;  color: #333333;&#xA;  font-size: 85%;&#xA;  font-weight: initial;&#xA;  padding-top: 0;&#xA;  padding-bottom: 4px;&#xA;  border-top-color: #FFFFFF;&#xA;  border-top-width: 0;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_bottom_border {&#xA;  border-bottom-style: solid;&#xA;  border-bottom-width: 2px;&#xA;  border-bottom-color: #D3D3D3;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_col_headings {&#xA;  border-top-style: solid;&#xA;  border-top-width: 2px;&#xA;  border-top-color: #D3D3D3;&#xA;  border-bottom-style: solid;&#xA;  border-bottom-width: 2px;&#xA;  border-bottom-color: #D3D3D3;&#xA;  border-left-style: none;&#xA;  border-left-width: 1px;&#xA;  border-left-color: #D3D3D3;&#xA;  border-right-style: none;&#xA;  border-right-width: 1px;&#xA;  border-right-color: #D3D3D3;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_col_heading {&#xA;  color: #333333;&#xA;  background-color: #FFFFFF;&#xA;  font-size: 100%;&#xA;  font-weight: normal;&#xA;  text-transform: inherit;&#xA;  border-left-style: none;&#xA;  border-left-width: 1px;&#xA;  border-left-color: #D3D3D3;&#xA;  border-right-style: none;&#xA;  border-right-width: 1px;&#xA;  border-right-color: #D3D3D3;&#xA;  vertical-align: bottom;&#xA;  padding-top: 5px;&#xA;  padding-bottom: 6px;&#xA;  padding-left: 5px;&#xA;  padding-right: 5px;&#xA;  overflow-x: hidden;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_column_spanner_outer {&#xA;  color: #333333;&#xA;  background-color: #FFFFFF;&#xA;  font-size: 100%;&#xA;  font-weight: normal;&#xA;  text-transform: inherit;&#xA;  padding-top: 0;&#xA;  padding-bottom: 0;&#xA;  padding-left: 4px;&#xA;  padding-right: 4px;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_column_spanner_outer:first-child {&#xA;  padding-left: 0;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_column_spanner_outer:last-child {&#xA;  padding-right: 0;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_column_spanner {&#xA;  border-bottom-style: solid;&#xA;  border-bottom-width: 2px;&#xA;  border-bottom-color: #D3D3D3;&#xA;  vertical-align: bottom;&#xA;  padding-top: 5px;&#xA;  padding-bottom: 6px;&#xA;  overflow-x: hidden;&#xA;  display: inline-block;&#xA;  width: 100%;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_group_heading {&#xA;  padding: 8px;&#xA;  color: #333333;&#xA;  background-color: #FFFFFF;&#xA;  font-size: 100%;&#xA;  font-weight: initial;&#xA;  text-transform: inherit;&#xA;  border-top-style: solid;&#xA;  border-top-width: 2px;&#xA;  border-top-color: #D3D3D3;&#xA;  border-bottom-style: solid;&#xA;  border-bottom-width: 2px;&#xA;  border-bottom-color: #D3D3D3;&#xA;  border-left-style: none;&#xA;  border-left-width: 1px;&#xA;  border-left-color: #D3D3D3;&#xA;  border-right-style: none;&#xA;  border-right-width: 1px;&#xA;  border-right-color: #D3D3D3;&#xA;  vertical-align: middle;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_empty_group_heading {&#xA;  padding: 0.5px;&#xA;  color: #333333;&#xA;  background-color: #FFFFFF;&#xA;  font-size: 100%;&#xA;  font-weight: initial;&#xA;  border-top-style: solid;&#xA;  border-top-width: 2px;&#xA;  border-top-color: #D3D3D3;&#xA;  border-bottom-style: solid;&#xA;  border-bottom-width: 2px;&#xA;  border-bottom-color: #D3D3D3;&#xA;  vertical-align: middle;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_striped {&#xA;  background-color: rgba(128, 128, 128, 0.05);&#xA;}&#xA;&#xA;#ulphjxwejp .gt_from_md &gt; :first-child {&#xA;  margin-top: 0;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_from_md &gt; :last-child {&#xA;  margin-bottom: 0;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_row {&#xA;  padding-top: 8px;&#xA;  padding-bottom: 8px;&#xA;  padding-left: 5px;&#xA;  padding-right: 5px;&#xA;  margin: 10px;&#xA;  border-top-style: solid;&#xA;  border-top-width: 1px;&#xA;  border-top-color: #D3D3D3;&#xA;  border-left-style: none;&#xA;  border-left-width: 1px;&#xA;  border-left-color: #D3D3D3;&#xA;  border-right-style: none;&#xA;  border-right-width: 1px;&#xA;  border-right-color: #D3D3D3;&#xA;  vertical-align: middle;&#xA;  overflow-x: hidden;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_stub {&#xA;  color: #333333;&#xA;  background-color: #FFFFFF;&#xA;  font-size: 100%;&#xA;  font-weight: initial;&#xA;  text-transform: inherit;&#xA;  border-right-style: solid;&#xA;  border-right-width: 2px;&#xA;  border-right-color: #D3D3D3;&#xA;  padding-left: 12px;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_summary_row {&#xA;  color: #333333;&#xA;  background-color: #FFFFFF;&#xA;  text-transform: inherit;&#xA;  padding-top: 8px;&#xA;  padding-bottom: 8px;&#xA;  padding-left: 5px;&#xA;  padding-right: 5px;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_first_summary_row {&#xA;  padding-top: 8px;&#xA;  padding-bottom: 8px;&#xA;  padding-left: 5px;&#xA;  padding-right: 5px;&#xA;  border-top-style: solid;&#xA;  border-top-width: 2px;&#xA;  border-top-color: #D3D3D3;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_grand_summary_row {&#xA;  color: #333333;&#xA;  background-color: #FFFFFF;&#xA;  text-transform: inherit;&#xA;  padding-top: 8px;&#xA;  padding-bottom: 8px;&#xA;  padding-left: 5px;&#xA;  padding-right: 5px;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_first_grand_summary_row {&#xA;  padding-top: 8px;&#xA;  padding-bottom: 8px;&#xA;  padding-left: 5px;&#xA;  padding-right: 5px;&#xA;  border-top-style: double;&#xA;  border-top-width: 6px;&#xA;  border-top-color: #D3D3D3;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_table_body {&#xA;  border-top-style: solid;&#xA;  border-top-width: 2px;&#xA;  border-top-color: #D3D3D3;&#xA;  border-bottom-style: solid;&#xA;  border-bottom-width: 2px;&#xA;  border-bottom-color: #D3D3D3;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_footnotes {&#xA;  color: #333333;&#xA;  background-color: #FFFFFF;&#xA;  border-bottom-style: none;&#xA;  border-bottom-width: 2px;&#xA;  border-bottom-color: #D3D3D3;&#xA;  border-left-style: none;&#xA;  border-left-width: 2px;&#xA;  border-left-color: #D3D3D3;&#xA;  border-right-style: none;&#xA;  border-right-width: 2px;&#xA;  border-right-color: #D3D3D3;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_footnote {&#xA;  margin: 0px;&#xA;  font-size: 90%;&#xA;  padding: 4px;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_sourcenotes {&#xA;  color: #333333;&#xA;  background-color: #FFFFFF;&#xA;  border-bottom-style: none;&#xA;  border-bottom-width: 2px;&#xA;  border-bottom-color: #D3D3D3;&#xA;  border-left-style: none;&#xA;  border-left-width: 2px;&#xA;  border-left-color: #D3D3D3;&#xA;  border-right-style: none;&#xA;  border-right-width: 2px;&#xA;  border-right-color: #D3D3D3;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_sourcenote {&#xA;  font-size: 90%;&#xA;  padding: 4px;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_left {&#xA;  text-align: left;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_center {&#xA;  text-align: center;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_right {&#xA;  text-align: right;&#xA;  font-variant-numeric: tabular-nums;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_font_normal {&#xA;  font-weight: normal;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_font_bold {&#xA;  font-weight: bold;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_font_italic {&#xA;  font-style: italic;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_super {&#xA;  font-size: 65%;&#xA;}&#xA;&#xA;#ulphjxwejp .gt_footnote_marks {&#xA;  font-style: italic;&#xA;  font-size: 65%;&#xA;}&#xA;&lt;/style&gt;&#xA;&lt;div id=&#34;ulphjxwejp&#34; style=&#34;overflow-x:auto;overflow-y:auto;width:auto;height:auto;&#34;&gt;&lt;table class=&#34;gt_table&#34;&gt;&#xA;  &#xA;  &lt;thead class=&#34;gt_col_headings&#34;&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;th class=&#34;gt_col_heading gt_columns_bottom_border gt_left&#34; rowspan=&#34;1&#34; colspan=&#34;1&#34;&gt;&lt;strong&gt;Variable&lt;/strong&gt;&lt;/th&gt;&#xA;      &lt;th class=&#34;gt_col_heading gt_columns_bottom_border gt_center&#34; rowspan=&#34;1&#34; colspan=&#34;1&#34;&gt;&lt;strong&gt;N&lt;/strong&gt;&lt;/th&gt;&#xA;      &lt;th class=&#34;gt_col_heading gt_columns_bottom_border gt_center&#34; rowspan=&#34;1&#34; colspan=&#34;1&#34;&gt;&lt;strong&gt;Overall&lt;/strong&gt;, N = 103&lt;/th&gt;&#xA;      &lt;th class=&#34;gt_col_heading gt_columns_bottom_border gt_center&#34; rowspan=&#34;1&#34; colspan=&#34;1&#34;&gt;&lt;strong&gt;Female&lt;/strong&gt;, N = 62&lt;sup class=&#34;gt_footnote_marks&#34;&gt;1&lt;/sup&gt;&lt;/th&gt;&#xA;      &lt;th class=&#34;gt_col_heading gt_columns_bottom_border gt_center&#34; rowspan=&#34;1&#34; colspan=&#34;1&#34;&gt;&lt;strong&gt;Male&lt;/strong&gt;, N = 41&lt;sup class=&#34;gt_footnote_marks&#34;&gt;1&lt;/sup&gt;&lt;/th&gt;&#xA;    &lt;/tr&gt;&#xA;  &lt;/thead&gt;&#xA;  &lt;tbody class=&#34;gt_table_body&#34;&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;font-weight: bold;&#34;&gt;Position&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;103&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Employee&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;68 (66)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;35 (56)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;33 (80)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Founder of Company&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;35 (34)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;27 (44)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;8 (20)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;font-weight: bold;&#34;&gt;Age&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;103&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;30-39&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;37 (36)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;19 (31)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;18 (44)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;40-49&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;8 (7.8)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;4 (6.5)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;4 (9.8)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;50 or above&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;2 (1.9)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;2 (3.2)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;0 (0)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Younger than 30&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;56 (54)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;37 (60)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;19 (46)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;font-weight: bold;&#34;&gt;Education&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;103&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Graduate School&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;25 (24)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;15 (24)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;10 (24)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;High School&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;7 (6.8)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;6 (9.7)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;1 (2.4)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Undergraduate School&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;71 (69)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;41 (66)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;30 (73)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;font-weight: bold;&#34;&gt;Business_Area&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;103&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;E-Commerce&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;16 (16)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;11 (18)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;5 (12)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Education&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;4 (3.9)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;2 (3.2)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;2 (4.9)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Energy&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;1 (1.0)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;0 (0)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;1 (2.4)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Enterprise Services&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;4 (3.9)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;2 (3.2)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;2 (4.9)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Fintech&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;9 (8.7)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;6 (9.7)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;3 (7.3)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Logistics&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;5 (4.9)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;1 (1.6)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;4 (9.8)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Manufacturing&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;3 (2.9)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;2 (3.2)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;1 (2.4)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Media and Entertainment&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;7 (6.8)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;4 (6.5)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;3 (7.3)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Medical and Healthcare&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;1 (1.0)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;1 (1.6)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;0 (0)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Online to Offline Commerce&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;2 (1.9)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;1 (1.6)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;1 (2.4)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Others&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;45 (44)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;31 (50)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;14 (34)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Real Estate and Household&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;1 (1.0)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;0 (0)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;1 (2.4)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Transportation/Automotive&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;4 (3.9)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;0 (0)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;4 (9.8)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;    &lt;tr&gt;&#xA;      &lt;td class=&#34;gt_row gt_left&#34; style=&#34;text-align: left; text-indent: 10px;&#34;&gt;Travel&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;1 (1.0)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;1 (1.6)&lt;/td&gt;&#xA;      &lt;td class=&#34;gt_row gt_center&#34;&gt;0 (0)&lt;/td&gt;&#xA;    &lt;/tr&gt;&#xA;  &lt;/tbody&gt;&#xA;  &#xA;  &lt;tfoot&gt;&#xA;    &lt;tr class=&#34;gt_footnotes&#34;&gt;&#xA;      &lt;td colspan=&#34;5&#34;&gt;&#xA;        &lt;p class=&#34;gt_footnote&#34;&gt;&#xA;          &lt;sup class=&#34;gt_footnote_marks&#34;&gt;&#xA;            &lt;em&gt;1&lt;/em&gt;&#xA;          &lt;/sup&gt;&#xA;           &#xA;          Statistics presented: n (%)&#xA;          &lt;br /&gt;&#xA;        &lt;/p&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Gtsummary on Data Science | DSChloe</title><link>https://dschloe.github.io/tags/gtsummary/</link><description>Recent content in Gtsummary on Data Science | DSChloe</description><generator>Hugo</generator><language>en-US</language><lastBuildDate>Tue, 04 Aug 2020 21:00:00 +0900</lastBuildDate><atom:link href="https://dschloe.github.io/tags/gtsummary/rss.xml" rel="self" type="application/rss+xml"/><item><title>ch 13 - Reliability</title><link>https://dschloe.github.io/programming/2020/08/ch_13_reliability/</link><pubDate>Tue, 04 Aug 2020 21:00:00 +0900</pubDate><guid>https://dschloe.github.io/programming/2020/08/ch_13_reliability/</guid><description>&lt;h2 id="intro"&gt;Intro&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;PLS-SEM의 분석과정에서 척도(측정변수와 잠재변수)의 신뢰도와 타당도를 확보하는 것은 매우 중요하며, 신뢰도와 타당도가 확보되지 않으면 모델 추정 결과가 의미가 없기 때문임&lt;/li&gt;
+&lt;li&gt;즉, 구조모델의 추정을 실행하려면 사전에 반드시 측정모델에 대한 평가과정을 통해 신뢰도와 타당도 확보 필요&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="i-주요-개념"&gt;I. 주요 개념&lt;/h2&gt;
+&lt;h3 id="1-신뢰도"&gt;(1) 신뢰도&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;잠재변수의 측정에 있어서 얼마나 일관성이 있는가의 정도 의미
+&lt;ul&gt;
+&lt;li&gt;검사도구의 일관성을 말하며, 일관성이란 잠재변수를 여러 번에 걸쳐 측정했을 때 매번 같은 결과를 도출할 수 있는 정도.&lt;/li&gt;
+&lt;li&gt;내적 일관성 신뢰(Internal Consistency Reliability)로 평가&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="2-타당도"&gt;(2) 타당도&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;타당도의 기본 정의는 실제 측정하고자 하는 잠재변수를 정확하게 측정하고 있는 정도
+&lt;ul&gt;
+&lt;li&gt;PLS-SEM에서는 집중타당도(&lt;code&gt;Convergent Validity&lt;/code&gt;)와 판별타당도(&lt;code&gt;Discriminant Validity&lt;/code&gt;)를 사용한다.&lt;/li&gt;
+&lt;li&gt;전자는 하나의 잠재변수를 측정하기 위해 사용되는 척도의 구성항목들 간에 상관관계가 높아야 집중타당도가 있다고 볼 수 있고, 후자는 하나의 잠재변수와 다른 잠재변수간 상관관계가 낮을수록 판별 타당도가 높다고 판단함.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="3-pls-sem-분석-결과의-쳬계적인-평가-단계"&gt;(3) PLS-SEM 분석 결과의 쳬계적인 평가 단계&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;반영적 측정모델: 내적 일관성 신뢰도, 집중타당도, 판별타당도&lt;/li&gt;
+&lt;li&gt;형성적 측정모델: 집중타당도, 다중공선성, 외부가중치와 외부적재치의 유의성과 적합성&lt;/li&gt;
+&lt;li&gt;구조모델의 평가기준: 다중공선성, 결정계수 $R^2$, 효과크기 $f^2$, 예측적 적합성 $Q^2$, 경로계수의 유의성과 적합성&lt;/li&gt;
+&lt;li&gt;PLS-SEM의 평가 단계: 제 1단계는 측정모델(Outer Model)을 평가하는 것이며, 제 2단계는 구조모델(Inner Model)을 평가하는 것이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="ii-설문조사-데이터-분석"&gt;II. 설문조사 데이터 분석&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;이제 설문지를 분석해본다.&lt;/li&gt;
+&lt;li&gt;필수 패키지를 확인한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-r" data-lang="r"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;library&lt;/span&gt;(readr) 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;library&lt;/span&gt;(dplyr)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;library&lt;/span&gt;(kableExtra) 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;library&lt;/span&gt;(psy) &lt;span style="color:#75715e"&gt;# 신뢰도&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;library&lt;/span&gt;(corrplot) &lt;span style="color:#75715e"&gt;# 상관계수&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;library&lt;/span&gt;(psychometric) &lt;span style="color:#75715e"&gt;# 타당도 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="1-데이터-수집"&gt;(1) 데이터 수집&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;먼저 수집된 설문조사 데이터를 확인한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-r" data-lang="r"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;read_csv&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;data/thesis_mater.csv&amp;#39;&lt;/span&gt;) &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;distinct&lt;/span&gt;() &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; &lt;span style="color:#75715e"&gt;# 중복데이터 제거&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;rename&lt;/span&gt;(Position &lt;span style="color:#f92672"&gt;=&lt;/span&gt; founder_employee, &lt;span style="color:#75715e"&gt;# 출력을 위한 변수명 정리&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Age &lt;span style="color:#f92672"&gt;=&lt;/span&gt; age_of_respondent, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Education &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Education_Level) &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;slice&lt;/span&gt;(&lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;c&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;)) &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; dplyr&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;select&lt;/span&gt;(&lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;c&lt;/span&gt;(Firm_Age&lt;span style="color:#f92672"&gt;:&lt;/span&gt;Business_Area))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;head&lt;/span&gt;() &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;kable&lt;/span&gt;() &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;kable_styling&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;striped&amp;#34;&lt;/span&gt;) &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;scroll_box&lt;/span&gt;(width &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;100%&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; "&gt;&lt;table class="table table-striped" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align:right;"&gt; EI_1 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; EI_2 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; EI_3 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; EP_1 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; EP_2 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; EP_3 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; ER_1 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; ER_2 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; ER_3 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; SS_1 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; SS_2 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; SS_3 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; SC_1 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; SC_2 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; SC_3 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; SR_1 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; SR_2 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; SR_3 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; F1 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; F2 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; F3 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; NF1 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; NF2 &lt;/th&gt;
+ &lt;th style="text-align:right;"&gt; NF3 &lt;/th&gt;
+ &lt;th style="text-align:left;"&gt; Firm_Age &lt;/th&gt;
+ &lt;th style="text-align:left;"&gt; Firm_Size &lt;/th&gt;
+ &lt;th style="text-align:left;"&gt; WE1 &lt;/th&gt;
+ &lt;th style="text-align:left;"&gt; WE2 &lt;/th&gt;
+ &lt;th style="text-align:left;"&gt; WE3 &lt;/th&gt;
+ &lt;th style="text-align:left;"&gt; gender &lt;/th&gt;
+ &lt;th style="text-align:left;"&gt; founder_employee &lt;/th&gt;
+ &lt;th style="text-align:left;"&gt; age_of_respondent &lt;/th&gt;
+ &lt;th style="text-align:left;"&gt; Education_Level &lt;/th&gt;
+ &lt;th style="text-align:left;"&gt; Business_Area &lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; 5 years above &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Above 15 members &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; No, I don't have experience &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Female &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Employee &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; 30-39 &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Undergraduate School &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Others &lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Less than 2 years &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Less than 5 members &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; No, I don't have experience &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Employee &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Younger than 30 &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Undergraduate School &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Media and Entertainment &lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; 5 years above &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Less than 5 members &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; As founder or employee, I have startup experiences more than 3 times &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Female &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Founder of Company &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Younger than 30 &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Undergraduate School &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Others &lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Less than 2 years &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Less than 5 members &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; No, I don't have experience &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Employee &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Younger than 30 &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Undergraduate School &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Others &lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; 3-4 years &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Less than 5 members &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; As founder or employee, I have startup experiences more than 3 times &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Founder of Company &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; 30-39 &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Undergraduate School &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Others &lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+ &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; 5 years above &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; 5-9 members &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; As founder or employee, I have startup experience, one time &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Female &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Employee &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Younger than 30 &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Undergraduate School &lt;/td&gt;
+ &lt;td style="text-align:left;"&gt; Others &lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+ &lt;/table&gt;&lt;/div&gt;
+&lt;h3 id="2-상관관계-확인"&gt;(2) 상관관계 확인&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;각 척도(Item)에서의 상관관계를 확인해본다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-r" data-lang="r"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;M &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;cor&lt;/span&gt;(data)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;corrplot&lt;/span&gt;(M, type&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;upper&amp;#34;&lt;/span&gt;, order&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;hclust&amp;#34;&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; col&lt;span style="color:#f92672"&gt;=&lt;/span&gt;RColorBrewer&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;brewer.pal&lt;/span&gt;(n&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;8&lt;/span&gt;, name&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;RdBu&amp;#34;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src="https://dschloe.github.io/img/programming/2020/08/ch_13_reliability/unnamed-chunk-3-1.png" alt=""&gt;&lt;!-- --&gt;&lt;/p&gt;</description></item><item><title>ch 12 - Demographic of Respondent in R</title><link>https://dschloe.github.io/programming/2020/07/ch_12_demographic_of_respondents_blog/</link><pubDate>Thu, 30 Jul 2020 16:00:00 +0900</pubDate><guid>https://dschloe.github.io/programming/2020/07/ch_12_demographic_of_respondents_blog/</guid><description>&lt;h2 id="intro"&gt;Intro&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;지난 시간에 설문조사 전처리에 대해 배웠다면 이번에는 경영/사회과학 논문에서 필수적으로 기재해야 하는 &lt;code&gt;표본의 특성&lt;/code&gt;을 간단한 프로그램으로 요약하는 것을 코딩한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="1-주요-패키지"&gt;(1) 주요 패키지&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;이번 포스트부터 &lt;a href="https://gt.rstudio.com/"&gt;gt&lt;/a&gt; 패키지를 사용하려고 한다.
+&lt;ul&gt;
+&lt;li&gt;gt: &lt;a href="https://ggplot2.tidyverse.org/"&gt;ggplot2&lt;/a&gt;와 같이 &lt;code&gt;Table&lt;/code&gt;를 문법으로 컨트롤 할 수 있도록 구현된 패키지이다.&lt;/li&gt;
+&lt;li&gt;kableExtra: &lt;code&gt;HTML&lt;/code&gt;로 출력할 수 있도록 도와주는 패키지이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-r" data-lang="r"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;library&lt;/span&gt;(readr)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;library&lt;/span&gt;(dplyr)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;library&lt;/span&gt;(gt)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;library&lt;/span&gt;(gtsummary)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="i-데이터-가져오기"&gt;I. 데이터 가져오기&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;우선 데이터를 불러온다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-r" data-lang="r"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;read_csv&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;data/thesis_mater.csv&amp;#39;&lt;/span&gt;) &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;distinct&lt;/span&gt;() &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; &lt;span style="color:#75715e"&gt;# 중복데이터 제거&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;rename&lt;/span&gt;(Position &lt;span style="color:#f92672"&gt;=&lt;/span&gt; founder_employee, &lt;span style="color:#75715e"&gt;# 출력을 위한 변수명 정리&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Age &lt;span style="color:#f92672"&gt;=&lt;/span&gt; age_of_respondent, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Education &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Education_Level)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;glimpse&lt;/span&gt;(data &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;select&lt;/span&gt;(Firm_Age&lt;span style="color:#f92672"&gt;:&lt;/span&gt;Business_Area))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;전체 34개의 변수 중에서, &lt;code&gt;문자열&lt;/code&gt; 관련 데이터만 추출하였다.&lt;/li&gt;
+&lt;li&gt;어떤 데이터를 표본의 특성으로 삼아야 할까?
+&lt;ul&gt;
+&lt;li&gt;위 10개의 데이터에는 통제변수&lt;sup id="fnref:1"&gt;&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref"&gt;1&lt;/a&gt;&lt;/sup&gt;가 들어가 있다.&lt;/li&gt;
+&lt;li&gt;통제변수는 표본의 특징이 아니기 때문에 통제변인을 제외한 나머지 변수들을 추출한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex="0"&gt;&lt;code&gt;## Rows: 103
+## Columns: 10
+## $ Firm_Age &amp;lt;chr&amp;gt; &amp;#34;5 years above&amp;#34;, &amp;#34;Less than 2 years&amp;#34;, &amp;#34;5 years above&amp;#34;, …
+## $ Firm_Size &amp;lt;chr&amp;gt; &amp;#34;Above 15 members&amp;#34;, &amp;#34;Less than 5 members&amp;#34;, &amp;#34;Less than 5…
+## $ WE1 &amp;lt;chr&amp;gt; &amp;#34;No, I don&amp;#39;t have experience&amp;#34;, &amp;#34;No, I don&amp;#39;t have experi…
+## $ WE2 &amp;lt;chr&amp;gt; &amp;#34;Yes&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;Yes&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;No&amp;#34;,…
+## $ WE3 &amp;lt;chr&amp;gt; &amp;#34;Yes&amp;#34;, &amp;#34;Yes&amp;#34;, &amp;#34;Yes&amp;#34;, &amp;#34;Yes&amp;#34;, &amp;#34;Yes&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;Yes&amp;#34;, &amp;#34;No&amp;#34;, &amp;#34;…
+## $ gender &amp;lt;chr&amp;gt; &amp;#34;Female&amp;#34;, &amp;#34;Male&amp;#34;, &amp;#34;Female&amp;#34;, &amp;#34;Male&amp;#34;, &amp;#34;Male&amp;#34;, &amp;#34;Female&amp;#34;, &amp;#34;…
+## $ Position &amp;lt;chr&amp;gt; &amp;#34;Employee&amp;#34;, &amp;#34;Employee&amp;#34;, &amp;#34;Founder of Company&amp;#34;, &amp;#34;Employee…
+## $ Age &amp;lt;chr&amp;gt; &amp;#34;30-39&amp;#34;, &amp;#34;Younger than 30&amp;#34;, &amp;#34;Younger than 30&amp;#34;, &amp;#34;Younger…
+## $ Education &amp;lt;chr&amp;gt; &amp;#34;Undergraduate School&amp;#34;, &amp;#34;Undergraduate School&amp;#34;, &amp;#34;Underg…
+## $ Business_Area &amp;lt;chr&amp;gt; &amp;#34;Others&amp;#34;, &amp;#34;Media and Entertainment&amp;#34;, &amp;#34;Others&amp;#34;, &amp;#34;Others&amp;#34;…
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;표본의 특성을 기술하는 데이터는 아래와 같이 추출한다.
+&lt;ul&gt;
+&lt;li&gt;gender, founder_employee, age_of_respondent, educational_level, business_area&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-r" data-lang="r"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data2 &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt; data &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;select&lt;/span&gt;(gender, Position, Age, Education, Business_Area)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;glimpse&lt;/span&gt;(data2)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre tabindex="0"&gt;&lt;code&gt;## Rows: 103
+## Columns: 5
+## $ gender &amp;lt;chr&amp;gt; &amp;#34;Female&amp;#34;, &amp;#34;Male&amp;#34;, &amp;#34;Female&amp;#34;, &amp;#34;Male&amp;#34;, &amp;#34;Male&amp;#34;, &amp;#34;Female&amp;#34;, &amp;#34;…
+## $ Position &amp;lt;chr&amp;gt; &amp;#34;Employee&amp;#34;, &amp;#34;Employee&amp;#34;, &amp;#34;Founder of Company&amp;#34;, &amp;#34;Employee…
+## $ Age &amp;lt;chr&amp;gt; &amp;#34;30-39&amp;#34;, &amp;#34;Younger than 30&amp;#34;, &amp;#34;Younger than 30&amp;#34;, &amp;#34;Younger…
+## $ Education &amp;lt;chr&amp;gt; &amp;#34;Undergraduate School&amp;#34;, &amp;#34;Undergraduate School&amp;#34;, &amp;#34;Underg…
+## $ Business_Area &amp;lt;chr&amp;gt; &amp;#34;Others&amp;#34;, &amp;#34;Media and Entertainment&amp;#34;, &amp;#34;Others&amp;#34;, &amp;#34;Others&amp;#34;…
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id="ii-표본-특성-표-출력"&gt;II. 표본 특성 표 출력&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;보통 논문에 들어가는 표본의 특징은 Category, Frequency, and Percentage(%) 정도만 필요하다.&lt;/li&gt;
+&lt;li&gt;이 때, &lt;code&gt;Table&lt;/code&gt;을 가공해줄 수 있는 &lt;a href="https://www.danieldsjoberg.com/gtsummary/index.html"&gt;gtsummary&lt;/a&gt; 패키지를 활용한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-r" data-lang="r"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;set_gtsummary_theme&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;theme_gtsummary_journal&lt;/span&gt;(journal &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;jama&amp;#34;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data2 &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;tbl_summary&lt;/span&gt;(by &lt;span style="color:#f92672"&gt;=&lt;/span&gt; gender) &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;add_overall&lt;/span&gt;() &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;add_n&lt;/span&gt;() &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;modify_header&lt;/span&gt;(label &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;**Variable**&amp;#34;&lt;/span&gt;) &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; &lt;span style="color:#75715e"&gt;# update the column header&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;bold_labels&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;html {
+ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#ulphjxwejp .gt_table {
+ display: table;
+ border-collapse: collapse;
+ margin-left: auto;
+ margin-right: auto;
+ color: #333333;
+ font-size: 16px;
+ background-color: #FFFFFF;
+ width: auto;
+ border-top-style: solid;
+ border-top-width: 2px;
+ border-top-color: #A8A8A8;
+ border-right-style: none;
+ border-right-width: 2px;
+ border-right-color: #D3D3D3;
+ border-bottom-style: solid;
+ border-bottom-width: 2px;
+ border-bottom-color: #A8A8A8;
+ border-left-style: none;
+ border-left-width: 2px;
+ border-left-color: #D3D3D3;
+}
+
+#ulphjxwejp .gt_heading {
+ background-color: #FFFFFF;
+ text-align: center;
+ border-bottom-color: #FFFFFF;
+ border-left-style: none;
+ border-left-width: 1px;
+ border-left-color: #D3D3D3;
+ border-right-style: none;
+ border-right-width: 1px;
+ border-right-color: #D3D3D3;
+}
+
+#ulphjxwejp .gt_title {
+ color: #333333;
+ font-size: 125%;
+ font-weight: initial;
+ padding-top: 4px;
+ padding-bottom: 4px;
+ border-bottom-color: #FFFFFF;
+ border-bottom-width: 0;
+}
+
+#ulphjxwejp .gt_subtitle {
+ color: #333333;
+ font-size: 85%;
+ font-weight: initial;
+ padding-top: 0;
+ padding-bottom: 4px;
+ border-top-color: #FFFFFF;
+ border-top-width: 0;
+}
+
+#ulphjxwejp .gt_bottom_border {
+ border-bottom-style: solid;
+ border-bottom-width: 2px;
+ border-bottom-color: #D3D3D3;
+}
+
+#ulphjxwejp .gt_col_headings {
+ border-top-style: solid;
+ border-top-width: 2px;
+ border-top-color: #D3D3D3;
+ border-bottom-style: solid;
+ border-bottom-width: 2px;
+ border-bottom-color: #D3D3D3;
+ border-left-style: none;
+ border-left-width: 1px;
+ border-left-color: #D3D3D3;
+ border-right-style: none;
+ border-right-width: 1px;
+ border-right-color: #D3D3D3;
+}
+
+#ulphjxwejp .gt_col_heading {
+ color: #333333;
+ background-color: #FFFFFF;
+ font-size: 100%;
+ font-weight: normal;
+ text-transform: inherit;
+ border-left-style: none;
+ border-left-width: 1px;
+ border-left-color: #D3D3D3;
+ border-right-style: none;
+ border-right-width: 1px;
+ border-right-color: #D3D3D3;
+ vertical-align: bottom;
+ padding-top: 5px;
+ padding-bottom: 6px;
+ padding-left: 5px;
+ padding-right: 5px;
+ overflow-x: hidden;
+}
+
+#ulphjxwejp .gt_column_spanner_outer {
+ color: #333333;
+ background-color: #FFFFFF;
+ font-size: 100%;
+ font-weight: normal;
+ text-transform: inherit;
+ padding-top: 0;
+ padding-bottom: 0;
+ padding-left: 4px;
+ padding-right: 4px;
+}
+
+#ulphjxwejp .gt_column_spanner_outer:first-child {
+ padding-left: 0;
+}
+
+#ulphjxwejp .gt_column_spanner_outer:last-child {
+ padding-right: 0;
+}
+
+#ulphjxwejp .gt_column_spanner {
+ border-bottom-style: solid;
+ border-bottom-width: 2px;
+ border-bottom-color: #D3D3D3;
+ vertical-align: bottom;
+ padding-top: 5px;
+ padding-bottom: 6px;
+ overflow-x: hidden;
+ display: inline-block;
+ width: 100%;
+}
+
+#ulphjxwejp .gt_group_heading {
+ padding: 8px;
+ color: #333333;
+ background-color: #FFFFFF;
+ font-size: 100%;
+ font-weight: initial;
+ text-transform: inherit;
+ border-top-style: solid;
+ border-top-width: 2px;
+ border-top-color: #D3D3D3;
+ border-bottom-style: solid;
+ border-bottom-width: 2px;
+ border-bottom-color: #D3D3D3;
+ border-left-style: none;
+ border-left-width: 1px;
+ border-left-color: #D3D3D3;
+ border-right-style: none;
+ border-right-width: 1px;
+ border-right-color: #D3D3D3;
+ vertical-align: middle;
+}
+
+#ulphjxwejp .gt_empty_group_heading {
+ padding: 0.5px;
+ color: #333333;
+ background-color: #FFFFFF;
+ font-size: 100%;
+ font-weight: initial;
+ border-top-style: solid;
+ border-top-width: 2px;
+ border-top-color: #D3D3D3;
+ border-bottom-style: solid;
+ border-bottom-width: 2px;
+ border-bottom-color: #D3D3D3;
+ vertical-align: middle;
+}
+
+#ulphjxwejp .gt_striped {
+ background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ulphjxwejp .gt_from_md &gt; :first-child {
+ margin-top: 0;
+}
+
+#ulphjxwejp .gt_from_md &gt; :last-child {
+ margin-bottom: 0;
+}
+
+#ulphjxwejp .gt_row {
+ padding-top: 8px;
+ padding-bottom: 8px;
+ padding-left: 5px;
+ padding-right: 5px;
+ margin: 10px;
+ border-top-style: solid;
+ border-top-width: 1px;
+ border-top-color: #D3D3D3;
+ border-left-style: none;
+ border-left-width: 1px;
+ border-left-color: #D3D3D3;
+ border-right-style: none;
+ border-right-width: 1px;
+ border-right-color: #D3D3D3;
+ vertical-align: middle;
+ overflow-x: hidden;
+}
+
+#ulphjxwejp .gt_stub {
+ color: #333333;
+ background-color: #FFFFFF;
+ font-size: 100%;
+ font-weight: initial;
+ text-transform: inherit;
+ border-right-style: solid;
+ border-right-width: 2px;
+ border-right-color: #D3D3D3;
+ padding-left: 12px;
+}
+
+#ulphjxwejp .gt_summary_row {
+ color: #333333;
+ background-color: #FFFFFF;
+ text-transform: inherit;
+ padding-top: 8px;
+ padding-bottom: 8px;
+ padding-left: 5px;
+ padding-right: 5px;
+}
+
+#ulphjxwejp .gt_first_summary_row {
+ padding-top: 8px;
+ padding-bottom: 8px;
+ padding-left: 5px;
+ padding-right: 5px;
+ border-top-style: solid;
+ border-top-width: 2px;
+ border-top-color: #D3D3D3;
+}
+
+#ulphjxwejp .gt_grand_summary_row {
+ color: #333333;
+ background-color: #FFFFFF;
+ text-transform: inherit;
+ padding-top: 8px;
+ padding-bottom: 8px;
+ padding-left: 5px;
+ padding-right: 5px;
+}
+
+#ulphjxwejp .gt_first_grand_summary_row {
+ padding-top: 8px;
+ padding-bottom: 8px;
+ padding-left: 5px;
+ padding-right: 5px;
+ border-top-style: double;
+ border-top-width: 6px;
+ border-top-color: #D3D3D3;
+}
+
+#ulphjxwejp .gt_table_body {
+ border-top-style: solid;
+ border-top-width: 2px;
+ border-top-color: #D3D3D3;
+ border-bottom-style: solid;
+ border-bottom-width: 2px;
+ border-bottom-color: #D3D3D3;
+}
+
+#ulphjxwejp .gt_footnotes {
+ color: #333333;
+ background-color: #FFFFFF;
+ border-bottom-style: none;
+ border-bottom-width: 2px;
+ border-bottom-color: #D3D3D3;
+ border-left-style: none;
+ border-left-width: 2px;
+ border-left-color: #D3D3D3;
+ border-right-style: none;
+ border-right-width: 2px;
+ border-right-color: #D3D3D3;
+}
+
+#ulphjxwejp .gt_footnote {
+ margin: 0px;
+ font-size: 90%;
+ padding: 4px;
+}
+
+#ulphjxwejp .gt_sourcenotes {
+ color: #333333;
+ background-color: #FFFFFF;
+ border-bottom-style: none;
+ border-bottom-width: 2px;
+ border-bottom-color: #D3D3D3;
+ border-left-style: none;
+ border-left-width: 2px;
+ border-left-color: #D3D3D3;
+ border-right-style: none;
+ border-right-width: 2px;
+ border-right-color: #D3D3D3;
+}
+
+#ulphjxwejp .gt_sourcenote {
+ font-size: 90%;
+ padding: 4px;
+}
+
+#ulphjxwejp .gt_left {
+ text-align: left;
+}
+
+#ulphjxwejp .gt_center {
+ text-align: center;
+}
+
+#ulphjxwejp .gt_right {
+ text-align: right;
+ font-variant-numeric: tabular-nums;
+}
+
+#ulphjxwejp .gt_font_normal {
+ font-weight: normal;
+}
+
+#ulphjxwejp .gt_font_bold {
+ font-weight: bold;
+}
+
+#ulphjxwejp .gt_font_italic {
+ font-style: italic;
+}
+
+#ulphjxwejp .gt_super {
+ font-size: 65%;
+}
+
+#ulphjxwejp .gt_footnote_marks {
+ font-style: italic;
+ font-size: 65%;
+}
+&lt;/style&gt;
+&lt;div id="ulphjxwejp" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;&lt;table class="gt_table"&gt;
+ 
+ &lt;thead class="gt_col_headings"&gt;
+ &lt;tr&gt;
+ &lt;th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"&gt;&lt;strong&gt;Variable&lt;/strong&gt;&lt;/th&gt;
+ &lt;th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"&gt;&lt;strong&gt;N&lt;/strong&gt;&lt;/th&gt;
+ &lt;th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"&gt;&lt;strong&gt;Overall&lt;/strong&gt;, N = 103&lt;/th&gt;
+ &lt;th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"&gt;&lt;strong&gt;Female&lt;/strong&gt;, N = 62&lt;sup class="gt_footnote_marks"&gt;1&lt;/sup&gt;&lt;/th&gt;
+ &lt;th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"&gt;&lt;strong&gt;Male&lt;/strong&gt;, N = 41&lt;sup class="gt_footnote_marks"&gt;1&lt;/sup&gt;&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody class="gt_table_body"&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="font-weight: bold;"&gt;Position&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;103&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Employee&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;68 (66)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;35 (56)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;33 (80)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Founder of Company&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;35 (34)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;27 (44)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;8 (20)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="font-weight: bold;"&gt;Age&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;103&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;30-39&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;37 (36)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;19 (31)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;18 (44)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;40-49&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;8 (7.8)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;4 (6.5)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;4 (9.8)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;50 or above&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;2 (1.9)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;2 (3.2)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;0 (0)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Younger than 30&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;56 (54)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;37 (60)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;19 (46)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="font-weight: bold;"&gt;Education&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;103&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Graduate School&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;25 (24)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;15 (24)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;10 (24)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;High School&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;7 (6.8)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;6 (9.7)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;1 (2.4)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Undergraduate School&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;71 (69)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;41 (66)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;30 (73)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="font-weight: bold;"&gt;Business_Area&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;103&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;E-Commerce&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;16 (16)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;11 (18)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;5 (12)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Education&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;4 (3.9)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;2 (3.2)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;2 (4.9)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Energy&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;1 (1.0)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;0 (0)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;1 (2.4)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Enterprise Services&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;4 (3.9)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;2 (3.2)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;2 (4.9)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Fintech&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;9 (8.7)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;6 (9.7)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;3 (7.3)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Logistics&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;5 (4.9)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;1 (1.6)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;4 (9.8)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Manufacturing&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;3 (2.9)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;2 (3.2)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;1 (2.4)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Media and Entertainment&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;7 (6.8)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;4 (6.5)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;3 (7.3)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Medical and Healthcare&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;1 (1.0)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;1 (1.6)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;0 (0)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Online to Offline Commerce&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;2 (1.9)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;1 (1.6)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;1 (2.4)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Others&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;45 (44)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;31 (50)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;14 (34)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Real Estate and Household&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;1 (1.0)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;0 (0)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;1 (2.4)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Transportation/Automotive&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;4 (3.9)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;0 (0)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;4 (9.8)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td class="gt_row gt_left" style="text-align: left; text-indent: 10px;"&gt;Travel&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;1 (1.0)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;1 (1.6)&lt;/td&gt;
+ &lt;td class="gt_row gt_center"&gt;0 (0)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+ 
+ &lt;tfoot&gt;
+ &lt;tr class="gt_footnotes"&gt;
+ &lt;td colspan="5"&gt;
+ &lt;p class="gt_footnote"&gt;
+ &lt;sup class="gt_footnote_marks"&gt;
+ &lt;em&gt;1&lt;/em&gt;
+ &lt;/sup&gt;
+ 
+ Statistics presented: n (%)
+ &lt;br /&gt;
+ &lt;/p&gt;</description></item></channel></rss>

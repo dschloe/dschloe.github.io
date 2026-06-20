@@ -1,19 +1,70 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Rtweet on Data Science | DSChloe</title>
-    <link>https://dschloe.github.io/categories/rtweet/</link>
-    <description>Recent content in Rtweet on Data Science | DSChloe</description>
-    <generator>Hugo</generator>
-    <language>en-US</language>
-    <lastBuildDate>Wed, 24 Mar 2021 11:00:00 +0900</lastBuildDate>
-    <atom:link href="https://dschloe.github.io/categories/rtweet/rss.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>트위터 데이터 수집 with R</title>
-      <link>https://dschloe.github.io/programming/2021/03/rtweet/</link>
-      <pubDate>Wed, 24 Mar 2021 11:00:00 +0900</pubDate>
-      <guid>https://dschloe.github.io/programming/2021/03/rtweet/</guid>
-      <description>&lt;h2 id=&#34;1줄-요약&#34;&gt;1줄 요약&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;R을 활용하여 트위터 데이터를 수집하는 방법 및 절차에 대해 배우도록 한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;트위터-api-인증&#34;&gt;트위터 API 인증&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://apps.twitter.com&#34;&gt;https://apps.twitter.com&lt;/a&gt;에 접속한다.&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;회원가입을 진행한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;code&gt;create an app&lt;/code&gt; 버튼을 클릭한다.&#xA;&lt;img src=&#34;https://dschloe.github.io/img/programming/2021/03/rtweet/twitter01.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;필자는 &lt;code&gt;Hobbysit&lt;/code&gt;-&lt;code&gt;Exploring the API&lt;/code&gt;를 선택했다.&#xA;&lt;img src=&#34;https://dschloe.github.io/img/programming/2021/03/rtweet/twitter02.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;그 후에 개인 정보 등을 입력해야 한다.&lt;/li&gt;&#xA;&lt;li&gt;휴대폰, 이메일 인증 등&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;인증 메일이 오기전까지는 조금 시일이 걸린다.&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;rtweet-패키지&#34;&gt;rtweet 패키지&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;별도의 인증 절차 없이 사용 가능한 패키지&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://github.com/ropensci/rtweet&#34;&gt;https://github.com/ropensci/rtweet&lt;/a&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;우선 설치 후, 사용해보도록 한다.&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;본 코드는 Github 예제로 있는 코드를 가져온 것임&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# install.packages(&amp;#34;rtweet&amp;#34;)&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(rtweet)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(dplyr)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(ggplot2)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;search-tweets&#34;&gt;Search Tweets&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;search_tweets()&lt;/code&gt; 함수를 활용하면 매우 쉽게 데이터를 가져올 수 있다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;rstats &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;search_tweets&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;#테슬라&amp;#34;&lt;/span&gt;, n &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1000&lt;/span&gt;, include_rts &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;FALSE&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&amp;gt;%&lt;/span&gt; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(name, location, description)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;&#xA;&lt;li&gt;앱 인증 절차만 진행이 되면 데이터를 가져올 수 있다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;glimpse&lt;/span&gt;(rstats)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;## Rows: 132&#xA;## Columns: 3&#xA;## $ name        &amp;lt;chr&amp;gt; &amp;#34;얼리어답터&amp;#34;, &amp;#34;얼리어답터&amp;#34;, &amp;#34;허프포스트코리아&amp;#34;, &amp;#34;뉴스핌&amp;#34;, &amp;#34;뉴스핌&amp;#34;, &amp;#34;disclosure&amp;#34;, ~&#xA;## $ location    &amp;lt;chr&amp;gt; &amp;#34;&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;SEOUL&amp;#34;, &amp;#34;Korea&amp;#34;, &amp;#34;Korea&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;&amp;#34;,~&#xA;## $ description &amp;lt;chr&amp;gt; &amp;#34;2001년부터 전세계의 테크 트랜드를 한국에 소개했던 얼리어답터가 완전히 새롭게 다시 시작합니다. 더 ~&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;&#xA;&lt;li&gt;텍스트 데이터를 수집할 수 있었다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h3 id=&#34;그-외-패키지와의-비교&#34;&gt;그 외 패키지와의 비교&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Github에는 &lt;code&gt;rtweet&lt;/code&gt; 패키지가 어떤 Task를 수행하는 비교하는 표가 있다.&#xA;&lt;img src=&#34;https://dschloe.github.io/img/programming/2021/03/rtweet/twitter03.png&#34; alt=&#34;&#34;&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Rtweet on Data Science | DSChloe</title><link>https://dschloe.github.io/categories/rtweet/</link><description>Recent content in Rtweet on Data Science | DSChloe</description><generator>Hugo</generator><language>en-US</language><lastBuildDate>Wed, 24 Mar 2021 11:00:00 +0900</lastBuildDate><atom:link href="https://dschloe.github.io/categories/rtweet/rss.xml" rel="self" type="application/rss+xml"/><item><title>트위터 데이터 수집 with R</title><link>https://dschloe.github.io/programming/2021/03/rtweet/</link><pubDate>Wed, 24 Mar 2021 11:00:00 +0900</pubDate><guid>https://dschloe.github.io/programming/2021/03/rtweet/</guid><description>&lt;h2 id="1줄-요약"&gt;1줄 요약&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;R을 활용하여 트위터 데이터를 수집하는 방법 및 절차에 대해 배우도록 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="트위터-api-인증"&gt;트위터 API 인증&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="https://apps.twitter.com"&gt;https://apps.twitter.com&lt;/a&gt;에 접속한다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;회원가입을 진행한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;create an app&lt;/code&gt; 버튼을 클릭한다.
+&lt;img src="https://dschloe.github.io/img/programming/2021/03/rtweet/twitter01.png" alt=""&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;필자는 &lt;code&gt;Hobbysit&lt;/code&gt;-&lt;code&gt;Exploring the API&lt;/code&gt;를 선택했다.
+&lt;img src="https://dschloe.github.io/img/programming/2021/03/rtweet/twitter02.png" alt=""&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;그 후에 개인 정보 등을 입력해야 한다.&lt;/li&gt;
+&lt;li&gt;휴대폰, 이메일 인증 등&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;인증 메일이 오기전까지는 조금 시일이 걸린다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="rtweet-패키지"&gt;rtweet 패키지&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;별도의 인증 절차 없이 사용 가능한 패키지&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/ropensci/rtweet"&gt;https://github.com/ropensci/rtweet&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;우선 설치 후, 사용해보도록 한다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;본 코드는 Github 예제로 있는 코드를 가져온 것임&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-r" data-lang="r"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# install.packages(&amp;#34;rtweet&amp;#34;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;library&lt;/span&gt;(rtweet)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;library&lt;/span&gt;(dplyr)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;library&lt;/span&gt;(ggplot2)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="search-tweets"&gt;Search Tweets&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;search_tweets()&lt;/code&gt; 함수를 활용하면 매우 쉽게 데이터를 가져올 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-r" data-lang="r"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;rstats &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;search_tweets&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;#테슬라&amp;#34;&lt;/span&gt;, n &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1000&lt;/span&gt;, include_rts &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FALSE&lt;/span&gt;) &lt;span style="color:#f92672"&gt;%&amp;gt;%&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;select&lt;/span&gt;(name, location, description)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;앱 인증 절차만 진행이 되면 데이터를 가져올 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-r" data-lang="r"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;glimpse&lt;/span&gt;(rstats)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre tabindex="0"&gt;&lt;code&gt;## Rows: 132
+## Columns: 3
+## $ name &amp;lt;chr&amp;gt; &amp;#34;얼리어답터&amp;#34;, &amp;#34;얼리어답터&amp;#34;, &amp;#34;허프포스트코리아&amp;#34;, &amp;#34;뉴스핌&amp;#34;, &amp;#34;뉴스핌&amp;#34;, &amp;#34;disclosure&amp;#34;, ~
+## $ location &amp;lt;chr&amp;gt; &amp;#34;&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;SEOUL&amp;#34;, &amp;#34;Korea&amp;#34;, &amp;#34;Korea&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;&amp;#34;, &amp;#34;&amp;#34;,~
+## $ description &amp;lt;chr&amp;gt; &amp;#34;2001년부터 전세계의 테크 트랜드를 한국에 소개했던 얼리어답터가 완전히 새롭게 다시 시작합니다. 더 ~
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;텍스트 데이터를 수집할 수 있었다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="그-외-패키지와의-비교"&gt;그 외 패키지와의 비교&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Github에는 &lt;code&gt;rtweet&lt;/code&gt; 패키지가 어떤 Task를 수행하는 비교하는 표가 있다.
+&lt;img src="https://dschloe.github.io/img/programming/2021/03/rtweet/twitter03.png" alt=""&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

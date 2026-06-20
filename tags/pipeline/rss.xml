@@ -1,19 +1,1044 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Pipeline on Data Science | DSChloe</title>
-    <link>https://dschloe.github.io/tags/pipeline/</link>
-    <description>Recent content in Pipeline on Data Science | DSChloe</description>
-    <generator>Hugo</generator>
-    <language>en-US</language>
-    <lastBuildDate>Tue, 28 Dec 2021 16:11:47 +0900</lastBuildDate>
-    <atom:link href="https://dschloe.github.io/tags/pipeline/rss.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>PyCaret, Skorch Using Pipeline</title>
-      <link>https://dschloe.github.io/programming/2021/12/pycaret_with_sktorch/</link>
-      <pubDate>Tue, 28 Dec 2021 16:11:47 +0900</pubDate>
-      <guid>https://dschloe.github.io/programming/2021/12/pycaret_with_sktorch/</guid>
-      <description>&lt;h2 id=&#34;개요&#34;&gt;개요&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Scikit-Learn의 Pipeline은 강력하다.&lt;/li&gt;&#xA;&lt;li&gt;PyCaret, Skorch에도 사용이 가능하다.&lt;/li&gt;&#xA;&lt;li&gt;Google Colab에서 시도해보자.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;필수-라이브러리-설치&#34;&gt;필수 라이브러리 설치&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;pycaret을 설치 한 후에는 반드시 런타임 재시작을 클릭한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;pip install pycaret&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Collecting pycaret&#xA;  Downloading pycaret-2.3.5-py3-none-any.whl (288 kB)&#xA;.&#xA;.&#xA;Successfully installed Boruta-0.3 Mako-1.1.6 PyYAML-6.0 alembic-1.4.1 databricks-cli-0.16.2 docker-5.0.3 funcy-1.17 gitdb-4.0.9 gitpython-3.1.24 gunicorn-20.1.0 htmlmin-0.1.12 imagehash-4.2.1 imbalanced-learn-0.7.0 joblib-1.0.1 kmodes-0.11.1 lightgbm-3.3.1 mlflow-1.22.0 mlxtend-0.19.0 multimethod-1.6 pandas-profiling-3.1.0 phik-0.12.0 prometheus-flask-exporter-0.18.7 pyLDAvis-3.2.2 pycaret-2.3.5 pydantic-1.8.2 pynndescent-0.5.5 pyod-0.9.6 python-editor-1.0.4 querystring-parser-1.2.4 requests-2.26.0 scikit-learn-0.23.2 scikit-plot-0.3.7 scipy-1.5.4 smmap-5.0.0 tangled-up-in-unicode-0.1.0 umap-learn-0.5.2 visions-0.7.4 websocket-client-1.2.3&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;!&lt;/span&gt;pip install &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;U skorch&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Requirement already satisfied: skorch in /usr/local/lib/python3.7/dist-packages (0.11.0)&#xA;Requirement already satisfied: tabulate&amp;gt;=0.7.7 in /usr/local/lib/python3.7/dist-packages (from skorch) (0.8.9)&#xA;Requirement already satisfied: scikit-learn&amp;gt;=0.19.1 in /usr/local/lib/python3.7/dist-packages (from skorch) (0.23.2)&#xA;Requirement already satisfied: tqdm&amp;gt;=4.14.0 in /usr/local/lib/python3.7/dist-packages (from skorch) (4.62.3)&#xA;Requirement already satisfied: numpy&amp;gt;=1.13.3 in /usr/local/lib/python3.7/dist-packages (from skorch) (1.19.5)&#xA;Requirement already satisfied: scipy&amp;gt;=1.1.0 in /usr/local/lib/python3.7/dist-packages (from skorch) (1.5.4)&#xA;Requirement already satisfied: joblib&amp;gt;=0.11 in /usr/local/lib/python3.7/dist-packages (from scikit-learn&amp;gt;=0.19.1-&amp;gt;skorch) (1.0.1)&#xA;Requirement already satisfied: threadpoolctl&amp;gt;=2.0.0 in /usr/local/lib/python3.7/dist-packages (from scikit-learn&amp;gt;=0.19.1-&amp;gt;skorch) (3.0.0)&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; pycaret.datasets &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; get_data&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; get_data(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;electrical_grid&amp;#34;&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;&#xA;     #customers {&#xA;       font-family: &#34;Trebuchet MS&#34;, Arial, Helvetica, sans-serif;&#xA;       border-collapse: collapse;&#xA;     }&#xA; &#xA;     #customers td,&#xA;     #customers th {&#xA;       border: 1px solid #ddd;&#xA;       padding: 8px;&#xA;     }&#xA; &#xA;     #customers tr:nth-child(even) {&#xA;       background-color: #f2f2f2;&#xA;     }&#xA; &#xA;     #customers tr:hover {&#xA;       background-color: #ddd;&#xA;     }&#xA;     #customers th {&#xA;       padding-top: 12px;&#xA;       padding-bottom: 12px;&#xA;       text-align: left;&#xA;       background-color: rgb(175, 107, 76);&#xA;       color: white;&#xA;     }&#xA;   &lt;/style&gt;&#xA; &#xA;   &lt;div style=&#34;width:100%; height:400px; overflow:auto&#34;&gt;&#xA;     &lt;table border=&#34;1&#34; id=&#34;customers&#34;&gt;&#xA;   &lt;thead&gt;&#xA;     &lt;tr style=&#34;text-align: right;&#34;&gt;&#xA;       &lt;th&gt;&lt;/th&gt;&#xA;       &lt;th&gt;tau1&lt;/th&gt;&#xA;       &lt;th&gt;tau2&lt;/th&gt;&#xA;       &lt;th&gt;tau3&lt;/th&gt;&#xA;       &lt;th&gt;tau4&lt;/th&gt;&#xA;       &lt;th&gt;p1&lt;/th&gt;&#xA;       &lt;th&gt;p2&lt;/th&gt;&#xA;       &lt;th&gt;p3&lt;/th&gt;&#xA;       &lt;th&gt;p4&lt;/th&gt;&#xA;       &lt;th&gt;g1&lt;/th&gt;&#xA;       &lt;th&gt;g2&lt;/th&gt;&#xA;       &lt;th&gt;g3&lt;/th&gt;&#xA;       &lt;th&gt;g4&lt;/th&gt;&#xA;       &lt;th&gt;stabf&lt;/th&gt;&#xA;     &lt;/tr&gt;&#xA;   &lt;/thead&gt;&#xA;   &lt;tbody&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;0&lt;/th&gt;&#xA;       &lt;td&gt;2.959060&lt;/td&gt;&#xA;       &lt;td&gt;3.079885&lt;/td&gt;&#xA;       &lt;td&gt;8.381025&lt;/td&gt;&#xA;       &lt;td&gt;9.780754&lt;/td&gt;&#xA;       &lt;td&gt;3.763085&lt;/td&gt;&#xA;       &lt;td&gt;-0.782604&lt;/td&gt;&#xA;       &lt;td&gt;-1.257395&lt;/td&gt;&#xA;       &lt;td&gt;-1.723086&lt;/td&gt;&#xA;       &lt;td&gt;0.650456&lt;/td&gt;&#xA;       &lt;td&gt;0.859578&lt;/td&gt;&#xA;       &lt;td&gt;0.887445&lt;/td&gt;&#xA;       &lt;td&gt;0.958034&lt;/td&gt;&#xA;       &lt;td&gt;unstable&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;1&lt;/th&gt;&#xA;       &lt;td&gt;9.304097&lt;/td&gt;&#xA;       &lt;td&gt;4.902524&lt;/td&gt;&#xA;       &lt;td&gt;3.047541&lt;/td&gt;&#xA;       &lt;td&gt;1.369357&lt;/td&gt;&#xA;       &lt;td&gt;5.067812&lt;/td&gt;&#xA;       &lt;td&gt;-1.940058&lt;/td&gt;&#xA;       &lt;td&gt;-1.872742&lt;/td&gt;&#xA;       &lt;td&gt;-1.255012&lt;/td&gt;&#xA;       &lt;td&gt;0.413441&lt;/td&gt;&#xA;       &lt;td&gt;0.862414&lt;/td&gt;&#xA;       &lt;td&gt;0.562139&lt;/td&gt;&#xA;       &lt;td&gt;0.781760&lt;/td&gt;&#xA;       &lt;td&gt;stable&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;2&lt;/th&gt;&#xA;       &lt;td&gt;8.971707&lt;/td&gt;&#xA;       &lt;td&gt;8.848428&lt;/td&gt;&#xA;       &lt;td&gt;3.046479&lt;/td&gt;&#xA;       &lt;td&gt;1.214518&lt;/td&gt;&#xA;       &lt;td&gt;3.405158&lt;/td&gt;&#xA;       &lt;td&gt;-1.207456&lt;/td&gt;&#xA;       &lt;td&gt;-1.277210&lt;/td&gt;&#xA;       &lt;td&gt;-0.920492&lt;/td&gt;&#xA;       &lt;td&gt;0.163041&lt;/td&gt;&#xA;       &lt;td&gt;0.766689&lt;/td&gt;&#xA;       &lt;td&gt;0.839444&lt;/td&gt;&#xA;       &lt;td&gt;0.109853&lt;/td&gt;&#xA;       &lt;td&gt;unstable&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;3&lt;/th&gt;&#xA;       &lt;td&gt;0.716415&lt;/td&gt;&#xA;       &lt;td&gt;7.669600&lt;/td&gt;&#xA;       &lt;td&gt;4.486641&lt;/td&gt;&#xA;       &lt;td&gt;2.340563&lt;/td&gt;&#xA;       &lt;td&gt;3.963791&lt;/td&gt;&#xA;       &lt;td&gt;-1.027473&lt;/td&gt;&#xA;       &lt;td&gt;-1.938944&lt;/td&gt;&#xA;       &lt;td&gt;-0.997374&lt;/td&gt;&#xA;       &lt;td&gt;0.446209&lt;/td&gt;&#xA;       &lt;td&gt;0.976744&lt;/td&gt;&#xA;       &lt;td&gt;0.929381&lt;/td&gt;&#xA;       &lt;td&gt;0.362718&lt;/td&gt;&#xA;       &lt;td&gt;unstable&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;4&lt;/th&gt;&#xA;       &lt;td&gt;3.134112&lt;/td&gt;&#xA;       &lt;td&gt;7.608772&lt;/td&gt;&#xA;       &lt;td&gt;4.943759&lt;/td&gt;&#xA;       &lt;td&gt;9.857573&lt;/td&gt;&#xA;       &lt;td&gt;3.525811&lt;/td&gt;&#xA;       &lt;td&gt;-1.125531&lt;/td&gt;&#xA;       &lt;td&gt;-1.845975&lt;/td&gt;&#xA;       &lt;td&gt;-0.554305&lt;/td&gt;&#xA;       &lt;td&gt;0.797110&lt;/td&gt;&#xA;       &lt;td&gt;0.455450&lt;/td&gt;&#xA;       &lt;td&gt;0.656947&lt;/td&gt;&#xA;       &lt;td&gt;0.820923&lt;/td&gt;&#xA;       &lt;td&gt;unstable&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;   &lt;/tbody&gt;&#xA; &lt;/table&gt;&#xA; &lt;/div&gt;&#xA;&lt;h2 id=&#34;pytorchmodel&#34;&gt;PyTorchModel&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;sktorch&lt;/code&gt; 라이브러리는 PyTorch 모델과 함께 작동한다.&lt;/li&gt;&#xA;&lt;li&gt;MLP 모델을 작성하는 클래스를 설계한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; torch.nn &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; nn&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Net&lt;/span&gt;(nn&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Module): &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;__init__&lt;/span&gt;(self, num_inputs&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;, num_units_d1 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;200&lt;/span&gt;, num_units_d2 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;):&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    super(Net, self)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;__init__&lt;/span&gt;() &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;dense0 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; nn&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Linear(num_inputs, num_units_d1)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;nonlin &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; nn&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ReLU()&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;dropout &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; nn&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Dropout(&lt;span style=&#34;color:#ae81ff&#34;&gt;0.5&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;dense1 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; nn&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Linear(num_units_d1, num_units_d2)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;output &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; nn&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Linear(num_units_d2, &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;softmax &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; nn&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Softmax(dim&lt;span style=&#34;color:#f92672&#34;&gt;=-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;forward&lt;/span&gt;(self, X, &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt;kwargs):&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    X &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;nonlin(self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;dense0(X))&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    X &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;dropout(X)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    X &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;nonlin(self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;dense1(X))&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    X &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;softmax(self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;output(X))&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; X&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;skorch-classifier&#34;&gt;Skorch Classifier&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;NeuralNetClassifier 클래스를 PyTorch 클래스와 연동한다.&lt;/li&gt;&#xA;&lt;li&gt;Optimizer 기본값인 SGD를 사용한다. 만약 다른 Optimizer로 변경을 원하면 다음 링크에서 확인한다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;참고: &lt;a href=&#34;https://skorch.readthedocs.io/en/latest/user/neuralnet.html#optimizer&#34;&gt;https://skorch.readthedocs.io/en/latest/user/neuralnet.html#optimizer&lt;/a&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;Sktorch 5 폴드 교차검증을 수행한다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;학습 데이터는 80%, 나머지 20%는 검증 데이터로 활용한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; skorch &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; NeuralNetClassifier &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;net &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; NeuralNetClassifier(&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    module &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Net, &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    max_epochs &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;30&lt;/span&gt;, &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    lr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.1&lt;/span&gt;, &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    batch_size &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;32&lt;/span&gt;, &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    train_split &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;None&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;pycaret과-신경망-학습-방법&#34;&gt;PyCaret과 신경망 학습 방법&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;SKORCH NN model을 초기화 했다면, 이번에는 PyCaret과 함께 모델을 학습할 수 있다.&lt;/li&gt;&#xA;&lt;li&gt;PyCaret은 기본적으로 Pandas DataFrame을 메인 객체로 사용하다.&lt;/li&gt;&#xA;&lt;li&gt;그런데, sktorch model을 사용하기 위해서는 &lt;code&gt;pipeline&lt;/code&gt;을 구성할 때는 DataFrameTransformer() 함수를 사용해야 한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; skorch.helper &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; DataFrameTransformer&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; np&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; sklearn.pipeline &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; Pipeline&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;nn_pipe &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Pipeline(&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    [(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;transform&amp;#34;&lt;/span&gt;, DataFrameTransformer()), &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;net&amp;#34;&lt;/span&gt;, net), ]&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;pycaret-setup&#34;&gt;PyCaret Setup&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Skorch API 대신 PyCaret 모델을 사용해본다.&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;log_experiment&lt;/code&gt;가 &lt;code&gt;True&lt;/code&gt;를 사용하게 되면 &lt;code&gt;MLFlow&lt;/code&gt;를 사용할 수 있다.&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;silent&lt;/code&gt;가 &lt;code&gt;True&lt;/code&gt;인 경우 중간에 발생하는 &lt;code&gt;press enter to continue&lt;/code&gt; 입력 단계를 피할 수 있다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; pycaret.classification &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;target &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;stabf&amp;#34;&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;clf1 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; setup(data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; data, &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            target &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; target,&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            train_size &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0.8&lt;/span&gt;,&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            fold &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;,&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            session_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;123&lt;/span&gt;,&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            log_experiment &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;, &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            experiment_name &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;electrical_grid_1&amp;#39;&lt;/span&gt;, &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            silent &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;&#xA;     #customers {&#xA;       font-family: &#34;Trebuchet MS&#34;, Arial, Helvetica, sans-serif;&#xA;       border-collapse: collapse;&#xA;     }&#xA; &#xA;     #customers td,&#xA;     #customers th {&#xA;       border: 1px solid #ddd;&#xA;       padding: 8px;&#xA;     }&#xA; &#xA;     #customers tr:nth-child(even) {&#xA;       background-color: #f2f2f2;&#xA;     }&#xA; &#xA;     #customers tr:hover {&#xA;       background-color: #ddd;&#xA;     }&#xA;     #customers th {&#xA;       padding-top: 12px;&#xA;       padding-bottom: 12px;&#xA;       text-align: left;&#xA;       background-color: rgb(175, 107, 76);&#xA;       color: white;&#xA;     }&#xA;   &lt;/style&gt;&#xA;   &lt;div style=&#34;width:100%; height:400px; overflow:auto&#34;&gt;&#xA;     &lt;table border=&#34;1&#34; id=&#34;customers&#34;&gt;&#xA;   &lt;thead&gt;&#xA;     &lt;tr style=&#34;text-align: right;&#34;&gt;&#xA;       &lt;th&gt;&lt;/th&gt;&#xA;       &lt;th&gt;Description&lt;/th&gt;&#xA;       &lt;th&gt;Value&lt;/th&gt;&#xA;     &lt;/tr&gt;&#xA;   &lt;/thead&gt;&#xA;   &lt;tbody&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;0&lt;/th&gt;&#xA;       &lt;td&gt;session_id&lt;/td&gt;&#xA;       &lt;td&gt;123&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;1&lt;/th&gt;&#xA;       &lt;td&gt;Target&lt;/td&gt;&#xA;       &lt;td&gt;stabf&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;2&lt;/th&gt;&#xA;       &lt;td&gt;Target Type&lt;/td&gt;&#xA;       &lt;td&gt;Binary&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;3&lt;/th&gt;&#xA;       &lt;td&gt;Label Encoded&lt;/td&gt;&#xA;       &lt;td&gt;stable: 0, unstable: 1&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;4&lt;/th&gt;&#xA;       &lt;td&gt;Original Data&lt;/td&gt;&#xA;       &lt;td&gt;(10000, 13)&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;5&lt;/th&gt;&#xA;       &lt;td&gt;Missing Values&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;6&lt;/th&gt;&#xA;       &lt;td&gt;Numeric Features&lt;/td&gt;&#xA;       &lt;td&gt;12&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;7&lt;/th&gt;&#xA;       &lt;td&gt;Categorical Features&lt;/td&gt;&#xA;       &lt;td&gt;0&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;8&lt;/th&gt;&#xA;       &lt;td&gt;Ordinal Features&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;9&lt;/th&gt;&#xA;       &lt;td&gt;High Cardinality Features&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;10&lt;/th&gt;&#xA;       &lt;td&gt;High Cardinality Method&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;11&lt;/th&gt;&#xA;       &lt;td&gt;Transformed Train Set&lt;/td&gt;&#xA;       &lt;td&gt;(8000, 12)&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;12&lt;/th&gt;&#xA;       &lt;td&gt;Transformed Test Set&lt;/td&gt;&#xA;       &lt;td&gt;(2000, 12)&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;13&lt;/th&gt;&#xA;       &lt;td&gt;Shuffle Train-Test&lt;/td&gt;&#xA;       &lt;td&gt;True&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;14&lt;/th&gt;&#xA;       &lt;td&gt;Stratify Train-Test&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;15&lt;/th&gt;&#xA;       &lt;td&gt;Fold Generator&lt;/td&gt;&#xA;       &lt;td&gt;StratifiedKFold&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;16&lt;/th&gt;&#xA;       &lt;td&gt;Fold Number&lt;/td&gt;&#xA;       &lt;td&gt;5&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;17&lt;/th&gt;&#xA;       &lt;td&gt;CPU Jobs&lt;/td&gt;&#xA;       &lt;td&gt;-1&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;18&lt;/th&gt;&#xA;       &lt;td&gt;Use GPU&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;19&lt;/th&gt;&#xA;       &lt;td&gt;Log Experiment&lt;/td&gt;&#xA;       &lt;td&gt;True&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;20&lt;/th&gt;&#xA;       &lt;td&gt;Experiment Name&lt;/td&gt;&#xA;       &lt;td&gt;electrical_grid_1&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;21&lt;/th&gt;&#xA;       &lt;td&gt;USI&lt;/td&gt;&#xA;       &lt;td&gt;9626&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;22&lt;/th&gt;&#xA;       &lt;td&gt;Imputation Type&lt;/td&gt;&#xA;       &lt;td&gt;simple&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;23&lt;/th&gt;&#xA;       &lt;td&gt;Iterative Imputation Iteration&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;24&lt;/th&gt;&#xA;       &lt;td&gt;Numeric Imputer&lt;/td&gt;&#xA;       &lt;td&gt;mean&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;25&lt;/th&gt;&#xA;       &lt;td&gt;Iterative Imputation Numeric Model&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;26&lt;/th&gt;&#xA;       &lt;td&gt;Categorical Imputer&lt;/td&gt;&#xA;       &lt;td&gt;constant&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;27&lt;/th&gt;&#xA;       &lt;td&gt;Iterative Imputation Categorical Model&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;28&lt;/th&gt;&#xA;       &lt;td&gt;Unknown Categoricals Handling&lt;/td&gt;&#xA;       &lt;td&gt;least_frequent&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;29&lt;/th&gt;&#xA;       &lt;td&gt;Normalize&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;30&lt;/th&gt;&#xA;       &lt;td&gt;Normalize Method&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;31&lt;/th&gt;&#xA;       &lt;td&gt;Transformation&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;32&lt;/th&gt;&#xA;       &lt;td&gt;Transformation Method&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;33&lt;/th&gt;&#xA;       &lt;td&gt;PCA&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;34&lt;/th&gt;&#xA;       &lt;td&gt;PCA Method&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;35&lt;/th&gt;&#xA;       &lt;td&gt;PCA Components&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;36&lt;/th&gt;&#xA;       &lt;td&gt;Ignore Low Variance&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;37&lt;/th&gt;&#xA;       &lt;td&gt;Combine Rare Levels&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;38&lt;/th&gt;&#xA;       &lt;td&gt;Rare Level Threshold&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;39&lt;/th&gt;&#xA;       &lt;td&gt;Numeric Binning&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;40&lt;/th&gt;&#xA;       &lt;td&gt;Remove Outliers&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;41&lt;/th&gt;&#xA;       &lt;td&gt;Outliers Threshold&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;42&lt;/th&gt;&#xA;       &lt;td&gt;Remove Multicollinearity&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;43&lt;/th&gt;&#xA;       &lt;td&gt;Multicollinearity Threshold&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;44&lt;/th&gt;&#xA;       &lt;td&gt;Remove Perfect Collinearity&lt;/td&gt;&#xA;       &lt;td&gt;True&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;45&lt;/th&gt;&#xA;       &lt;td&gt;Clustering&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;46&lt;/th&gt;&#xA;       &lt;td&gt;Clustering Iteration&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;47&lt;/th&gt;&#xA;       &lt;td&gt;Polynomial Features&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;48&lt;/th&gt;&#xA;       &lt;td&gt;Polynomial Degree&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;49&lt;/th&gt;&#xA;       &lt;td&gt;Trignometry Features&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;50&lt;/th&gt;&#xA;       &lt;td&gt;Polynomial Threshold&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;51&lt;/th&gt;&#xA;       &lt;td&gt;Group Features&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;52&lt;/th&gt;&#xA;       &lt;td&gt;Feature Selection&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;53&lt;/th&gt;&#xA;       &lt;td&gt;Feature Selection Method&lt;/td&gt;&#xA;       &lt;td&gt;classic&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;54&lt;/th&gt;&#xA;       &lt;td&gt;Features Selection Threshold&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;55&lt;/th&gt;&#xA;       &lt;td&gt;Feature Interaction&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;56&lt;/th&gt;&#xA;       &lt;td&gt;Feature Ratio&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;57&lt;/th&gt;&#xA;       &lt;td&gt;Interaction Threshold&lt;/td&gt;&#xA;       &lt;td&gt;None&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;58&lt;/th&gt;&#xA;       &lt;td&gt;Fix Imbalance&lt;/td&gt;&#xA;       &lt;td&gt;False&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;59&lt;/th&gt;&#xA;       &lt;td&gt;Fix Imbalance Method&lt;/td&gt;&#xA;       &lt;td&gt;SMOTE&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;   &lt;/tbody&gt;&#xA; &lt;/table&gt;&#xA; &lt;/div&gt;&#xA; &#xA;&#xA;&lt;h2 id=&#34;pycaret-train-model&#34;&gt;PyCaret Train Model&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Random Forest 모델을 사용해본다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;model &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; create_model(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;rf&amp;#34;&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;&#xA;     #customers {&#xA;       font-family: &#34;Trebuchet MS&#34;, Arial, Helvetica, sans-serif;&#xA;       border-collapse: collapse;&#xA;     }&#xA; &#xA;     #customers td,&#xA;     #customers th {&#xA;       border: 1px solid #ddd;&#xA;       padding: 8px;&#xA;     }&#xA; &#xA;     #customers tr:nth-child(even) {&#xA;       background-color: #f2f2f2;&#xA;     }&#xA; &#xA;     #customers tr:hover {&#xA;       background-color: #ddd;&#xA;     }&#xA;     #customers th {&#xA;       padding-top: 12px;&#xA;       padding-bottom: 12px;&#xA;       text-align: left;&#xA;       background-color: rgb(175, 107, 76);&#xA;       color: white;&#xA;     }&#xA;   &lt;/style&gt;&#xA;   &lt;div style=&#34;width:100%; height:400px; overflow:auto&#34;&gt;&#xA;     &lt;table border=&#34;1&#34; id=&#34;customers&#34;&gt;&#xA;   &lt;thead&gt;&#xA;     &lt;tr style=&#34;text-align: right;&#34;&gt;&#xA;       &lt;th&gt;&lt;/th&gt;&#xA;       &lt;th&gt;Accuracy&lt;/th&gt;&#xA;       &lt;th&gt;AUC&lt;/th&gt;&#xA;       &lt;th&gt;Recall&lt;/th&gt;&#xA;       &lt;th&gt;Prec.&lt;/th&gt;&#xA;       &lt;th&gt;F1&lt;/th&gt;&#xA;       &lt;th&gt;Kappa&lt;/th&gt;&#xA;       &lt;th&gt;MCC&lt;/th&gt;&#xA;     &lt;/tr&gt;&#xA;   &lt;/thead&gt;&#xA;   &lt;tbody&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;0&lt;/th&gt;&#xA;       &lt;td&gt;0.9244&lt;/td&gt;&#xA;       &lt;td&gt;0.9796&lt;/td&gt;&#xA;       &lt;td&gt;0.9667&lt;/td&gt;&#xA;       &lt;td&gt;0.9189&lt;/td&gt;&#xA;       &lt;td&gt;0.9422&lt;/td&gt;&#xA;       &lt;td&gt;0.8331&lt;/td&gt;&#xA;       &lt;td&gt;0.8353&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;1&lt;/th&gt;&#xA;       &lt;td&gt;0.9275&lt;/td&gt;&#xA;       &lt;td&gt;0.9793&lt;/td&gt;&#xA;       &lt;td&gt;0.9549&lt;/td&gt;&#xA;       &lt;td&gt;0.9330&lt;/td&gt;&#xA;       &lt;td&gt;0.9438&lt;/td&gt;&#xA;       &lt;td&gt;0.8417&lt;/td&gt;&#xA;       &lt;td&gt;0.8422&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;2&lt;/th&gt;&#xA;       &lt;td&gt;0.9225&lt;/td&gt;&#xA;       &lt;td&gt;0.9810&lt;/td&gt;&#xA;       &lt;td&gt;0.9608&lt;/td&gt;&#xA;       &lt;td&gt;0.9211&lt;/td&gt;&#xA;       &lt;td&gt;0.9406&lt;/td&gt;&#xA;       &lt;td&gt;0.8294&lt;/td&gt;&#xA;       &lt;td&gt;0.8309&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;3&lt;/th&gt;&#xA;       &lt;td&gt;0.9081&lt;/td&gt;&#xA;       &lt;td&gt;0.9738&lt;/td&gt;&#xA;       &lt;td&gt;0.9461&lt;/td&gt;&#xA;       &lt;td&gt;0.9130&lt;/td&gt;&#xA;       &lt;td&gt;0.9293&lt;/td&gt;&#xA;       &lt;td&gt;0.7983&lt;/td&gt;&#xA;       &lt;td&gt;0.7993&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;4&lt;/th&gt;&#xA;       &lt;td&gt;0.9044&lt;/td&gt;&#xA;       &lt;td&gt;0.9738&lt;/td&gt;&#xA;       &lt;td&gt;0.9471&lt;/td&gt;&#xA;       &lt;td&gt;0.9071&lt;/td&gt;&#xA;       &lt;td&gt;0.9267&lt;/td&gt;&#xA;       &lt;td&gt;0.7894&lt;/td&gt;&#xA;       &lt;td&gt;0.7909&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;Mean&lt;/th&gt;&#xA;       &lt;td&gt;0.9174&lt;/td&gt;&#xA;       &lt;td&gt;0.9775&lt;/td&gt;&#xA;       &lt;td&gt;0.9551&lt;/td&gt;&#xA;       &lt;td&gt;0.9186&lt;/td&gt;&#xA;       &lt;td&gt;0.9365&lt;/td&gt;&#xA;       &lt;td&gt;0.8184&lt;/td&gt;&#xA;       &lt;td&gt;0.8197&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;SD&lt;/th&gt;&#xA;       &lt;td&gt;0.0093&lt;/td&gt;&#xA;       &lt;td&gt;0.0031&lt;/td&gt;&#xA;       &lt;td&gt;0.0079&lt;/td&gt;&#xA;       &lt;td&gt;0.0087&lt;/td&gt;&#xA;       &lt;td&gt;0.0071&lt;/td&gt;&#xA;       &lt;td&gt;0.0206&lt;/td&gt;&#xA;       &lt;td&gt;0.0206&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;   &lt;/tbody&gt;&#xA; &lt;/table&gt;&#xA; &lt;/div&gt;&#xA;&lt;h2 id=&#34;pycaret-train-skorch-model&#34;&gt;PyCaret Train Skorch Model&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;이번에는 Skorch Model을 Pycaret 함수에 넣어서 확인해본다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;skorch_model &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; create_model(nn_pipe)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;&#xA;     #customers {&#xA;       font-family: &#34;Trebuchet MS&#34;, Arial, Helvetica, sans-serif;&#xA;       border-collapse: collapse;&#xA;     }&#xA; &#xA;     #customers td,&#xA;     #customers th {&#xA;       border: 1px solid #ddd;&#xA;       padding: 8px;&#xA;     }&#xA; &#xA;     #customers tr:nth-child(even) {&#xA;       background-color: #f2f2f2;&#xA;     }&#xA; &#xA;     #customers tr:hover {&#xA;       background-color: #ddd;&#xA;     }&#xA;     #customers th {&#xA;       padding-top: 12px;&#xA;       padding-bottom: 12px;&#xA;       text-align: left;&#xA;       background-color: rgb(175, 107, 76);&#xA;       color: white;&#xA;     }&#xA;   &lt;/style&gt;&#xA;   &lt;div style=&#34;width:100%; height:400px; overflow:auto&#34;&gt;&#xA;     &lt;table border=&#34;1&#34; id=&#34;customers&#34;&gt;&#xA;   &lt;thead&gt;&#xA;     &lt;tr style=&#34;text-align: right;&#34;&gt;&#xA;       &lt;th&gt;&lt;/th&gt;&#xA;       &lt;th&gt;Accuracy&lt;/th&gt;&#xA;       &lt;th&gt;AUC&lt;/th&gt;&#xA;       &lt;th&gt;Recall&lt;/th&gt;&#xA;       &lt;th&gt;Prec.&lt;/th&gt;&#xA;       &lt;th&gt;F1&lt;/th&gt;&#xA;       &lt;th&gt;Kappa&lt;/th&gt;&#xA;       &lt;th&gt;MCC&lt;/th&gt;&#xA;     &lt;/tr&gt;&#xA;   &lt;/thead&gt;&#xA;   &lt;tbody&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;0&lt;/th&gt;&#xA;       &lt;td&gt;0.8831&lt;/td&gt;&#xA;       &lt;td&gt;0.9644&lt;/td&gt;&#xA;       &lt;td&gt;0.9500&lt;/td&gt;&#xA;       &lt;td&gt;0.8769&lt;/td&gt;&#xA;       &lt;td&gt;0.9120&lt;/td&gt;&#xA;       &lt;td&gt;0.7389&lt;/td&gt;&#xA;       &lt;td&gt;0.7441&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;1&lt;/th&gt;&#xA;       &lt;td&gt;0.8550&lt;/td&gt;&#xA;       &lt;td&gt;0.9437&lt;/td&gt;&#xA;       &lt;td&gt;0.9569&lt;/td&gt;&#xA;       &lt;td&gt;0.8385&lt;/td&gt;&#xA;       &lt;td&gt;0.8938&lt;/td&gt;&#xA;       &lt;td&gt;0.6685&lt;/td&gt;&#xA;       &lt;td&gt;0.6831&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;2&lt;/th&gt;&#xA;       &lt;td&gt;0.8369&lt;/td&gt;&#xA;       &lt;td&gt;0.9280&lt;/td&gt;&#xA;       &lt;td&gt;0.9638&lt;/td&gt;&#xA;       &lt;td&gt;0.8146&lt;/td&gt;&#xA;       &lt;td&gt;0.8829&lt;/td&gt;&#xA;       &lt;td&gt;0.6202&lt;/td&gt;&#xA;       &lt;td&gt;0.6446&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;3&lt;/th&gt;&#xA;       &lt;td&gt;0.8506&lt;/td&gt;&#xA;       &lt;td&gt;0.9347&lt;/td&gt;&#xA;       &lt;td&gt;0.8668&lt;/td&gt;&#xA;       &lt;td&gt;0.8957&lt;/td&gt;&#xA;       &lt;td&gt;0.8810&lt;/td&gt;&#xA;       &lt;td&gt;0.6805&lt;/td&gt;&#xA;       &lt;td&gt;0.6812&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;4&lt;/th&gt;&#xA;       &lt;td&gt;0.8081&lt;/td&gt;&#xA;       &lt;td&gt;0.9411&lt;/td&gt;&#xA;       &lt;td&gt;0.9765&lt;/td&gt;&#xA;       &lt;td&gt;0.7789&lt;/td&gt;&#xA;       &lt;td&gt;0.8666&lt;/td&gt;&#xA;       &lt;td&gt;0.5400&lt;/td&gt;&#xA;       &lt;td&gt;0.5859&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;Mean&lt;/th&gt;&#xA;       &lt;td&gt;0.8468&lt;/td&gt;&#xA;       &lt;td&gt;0.9424&lt;/td&gt;&#xA;       &lt;td&gt;0.9428&lt;/td&gt;&#xA;       &lt;td&gt;0.8409&lt;/td&gt;&#xA;       &lt;td&gt;0.8873&lt;/td&gt;&#xA;       &lt;td&gt;0.6496&lt;/td&gt;&#xA;       &lt;td&gt;0.6678&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;SD&lt;/th&gt;&#xA;       &lt;td&gt;0.0245&lt;/td&gt;&#xA;       &lt;td&gt;0.0123&lt;/td&gt;&#xA;       &lt;td&gt;0.0390&lt;/td&gt;&#xA;       &lt;td&gt;0.0421&lt;/td&gt;&#xA;       &lt;td&gt;0.0151&lt;/td&gt;&#xA;       &lt;td&gt;0.0666&lt;/td&gt;&#xA;       &lt;td&gt;0.0519&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;   &lt;/tbody&gt;&#xA; &lt;/table&gt;&#xA; &lt;/div&gt;&#xA;&lt;h2 id=&#34;comparing-models&#34;&gt;Comparing Models&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;두 모델 중 어떤 모델이 더 좋은지 확인해본다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;best_model &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; compare_models(include&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;[skorch_model, model], sort &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;AUC&amp;#34;&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;&#xA;     #customers {&#xA;       font-family: &#34;Trebuchet MS&#34;, Arial, Helvetica, sans-serif;&#xA;       border-collapse: collapse;&#xA;     }&#xA; &#xA;     #customers td,&#xA;     #customers th {&#xA;       border: 1px solid #ddd;&#xA;       padding: 8px;&#xA;     }&#xA; &#xA;     #customers tr:nth-child(even) {&#xA;       background-color: #f2f2f2;&#xA;     }&#xA; &#xA;     #customers tr:hover {&#xA;       background-color: #ddd;&#xA;     }&#xA;     #customers th {&#xA;       padding-top: 12px;&#xA;       padding-bottom: 12px;&#xA;       text-align: left;&#xA;       background-color: rgb(175, 107, 76);&#xA;       color: white;&#xA;     }&#xA;   &lt;/style&gt;&#xA;   &lt;div style=&#34;width:100%; height:400px; overflow:auto&#34;&gt;&#xA;     &lt;table border=&#34;1&#34; id=&#34;customers&#34;&gt;&#xA;   &lt;thead&gt;&#xA;     &lt;tr style=&#34;text-align: right;&#34;&gt;&#xA;       &lt;th&gt;&lt;/th&gt;&#xA;       &lt;th&gt;Model&lt;/th&gt;&#xA;       &lt;th&gt;Accuracy&lt;/th&gt;&#xA;       &lt;th&gt;AUC&lt;/th&gt;&#xA;       &lt;th&gt;Recall&lt;/th&gt;&#xA;       &lt;th&gt;Prec.&lt;/th&gt;&#xA;       &lt;th&gt;F1&lt;/th&gt;&#xA;       &lt;th&gt;Kappa&lt;/th&gt;&#xA;       &lt;th&gt;MCC&lt;/th&gt;&#xA;       &lt;th&gt;TT (Sec)&lt;/th&gt;&#xA;     &lt;/tr&gt;&#xA;   &lt;/thead&gt;&#xA;   &lt;tbody&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;1&lt;/th&gt;&#xA;       &lt;td&gt;Random Forest Classifier&lt;/td&gt;&#xA;       &lt;td&gt;0.9174&lt;/td&gt;&#xA;       &lt;td&gt;0.9775&lt;/td&gt;&#xA;       &lt;td&gt;0.9551&lt;/td&gt;&#xA;       &lt;td&gt;0.9186&lt;/td&gt;&#xA;       &lt;td&gt;0.9365&lt;/td&gt;&#xA;       &lt;td&gt;0.8184&lt;/td&gt;&#xA;       &lt;td&gt;0.8197&lt;/td&gt;&#xA;       &lt;td&gt;2.114&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;0&lt;/th&gt;&#xA;       &lt;td&gt;NeuralNetClassifier&lt;/td&gt;&#xA;       &lt;td&gt;0.8426&lt;/td&gt;&#xA;       &lt;td&gt;0.9400&lt;/td&gt;&#xA;       &lt;td&gt;0.9547&lt;/td&gt;&#xA;       &lt;td&gt;0.8281&lt;/td&gt;&#xA;       &lt;td&gt;0.8861&lt;/td&gt;&#xA;       &lt;td&gt;0.6355&lt;/td&gt;&#xA;       &lt;td&gt;0.6565&lt;/td&gt;&#xA;       &lt;td&gt;11.878&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;   &lt;/tbody&gt;&#xA; &lt;/table&gt;&#xA; &lt;/div&gt;&#xA;&#xA;&lt;h2 id=&#34;hyperparameter-grid&#34;&gt;Hyperparameter Grid&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Hyperparameter 튜닝을 적용하도록 한다.&lt;/li&gt;&#xA;&lt;li&gt;모형 튜닝을 위한 parameter 값은 다음 명령어를 통해서 확인할 수 있다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;skorch_model&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_params()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;keys()&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;dict_keys([&#39;memory&#39;, &#39;steps&#39;, &#39;verbose&#39;, &#39;transform&#39;, &#39;net&#39;, &#39;transform__float_dtype&#39;, &#39;transform__int_dtype&#39;, &#39;transform__treat_int_as_categorical&#39;, &#39;net__module&#39;, &#39;net__criterion&#39;, &#39;net__optimizer&#39;, &#39;net__lr&#39;, &#39;net__max_epochs&#39;, &#39;net__batch_size&#39;, &#39;net__iterator_train&#39;, &#39;net__iterator_valid&#39;, &#39;net__dataset&#39;, &#39;net__train_split&#39;, &#39;net__callbacks&#39;, &#39;net__predict_nonlinearity&#39;, &#39;net__warm_start&#39;, &#39;net__verbose&#39;, &#39;net__device&#39;, &#39;net___kwargs&#39;, &#39;net__classes&#39;, &#39;net__callbacks__epoch_timer&#39;, &#39;net__callbacks__train_loss&#39;, &#39;net__callbacks__train_loss__name&#39;, &#39;net__callbacks__train_loss__lower_is_better&#39;, &#39;net__callbacks__train_loss__on_train&#39;, &#39;net__callbacks__valid_loss&#39;, &#39;net__callbacks__valid_loss__name&#39;, &#39;net__callbacks__valid_loss__lower_is_better&#39;, &#39;net__callbacks__valid_loss__on_train&#39;, &#39;net__callbacks__valid_acc&#39;, &#39;net__callbacks__valid_acc__scoring&#39;, &#39;net__callbacks__valid_acc__lower_is_better&#39;, &#39;net__callbacks__valid_acc__on_train&#39;, &#39;net__callbacks__valid_acc__name&#39;, &#39;net__callbacks__valid_acc__target_extractor&#39;, &#39;net__callbacks__valid_acc__use_caching&#39;, &#39;net__callbacks__print_log&#39;, &#39;net__callbacks__print_log__keys_ignored&#39;, &#39;net__callbacks__print_log__sink&#39;, &#39;net__callbacks__print_log__tablefmt&#39;, &#39;net__callbacks__print_log__floatfmt&#39;, &#39;net__callbacks__print_log__stralign&#39;])&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;net&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_params()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;keys()&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;dict_keys([&#39;module&#39;, &#39;criterion&#39;, &#39;optimizer&#39;, &#39;lr&#39;, &#39;max_epochs&#39;, &#39;batch_size&#39;, &#39;iterator_train&#39;, &#39;iterator_valid&#39;, &#39;dataset&#39;, &#39;train_split&#39;, &#39;callbacks&#39;, &#39;predict_nonlinearity&#39;, &#39;warm_start&#39;, &#39;verbose&#39;, &#39;device&#39;, &#39;_kwargs&#39;, &#39;classes&#39;, &#39;callbacks__epoch_timer&#39;, &#39;callbacks__train_loss&#39;, &#39;callbacks__train_loss__name&#39;, &#39;callbacks__train_loss__lower_is_better&#39;, &#39;callbacks__train_loss__on_train&#39;, &#39;callbacks__valid_loss&#39;, &#39;callbacks__valid_loss__name&#39;, &#39;callbacks__valid_loss__lower_is_better&#39;, &#39;callbacks__valid_loss__on_train&#39;, &#39;callbacks__valid_acc&#39;, &#39;callbacks__valid_acc__scoring&#39;, &#39;callbacks__valid_acc__lower_is_better&#39;, &#39;callbacks__valid_acc__on_train&#39;, &#39;callbacks__valid_acc__name&#39;, &#39;callbacks__valid_acc__target_extractor&#39;, &#39;callbacks__valid_acc__use_caching&#39;, &#39;callbacks__print_log&#39;, &#39;callbacks__print_log__keys_ignored&#39;, &#39;callbacks__print_log__sink&#39;, &#39;callbacks__print_log__tablefmt&#39;, &#39;callbacks__print_log__floatfmt&#39;, &#39;callbacks__print_log__stralign&#39;])&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; torch.optim &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; optim&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;custom_grid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#x9;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;net__max_epochs&amp;#39;&lt;/span&gt;:[&lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;30&lt;/span&gt;],&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#x9;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;net__lr&amp;#39;&lt;/span&gt;: [&lt;span style=&#34;color:#ae81ff&#34;&gt;0.01&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.05&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.1&lt;/span&gt;],&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#x9;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;net__module__num_units_d1&amp;#39;&lt;/span&gt;: [&lt;span style=&#34;color:#ae81ff&#34;&gt;50&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;150&lt;/span&gt;],&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#x9;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;net__module__num_units_d2&amp;#39;&lt;/span&gt;: [&lt;span style=&#34;color:#ae81ff&#34;&gt;50&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;150&lt;/span&gt;],&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#x9;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;net__optimizer&amp;#39;&lt;/span&gt;: [optim&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Adam, optim&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;SGD, optim&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;RMSprop]&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#x9;}&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;&#xA;&lt;li&gt;이번에는 hyperparameter 모델을 적용하여 모델을 빠르게 만들어 본다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tuned_skorch_model &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; tune_model(skorch_model, custom_grid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; custom_grid)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;&#xA;     #customers {&#xA;       font-family: &#34;Trebuchet MS&#34;, Arial, Helvetica, sans-serif;&#xA;       border-collapse: collapse;&#xA;     }&#xA; &#xA;     #customers td,&#xA;     #customers th {&#xA;       border: 1px solid #ddd;&#xA;       padding: 8px;&#xA;     }&#xA; &#xA;     #customers tr:nth-child(even) {&#xA;       background-color: #f2f2f2;&#xA;     }&#xA; &#xA;     #customers tr:hover {&#xA;       background-color: #ddd;&#xA;     }&#xA;     #customers th {&#xA;       padding-top: 12px;&#xA;       padding-bottom: 12px;&#xA;       text-align: left;&#xA;       background-color: rgb(175, 107, 76);&#xA;       color: white;&#xA;     }&#xA;   &lt;/style&gt;&#xA;   &lt;div style=&#34;width:100%; height:400px; overflow:auto&#34;&gt;&#xA;     &lt;table border=&#34;1&#34; id=&#34;customers&#34;&gt;&#xA;   &lt;thead&gt;&#xA;     &lt;tr style=&#34;text-align: right;&#34;&gt;&#xA;       &lt;th&gt;&lt;/th&gt;&#xA;       &lt;th&gt;Accuracy&lt;/th&gt;&#xA;       &lt;th&gt;AUC&lt;/th&gt;&#xA;       &lt;th&gt;Recall&lt;/th&gt;&#xA;       &lt;th&gt;Prec.&lt;/th&gt;&#xA;       &lt;th&gt;F1&lt;/th&gt;&#xA;       &lt;th&gt;Kappa&lt;/th&gt;&#xA;       &lt;th&gt;MCC&lt;/th&gt;&#xA;     &lt;/tr&gt;&#xA;   &lt;/thead&gt;&#xA;   &lt;tbody&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;0&lt;/th&gt;&#xA;       &lt;td&gt;0.8762&lt;/td&gt;&#xA;       &lt;td&gt;0.9667&lt;/td&gt;&#xA;       &lt;td&gt;0.9686&lt;/td&gt;&#xA;       &lt;td&gt;0.8562&lt;/td&gt;&#xA;       &lt;td&gt;0.9089&lt;/td&gt;&#xA;       &lt;td&gt;0.7182&lt;/td&gt;&#xA;       &lt;td&gt;0.7316&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;1&lt;/th&gt;&#xA;       &lt;td&gt;0.8675&lt;/td&gt;&#xA;       &lt;td&gt;0.9477&lt;/td&gt;&#xA;       &lt;td&gt;0.8784&lt;/td&gt;&#xA;       &lt;td&gt;0.9106&lt;/td&gt;&#xA;       &lt;td&gt;0.8942&lt;/td&gt;&#xA;       &lt;td&gt;0.7171&lt;/td&gt;&#xA;       &lt;td&gt;0.7179&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;2&lt;/th&gt;&#xA;       &lt;td&gt;0.8375&lt;/td&gt;&#xA;       &lt;td&gt;0.9452&lt;/td&gt;&#xA;       &lt;td&gt;0.7835&lt;/td&gt;&#xA;       &lt;td&gt;0.9535&lt;/td&gt;&#xA;       &lt;td&gt;0.8602&lt;/td&gt;&#xA;       &lt;td&gt;0.6706&lt;/td&gt;&#xA;       &lt;td&gt;0.6891&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;3&lt;/th&gt;&#xA;       &lt;td&gt;0.8575&lt;/td&gt;&#xA;       &lt;td&gt;0.9522&lt;/td&gt;&#xA;       &lt;td&gt;0.8208&lt;/td&gt;&#xA;       &lt;td&gt;0.9490&lt;/td&gt;&#xA;       &lt;td&gt;0.8803&lt;/td&gt;&#xA;       &lt;td&gt;0.7066&lt;/td&gt;&#xA;       &lt;td&gt;0.7180&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;4&lt;/th&gt;&#xA;       &lt;td&gt;0.7975&lt;/td&gt;&#xA;       &lt;td&gt;0.9315&lt;/td&gt;&#xA;       &lt;td&gt;0.9726&lt;/td&gt;&#xA;       &lt;td&gt;0.7704&lt;/td&gt;&#xA;       &lt;td&gt;0.8597&lt;/td&gt;&#xA;       &lt;td&gt;0.5127&lt;/td&gt;&#xA;       &lt;td&gt;0.5602&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;Mean&lt;/th&gt;&#xA;       &lt;td&gt;0.8472&lt;/td&gt;&#xA;       &lt;td&gt;0.9487&lt;/td&gt;&#xA;       &lt;td&gt;0.8848&lt;/td&gt;&#xA;       &lt;td&gt;0.8879&lt;/td&gt;&#xA;       &lt;td&gt;0.8807&lt;/td&gt;&#xA;       &lt;td&gt;0.6650&lt;/td&gt;&#xA;       &lt;td&gt;0.6834&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;     &lt;tr&gt;&#xA;       &lt;th&gt;SD&lt;/th&gt;&#xA;       &lt;td&gt;0.0280&lt;/td&gt;&#xA;       &lt;td&gt;0.0114&lt;/td&gt;&#xA;       &lt;td&gt;0.0763&lt;/td&gt;&#xA;       &lt;td&gt;0.0684&lt;/td&gt;&#xA;       &lt;td&gt;0.0192&lt;/td&gt;&#xA;       &lt;td&gt;0.0781&lt;/td&gt;&#xA;       &lt;td&gt;0.0631&lt;/td&gt;&#xA;     &lt;/tr&gt;&#xA;   &lt;/tbody&gt;&#xA; &lt;/table&gt;&#xA; &lt;/div&gt;&#xA;&lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://pycaret.org/&#34;&gt;https://pycaret.org/&lt;/a&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://www.analyticsvidhya.com/blog/2020/05/pycaret-machine-learning-model-seconds/&#34;&gt;https://www.analyticsvidhya.com/blog/2020/05/pycaret-machine-learning-model-seconds/&lt;/a&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://github.com/skorch-dev/skorch&#34;&gt;https://github.com/skorch-dev/skorch&lt;/a&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://towardsdatascience.com/skorch-pytorch-models-trained-with-a-scikit-learn-wrapper-62b9a154623e&#34;&gt;https://towardsdatascience.com/skorch-pytorch-models-trained-with-a-scikit-learn-wrapper-62b9a154623e&lt;/a&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://towardsdatascience.com/pycaret-skorch-build-pytorch-neural-networks-using-minimal-code-57079e197f33&#34;&gt;https://towardsdatascience.com/pycaret-skorch-build-pytorch-neural-networks-using-minimal-code-57079e197f33&lt;/a&gt;&lt;/li&gt;&#xA;&lt;/ol&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pipeline on Data Science | DSChloe</title><link>https://dschloe.github.io/tags/pipeline/</link><description>Recent content in Pipeline on Data Science | DSChloe</description><generator>Hugo</generator><language>en-US</language><lastBuildDate>Tue, 28 Dec 2021 16:11:47 +0900</lastBuildDate><atom:link href="https://dschloe.github.io/tags/pipeline/rss.xml" rel="self" type="application/rss+xml"/><item><title>PyCaret, Skorch Using Pipeline</title><link>https://dschloe.github.io/programming/2021/12/pycaret_with_sktorch/</link><pubDate>Tue, 28 Dec 2021 16:11:47 +0900</pubDate><guid>https://dschloe.github.io/programming/2021/12/pycaret_with_sktorch/</guid><description>&lt;h2 id="개요"&gt;개요&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Scikit-Learn의 Pipeline은 강력하다.&lt;/li&gt;
+&lt;li&gt;PyCaret, Skorch에도 사용이 가능하다.&lt;/li&gt;
+&lt;li&gt;Google Colab에서 시도해보자.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="필수-라이브러리-설치"&gt;필수 라이브러리 설치&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;pycaret을 설치 한 후에는 반드시 런타임 재시작을 클릭한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;!&lt;/span&gt;pip install pycaret
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Collecting pycaret
+ Downloading pycaret-2.3.5-py3-none-any.whl (288 kB)
+.
+.
+Successfully installed Boruta-0.3 Mako-1.1.6 PyYAML-6.0 alembic-1.4.1 databricks-cli-0.16.2 docker-5.0.3 funcy-1.17 gitdb-4.0.9 gitpython-3.1.24 gunicorn-20.1.0 htmlmin-0.1.12 imagehash-4.2.1 imbalanced-learn-0.7.0 joblib-1.0.1 kmodes-0.11.1 lightgbm-3.3.1 mlflow-1.22.0 mlxtend-0.19.0 multimethod-1.6 pandas-profiling-3.1.0 phik-0.12.0 prometheus-flask-exporter-0.18.7 pyLDAvis-3.2.2 pycaret-2.3.5 pydantic-1.8.2 pynndescent-0.5.5 pyod-0.9.6 python-editor-1.0.4 querystring-parser-1.2.4 requests-2.26.0 scikit-learn-0.23.2 scikit-plot-0.3.7 scipy-1.5.4 smmap-5.0.0 tangled-up-in-unicode-0.1.0 umap-learn-0.5.2 visions-0.7.4 websocket-client-1.2.3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;!&lt;/span&gt;pip install &lt;span style="color:#f92672"&gt;-&lt;/span&gt;U skorch
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Requirement already satisfied: skorch in /usr/local/lib/python3.7/dist-packages (0.11.0)
+Requirement already satisfied: tabulate&amp;gt;=0.7.7 in /usr/local/lib/python3.7/dist-packages (from skorch) (0.8.9)
+Requirement already satisfied: scikit-learn&amp;gt;=0.19.1 in /usr/local/lib/python3.7/dist-packages (from skorch) (0.23.2)
+Requirement already satisfied: tqdm&amp;gt;=4.14.0 in /usr/local/lib/python3.7/dist-packages (from skorch) (4.62.3)
+Requirement already satisfied: numpy&amp;gt;=1.13.3 in /usr/local/lib/python3.7/dist-packages (from skorch) (1.19.5)
+Requirement already satisfied: scipy&amp;gt;=1.1.0 in /usr/local/lib/python3.7/dist-packages (from skorch) (1.5.4)
+Requirement already satisfied: joblib&amp;gt;=0.11 in /usr/local/lib/python3.7/dist-packages (from scikit-learn&amp;gt;=0.19.1-&amp;gt;skorch) (1.0.1)
+Requirement already satisfied: threadpoolctl&amp;gt;=2.0.0 in /usr/local/lib/python3.7/dist-packages (from scikit-learn&amp;gt;=0.19.1-&amp;gt;skorch) (3.0.0)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;from&lt;/span&gt; pycaret.datasets &lt;span style="color:#f92672"&gt;import&lt;/span&gt; get_data
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data &lt;span style="color:#f92672"&gt;=&lt;/span&gt; get_data(&lt;span style="color:#e6db74"&gt;&amp;#34;electrical_grid&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;
+ #customers {
+ font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+ border-collapse: collapse;
+ }
+ 
+ #customers td,
+ #customers th {
+ border: 1px solid #ddd;
+ padding: 8px;
+ }
+ 
+ #customers tr:nth-child(even) {
+ background-color: #f2f2f2;
+ }
+ 
+ #customers tr:hover {
+ background-color: #ddd;
+ }
+ #customers th {
+ padding-top: 12px;
+ padding-bottom: 12px;
+ text-align: left;
+ background-color: rgb(175, 107, 76);
+ color: white;
+ }
+ &lt;/style&gt;
+ 
+ &lt;div style="width:100%; height:400px; overflow:auto"&gt;
+ &lt;table border="1" id="customers"&gt;
+ &lt;thead&gt;
+ &lt;tr style="text-align: right;"&gt;
+ &lt;th&gt;&lt;/th&gt;
+ &lt;th&gt;tau1&lt;/th&gt;
+ &lt;th&gt;tau2&lt;/th&gt;
+ &lt;th&gt;tau3&lt;/th&gt;
+ &lt;th&gt;tau4&lt;/th&gt;
+ &lt;th&gt;p1&lt;/th&gt;
+ &lt;th&gt;p2&lt;/th&gt;
+ &lt;th&gt;p3&lt;/th&gt;
+ &lt;th&gt;p4&lt;/th&gt;
+ &lt;th&gt;g1&lt;/th&gt;
+ &lt;th&gt;g2&lt;/th&gt;
+ &lt;th&gt;g3&lt;/th&gt;
+ &lt;th&gt;g4&lt;/th&gt;
+ &lt;th&gt;stabf&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;th&gt;0&lt;/th&gt;
+ &lt;td&gt;2.959060&lt;/td&gt;
+ &lt;td&gt;3.079885&lt;/td&gt;
+ &lt;td&gt;8.381025&lt;/td&gt;
+ &lt;td&gt;9.780754&lt;/td&gt;
+ &lt;td&gt;3.763085&lt;/td&gt;
+ &lt;td&gt;-0.782604&lt;/td&gt;
+ &lt;td&gt;-1.257395&lt;/td&gt;
+ &lt;td&gt;-1.723086&lt;/td&gt;
+ &lt;td&gt;0.650456&lt;/td&gt;
+ &lt;td&gt;0.859578&lt;/td&gt;
+ &lt;td&gt;0.887445&lt;/td&gt;
+ &lt;td&gt;0.958034&lt;/td&gt;
+ &lt;td&gt;unstable&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;1&lt;/th&gt;
+ &lt;td&gt;9.304097&lt;/td&gt;
+ &lt;td&gt;4.902524&lt;/td&gt;
+ &lt;td&gt;3.047541&lt;/td&gt;
+ &lt;td&gt;1.369357&lt;/td&gt;
+ &lt;td&gt;5.067812&lt;/td&gt;
+ &lt;td&gt;-1.940058&lt;/td&gt;
+ &lt;td&gt;-1.872742&lt;/td&gt;
+ &lt;td&gt;-1.255012&lt;/td&gt;
+ &lt;td&gt;0.413441&lt;/td&gt;
+ &lt;td&gt;0.862414&lt;/td&gt;
+ &lt;td&gt;0.562139&lt;/td&gt;
+ &lt;td&gt;0.781760&lt;/td&gt;
+ &lt;td&gt;stable&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;2&lt;/th&gt;
+ &lt;td&gt;8.971707&lt;/td&gt;
+ &lt;td&gt;8.848428&lt;/td&gt;
+ &lt;td&gt;3.046479&lt;/td&gt;
+ &lt;td&gt;1.214518&lt;/td&gt;
+ &lt;td&gt;3.405158&lt;/td&gt;
+ &lt;td&gt;-1.207456&lt;/td&gt;
+ &lt;td&gt;-1.277210&lt;/td&gt;
+ &lt;td&gt;-0.920492&lt;/td&gt;
+ &lt;td&gt;0.163041&lt;/td&gt;
+ &lt;td&gt;0.766689&lt;/td&gt;
+ &lt;td&gt;0.839444&lt;/td&gt;
+ &lt;td&gt;0.109853&lt;/td&gt;
+ &lt;td&gt;unstable&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;3&lt;/th&gt;
+ &lt;td&gt;0.716415&lt;/td&gt;
+ &lt;td&gt;7.669600&lt;/td&gt;
+ &lt;td&gt;4.486641&lt;/td&gt;
+ &lt;td&gt;2.340563&lt;/td&gt;
+ &lt;td&gt;3.963791&lt;/td&gt;
+ &lt;td&gt;-1.027473&lt;/td&gt;
+ &lt;td&gt;-1.938944&lt;/td&gt;
+ &lt;td&gt;-0.997374&lt;/td&gt;
+ &lt;td&gt;0.446209&lt;/td&gt;
+ &lt;td&gt;0.976744&lt;/td&gt;
+ &lt;td&gt;0.929381&lt;/td&gt;
+ &lt;td&gt;0.362718&lt;/td&gt;
+ &lt;td&gt;unstable&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;4&lt;/th&gt;
+ &lt;td&gt;3.134112&lt;/td&gt;
+ &lt;td&gt;7.608772&lt;/td&gt;
+ &lt;td&gt;4.943759&lt;/td&gt;
+ &lt;td&gt;9.857573&lt;/td&gt;
+ &lt;td&gt;3.525811&lt;/td&gt;
+ &lt;td&gt;-1.125531&lt;/td&gt;
+ &lt;td&gt;-1.845975&lt;/td&gt;
+ &lt;td&gt;-0.554305&lt;/td&gt;
+ &lt;td&gt;0.797110&lt;/td&gt;
+ &lt;td&gt;0.455450&lt;/td&gt;
+ &lt;td&gt;0.656947&lt;/td&gt;
+ &lt;td&gt;0.820923&lt;/td&gt;
+ &lt;td&gt;unstable&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+ &lt;/table&gt;
+ &lt;/div&gt;
+&lt;h2 id="pytorchmodel"&gt;PyTorchModel&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;sktorch&lt;/code&gt; 라이브러리는 PyTorch 모델과 함께 작동한다.&lt;/li&gt;
+&lt;li&gt;MLP 모델을 작성하는 클래스를 설계한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; torch.nn &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; nn
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Net&lt;/span&gt;(nn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;Module): 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;__init__&lt;/span&gt;(self, num_inputs&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;12&lt;/span&gt;, num_units_d1 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;200&lt;/span&gt;, num_units_d2 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;):
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; super(Net, self)&lt;span style="color:#f92672"&gt;.&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;__init__&lt;/span&gt;() 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; self&lt;span style="color:#f92672"&gt;.&lt;/span&gt;dense0 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; nn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;Linear(num_inputs, num_units_d1)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; self&lt;span style="color:#f92672"&gt;.&lt;/span&gt;nonlin &lt;span style="color:#f92672"&gt;=&lt;/span&gt; nn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;ReLU()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; self&lt;span style="color:#f92672"&gt;.&lt;/span&gt;dropout &lt;span style="color:#f92672"&gt;=&lt;/span&gt; nn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;Dropout(&lt;span style="color:#ae81ff"&gt;0.5&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; self&lt;span style="color:#f92672"&gt;.&lt;/span&gt;dense1 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; nn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;Linear(num_units_d1, num_units_d2)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; self&lt;span style="color:#f92672"&gt;.&lt;/span&gt;output &lt;span style="color:#f92672"&gt;=&lt;/span&gt; nn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;Linear(num_units_d2, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; self&lt;span style="color:#f92672"&gt;.&lt;/span&gt;softmax &lt;span style="color:#f92672"&gt;=&lt;/span&gt; nn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;Softmax(dim&lt;span style="color:#f92672"&gt;=-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;forward&lt;/span&gt;(self, X, &lt;span style="color:#f92672"&gt;**&lt;/span&gt;kwargs):
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; X &lt;span style="color:#f92672"&gt;=&lt;/span&gt; self&lt;span style="color:#f92672"&gt;.&lt;/span&gt;nonlin(self&lt;span style="color:#f92672"&gt;.&lt;/span&gt;dense0(X))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; X &lt;span style="color:#f92672"&gt;=&lt;/span&gt; self&lt;span style="color:#f92672"&gt;.&lt;/span&gt;dropout(X)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; X &lt;span style="color:#f92672"&gt;=&lt;/span&gt; self&lt;span style="color:#f92672"&gt;.&lt;/span&gt;nonlin(self&lt;span style="color:#f92672"&gt;.&lt;/span&gt;dense1(X))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; X &lt;span style="color:#f92672"&gt;=&lt;/span&gt; self&lt;span style="color:#f92672"&gt;.&lt;/span&gt;softmax(self&lt;span style="color:#f92672"&gt;.&lt;/span&gt;output(X))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; X
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="skorch-classifier"&gt;Skorch Classifier&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;NeuralNetClassifier 클래스를 PyTorch 클래스와 연동한다.&lt;/li&gt;
+&lt;li&gt;Optimizer 기본값인 SGD를 사용한다. 만약 다른 Optimizer로 변경을 원하면 다음 링크에서 확인한다.
+&lt;ul&gt;
+&lt;li&gt;참고: &lt;a href="https://skorch.readthedocs.io/en/latest/user/neuralnet.html#optimizer"&gt;https://skorch.readthedocs.io/en/latest/user/neuralnet.html#optimizer&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Sktorch 5 폴드 교차검증을 수행한다.
+&lt;ul&gt;
+&lt;li&gt;학습 데이터는 80%, 나머지 20%는 검증 데이터로 활용한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;from&lt;/span&gt; skorch &lt;span style="color:#f92672"&gt;import&lt;/span&gt; NeuralNetClassifier 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;net &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NeuralNetClassifier(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; module &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Net, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; max_epochs &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;30&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; lr &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0.1&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; batch_size &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; train_split &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;None&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="pycaret과-신경망-학습-방법"&gt;PyCaret과 신경망 학습 방법&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;SKORCH NN model을 초기화 했다면, 이번에는 PyCaret과 함께 모델을 학습할 수 있다.&lt;/li&gt;
+&lt;li&gt;PyCaret은 기본적으로 Pandas DataFrame을 메인 객체로 사용하다.&lt;/li&gt;
+&lt;li&gt;그런데, sktorch model을 사용하기 위해서는 &lt;code&gt;pipeline&lt;/code&gt;을 구성할 때는 DataFrameTransformer() 함수를 사용해야 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;from&lt;/span&gt; skorch.helper &lt;span style="color:#f92672"&gt;import&lt;/span&gt; DataFrameTransformer
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; numpy &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; np
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;from&lt;/span&gt; sklearn.pipeline &lt;span style="color:#f92672"&gt;import&lt;/span&gt; Pipeline
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;nn_pipe &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Pipeline(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [(&lt;span style="color:#e6db74"&gt;&amp;#34;transform&amp;#34;&lt;/span&gt;, DataFrameTransformer()), 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; (&lt;span style="color:#e6db74"&gt;&amp;#34;net&amp;#34;&lt;/span&gt;, net), ]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="pycaret-setup"&gt;PyCaret Setup&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Skorch API 대신 PyCaret 모델을 사용해본다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;log_experiment&lt;/code&gt;가 &lt;code&gt;True&lt;/code&gt;를 사용하게 되면 &lt;code&gt;MLFlow&lt;/code&gt;를 사용할 수 있다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;silent&lt;/code&gt;가 &lt;code&gt;True&lt;/code&gt;인 경우 중간에 발생하는 &lt;code&gt;press enter to continue&lt;/code&gt; 입력 단계를 피할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;from&lt;/span&gt; pycaret.classification &lt;span style="color:#f92672"&gt;import&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;target &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;stabf&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;clf1 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; setup(data &lt;span style="color:#f92672"&gt;=&lt;/span&gt; data, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; target &lt;span style="color:#f92672"&gt;=&lt;/span&gt; target,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; train_size &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0.8&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; fold &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; session_id &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;123&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; log_experiment &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;True&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; experiment_name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;electrical_grid_1&amp;#39;&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; silent &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;True&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;
+ #customers {
+ font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+ border-collapse: collapse;
+ }
+ 
+ #customers td,
+ #customers th {
+ border: 1px solid #ddd;
+ padding: 8px;
+ }
+ 
+ #customers tr:nth-child(even) {
+ background-color: #f2f2f2;
+ }
+ 
+ #customers tr:hover {
+ background-color: #ddd;
+ }
+ #customers th {
+ padding-top: 12px;
+ padding-bottom: 12px;
+ text-align: left;
+ background-color: rgb(175, 107, 76);
+ color: white;
+ }
+ &lt;/style&gt;
+ &lt;div style="width:100%; height:400px; overflow:auto"&gt;
+ &lt;table border="1" id="customers"&gt;
+ &lt;thead&gt;
+ &lt;tr style="text-align: right;"&gt;
+ &lt;th&gt;&lt;/th&gt;
+ &lt;th&gt;Description&lt;/th&gt;
+ &lt;th&gt;Value&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;th&gt;0&lt;/th&gt;
+ &lt;td&gt;session_id&lt;/td&gt;
+ &lt;td&gt;123&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;1&lt;/th&gt;
+ &lt;td&gt;Target&lt;/td&gt;
+ &lt;td&gt;stabf&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;2&lt;/th&gt;
+ &lt;td&gt;Target Type&lt;/td&gt;
+ &lt;td&gt;Binary&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;3&lt;/th&gt;
+ &lt;td&gt;Label Encoded&lt;/td&gt;
+ &lt;td&gt;stable: 0, unstable: 1&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;4&lt;/th&gt;
+ &lt;td&gt;Original Data&lt;/td&gt;
+ &lt;td&gt;(10000, 13)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;5&lt;/th&gt;
+ &lt;td&gt;Missing Values&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;6&lt;/th&gt;
+ &lt;td&gt;Numeric Features&lt;/td&gt;
+ &lt;td&gt;12&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;7&lt;/th&gt;
+ &lt;td&gt;Categorical Features&lt;/td&gt;
+ &lt;td&gt;0&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;8&lt;/th&gt;
+ &lt;td&gt;Ordinal Features&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;9&lt;/th&gt;
+ &lt;td&gt;High Cardinality Features&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;10&lt;/th&gt;
+ &lt;td&gt;High Cardinality Method&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;11&lt;/th&gt;
+ &lt;td&gt;Transformed Train Set&lt;/td&gt;
+ &lt;td&gt;(8000, 12)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;12&lt;/th&gt;
+ &lt;td&gt;Transformed Test Set&lt;/td&gt;
+ &lt;td&gt;(2000, 12)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;13&lt;/th&gt;
+ &lt;td&gt;Shuffle Train-Test&lt;/td&gt;
+ &lt;td&gt;True&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;14&lt;/th&gt;
+ &lt;td&gt;Stratify Train-Test&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;15&lt;/th&gt;
+ &lt;td&gt;Fold Generator&lt;/td&gt;
+ &lt;td&gt;StratifiedKFold&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;16&lt;/th&gt;
+ &lt;td&gt;Fold Number&lt;/td&gt;
+ &lt;td&gt;5&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;17&lt;/th&gt;
+ &lt;td&gt;CPU Jobs&lt;/td&gt;
+ &lt;td&gt;-1&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;18&lt;/th&gt;
+ &lt;td&gt;Use GPU&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;19&lt;/th&gt;
+ &lt;td&gt;Log Experiment&lt;/td&gt;
+ &lt;td&gt;True&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;20&lt;/th&gt;
+ &lt;td&gt;Experiment Name&lt;/td&gt;
+ &lt;td&gt;electrical_grid_1&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;21&lt;/th&gt;
+ &lt;td&gt;USI&lt;/td&gt;
+ &lt;td&gt;9626&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;22&lt;/th&gt;
+ &lt;td&gt;Imputation Type&lt;/td&gt;
+ &lt;td&gt;simple&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;23&lt;/th&gt;
+ &lt;td&gt;Iterative Imputation Iteration&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;24&lt;/th&gt;
+ &lt;td&gt;Numeric Imputer&lt;/td&gt;
+ &lt;td&gt;mean&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;25&lt;/th&gt;
+ &lt;td&gt;Iterative Imputation Numeric Model&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;26&lt;/th&gt;
+ &lt;td&gt;Categorical Imputer&lt;/td&gt;
+ &lt;td&gt;constant&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;27&lt;/th&gt;
+ &lt;td&gt;Iterative Imputation Categorical Model&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;28&lt;/th&gt;
+ &lt;td&gt;Unknown Categoricals Handling&lt;/td&gt;
+ &lt;td&gt;least_frequent&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;29&lt;/th&gt;
+ &lt;td&gt;Normalize&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;30&lt;/th&gt;
+ &lt;td&gt;Normalize Method&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;31&lt;/th&gt;
+ &lt;td&gt;Transformation&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;32&lt;/th&gt;
+ &lt;td&gt;Transformation Method&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;33&lt;/th&gt;
+ &lt;td&gt;PCA&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;34&lt;/th&gt;
+ &lt;td&gt;PCA Method&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;35&lt;/th&gt;
+ &lt;td&gt;PCA Components&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;36&lt;/th&gt;
+ &lt;td&gt;Ignore Low Variance&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;37&lt;/th&gt;
+ &lt;td&gt;Combine Rare Levels&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;38&lt;/th&gt;
+ &lt;td&gt;Rare Level Threshold&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;39&lt;/th&gt;
+ &lt;td&gt;Numeric Binning&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;40&lt;/th&gt;
+ &lt;td&gt;Remove Outliers&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;41&lt;/th&gt;
+ &lt;td&gt;Outliers Threshold&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;42&lt;/th&gt;
+ &lt;td&gt;Remove Multicollinearity&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;43&lt;/th&gt;
+ &lt;td&gt;Multicollinearity Threshold&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;44&lt;/th&gt;
+ &lt;td&gt;Remove Perfect Collinearity&lt;/td&gt;
+ &lt;td&gt;True&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;45&lt;/th&gt;
+ &lt;td&gt;Clustering&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;46&lt;/th&gt;
+ &lt;td&gt;Clustering Iteration&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;47&lt;/th&gt;
+ &lt;td&gt;Polynomial Features&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;48&lt;/th&gt;
+ &lt;td&gt;Polynomial Degree&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;49&lt;/th&gt;
+ &lt;td&gt;Trignometry Features&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;50&lt;/th&gt;
+ &lt;td&gt;Polynomial Threshold&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;51&lt;/th&gt;
+ &lt;td&gt;Group Features&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;52&lt;/th&gt;
+ &lt;td&gt;Feature Selection&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;53&lt;/th&gt;
+ &lt;td&gt;Feature Selection Method&lt;/td&gt;
+ &lt;td&gt;classic&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;54&lt;/th&gt;
+ &lt;td&gt;Features Selection Threshold&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;55&lt;/th&gt;
+ &lt;td&gt;Feature Interaction&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;56&lt;/th&gt;
+ &lt;td&gt;Feature Ratio&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;57&lt;/th&gt;
+ &lt;td&gt;Interaction Threshold&lt;/td&gt;
+ &lt;td&gt;None&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;58&lt;/th&gt;
+ &lt;td&gt;Fix Imbalance&lt;/td&gt;
+ &lt;td&gt;False&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;59&lt;/th&gt;
+ &lt;td&gt;Fix Imbalance Method&lt;/td&gt;
+ &lt;td&gt;SMOTE&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+ &lt;/table&gt;
+ &lt;/div&gt;
+ 
+
+&lt;h2 id="pycaret-train-model"&gt;PyCaret Train Model&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Random Forest 모델을 사용해본다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;model &lt;span style="color:#f92672"&gt;=&lt;/span&gt; create_model(&lt;span style="color:#e6db74"&gt;&amp;#34;rf&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;
+ #customers {
+ font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+ border-collapse: collapse;
+ }
+ 
+ #customers td,
+ #customers th {
+ border: 1px solid #ddd;
+ padding: 8px;
+ }
+ 
+ #customers tr:nth-child(even) {
+ background-color: #f2f2f2;
+ }
+ 
+ #customers tr:hover {
+ background-color: #ddd;
+ }
+ #customers th {
+ padding-top: 12px;
+ padding-bottom: 12px;
+ text-align: left;
+ background-color: rgb(175, 107, 76);
+ color: white;
+ }
+ &lt;/style&gt;
+ &lt;div style="width:100%; height:400px; overflow:auto"&gt;
+ &lt;table border="1" id="customers"&gt;
+ &lt;thead&gt;
+ &lt;tr style="text-align: right;"&gt;
+ &lt;th&gt;&lt;/th&gt;
+ &lt;th&gt;Accuracy&lt;/th&gt;
+ &lt;th&gt;AUC&lt;/th&gt;
+ &lt;th&gt;Recall&lt;/th&gt;
+ &lt;th&gt;Prec.&lt;/th&gt;
+ &lt;th&gt;F1&lt;/th&gt;
+ &lt;th&gt;Kappa&lt;/th&gt;
+ &lt;th&gt;MCC&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;th&gt;0&lt;/th&gt;
+ &lt;td&gt;0.9244&lt;/td&gt;
+ &lt;td&gt;0.9796&lt;/td&gt;
+ &lt;td&gt;0.9667&lt;/td&gt;
+ &lt;td&gt;0.9189&lt;/td&gt;
+ &lt;td&gt;0.9422&lt;/td&gt;
+ &lt;td&gt;0.8331&lt;/td&gt;
+ &lt;td&gt;0.8353&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;1&lt;/th&gt;
+ &lt;td&gt;0.9275&lt;/td&gt;
+ &lt;td&gt;0.9793&lt;/td&gt;
+ &lt;td&gt;0.9549&lt;/td&gt;
+ &lt;td&gt;0.9330&lt;/td&gt;
+ &lt;td&gt;0.9438&lt;/td&gt;
+ &lt;td&gt;0.8417&lt;/td&gt;
+ &lt;td&gt;0.8422&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;2&lt;/th&gt;
+ &lt;td&gt;0.9225&lt;/td&gt;
+ &lt;td&gt;0.9810&lt;/td&gt;
+ &lt;td&gt;0.9608&lt;/td&gt;
+ &lt;td&gt;0.9211&lt;/td&gt;
+ &lt;td&gt;0.9406&lt;/td&gt;
+ &lt;td&gt;0.8294&lt;/td&gt;
+ &lt;td&gt;0.8309&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;3&lt;/th&gt;
+ &lt;td&gt;0.9081&lt;/td&gt;
+ &lt;td&gt;0.9738&lt;/td&gt;
+ &lt;td&gt;0.9461&lt;/td&gt;
+ &lt;td&gt;0.9130&lt;/td&gt;
+ &lt;td&gt;0.9293&lt;/td&gt;
+ &lt;td&gt;0.7983&lt;/td&gt;
+ &lt;td&gt;0.7993&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;4&lt;/th&gt;
+ &lt;td&gt;0.9044&lt;/td&gt;
+ &lt;td&gt;0.9738&lt;/td&gt;
+ &lt;td&gt;0.9471&lt;/td&gt;
+ &lt;td&gt;0.9071&lt;/td&gt;
+ &lt;td&gt;0.9267&lt;/td&gt;
+ &lt;td&gt;0.7894&lt;/td&gt;
+ &lt;td&gt;0.7909&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Mean&lt;/th&gt;
+ &lt;td&gt;0.9174&lt;/td&gt;
+ &lt;td&gt;0.9775&lt;/td&gt;
+ &lt;td&gt;0.9551&lt;/td&gt;
+ &lt;td&gt;0.9186&lt;/td&gt;
+ &lt;td&gt;0.9365&lt;/td&gt;
+ &lt;td&gt;0.8184&lt;/td&gt;
+ &lt;td&gt;0.8197&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;SD&lt;/th&gt;
+ &lt;td&gt;0.0093&lt;/td&gt;
+ &lt;td&gt;0.0031&lt;/td&gt;
+ &lt;td&gt;0.0079&lt;/td&gt;
+ &lt;td&gt;0.0087&lt;/td&gt;
+ &lt;td&gt;0.0071&lt;/td&gt;
+ &lt;td&gt;0.0206&lt;/td&gt;
+ &lt;td&gt;0.0206&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+ &lt;/table&gt;
+ &lt;/div&gt;
+&lt;h2 id="pycaret-train-skorch-model"&gt;PyCaret Train Skorch Model&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;이번에는 Skorch Model을 Pycaret 함수에 넣어서 확인해본다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;skorch_model &lt;span style="color:#f92672"&gt;=&lt;/span&gt; create_model(nn_pipe)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;
+ #customers {
+ font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+ border-collapse: collapse;
+ }
+ 
+ #customers td,
+ #customers th {
+ border: 1px solid #ddd;
+ padding: 8px;
+ }
+ 
+ #customers tr:nth-child(even) {
+ background-color: #f2f2f2;
+ }
+ 
+ #customers tr:hover {
+ background-color: #ddd;
+ }
+ #customers th {
+ padding-top: 12px;
+ padding-bottom: 12px;
+ text-align: left;
+ background-color: rgb(175, 107, 76);
+ color: white;
+ }
+ &lt;/style&gt;
+ &lt;div style="width:100%; height:400px; overflow:auto"&gt;
+ &lt;table border="1" id="customers"&gt;
+ &lt;thead&gt;
+ &lt;tr style="text-align: right;"&gt;
+ &lt;th&gt;&lt;/th&gt;
+ &lt;th&gt;Accuracy&lt;/th&gt;
+ &lt;th&gt;AUC&lt;/th&gt;
+ &lt;th&gt;Recall&lt;/th&gt;
+ &lt;th&gt;Prec.&lt;/th&gt;
+ &lt;th&gt;F1&lt;/th&gt;
+ &lt;th&gt;Kappa&lt;/th&gt;
+ &lt;th&gt;MCC&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;th&gt;0&lt;/th&gt;
+ &lt;td&gt;0.8831&lt;/td&gt;
+ &lt;td&gt;0.9644&lt;/td&gt;
+ &lt;td&gt;0.9500&lt;/td&gt;
+ &lt;td&gt;0.8769&lt;/td&gt;
+ &lt;td&gt;0.9120&lt;/td&gt;
+ &lt;td&gt;0.7389&lt;/td&gt;
+ &lt;td&gt;0.7441&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;1&lt;/th&gt;
+ &lt;td&gt;0.8550&lt;/td&gt;
+ &lt;td&gt;0.9437&lt;/td&gt;
+ &lt;td&gt;0.9569&lt;/td&gt;
+ &lt;td&gt;0.8385&lt;/td&gt;
+ &lt;td&gt;0.8938&lt;/td&gt;
+ &lt;td&gt;0.6685&lt;/td&gt;
+ &lt;td&gt;0.6831&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;2&lt;/th&gt;
+ &lt;td&gt;0.8369&lt;/td&gt;
+ &lt;td&gt;0.9280&lt;/td&gt;
+ &lt;td&gt;0.9638&lt;/td&gt;
+ &lt;td&gt;0.8146&lt;/td&gt;
+ &lt;td&gt;0.8829&lt;/td&gt;
+ &lt;td&gt;0.6202&lt;/td&gt;
+ &lt;td&gt;0.6446&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;3&lt;/th&gt;
+ &lt;td&gt;0.8506&lt;/td&gt;
+ &lt;td&gt;0.9347&lt;/td&gt;
+ &lt;td&gt;0.8668&lt;/td&gt;
+ &lt;td&gt;0.8957&lt;/td&gt;
+ &lt;td&gt;0.8810&lt;/td&gt;
+ &lt;td&gt;0.6805&lt;/td&gt;
+ &lt;td&gt;0.6812&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;4&lt;/th&gt;
+ &lt;td&gt;0.8081&lt;/td&gt;
+ &lt;td&gt;0.9411&lt;/td&gt;
+ &lt;td&gt;0.9765&lt;/td&gt;
+ &lt;td&gt;0.7789&lt;/td&gt;
+ &lt;td&gt;0.8666&lt;/td&gt;
+ &lt;td&gt;0.5400&lt;/td&gt;
+ &lt;td&gt;0.5859&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Mean&lt;/th&gt;
+ &lt;td&gt;0.8468&lt;/td&gt;
+ &lt;td&gt;0.9424&lt;/td&gt;
+ &lt;td&gt;0.9428&lt;/td&gt;
+ &lt;td&gt;0.8409&lt;/td&gt;
+ &lt;td&gt;0.8873&lt;/td&gt;
+ &lt;td&gt;0.6496&lt;/td&gt;
+ &lt;td&gt;0.6678&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;SD&lt;/th&gt;
+ &lt;td&gt;0.0245&lt;/td&gt;
+ &lt;td&gt;0.0123&lt;/td&gt;
+ &lt;td&gt;0.0390&lt;/td&gt;
+ &lt;td&gt;0.0421&lt;/td&gt;
+ &lt;td&gt;0.0151&lt;/td&gt;
+ &lt;td&gt;0.0666&lt;/td&gt;
+ &lt;td&gt;0.0519&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+ &lt;/table&gt;
+ &lt;/div&gt;
+&lt;h2 id="comparing-models"&gt;Comparing Models&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;두 모델 중 어떤 모델이 더 좋은지 확인해본다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;best_model &lt;span style="color:#f92672"&gt;=&lt;/span&gt; compare_models(include&lt;span style="color:#f92672"&gt;=&lt;/span&gt;[skorch_model, model], sort &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;AUC&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;
+ #customers {
+ font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+ border-collapse: collapse;
+ }
+ 
+ #customers td,
+ #customers th {
+ border: 1px solid #ddd;
+ padding: 8px;
+ }
+ 
+ #customers tr:nth-child(even) {
+ background-color: #f2f2f2;
+ }
+ 
+ #customers tr:hover {
+ background-color: #ddd;
+ }
+ #customers th {
+ padding-top: 12px;
+ padding-bottom: 12px;
+ text-align: left;
+ background-color: rgb(175, 107, 76);
+ color: white;
+ }
+ &lt;/style&gt;
+ &lt;div style="width:100%; height:400px; overflow:auto"&gt;
+ &lt;table border="1" id="customers"&gt;
+ &lt;thead&gt;
+ &lt;tr style="text-align: right;"&gt;
+ &lt;th&gt;&lt;/th&gt;
+ &lt;th&gt;Model&lt;/th&gt;
+ &lt;th&gt;Accuracy&lt;/th&gt;
+ &lt;th&gt;AUC&lt;/th&gt;
+ &lt;th&gt;Recall&lt;/th&gt;
+ &lt;th&gt;Prec.&lt;/th&gt;
+ &lt;th&gt;F1&lt;/th&gt;
+ &lt;th&gt;Kappa&lt;/th&gt;
+ &lt;th&gt;MCC&lt;/th&gt;
+ &lt;th&gt;TT (Sec)&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;th&gt;1&lt;/th&gt;
+ &lt;td&gt;Random Forest Classifier&lt;/td&gt;
+ &lt;td&gt;0.9174&lt;/td&gt;
+ &lt;td&gt;0.9775&lt;/td&gt;
+ &lt;td&gt;0.9551&lt;/td&gt;
+ &lt;td&gt;0.9186&lt;/td&gt;
+ &lt;td&gt;0.9365&lt;/td&gt;
+ &lt;td&gt;0.8184&lt;/td&gt;
+ &lt;td&gt;0.8197&lt;/td&gt;
+ &lt;td&gt;2.114&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;0&lt;/th&gt;
+ &lt;td&gt;NeuralNetClassifier&lt;/td&gt;
+ &lt;td&gt;0.8426&lt;/td&gt;
+ &lt;td&gt;0.9400&lt;/td&gt;
+ &lt;td&gt;0.9547&lt;/td&gt;
+ &lt;td&gt;0.8281&lt;/td&gt;
+ &lt;td&gt;0.8861&lt;/td&gt;
+ &lt;td&gt;0.6355&lt;/td&gt;
+ &lt;td&gt;0.6565&lt;/td&gt;
+ &lt;td&gt;11.878&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+ &lt;/table&gt;
+ &lt;/div&gt;
+
+&lt;h2 id="hyperparameter-grid"&gt;Hyperparameter Grid&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Hyperparameter 튜닝을 적용하도록 한다.&lt;/li&gt;
+&lt;li&gt;모형 튜닝을 위한 parameter 값은 다음 명령어를 통해서 확인할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;skorch_model&lt;span style="color:#f92672"&gt;.&lt;/span&gt;get_params()&lt;span style="color:#f92672"&gt;.&lt;/span&gt;keys()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;dict_keys(['memory', 'steps', 'verbose', 'transform', 'net', 'transform__float_dtype', 'transform__int_dtype', 'transform__treat_int_as_categorical', 'net__module', 'net__criterion', 'net__optimizer', 'net__lr', 'net__max_epochs', 'net__batch_size', 'net__iterator_train', 'net__iterator_valid', 'net__dataset', 'net__train_split', 'net__callbacks', 'net__predict_nonlinearity', 'net__warm_start', 'net__verbose', 'net__device', 'net___kwargs', 'net__classes', 'net__callbacks__epoch_timer', 'net__callbacks__train_loss', 'net__callbacks__train_loss__name', 'net__callbacks__train_loss__lower_is_better', 'net__callbacks__train_loss__on_train', 'net__callbacks__valid_loss', 'net__callbacks__valid_loss__name', 'net__callbacks__valid_loss__lower_is_better', 'net__callbacks__valid_loss__on_train', 'net__callbacks__valid_acc', 'net__callbacks__valid_acc__scoring', 'net__callbacks__valid_acc__lower_is_better', 'net__callbacks__valid_acc__on_train', 'net__callbacks__valid_acc__name', 'net__callbacks__valid_acc__target_extractor', 'net__callbacks__valid_acc__use_caching', 'net__callbacks__print_log', 'net__callbacks__print_log__keys_ignored', 'net__callbacks__print_log__sink', 'net__callbacks__print_log__tablefmt', 'net__callbacks__print_log__floatfmt', 'net__callbacks__print_log__stralign'])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;net&lt;span style="color:#f92672"&gt;.&lt;/span&gt;get_params()&lt;span style="color:#f92672"&gt;.&lt;/span&gt;keys()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;dict_keys(['module', 'criterion', 'optimizer', 'lr', 'max_epochs', 'batch_size', 'iterator_train', 'iterator_valid', 'dataset', 'train_split', 'callbacks', 'predict_nonlinearity', 'warm_start', 'verbose', 'device', '_kwargs', 'classes', 'callbacks__epoch_timer', 'callbacks__train_loss', 'callbacks__train_loss__name', 'callbacks__train_loss__lower_is_better', 'callbacks__train_loss__on_train', 'callbacks__valid_loss', 'callbacks__valid_loss__name', 'callbacks__valid_loss__lower_is_better', 'callbacks__valid_loss__on_train', 'callbacks__valid_acc', 'callbacks__valid_acc__scoring', 'callbacks__valid_acc__lower_is_better', 'callbacks__valid_acc__on_train', 'callbacks__valid_acc__name', 'callbacks__valid_acc__target_extractor', 'callbacks__valid_acc__use_caching', 'callbacks__print_log', 'callbacks__print_log__keys_ignored', 'callbacks__print_log__sink', 'callbacks__print_log__tablefmt', 'callbacks__print_log__floatfmt', 'callbacks__print_log__stralign'])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; torch.optim &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; optim
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;custom_grid &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#e6db74"&gt;&amp;#39;net__max_epochs&amp;#39;&lt;/span&gt;:[&lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;30&lt;/span&gt;],
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#e6db74"&gt;&amp;#39;net__lr&amp;#39;&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;0.01&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;0.05&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;0.1&lt;/span&gt;],
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#e6db74"&gt;&amp;#39;net__module__num_units_d1&amp;#39;&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;50&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;150&lt;/span&gt;],
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#e6db74"&gt;&amp;#39;net__module__num_units_d2&amp;#39;&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;50&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;150&lt;/span&gt;],
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#e6db74"&gt;&amp;#39;net__optimizer&amp;#39;&lt;/span&gt;: [optim&lt;span style="color:#f92672"&gt;.&lt;/span&gt;Adam, optim&lt;span style="color:#f92672"&gt;.&lt;/span&gt;SGD, optim&lt;span style="color:#f92672"&gt;.&lt;/span&gt;RMSprop]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;이번에는 hyperparameter 모델을 적용하여 모델을 빠르게 만들어 본다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;tuned_skorch_model &lt;span style="color:#f92672"&gt;=&lt;/span&gt; tune_model(skorch_model, custom_grid &lt;span style="color:#f92672"&gt;=&lt;/span&gt; custom_grid)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;style&gt;
+ #customers {
+ font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+ border-collapse: collapse;
+ }
+ 
+ #customers td,
+ #customers th {
+ border: 1px solid #ddd;
+ padding: 8px;
+ }
+ 
+ #customers tr:nth-child(even) {
+ background-color: #f2f2f2;
+ }
+ 
+ #customers tr:hover {
+ background-color: #ddd;
+ }
+ #customers th {
+ padding-top: 12px;
+ padding-bottom: 12px;
+ text-align: left;
+ background-color: rgb(175, 107, 76);
+ color: white;
+ }
+ &lt;/style&gt;
+ &lt;div style="width:100%; height:400px; overflow:auto"&gt;
+ &lt;table border="1" id="customers"&gt;
+ &lt;thead&gt;
+ &lt;tr style="text-align: right;"&gt;
+ &lt;th&gt;&lt;/th&gt;
+ &lt;th&gt;Accuracy&lt;/th&gt;
+ &lt;th&gt;AUC&lt;/th&gt;
+ &lt;th&gt;Recall&lt;/th&gt;
+ &lt;th&gt;Prec.&lt;/th&gt;
+ &lt;th&gt;F1&lt;/th&gt;
+ &lt;th&gt;Kappa&lt;/th&gt;
+ &lt;th&gt;MCC&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;th&gt;0&lt;/th&gt;
+ &lt;td&gt;0.8762&lt;/td&gt;
+ &lt;td&gt;0.9667&lt;/td&gt;
+ &lt;td&gt;0.9686&lt;/td&gt;
+ &lt;td&gt;0.8562&lt;/td&gt;
+ &lt;td&gt;0.9089&lt;/td&gt;
+ &lt;td&gt;0.7182&lt;/td&gt;
+ &lt;td&gt;0.7316&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;1&lt;/th&gt;
+ &lt;td&gt;0.8675&lt;/td&gt;
+ &lt;td&gt;0.9477&lt;/td&gt;
+ &lt;td&gt;0.8784&lt;/td&gt;
+ &lt;td&gt;0.9106&lt;/td&gt;
+ &lt;td&gt;0.8942&lt;/td&gt;
+ &lt;td&gt;0.7171&lt;/td&gt;
+ &lt;td&gt;0.7179&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;2&lt;/th&gt;
+ &lt;td&gt;0.8375&lt;/td&gt;
+ &lt;td&gt;0.9452&lt;/td&gt;
+ &lt;td&gt;0.7835&lt;/td&gt;
+ &lt;td&gt;0.9535&lt;/td&gt;
+ &lt;td&gt;0.8602&lt;/td&gt;
+ &lt;td&gt;0.6706&lt;/td&gt;
+ &lt;td&gt;0.6891&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;3&lt;/th&gt;
+ &lt;td&gt;0.8575&lt;/td&gt;
+ &lt;td&gt;0.9522&lt;/td&gt;
+ &lt;td&gt;0.8208&lt;/td&gt;
+ &lt;td&gt;0.9490&lt;/td&gt;
+ &lt;td&gt;0.8803&lt;/td&gt;
+ &lt;td&gt;0.7066&lt;/td&gt;
+ &lt;td&gt;0.7180&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;4&lt;/th&gt;
+ &lt;td&gt;0.7975&lt;/td&gt;
+ &lt;td&gt;0.9315&lt;/td&gt;
+ &lt;td&gt;0.9726&lt;/td&gt;
+ &lt;td&gt;0.7704&lt;/td&gt;
+ &lt;td&gt;0.8597&lt;/td&gt;
+ &lt;td&gt;0.5127&lt;/td&gt;
+ &lt;td&gt;0.5602&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Mean&lt;/th&gt;
+ &lt;td&gt;0.8472&lt;/td&gt;
+ &lt;td&gt;0.9487&lt;/td&gt;
+ &lt;td&gt;0.8848&lt;/td&gt;
+ &lt;td&gt;0.8879&lt;/td&gt;
+ &lt;td&gt;0.8807&lt;/td&gt;
+ &lt;td&gt;0.6650&lt;/td&gt;
+ &lt;td&gt;0.6834&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;th&gt;SD&lt;/th&gt;
+ &lt;td&gt;0.0280&lt;/td&gt;
+ &lt;td&gt;0.0114&lt;/td&gt;
+ &lt;td&gt;0.0763&lt;/td&gt;
+ &lt;td&gt;0.0684&lt;/td&gt;
+ &lt;td&gt;0.0192&lt;/td&gt;
+ &lt;td&gt;0.0781&lt;/td&gt;
+ &lt;td&gt;0.0631&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+ &lt;/table&gt;
+ &lt;/div&gt;
+&lt;h2 id="references"&gt;References&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://pycaret.org/"&gt;https://pycaret.org/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.analyticsvidhya.com/blog/2020/05/pycaret-machine-learning-model-seconds/"&gt;https://www.analyticsvidhya.com/blog/2020/05/pycaret-machine-learning-model-seconds/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/skorch-dev/skorch"&gt;https://github.com/skorch-dev/skorch&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://towardsdatascience.com/skorch-pytorch-models-trained-with-a-scikit-learn-wrapper-62b9a154623e"&gt;https://towardsdatascience.com/skorch-pytorch-models-trained-with-a-scikit-learn-wrapper-62b9a154623e&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://towardsdatascience.com/pycaret-skorch-build-pytorch-neural-networks-using-minimal-code-57079e197f33"&gt;https://towardsdatascience.com/pycaret-skorch-build-pytorch-neural-networks-using-minimal-code-57079e197f33&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</description></item></channel></rss>

@@ -1,26 +1,225 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Missing Values on Data Science | DSChloe</title>
-    <link>https://dschloe.github.io/categories/missing-values/</link>
-    <description>Recent content in Missing Values on Data Science | DSChloe</description>
-    <generator>Hugo</generator>
-    <language>en-US</language>
-    <lastBuildDate>Sat, 18 Dec 2021 11:10:47 +0900</lastBuildDate>
-    <atom:link href="https://dschloe.github.io/categories/missing-values/rss.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Finding Missing Values</title>
-      <link>https://dschloe.github.io/programming/2021/12/finding_missing_values/</link>
-      <pubDate>Sat, 18 Dec 2021 11:10:47 +0900</pubDate>
-      <guid>https://dschloe.github.io/programming/2021/12/finding_missing_values/</guid>
-      <description>&lt;h2 id=&#34;데이터-가져오기&#34;&gt;데이터 가져오기&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;pandas, numpy, matplotlib 라이브러리를 불러온다.&lt;/li&gt;&#xA;&lt;li&gt;데이터를 불러온다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;데이터는 &lt;a href=&#34;https://ourworldindata.org/coronavirus-source-data&#34;&gt;https://ourworldindata.org/coronavirus-source-data&lt;/a&gt; 에서 가져왔다. 2020년 6월 1일 기준이다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; pd&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_csv(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;data/covidtotalswithmissings.csv&amp;#34;&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print(covidtotals&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head())&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;  iso_code    lastdate     location  total_cases  total_deaths  \&#xA;0      AFG  2020-06-01  Afghanistan        15205           257   &#xA;1      ALB  2020-06-01      Albania         1137            33   &#xA;2      DZA  2020-06-01      Algeria         9394           653   &#xA;3      AND  2020-06-01      Andorra          764            51   &#xA;4      AGO  2020-06-01       Angola           86             4   &#xA;&#xA;   total_cases_pm  total_deaths_pm  population  pop_density  median_age  \&#xA;0         390.589            6.602  38928341.0       54.422        18.6   &#xA;1         395.093           11.467   2877800.0      104.871        38.0   &#xA;2         214.225           14.891  43851043.0       17.348        29.1   &#xA;3        9888.048          660.066     77265.0      163.755         NaN   &#xA;4           2.617            0.122  32866268.0       23.890        16.8   &#xA;&#xA;   gdp_per_capita  hosp_beds  &#xA;0        1803.987       0.50  &#xA;1       11803.431       2.89  &#xA;2       13913.839       1.90  &#xA;3             NaN        NaN  &#xA;4        5819.495        NaN  &#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Missing Value 확인&lt;/li&gt;&#xA;&lt;li&gt;일부 feature에서 missing value가 있는 것을 확인함.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;info()&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;&amp;lt;class &#39;pandas.core.frame.DataFrame&#39;&amp;gt;&#xA;RangeIndex: 210 entries, 0 to 209&#xA;Data columns (total 12 columns):&#xA; #   Column           Non-Null Count  Dtype  &#xA;---  ------           --------------  -----  &#xA; 0   iso_code         210 non-null    object &#xA; 1   lastdate         210 non-null    object &#xA; 2   location         210 non-null    object &#xA; 3   total_cases      210 non-null    int64  &#xA; 4   total_deaths     210 non-null    int64  &#xA; 5   total_cases_pm   209 non-null    float64&#xA; 6   total_deaths_pm  209 non-null    float64&#xA; 7   population       210 non-null    float64&#xA; 8   pop_density      198 non-null    float64&#xA; 9   median_age       186 non-null    float64&#xA; 10  gdp_per_capita   182 non-null    float64&#xA; 11  hosp_beds        164 non-null    float64&#xA;dtypes: float64(7), int64(2), object(3)&#xA;memory usage: 19.8+ KB&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;데이터를 크게 두개의 기분으로 분류한다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Covid case &amp;amp; Demographic Columns&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;case_vars &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;location&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;total_cases&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;total_deaths&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;total_cases_pm&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;total_deaths_pm&amp;#34;&lt;/span&gt;]&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;demo_vars &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;population&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pop_density&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;median_age&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;gdp_per_capita&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;hosp_beds&amp;#34;&lt;/span&gt;]&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;&#xA;&lt;li&gt;axis 설정을 통해 인구통계와 Covid Cased의 결측치 값을 설정한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals[demo_vars]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;isnull()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sum(axis&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;population         0&#xA;pop_density       12&#xA;median_age        24&#xA;gdp_per_capita    28&#xA;hosp_beds         46&#xA;dtype: int64&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals[case_vars]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;isnull()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sum(axis&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;location           0&#xA;total_cases        0&#xA;total_deaths       0&#xA;total_cases_pm     1&#xA;total_deaths_pm    1&#xA;dtype: int64&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;이번에는 행 방향으로 발생한 결측치를 확인한다.&lt;/li&gt;&#xA;&lt;li&gt;결측치가 없는 행은 156개이고, 1개만 있는 행은 24개 순으로 집계 되었다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;demovars_misscnt &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; covidtotals[demo_vars]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;isnull()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sum(axis&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;demovars_misscnt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;value_counts()&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;0    156&#xA;1     24&#xA;2     12&#xA;3     10&#xA;4      8&#xA;dtype: int64&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;인구통계 데이터가 3가지 이상 누락된 국가를 나열한다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;5개의 값만 추출했다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print(covidtotals&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;loc[demovars_misscnt &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;location&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; demo_vars]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;T)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;                     3         5                                24  \&#xA;location        Andorra  Anguilla  Bonaire Sint Eustatius and Saba   &#xA;population      77265.0   15002.0                          26221.0   &#xA;pop_density     163.755       NaN                              NaN   &#xA;median_age          NaN       NaN                              NaN   &#xA;gdp_per_capita      NaN       NaN                              NaN   &#xA;hosp_beds           NaN       NaN                              NaN   &#xA;&#xA;                                    28              64  &#xA;location        British Virgin Islands  Faeroe Islands  &#xA;population                     30237.0         48865.0  &#xA;pop_density                    207.973          35.308  &#xA;median_age                         NaN             NaN  &#xA;gdp_per_capita                     NaN             NaN  &#xA;hosp_beds                          NaN             NaN  &#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;이번에는 코로나 사례 데이터에서 누락값을 확인한다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;홍콩만 사례가 누락된 것을 확인할 수 있다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;totvars_misscnt &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; covidtotals[case_vars]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;isnull()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sum(axis&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;totvars_misscnt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;value_counts()&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;0    209&#xA;2      1&#xA;dtype: int64&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print(covidtotals&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;loc[totvars_misscnt &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;location&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; case_vars]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;T)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;                        87&#xA;location         Hong Kong&#xA;location         Hong Kong&#xA;total_cases              0&#xA;total_deaths             0&#xA;total_cases_pm         NaN&#xA;total_deaths_pm        NaN&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print(covidtotals[covidtotals[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;location&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Hong Kong&amp;#34;&lt;/span&gt;])&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;   iso_code    lastdate   location  total_cases  total_deaths  total_cases_pm  \&#xA;87      HKG  2020-05-26  Hong Kong            0             0             NaN   &#xA;&#xA;    total_deaths_pm  population  pop_density  median_age  gdp_per_capita  \&#xA;87              NaN   7496988.0     7039.714        44.8        56054.92   &#xA;&#xA;    hosp_beds  &#xA;87        NaN  &#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;h2 id=&#34;방법-1-inplace-사용&#34;&gt;방법 1. Inplace 사용&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;그러나, 가급적 사용하는 것을 추천하지는 않는다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;참조: &lt;a href=&#34;https://towardsdatascience.com/why-you-should-probably-never-use-pandas-inplace-true-9f9f211849e4&#34;&gt;https://towardsdatascience.com/why-you-should-probably-never-use-pandas-inplace-true-9f9f211849e4&lt;/a&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 결측치 채우기&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_csv(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;data/covidtotalswithmissings.csv&amp;#34;&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals2 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; covidtotals&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;copy()&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals2[case_vars]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;isnull()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sum(axis &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;) &#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;location           0&#xA;total_cases        0&#xA;total_deaths       0&#xA;total_cases_pm     1&#xA;total_deaths_pm    1&#xA;dtype: int64&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals2&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;total_cases_pm&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fillna(covidtotals2&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;total_cases&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;(covidtotals2&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;population&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;10000000&lt;/span&gt;), inplace &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals2&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;total_deaths_pm&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fillna(covidtotals2&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;total_deaths&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;(covidtotals2&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;population&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;10000000&lt;/span&gt;), inplace &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals2[case_vars]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;isnull()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sum(axis &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;) &#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;location           0&#xA;total_cases        0&#xA;total_deaths       0&#xA;total_cases_pm     0&#xA;total_deaths_pm    0&#xA;dtype: int64&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;h2 id=&#34;방법-2-매칭을-통한-대체&#34;&gt;방법 2. 매칭을 통한 대체&lt;/h2&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_csv(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;data/covidtotalswithmissings.csv&amp;#34;&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals2 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; covidtotals&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;copy()&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals2[case_vars]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;isnull()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sum(axis &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;) &#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;location           0&#xA;total_cases        0&#xA;total_deaths       0&#xA;total_cases_pm     1&#xA;total_deaths_pm    1&#xA;dtype: int64&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals2&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;loc[:, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;total_cases_pm&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; covidtotals2&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;loc[:, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;total_cases_pm&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fillna(value&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;covidtotals2&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;total_cases&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;(covidtotals&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;population&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;10000000&lt;/span&gt;))&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals2&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;loc[:, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;total_deaths_pm&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; covidtotals2&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;loc[:, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;total_deaths_pm&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fillna(value&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;covidtotals2&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;total_deaths&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;(covidtotals&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;population&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;10000000&lt;/span&gt;))&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals2[case_vars]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;isnull()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sum(axis &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;) &#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;location           0&#xA;total_cases        0&#xA;total_deaths       0&#xA;total_cases_pm     0&#xA;total_deaths_pm    0&#xA;dtype: int64&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;&#xA;&lt;p&gt;Walker, M. (2020). Python Data Cleaning Cookbook: Modern techniques and Python tools to detect and remove dirty data and extract key insights. Packt Publishing.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Dealing with NA-01</title>
-      <link>https://dschloe.github.io/programming/2020/05/dealing_with_na_01/</link>
-      <pubDate>Sat, 02 May 2020 19:15:47 +0900</pubDate>
-      <guid>https://dschloe.github.io/programming/2020/05/dealing_with_na_01/</guid>
-      <description>&lt;h2 id=&#34;강의-홍보&#34;&gt;강의 홍보&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;취준생을 위한 강의를 제작하였습니다.&lt;/li&gt;&#xA;&lt;li&gt;본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;스타벅스 아이스 아메리카노를 선물&lt;/code&gt;로 보내드리겠습니다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://www.inflearn.com/course/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EC%BA%90%EA%B8%80%EC%9E%85%EB%AC%B8?inst=46ae3c78&#34;&gt;[비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기&lt;/a&gt;&#xA;&lt;img src=&#34;https://dschloe.github.io/img/lecture_ad/lecture_ad_01.png&#34; alt=&#34;&#34;&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;공지&#34;&gt;공지&lt;/h2&gt;&#xA;&lt;p&gt;제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 &lt;code&gt;Reference&lt;/code&gt;는 꼭 확인하셔서 교재 구매 또는 관련 &lt;code&gt;Reference&lt;/code&gt;를 확인하시기를 바랍니다.&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;원문: &lt;a href=&#34;https://towardsdatascience.com/6-different-ways-to-compensate-for-missing-values-data-imputation-with-examples-6022d9ca0779&#34;&gt;6 Different Ways to Compensate for Missing Values In a Dataset (Data Imputation with examples)&lt;/a&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;i-overview&#34;&gt;I. Overview&lt;/h2&gt;&#xA;&lt;p&gt;실제 데이터를 다루다보면 여러가지 이유로 결측치와 마주하게 된다. 특별한 이유가 없다면, 현업에서는 당연히 NA를 처리해야 한다. 그렇지 않다면 데이터 분석(시각화, 통계, 머신러닝 모형)에 영향을 줄 수 밖에 없다.&lt;/p&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Missing Values on Data Science | DSChloe</title><link>https://dschloe.github.io/categories/missing-values/</link><description>Recent content in Missing Values on Data Science | DSChloe</description><generator>Hugo</generator><language>en-US</language><lastBuildDate>Sat, 18 Dec 2021 11:10:47 +0900</lastBuildDate><atom:link href="https://dschloe.github.io/categories/missing-values/rss.xml" rel="self" type="application/rss+xml"/><item><title>Finding Missing Values</title><link>https://dschloe.github.io/programming/2021/12/finding_missing_values/</link><pubDate>Sat, 18 Dec 2021 11:10:47 +0900</pubDate><guid>https://dschloe.github.io/programming/2021/12/finding_missing_values/</guid><description>&lt;h2 id="데이터-가져오기"&gt;데이터 가져오기&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;pandas, numpy, matplotlib 라이브러리를 불러온다.&lt;/li&gt;
+&lt;li&gt;데이터를 불러온다.
+&lt;ul&gt;
+&lt;li&gt;데이터는 &lt;a href="https://ourworldindata.org/coronavirus-source-data"&gt;https://ourworldindata.org/coronavirus-source-data&lt;/a&gt; 에서 가져왔다. 2020년 6월 1일 기준이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; pandas &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; pd
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals &lt;span style="color:#f92672"&gt;=&lt;/span&gt; pd&lt;span style="color:#f92672"&gt;.&lt;/span&gt;read_csv(&lt;span style="color:#e6db74"&gt;&amp;#34;data/covidtotalswithmissings.csv&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;print(covidtotals&lt;span style="color:#f92672"&gt;.&lt;/span&gt;head())
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt; iso_code lastdate location total_cases total_deaths \
+0 AFG 2020-06-01 Afghanistan 15205 257 
+1 ALB 2020-06-01 Albania 1137 33 
+2 DZA 2020-06-01 Algeria 9394 653 
+3 AND 2020-06-01 Andorra 764 51 
+4 AGO 2020-06-01 Angola 86 4 
+
+ total_cases_pm total_deaths_pm population pop_density median_age \
+0 390.589 6.602 38928341.0 54.422 18.6 
+1 395.093 11.467 2877800.0 104.871 38.0 
+2 214.225 14.891 43851043.0 17.348 29.1 
+3 9888.048 660.066 77265.0 163.755 NaN 
+4 2.617 0.122 32866268.0 23.890 16.8 
+
+ gdp_per_capita hosp_beds 
+0 1803.987 0.50 
+1 11803.431 2.89 
+2 13913.839 1.90 
+3 NaN NaN 
+4 5819.495 NaN 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Missing Value 확인&lt;/li&gt;
+&lt;li&gt;일부 feature에서 missing value가 있는 것을 확인함.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals&lt;span style="color:#f92672"&gt;.&lt;/span&gt;info()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;&amp;lt;class 'pandas.core.frame.DataFrame'&amp;gt;
+RangeIndex: 210 entries, 0 to 209
+Data columns (total 12 columns):
+ # Column Non-Null Count Dtype 
+--- ------ -------------- ----- 
+ 0 iso_code 210 non-null object 
+ 1 lastdate 210 non-null object 
+ 2 location 210 non-null object 
+ 3 total_cases 210 non-null int64 
+ 4 total_deaths 210 non-null int64 
+ 5 total_cases_pm 209 non-null float64
+ 6 total_deaths_pm 209 non-null float64
+ 7 population 210 non-null float64
+ 8 pop_density 198 non-null float64
+ 9 median_age 186 non-null float64
+ 10 gdp_per_capita 182 non-null float64
+ 11 hosp_beds 164 non-null float64
+dtypes: float64(7), int64(2), object(3)
+memory usage: 19.8+ KB
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;데이터를 크게 두개의 기분으로 분류한다.
+&lt;ul&gt;
+&lt;li&gt;Covid case &amp;amp; Demographic Columns&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;case_vars &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [&lt;span style="color:#e6db74"&gt;&amp;#34;location&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;total_cases&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;total_deaths&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;total_cases_pm&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;total_deaths_pm&amp;#34;&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;demo_vars &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [&lt;span style="color:#e6db74"&gt;&amp;#34;population&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;pop_density&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;median_age&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;gdp_per_capita&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;hosp_beds&amp;#34;&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;axis 설정을 통해 인구통계와 Covid Cased의 결측치 값을 설정한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals[demo_vars]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;isnull()&lt;span style="color:#f92672"&gt;.&lt;/span&gt;sum(axis&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;population 0
+pop_density 12
+median_age 24
+gdp_per_capita 28
+hosp_beds 46
+dtype: int64
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals[case_vars]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;isnull()&lt;span style="color:#f92672"&gt;.&lt;/span&gt;sum(axis&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;location 0
+total_cases 0
+total_deaths 0
+total_cases_pm 1
+total_deaths_pm 1
+dtype: int64
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;이번에는 행 방향으로 발생한 결측치를 확인한다.&lt;/li&gt;
+&lt;li&gt;결측치가 없는 행은 156개이고, 1개만 있는 행은 24개 순으로 집계 되었다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;demovars_misscnt &lt;span style="color:#f92672"&gt;=&lt;/span&gt; covidtotals[demo_vars]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;isnull()&lt;span style="color:#f92672"&gt;.&lt;/span&gt;sum(axis&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;demovars_misscnt&lt;span style="color:#f92672"&gt;.&lt;/span&gt;value_counts()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;0 156
+1 24
+2 12
+3 10
+4 8
+dtype: int64
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;인구통계 데이터가 3가지 이상 누락된 국가를 나열한다.
+&lt;ul&gt;
+&lt;li&gt;5개의 값만 추출했다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;print(covidtotals&lt;span style="color:#f92672"&gt;.&lt;/span&gt;loc[demovars_misscnt &lt;span style="color:#f92672"&gt;&amp;gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;, [&lt;span style="color:#e6db74"&gt;&amp;#39;location&amp;#39;&lt;/span&gt;] &lt;span style="color:#f92672"&gt;+&lt;/span&gt; demo_vars]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;head(&lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;)&lt;span style="color:#f92672"&gt;.&lt;/span&gt;T)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt; 3 5 24 \
+location Andorra Anguilla Bonaire Sint Eustatius and Saba 
+population 77265.0 15002.0 26221.0 
+pop_density 163.755 NaN NaN 
+median_age NaN NaN NaN 
+gdp_per_capita NaN NaN NaN 
+hosp_beds NaN NaN NaN 
+
+ 28 64 
+location British Virgin Islands Faeroe Islands 
+population 30237.0 48865.0 
+pop_density 207.973 35.308 
+median_age NaN NaN 
+gdp_per_capita NaN NaN 
+hosp_beds NaN NaN 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;이번에는 코로나 사례 데이터에서 누락값을 확인한다.
+&lt;ul&gt;
+&lt;li&gt;홍콩만 사례가 누락된 것을 확인할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;totvars_misscnt &lt;span style="color:#f92672"&gt;=&lt;/span&gt; covidtotals[case_vars]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;isnull()&lt;span style="color:#f92672"&gt;.&lt;/span&gt;sum(axis&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;totvars_misscnt&lt;span style="color:#f92672"&gt;.&lt;/span&gt;value_counts()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;0 209
+2 1
+dtype: int64
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;print(covidtotals&lt;span style="color:#f92672"&gt;.&lt;/span&gt;loc[totvars_misscnt &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;, [&lt;span style="color:#e6db74"&gt;&amp;#39;location&amp;#39;&lt;/span&gt;] &lt;span style="color:#f92672"&gt;+&lt;/span&gt; case_vars]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;T)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt; 87
+location Hong Kong
+location Hong Kong
+total_cases 0
+total_deaths 0
+total_cases_pm NaN
+total_deaths_pm NaN
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;print(covidtotals[covidtotals[&lt;span style="color:#e6db74"&gt;&amp;#39;location&amp;#39;&lt;/span&gt;] &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Hong Kong&amp;#34;&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt; iso_code lastdate location total_cases total_deaths total_cases_pm \
+87 HKG 2020-05-26 Hong Kong 0 0 NaN 
+
+ total_deaths_pm population pop_density median_age gdp_per_capita \
+87 NaN 7496988.0 7039.714 44.8 56054.92 
+
+ hosp_beds 
+87 NaN 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="방법-1-inplace-사용"&gt;방법 1. Inplace 사용&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;그러나, 가급적 사용하는 것을 추천하지는 않는다.
+&lt;ul&gt;
+&lt;li&gt;참조: &lt;a href="https://towardsdatascience.com/why-you-should-probably-never-use-pandas-inplace-true-9f9f211849e4"&gt;https://towardsdatascience.com/why-you-should-probably-never-use-pandas-inplace-true-9f9f211849e4&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 결측치 채우기&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals &lt;span style="color:#f92672"&gt;=&lt;/span&gt; pd&lt;span style="color:#f92672"&gt;.&lt;/span&gt;read_csv(&lt;span style="color:#e6db74"&gt;&amp;#34;data/covidtotalswithmissings.csv&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals2 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; covidtotals&lt;span style="color:#f92672"&gt;.&lt;/span&gt;copy()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals2[case_vars]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;isnull()&lt;span style="color:#f92672"&gt;.&lt;/span&gt;sum(axis &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;) 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;location 0
+total_cases 0
+total_deaths 0
+total_cases_pm 1
+total_deaths_pm 1
+dtype: int64
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;total_cases_pm&lt;span style="color:#f92672"&gt;.&lt;/span&gt;fillna(covidtotals2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;total_cases&lt;span style="color:#f92672"&gt;/&lt;/span&gt;(covidtotals2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;population&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;10000000&lt;/span&gt;), inplace &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;True&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;total_deaths_pm&lt;span style="color:#f92672"&gt;.&lt;/span&gt;fillna(covidtotals2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;total_deaths&lt;span style="color:#f92672"&gt;/&lt;/span&gt;(covidtotals2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;population&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;10000000&lt;/span&gt;), inplace &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;True&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals2[case_vars]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;isnull()&lt;span style="color:#f92672"&gt;.&lt;/span&gt;sum(axis &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;) 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;location 0
+total_cases 0
+total_deaths 0
+total_cases_pm 0
+total_deaths_pm 0
+dtype: int64
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="방법-2-매칭을-통한-대체"&gt;방법 2. 매칭을 통한 대체&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals &lt;span style="color:#f92672"&gt;=&lt;/span&gt; pd&lt;span style="color:#f92672"&gt;.&lt;/span&gt;read_csv(&lt;span style="color:#e6db74"&gt;&amp;#34;data/covidtotalswithmissings.csv&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals2 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; covidtotals&lt;span style="color:#f92672"&gt;.&lt;/span&gt;copy()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals2[case_vars]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;isnull()&lt;span style="color:#f92672"&gt;.&lt;/span&gt;sum(axis &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;) 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;location 0
+total_cases 0
+total_deaths 0
+total_cases_pm 1
+total_deaths_pm 1
+dtype: int64
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;loc[:, &lt;span style="color:#e6db74"&gt;&amp;#39;total_cases_pm&amp;#39;&lt;/span&gt;] &lt;span style="color:#f92672"&gt;=&lt;/span&gt; covidtotals2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;loc[:, &lt;span style="color:#e6db74"&gt;&amp;#39;total_cases_pm&amp;#39;&lt;/span&gt;]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;fillna(value&lt;span style="color:#f92672"&gt;=&lt;/span&gt;covidtotals2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;total_cases&lt;span style="color:#f92672"&gt;/&lt;/span&gt;(covidtotals&lt;span style="color:#f92672"&gt;.&lt;/span&gt;population&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;10000000&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;loc[:, &lt;span style="color:#e6db74"&gt;&amp;#39;total_deaths_pm&amp;#39;&lt;/span&gt;] &lt;span style="color:#f92672"&gt;=&lt;/span&gt; covidtotals2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;loc[:, &lt;span style="color:#e6db74"&gt;&amp;#39;total_deaths_pm&amp;#39;&lt;/span&gt;]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;fillna(value&lt;span style="color:#f92672"&gt;=&lt;/span&gt;covidtotals2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;total_deaths&lt;span style="color:#f92672"&gt;/&lt;/span&gt;(covidtotals&lt;span style="color:#f92672"&gt;.&lt;/span&gt;population&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;10000000&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals2[case_vars]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;isnull()&lt;span style="color:#f92672"&gt;.&lt;/span&gt;sum(axis &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;) 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;location 0
+total_cases 0
+total_deaths 0
+total_cases_pm 0
+total_deaths_pm 0
+dtype: int64
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="references"&gt;References&lt;/h2&gt;
+&lt;p&gt;Walker, M. (2020). Python Data Cleaning Cookbook: Modern techniques and Python tools to detect and remove dirty data and extract key insights. Packt Publishing.&lt;/p&gt;</description></item><item><title>Dealing with NA-01</title><link>https://dschloe.github.io/programming/2020/05/dealing_with_na_01/</link><pubDate>Sat, 02 May 2020 19:15:47 +0900</pubDate><guid>https://dschloe.github.io/programming/2020/05/dealing_with_na_01/</guid><description>&lt;h2 id="강의-홍보"&gt;강의 홍보&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;취준생을 위한 강의를 제작하였습니다.&lt;/li&gt;
+&lt;li&gt;본 블로그를 통해서 강의를 수강하신 분은 게시글 제목과 링크를 수강하여 인프런 메시지를 통해 보내주시기를 바랍니다.
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;스타벅스 아이스 아메리카노를 선물&lt;/code&gt;로 보내드리겠습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.inflearn.com/course/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D-%EC%BA%90%EA%B8%80%EC%9E%85%EB%AC%B8?inst=46ae3c78"&gt;[비전공자 대환영] 제로베이스도 쉽게 입문하는 파이썬 데이터 분석 - 캐글입문기&lt;/a&gt;
+&lt;img src="https://dschloe.github.io/img/lecture_ad/lecture_ad_01.png" alt=""&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="공지"&gt;공지&lt;/h2&gt;
+&lt;p&gt;제 수업을 듣는 사람들이 계속적으로 실습할 수 있도록 강의 파일을 만들었습니다. 늘 도움이 되기를 바라며. 참고했던 교재 및 &lt;code&gt;Reference&lt;/code&gt;는 꼭 확인하셔서 교재 구매 또는 관련 &lt;code&gt;Reference&lt;/code&gt;를 확인하시기를 바랍니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;원문: &lt;a href="https://towardsdatascience.com/6-different-ways-to-compensate-for-missing-values-data-imputation-with-examples-6022d9ca0779"&gt;6 Different Ways to Compensate for Missing Values In a Dataset (Data Imputation with examples)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="i-overview"&gt;I. Overview&lt;/h2&gt;
+&lt;p&gt;실제 데이터를 다루다보면 여러가지 이유로 결측치와 마주하게 된다. 특별한 이유가 없다면, 현업에서는 당연히 NA를 처리해야 한다. 그렇지 않다면 데이터 분석(시각화, 통계, 머신러닝 모형)에 영향을 줄 수 밖에 없다.&lt;/p&gt;</description></item></channel></rss>

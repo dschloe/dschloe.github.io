@@ -1,19 +1,45 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>GeoJson on Data Science | DSChloe</title>
-    <link>https://dschloe.github.io/tags/geojson/</link>
-    <description>Recent content in GeoJson on Data Science | DSChloe</description>
-    <generator>Hugo</generator>
-    <language>en-US</language>
-    <lastBuildDate>Sun, 05 Feb 2023 00:01:47 +0900</lastBuildDate>
-    <atom:link href="https://dschloe.github.io/tags/geojson/rss.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>지도시각화 예제 - QGIS를 활용한 geojson 파일 만들기</title>
-      <link>https://dschloe.github.io/programming/2023/02/qgis_create_geojson/</link>
-      <pubDate>Sun, 05 Feb 2023 00:01:47 +0900</pubDate>
-      <guid>https://dschloe.github.io/programming/2023/02/qgis_create_geojson/</guid>
-      <description>&lt;h2 id=&#34;강의소개&#34;&gt;강의소개&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;인프런에서 Streamlit 관련 강의를 진행하고 있습니다.&lt;/li&gt;&#xA;&lt;li&gt;인프런 : &lt;a href=&#34;https://inf.run/YPniH&#34;&gt;https://inf.run/YPniH&lt;/a&gt;&#xA;&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;&#xA;      &lt;iframe allow=&#34;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen&#34; loading=&#34;eager&#34; referrerpolicy=&#34;strict-origin-when-cross-origin&#34; src=&#34;https://www.youtube.com/embed/mQTuD7gx-hw?autoplay=0&amp;amp;controls=1&amp;amp;end=0&amp;amp;loop=0&amp;amp;mute=0&amp;amp;start=0&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;YouTube video&#34;&gt;&lt;/iframe&gt;&#xA;    &lt;/div&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;installation&#34;&gt;Installation&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Map 시각화를 위한 주요 라이브러리를 설치한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pip install numpy pandas matplotlib seaborn jupyterlab geopandas pydeck&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;enabling-pydeck-for-jupyter&#34;&gt;Enabling pydeck for Jupyter&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Jupyter는 더 복잡한 서버/클라이언트 상호 작용을 허용할 수 있다.&lt;/li&gt;&#xA;&lt;li&gt;사용자 또는 시스템 관리자가 주피터에서 사용할 수 있도록 pydeck를 사용하도록 설정해야 한다.&lt;/li&gt;&#xA;&lt;li&gt;바이너리 데이터 전송, 데이터 선택 및 시간 경과에 따른 데이터 업데이트는 파이덱이 주피터 환경에서 사용 가능한 경우에만 대화식으로 작동할 수 있다.&lt;/li&gt;&#xA;&lt;li&gt;Jupyter 노트북의 Pydeck를 활성화하려면:&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ jupyter nbextension install --sys-prefix --symlink --overwrite --py pydeckInstalling your_url -&amp;gt; pydeckRemoving: your_urlSymlinking:your_url -&amp;gt; your_url- Validating: ok    To initialize this nbextension in the browser every time the notebook &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;or other app&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; loads:          jupyter nbextension enable pydeck --py --sys-prefix&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;jupyter nbextension enable --sys-prefix --py pydeck&#xA;Enabling notebook extension pydeck/extensionRequires...&#xA;      - Validating: ok&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;법정동-병합-데이터-만들기&#34;&gt;법정동 병합 데이터 만들기&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Python에서 법정동 병합 데이터 만드는 방법을 숙지하도록 한다.&lt;/li&gt;&#xA;&lt;li&gt;지도 데이터를 다운로드 받는다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;참조 : &lt;a href=&#34;http://www.gisdeveloper.co.kr/?p=2332&#34;&gt;http://www.gisdeveloper.co.kr/?p=2332&lt;/a&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;지도 경계 작업을 수행할 QGIS 파일을 다운로드 받는다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;다운로드 : &lt;a href=&#34;https://qgis.org/ko/site/&#34;&gt;https://qgis.org/ko/site/&lt;/a&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;참조 : &lt;a href=&#34;https://mjs1995.tistory.com/186&#34;&gt;https://mjs1995.tistory.com/186&lt;/a&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h3 id=&#34;qgis-설치&#34;&gt;QGIS 설치&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;설치는 다음과 같다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;&lt;img src=&#34;https://dschloe.github.io/img/programming/2023/02/qgis_create_geojson/Untitled.png&#34; alt=&#34;Untitled&#34;&gt;&lt;/p&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>GeoJson on Data Science | DSChloe</title><link>https://dschloe.github.io/tags/geojson/</link><description>Recent content in GeoJson on Data Science | DSChloe</description><generator>Hugo</generator><language>en-US</language><lastBuildDate>Sun, 05 Feb 2023 00:01:47 +0900</lastBuildDate><atom:link href="https://dschloe.github.io/tags/geojson/rss.xml" rel="self" type="application/rss+xml"/><item><title>지도시각화 예제 - QGIS를 활용한 geojson 파일 만들기</title><link>https://dschloe.github.io/programming/2023/02/qgis_create_geojson/</link><pubDate>Sun, 05 Feb 2023 00:01:47 +0900</pubDate><guid>https://dschloe.github.io/programming/2023/02/qgis_create_geojson/</guid><description>&lt;h2 id="강의소개"&gt;강의소개&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;인프런에서 Streamlit 관련 강의를 진행하고 있습니다.&lt;/li&gt;
+&lt;li&gt;인프런 : &lt;a href="https://inf.run/YPniH"&gt;https://inf.run/YPniH&lt;/a&gt;
+&lt;div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;"&gt;
+ &lt;iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/mQTuD7gx-hw?autoplay=0&amp;amp;controls=1&amp;amp;end=0&amp;amp;loop=0&amp;amp;mute=0&amp;amp;start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"&gt;&lt;/iframe&gt;
+ &lt;/div&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="installation"&gt;Installation&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Map 시각화를 위한 주요 라이브러리를 설치한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pip install numpy pandas matplotlib seaborn jupyterlab geopandas pydeck
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="enabling-pydeck-for-jupyter"&gt;Enabling pydeck for Jupyter&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Jupyter는 더 복잡한 서버/클라이언트 상호 작용을 허용할 수 있다.&lt;/li&gt;
+&lt;li&gt;사용자 또는 시스템 관리자가 주피터에서 사용할 수 있도록 pydeck를 사용하도록 설정해야 한다.&lt;/li&gt;
+&lt;li&gt;바이너리 데이터 전송, 데이터 선택 및 시간 경과에 따른 데이터 업데이트는 파이덱이 주피터 환경에서 사용 가능한 경우에만 대화식으로 작동할 수 있다.&lt;/li&gt;
+&lt;li&gt;Jupyter 노트북의 Pydeck를 활성화하려면:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ jupyter nbextension install --sys-prefix --symlink --overwrite --py pydeckInstalling your_url -&amp;gt; pydeckRemoving: your_urlSymlinking:your_url -&amp;gt; your_url- Validating: ok To initialize this nbextension in the browser every time the notebook &lt;span style="color:#f92672"&gt;(&lt;/span&gt;or other app&lt;span style="color:#f92672"&gt;)&lt;/span&gt; loads: jupyter nbextension enable pydeck --py --sys-prefix
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre tabindex="0"&gt;&lt;code&gt;jupyter nbextension enable --sys-prefix --py pydeck
+Enabling notebook extension pydeck/extensionRequires...
+ - Validating: ok
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id="법정동-병합-데이터-만들기"&gt;법정동 병합 데이터 만들기&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Python에서 법정동 병합 데이터 만드는 방법을 숙지하도록 한다.&lt;/li&gt;
+&lt;li&gt;지도 데이터를 다운로드 받는다.
+&lt;ul&gt;
+&lt;li&gt;참조 : &lt;a href="http://www.gisdeveloper.co.kr/?p=2332"&gt;http://www.gisdeveloper.co.kr/?p=2332&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;지도 경계 작업을 수행할 QGIS 파일을 다운로드 받는다.
+&lt;ul&gt;
+&lt;li&gt;다운로드 : &lt;a href="https://qgis.org/ko/site/"&gt;https://qgis.org/ko/site/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;참조 : &lt;a href="https://mjs1995.tistory.com/186"&gt;https://mjs1995.tistory.com/186&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="qgis-설치"&gt;QGIS 설치&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;설치는 다음과 같다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src="https://dschloe.github.io/img/programming/2023/02/qgis_create_geojson/Untitled.png" alt="Untitled"&gt;&lt;/p&gt;</description></item></channel></rss>

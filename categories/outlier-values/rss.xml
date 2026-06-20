@@ -1,19 +1,140 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Outlier Values on Data Science | DSChloe</title>
-    <link>https://dschloe.github.io/categories/outlier-values/</link>
-    <description>Recent content in Outlier Values on Data Science | DSChloe</description>
-    <generator>Hugo</generator>
-    <language>en-US</language>
-    <lastBuildDate>Sun, 19 Dec 2021 11:10:47 +0900</lastBuildDate>
-    <atom:link href="https://dschloe.github.io/categories/outlier-values/rss.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Verifying Outlier Values</title>
-      <link>https://dschloe.github.io/programming/2021/12/verifying_outliers2/</link>
-      <pubDate>Sun, 19 Dec 2021 11:10:47 +0900</pubDate>
-      <guid>https://dschloe.github.io/programming/2021/12/verifying_outliers2/</guid>
-      <description>&lt;h2 id=&#34;이상값의-정의&#34;&gt;이상값의 정의&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;다소 주관적이며(Somewhat Subjective), 특정 분포의 중심경향성, 퍼진 정도와 형태에 따라 밀접한 관련이 있다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;평균에서 표준편차보다 몇 배 더 떨어져 있다거나, 즉, 정규분포를 이루고 있지 않을 때&lt;/li&gt;&#xA;&lt;li&gt;왜도 또는 첨도가 발생할 때&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;균등분포(Uniform Distribution)는, 발생할 확률이 모두 같다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;만약, 확진자수가 최소 1부터 최대 10,000,000까지 균등하게 분포한다면, 어떤 값도 이상값으로 고려하지 않는다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;이상값을 파악하려면, 반드시, 각 변수의 분포를 먼저 이해해야 한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;라이브러리-및-데이터-불러오기&#34;&gt;라이브러리 및 데이터 불러오기&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;실습을 위한 데이터를 불러온다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; np&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; plt&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; pd&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; statsmodels.api &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; sm&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; scipy.stats &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; scistat&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_csv(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;data/covidtotals.csv&amp;#34;&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covidtotals&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;set_index(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;iso_code&amp;#34;&lt;/span&gt;, inplace &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;case_vars &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;location&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;total_cases&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;total_deaths&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;total_cases_pm&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;total_deaths_pm&amp;#34;&lt;/span&gt;]&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;demo_vars &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;population&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pop_density&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;median_age&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;gdp_per_capita&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;hosp_beds&amp;#34;&lt;/span&gt;]&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print(covidtotals&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head())&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;            lastdate     location  total_cases  total_deaths  total_cases_pm  \&#xA;iso_code                                                                       &#xA;AFG       2020-06-01  Afghanistan        15205           257         390.589   &#xA;ALB       2020-06-01      Albania         1137            33         395.093   &#xA;DZA       2020-06-01      Algeria         9394           653         214.225   &#xA;AND       2020-06-01      Andorra          764            51        9888.048   &#xA;AGO       2020-06-01       Angola           86             4           2.617   &#xA;&#xA;          total_deaths_pm  population  pop_density  median_age  \&#xA;iso_code                                                         &#xA;AFG                 6.602  38928341.0       54.422        18.6   &#xA;ALB                11.467   2877800.0      104.871        38.0   &#xA;DZA                14.891  43851043.0       17.348        29.1   &#xA;AND               660.066     77265.0      163.755         NaN   &#xA;AGO                 0.122  32866268.0       23.890        16.8   &#xA;&#xA;          gdp_per_capita  hosp_beds  &#xA;iso_code                             &#xA;AFG             1803.987       0.50  &#xA;ALB            11803.431       2.89  &#xA;DZA            13913.839       1.90  &#xA;AND                  NaN        NaN  &#xA;AGO             5819.495        NaN  &#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;describe() 함수를 통해 수치 데이터의 분포를 확인하도록 한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covid_case_df &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; covidtotals&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;loc[:, case_vars]&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print(covid_case_df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;describe())&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;        total_cases   total_deaths  total_cases_pm  total_deaths_pm&#xA;count  2.100000e+02     210.000000      210.000000       210.000000&#xA;mean   2.921614e+04    1770.714286     1355.357943        55.659129&#xA;std    1.363978e+05    8705.565857     2625.277497       144.785816&#xA;min    0.000000e+00       0.000000        0.000000         0.000000&#xA;25%    1.757500e+02       4.000000       92.541500         0.884750&#xA;50%    1.242500e+03      25.500000      280.928500         6.154000&#xA;75%    1.011700e+04     241.250000     1801.394750        31.777250&#xA;max    1.790191e+06  104383.000000    19771.348000      1237.551000&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;백분위수(quantile)로 데이터를 표시한다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print(covid_case_df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;quantile(np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;arange(&lt;span style=&#34;color:#ae81ff&#34;&gt;0.0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1.1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.1&lt;/span&gt;)))&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;     total_cases  total_deaths  total_cases_pm  total_deaths_pm&#xA;0.0          0.0           0.0          0.0000           0.0000&#xA;0.1         22.9           0.0         17.9986           0.0000&#xA;0.2        105.2           2.0         56.2910           0.3752&#xA;0.3        302.0           6.7        115.4341           1.7183&#xA;0.4        762.0          12.0        213.9734           3.9566&#xA;0.5       1242.5          25.5        280.9285           6.1540&#xA;0.6       2514.6          54.6        543.9562          12.2452&#xA;0.7       6959.8         137.2       1071.2442          25.9459&#xA;0.8      16847.2         323.2       2206.2982          49.9658&#xA;0.9      46513.1        1616.9       3765.1363         138.9045&#xA;1.0    1790191.0      104383.0      19771.3480        1237.5510&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;왜도는 분포가 얼마나 대칭적인지를 나타냄&lt;/li&gt;&#xA;&lt;li&gt;왜도와 첨도는 어떻게 대칭적인지를 설명하며, 분포의 꼬리가 각각 얼마나 두꺼운지 나타냄.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covid_case_df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;skew(axis&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, numeric_only &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;total_cases        10.804275&#xA;total_deaths        8.929816&#xA;total_cases_pm      4.396091&#xA;total_deaths_pm     4.674417&#xA;dtype: float64&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;covid_case_df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kurtosis(axis&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, numeric_only &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;total_cases        134.979577&#xA;total_deaths        95.737841&#xA;total_cases_pm      25.242790&#xA;total_deaths_pm     27.238232&#xA;dtype: float64&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;정규성 검정을 테스트 한다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;파이썬 예제: &lt;a href=&#34;https://www.statology.org/shapiro-wilk-test-python/&#34;&gt;https://www.statology.org/shapiro-wilk-test-python/&lt;/a&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;p값 0.05미만에서 95% 수준에서 정규분포의 귀무가설을 기각하고, 대립가설을 채택한다.&#xA;&lt;ul&gt;&#xA;&lt;li&gt;귀무가설: 표본의 모집단이 정규분포를 이루고 있다.&lt;/li&gt;&#xA;&lt;li&gt;대립가설: 표본의 모집단이 정규분포를 이루고 있지 않다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;scistat&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shapiro(covid_case_df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;total_cases&amp;#39;&lt;/span&gt;])&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;ShapiroResult(statistic=0.19379639625549316, pvalue=3.753789128593843e-29)&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;scistat&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shapiro(covid_case_df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;total_deaths&amp;#39;&lt;/span&gt;])&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;ShapiroResult(statistic=0.19832086563110352, pvalue=4.3427896631016077e-29)&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;scistat&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shapiro(covid_case_df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;total_cases_pm&amp;#39;&lt;/span&gt;])&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;ShapiroResult(statistic=0.5220695734024048, pvalue=1.3972683006509067e-23)&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;scistat&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shapiro(covid_case_df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;total_deaths_pm&amp;#39;&lt;/span&gt;])&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;ShapiroResult(statistic=0.41877639293670654, pvalue=1.361060423265974e-25)&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;위 4개의 feature 모두 정규분포를 이루고 있지 않음을 확인할 수 있다.&lt;/li&gt;&#xA;&lt;li&gt;이번에는 qqplot을 그린다.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sm&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;qqplot(covid_case_df[[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;total_cases&amp;#34;&lt;/span&gt;]]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sort_values([&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;total_cases&amp;#34;&lt;/span&gt;]), line &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;s&amp;#34;&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;plt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;title(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;QQ Plot of Total Cases&amp;#34;&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Text(0.5, 1.0, &#39;QQ Plot of Total Cases&#39;)&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;p&gt;&lt;img src=&#34;https://dschloe.github.io/img/programming/2021/12/verifying_outliers2/output_16_1.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Outlier Values on Data Science | DSChloe</title><link>https://dschloe.github.io/categories/outlier-values/</link><description>Recent content in Outlier Values on Data Science | DSChloe</description><generator>Hugo</generator><language>en-US</language><lastBuildDate>Sun, 19 Dec 2021 11:10:47 +0900</lastBuildDate><atom:link href="https://dschloe.github.io/categories/outlier-values/rss.xml" rel="self" type="application/rss+xml"/><item><title>Verifying Outlier Values</title><link>https://dschloe.github.io/programming/2021/12/verifying_outliers2/</link><pubDate>Sun, 19 Dec 2021 11:10:47 +0900</pubDate><guid>https://dschloe.github.io/programming/2021/12/verifying_outliers2/</guid><description>&lt;h2 id="이상값의-정의"&gt;이상값의 정의&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;다소 주관적이며(Somewhat Subjective), 특정 분포의 중심경향성, 퍼진 정도와 형태에 따라 밀접한 관련이 있다.
+&lt;ul&gt;
+&lt;li&gt;평균에서 표준편차보다 몇 배 더 떨어져 있다거나, 즉, 정규분포를 이루고 있지 않을 때&lt;/li&gt;
+&lt;li&gt;왜도 또는 첨도가 발생할 때&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;균등분포(Uniform Distribution)는, 발생할 확률이 모두 같다.
+&lt;ul&gt;
+&lt;li&gt;만약, 확진자수가 최소 1부터 최대 10,000,000까지 균등하게 분포한다면, 어떤 값도 이상값으로 고려하지 않는다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;이상값을 파악하려면, 반드시, 각 변수의 분포를 먼저 이해해야 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="라이브러리-및-데이터-불러오기"&gt;라이브러리 및 데이터 불러오기&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;실습을 위한 데이터를 불러온다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; numpy &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; np
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; plt
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; pandas &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; pd
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; statsmodels.api &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; sm
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; scipy.stats &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; scistat
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals &lt;span style="color:#f92672"&gt;=&lt;/span&gt; pd&lt;span style="color:#f92672"&gt;.&lt;/span&gt;read_csv(&lt;span style="color:#e6db74"&gt;&amp;#34;data/covidtotals.csv&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covidtotals&lt;span style="color:#f92672"&gt;.&lt;/span&gt;set_index(&lt;span style="color:#e6db74"&gt;&amp;#34;iso_code&amp;#34;&lt;/span&gt;, inplace &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;True&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;case_vars &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [&lt;span style="color:#e6db74"&gt;&amp;#34;location&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;total_cases&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;total_deaths&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;total_cases_pm&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;total_deaths_pm&amp;#34;&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;demo_vars &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [&lt;span style="color:#e6db74"&gt;&amp;#34;population&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;pop_density&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;median_age&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;gdp_per_capita&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;hosp_beds&amp;#34;&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;print(covidtotals&lt;span style="color:#f92672"&gt;.&lt;/span&gt;head())
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt; lastdate location total_cases total_deaths total_cases_pm \
+iso_code 
+AFG 2020-06-01 Afghanistan 15205 257 390.589 
+ALB 2020-06-01 Albania 1137 33 395.093 
+DZA 2020-06-01 Algeria 9394 653 214.225 
+AND 2020-06-01 Andorra 764 51 9888.048 
+AGO 2020-06-01 Angola 86 4 2.617 
+
+ total_deaths_pm population pop_density median_age \
+iso_code 
+AFG 6.602 38928341.0 54.422 18.6 
+ALB 11.467 2877800.0 104.871 38.0 
+DZA 14.891 43851043.0 17.348 29.1 
+AND 660.066 77265.0 163.755 NaN 
+AGO 0.122 32866268.0 23.890 16.8 
+
+ gdp_per_capita hosp_beds 
+iso_code 
+AFG 1803.987 0.50 
+ALB 11803.431 2.89 
+DZA 13913.839 1.90 
+AND NaN NaN 
+AGO 5819.495 NaN 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;describe() 함수를 통해 수치 데이터의 분포를 확인하도록 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covid_case_df &lt;span style="color:#f92672"&gt;=&lt;/span&gt; covidtotals&lt;span style="color:#f92672"&gt;.&lt;/span&gt;loc[:, case_vars]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;print(covid_case_df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;describe())
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt; total_cases total_deaths total_cases_pm total_deaths_pm
+count 2.100000e+02 210.000000 210.000000 210.000000
+mean 2.921614e+04 1770.714286 1355.357943 55.659129
+std 1.363978e+05 8705.565857 2625.277497 144.785816
+min 0.000000e+00 0.000000 0.000000 0.000000
+25% 1.757500e+02 4.000000 92.541500 0.884750
+50% 1.242500e+03 25.500000 280.928500 6.154000
+75% 1.011700e+04 241.250000 1801.394750 31.777250
+max 1.790191e+06 104383.000000 19771.348000 1237.551000
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;백분위수(quantile)로 데이터를 표시한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;print(covid_case_df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;quantile(np&lt;span style="color:#f92672"&gt;.&lt;/span&gt;arange(&lt;span style="color:#ae81ff"&gt;0.0&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;1.1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;0.1&lt;/span&gt;)))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt; total_cases total_deaths total_cases_pm total_deaths_pm
+0.0 0.0 0.0 0.0000 0.0000
+0.1 22.9 0.0 17.9986 0.0000
+0.2 105.2 2.0 56.2910 0.3752
+0.3 302.0 6.7 115.4341 1.7183
+0.4 762.0 12.0 213.9734 3.9566
+0.5 1242.5 25.5 280.9285 6.1540
+0.6 2514.6 54.6 543.9562 12.2452
+0.7 6959.8 137.2 1071.2442 25.9459
+0.8 16847.2 323.2 2206.2982 49.9658
+0.9 46513.1 1616.9 3765.1363 138.9045
+1.0 1790191.0 104383.0 19771.3480 1237.5510
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;왜도는 분포가 얼마나 대칭적인지를 나타냄&lt;/li&gt;
+&lt;li&gt;왜도와 첨도는 어떻게 대칭적인지를 설명하며, 분포의 꼬리가 각각 얼마나 두꺼운지 나타냄.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covid_case_df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;skew(axis&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;, numeric_only &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;True&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;total_cases 10.804275
+total_deaths 8.929816
+total_cases_pm 4.396091
+total_deaths_pm 4.674417
+dtype: float64
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;covid_case_df&lt;span style="color:#f92672"&gt;.&lt;/span&gt;kurtosis(axis&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;, numeric_only &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;True&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;total_cases 134.979577
+total_deaths 95.737841
+total_cases_pm 25.242790
+total_deaths_pm 27.238232
+dtype: float64
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;정규성 검정을 테스트 한다.
+&lt;ul&gt;
+&lt;li&gt;파이썬 예제: &lt;a href="https://www.statology.org/shapiro-wilk-test-python/"&gt;https://www.statology.org/shapiro-wilk-test-python/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;p값 0.05미만에서 95% 수준에서 정규분포의 귀무가설을 기각하고, 대립가설을 채택한다.
+&lt;ul&gt;
+&lt;li&gt;귀무가설: 표본의 모집단이 정규분포를 이루고 있다.&lt;/li&gt;
+&lt;li&gt;대립가설: 표본의 모집단이 정규분포를 이루고 있지 않다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scistat&lt;span style="color:#f92672"&gt;.&lt;/span&gt;shapiro(covid_case_df[&lt;span style="color:#e6db74"&gt;&amp;#39;total_cases&amp;#39;&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;ShapiroResult(statistic=0.19379639625549316, pvalue=3.753789128593843e-29)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scistat&lt;span style="color:#f92672"&gt;.&lt;/span&gt;shapiro(covid_case_df[&lt;span style="color:#e6db74"&gt;&amp;#39;total_deaths&amp;#39;&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;ShapiroResult(statistic=0.19832086563110352, pvalue=4.3427896631016077e-29)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scistat&lt;span style="color:#f92672"&gt;.&lt;/span&gt;shapiro(covid_case_df[&lt;span style="color:#e6db74"&gt;&amp;#39;total_cases_pm&amp;#39;&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;ShapiroResult(statistic=0.5220695734024048, pvalue=1.3972683006509067e-23)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scistat&lt;span style="color:#f92672"&gt;.&lt;/span&gt;shapiro(covid_case_df[&lt;span style="color:#e6db74"&gt;&amp;#39;total_deaths_pm&amp;#39;&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;ShapiroResult(statistic=0.41877639293670654, pvalue=1.361060423265974e-25)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;위 4개의 feature 모두 정규분포를 이루고 있지 않음을 확인할 수 있다.&lt;/li&gt;
+&lt;li&gt;이번에는 qqplot을 그린다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sm&lt;span style="color:#f92672"&gt;.&lt;/span&gt;qqplot(covid_case_df[[&lt;span style="color:#e6db74"&gt;&amp;#34;total_cases&amp;#34;&lt;/span&gt;]]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;sort_values([&lt;span style="color:#e6db74"&gt;&amp;#34;total_cases&amp;#34;&lt;/span&gt;]), line &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;s&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;plt&lt;span style="color:#f92672"&gt;.&lt;/span&gt;title(&lt;span style="color:#e6db74"&gt;&amp;#34;QQ Plot of Total Cases&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Text(0.5, 1.0, 'QQ Plot of Total Cases')
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="https://dschloe.github.io/img/programming/2021/12/verifying_outliers2/output_16_1.png" alt="png"&gt;&lt;/p&gt;</description></item></channel></rss>
